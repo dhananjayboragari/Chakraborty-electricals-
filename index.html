@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhupguri CCC All Forms</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body{
+background: linear-gradient(135deg,#00c6ff,#0072ff);
+font-family:'Segoe UI',sans-serif;
+}
+
+/* NAVBAR */
+.navbar{
+background:rgba(0,0,0,0.7);
+}
+
+/* CENTER WIDTH */
+.container{
+max-width:450px;
+margin:auto;
+}
+
+/* CARD */
+.form-card{
+border-radius:15px;
+padding:20px 15px;
+margin-bottom:12px;
+transition:0.3s;
+}
+
+.form-card:hover{
+transform:translateY(-5px);
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* BASE BUTTON */
+.icon-top-btn{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:6px;
+
+width:100%;
+padding:16px;
+
+color:white;
+text-decoration:none;
+
+border-radius:12px;
+font-size:14px;
+font-weight:600;
+
+transition:0.3s;
+}
+
+.icon-top-btn i{
+font-size:22px;
+}
+
+/* DIFFERENT COLORS */
+.btn1{background:linear-gradient(45deg,#ff7e5f,#ff3f34);}
+.btn2{background:linear-gradient(45deg,#36d1dc,#5b86e5);}
+.btn3{background:linear-gradient(45deg,#f7971e,#ffd200);}
+.btn4{background:linear-gradient(45deg,#00b09b,#96c93d);}
+.btn5{background:linear-gradient(45deg,#8e2de2,#4a00e0);}
+
+.icon-top-btn:hover{
+transform:translateY(-4px) scale(1.05);
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+color:white;
+}
+
+/* LOADING */
+.btn-loading{
+width:100%;
+height:6px;
+margin-top:10px;
+background:#ddd;
+border-radius:5px;
+overflow:hidden;
+display:none;
+}
+
+.btn-loading span{
+display:block;
+height:100%;
+width:0%;
+background:linear-gradient(90deg,red,orange,yellow,green,blue);
+animation:move 2s linear infinite;
+}
+
+@keyframes move{
+0%{background-position:0%}
+100%{background-position:100%}
+}
+
+footer{
+background:rgba(0,0,0,0.8);
+color:white;
+padding:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dark fixed-top">
+<div class="container d-flex justify-content-between">
+<span class="navbar-brand">DHUPGURI CCC ALL FORMS</span>
+<span id="liveClock" style="color:white;"></span>
+</div>
+</nav>
+
+<br><br><br>
+
+<!-- CARDS -->
+<div class="container mt-3">
+<div class="row">
+
+<!-- CARD 1 -->
+<div class="col-12">
+<div class="card text-center form-card">
+<h6>Disconnection sumari</h6>
+
+<a href="Disconnection.html" class="icon-top-btn btn1 form-link">
+<i class="fas fa-clipboard-list"></i>
+<span>Open Disconnection</span>
+</a>
+
+<div class="btn-loading"><span></span></div>
+</div>
+</div>
+
+<!-- CARD 2 -->
+<div class="col-12">
+<div class="card text-center form-card">
+<h6>Master Card</h6>
+
+<a href="https://forms.gle/z3GXqHDaCvf9L1Wa9" class="icon-top-btn btn2 form-link">
+<i class="fas fa-id-card"></i>
+<span>Open Form</span>
+</a>
+
+<div class="btn-loading"><span></span></div>
+</div>
+</div>
+
+<!-- CARD 3 -->
+<div class="col-12">
+<div class="card text-center form-card">
+<h6>Estimate</h6>
+
+<a href="https://forms.gle/N3GAGAjKmRU7HhCKA" class="icon-top-btn btn3 form-link">
+<i class="fas fa-calculator"></i>
+<span>Open Form</span>
+</a>
+
+<div class="btn-loading"><span></span></div>
+</div>
+</div>
+
+<!-- CARD 4 -->
+<div class="col-12">
+<div class="card text-center form-card">
+<h6>Maintenance Survey</h6>
+
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSfPDJCc6WFasOdEVKTlv2MOEPw5O4u_2mMquTvfMh0FoFuKoA/viewform" class="icon-top-btn btn4 form-link">
+<i class="fas fa-tools"></i>
+<span>Open Form</span>
+</a>
+
+<div class="btn-loading"><span></span></div>
+</div>
+</div>
+
+<!-- CARD 5 -->
+<div class="col-12">
+<div class="card text-center form-card">
+<h6>Meter Replacement</h6>
+
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSe9LFVQDjqmYPp3t3UnfAw_MWIDhTMXPA5MoslFTlDSof3oAA/viewform" class="icon-top-btn btn5 form-link">
+<i class="fas fa-bolt"></i>
+<span>Open Form</span>
+</a>
+
+<div class="btn-loading"><span></span></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<footer class="text-center mt-4">
+Created by Dhananjay Roy © 2026
+</footer>
+
+<script>
+
+/* CLOCK */
+function updateClock(){
+let now=new Date();
+document.getElementById("liveClock").innerHTML=now.toLocaleTimeString();
+}
+setInterval(updateClock,1000);
+
+/* LOADING */
+document.querySelectorAll(".form-link").forEach(link=>{
+link.addEventListener("click",function(e){
+e.preventDefault();
+
+let load=this.nextElementSibling;
+let bar=load.querySelector("span");
+
+load.style.display="block";
+setTimeout(()=>{bar.style.width="100%"},500);
+
+setTimeout(()=>{window.location=this.href},800);
+});
+});
+
+</script>
+
+</body>
+</html>
