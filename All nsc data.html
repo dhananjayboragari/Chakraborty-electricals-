@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clean Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+
+<style>
+body{font-family:Arial;background:#eef2f7;padding:15px;}
+
+.top-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+select,input{padding:8px;}
+
+#loading{text-align:center;margin:10px;}
+
+table{width:100%;border-collapse:collapse;background:#fff;}
+th,td{border:1px solid #ddd;padding:8px;}
+th{background:#007bff;color:#fff;}
+
+.card{display:none;background:#fff;margin-bottom:10px;padding:10px;border-radius:10px;}
+
+.pagination{text-align:center;margin-top:10px;}
+button{padding:6px 10px;margin:3px;}
+
+.active-page{
+background:#007bff;
+color:#fff;
+padding:5px 10px;
+border-radius:5px;
+}
+
+@media(max-width:600px){
+table{display:none;}
+.card{display:block;}
+}
+</style>
+</head>
+
+<body>
+
+<h3>📊 Chakraborty Electricals Dashboard</h3>
+
+<div class="top-bar">
+<select id="sheetSelect">
+<option value="">Select Sheet</option>
+
+<option value="https://docs.google.com/spreadsheets/d/1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU/export?format=csv&gid=264900835">Sheet 1</option>
+<option value="https://docs.google.com/spreadsheets/d/1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU/export?format=csv&gid=116424373">Sheet 2</option>
+<option value="https://docs.google.com/spreadsheets/d/1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU/export?format=csv&gid=1213851809">Sheet 3</option>
+<option value="https://docs.google.com/spreadsheets/d/1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU/export?format=csv&gid=1118160130">Sheet 4</option>
+<option value="https://docs.google.com/spreadsheets/d/1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU/export?format=csv&gid=958261813">Sheet 5</option>
+<option value="https://docs.google.com/spreadsheets/d/1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU/export?format=csv&gid=472361380">Sheet 6</option>
+<option value="https://docs.google.com/spreadsheets/d/1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU/export?format=csv&gid=758369984">Sheet 7</option>
+
+</select>
+
+<input type="text" id="search" placeholder="Search...">
+
+<select id="pageSize">
+<option value="20">20</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+
+<div id="loading"></div>
+
+<div id="tableData"></div>
+<div id="cardData"></div>
+
+<div class="pagination" id="pagination"></div>
+
+<script>
+let originalData=[], filteredData=[];
+let currentPage=1;
+let rowsPerPage=20;
+
+document.getElementById("sheetSelect").addEventListener("change", loadData);
+document.getElementById("search").addEventListener("input", filterData);
+document.getElementById("pageSize").addEventListener("change", e=>{
+rowsPerPage=parseInt(e.target.value);
+currentPage=1;
+displayData();
+});
+
+function loadData(){
+let url=document.getElementById("sheetSelect").value;
+if(!url) return;
+
+document.getElementById("loading").innerHTML="⏳ Loading...";
+
+fetch(url)
+.then(res => res.text())
+.then(csv => {
+Papa.parse(csv,{
+skipEmptyLines:true,
+complete:function(res){
+originalData=res.data;
+filteredData=res.data;
+currentPage=1;
+document.getElementById("loading").innerHTML="";
+displayData();
+}
+});
+})
+.catch(err=>{
+document.getElementById("loading").innerHTML="❌ Load Failed";
+console.log(err);
+});
+}
+
+function displayData(){
+let start=(currentPage-1)*rowsPerPage;
+let end=start+rowsPerPage;
+let pageData=filteredData.slice(start,end);
+
+let table="<table>";
+pageData.forEach((row,i)=>{
+table+="<tr>";
+row.forEach(col=>{
+table+=i===0?"<th>"+col+"</th>":"<td>"+(col||"")+"</td>";
+});
+table+="</tr>";
+});
+table+="</table>";
+document.getElementById("tableData").innerHTML=table;
+
+let cards="";
+let headers=filteredData[0];
+
+pageData.slice(1).forEach(row=>{
+cards+="<div class='card'>";
+row.forEach((col,i)=>{
+cards+=`<p><b>${headers[i]}:</b> ${col||""}</p>`;
+});
+cards+="</div>";
+});
+document.getElementById("cardData").innerHTML=cards;
+
+createPagination();
+}
+
+function createPagination(){
+let totalPages=Math.ceil(filteredData.length/rowsPerPage);
+
+let html=`
+<button onclick="prevPage()" ${currentPage==1?"disabled":""}>⬅️ Prev</button>
+
+<span class="active-page"> Page ${currentPage} / ${totalPages} </span>
+
+<button onclick="nextPage()" ${currentPage==totalPages?"disabled":""}>Next ➡️</button>
+`;
+
+document.getElementById("pagination").innerHTML=html;
+}
+
+function prevPage(){
+if(currentPage>1){
+currentPage--;
+displayData();
+}
+}
+
+function nextPage(){
+let totalPages=Math.ceil(filteredData.length/rowsPerPage);
+if(currentPage<totalPages){
+currentPage++;
+displayData();
+}
+}
+
+function filterData(){
+let val=document.getElementById("search").value.toLowerCase();
+
+filteredData=originalData.filter((row,i)=>{
+if(i===0) return true;
+return row.join(" ").toLowerCase().includes(val);
+});
+
+currentPage=1;
+displayData();
+}
+</script>
+
+</body>
+</html>
