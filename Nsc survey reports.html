@@ -111,6 +111,23 @@ td {
 @media(max-width:600px){
   table { font-size:12px; }
 }
+.date-box {
+  position: relative;
+}
+
+.date-box input {
+  padding-right: 35px;
+}
+
+.date-box::after {
+  content: "📅";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+  
 </style>
 </head>
 
@@ -120,7 +137,10 @@ td {
 
 <div class="controls">
   <input type="text" id="searchBox" placeholder="🔍 Search...">
+  <div class="date-box">
   <input type="date" id="filterDate">
+</div>
+  
 </div>
 
 <div class="table-box">
