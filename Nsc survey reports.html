@@ -11,7 +11,6 @@ body {
   background:#f5f5f5;
 }
 
-/* ✅ Header fix */
 .header {
   background:#2196F3;
   color:white;
@@ -19,10 +18,8 @@ body {
   text-align:center;
   font-size:20px;
   font-weight:bold;
-  margin:0;
 }
 
-/* Controls */
 .controls {
   display:flex;
   flex-wrap:wrap;
@@ -36,7 +33,6 @@ input {
   border-radius:6px;
 }
 
-/* Table box */
 .table-box {
   margin:10px;
   background:white;
@@ -46,7 +42,6 @@ input {
   box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Table */
 table {
   width:100%;
   border-collapse:collapse;
@@ -57,7 +52,6 @@ th, td {
   border:1px solid #ddd;
 }
 
-/* Sticky Header */
 th {
   position:sticky;
   top:0;
@@ -66,13 +60,10 @@ th {
   z-index:2;
 }
 
-/* ✅ Hover effect */
 tr:hover td {
   background:#f1f7ff;
-  transition:0.2s;
 }
 
-/* Text wrap */
 td {
   word-break:break-word;
   white-space:normal;
@@ -151,7 +142,6 @@ let originalData = [];
 let mediaList = [];
 let currentIndex = 0;
 
-/* CSV Parser */
 function parseCSV(text) {
   const rows = [];
   let row = [], col = '', insideQuote = false;
@@ -176,7 +166,6 @@ function parseCSV(text) {
   return rows;
 }
 
-/* Fetch */
 fetch(sheetURL)
 .then(res => res.text())
 .then(data => {
@@ -184,7 +173,6 @@ fetch(sheetURL)
   renderTable(originalData);
 });
 
-/* Render */
 function renderTable(data) {
   let table = "";
   mediaList = [];
@@ -203,115 +191,4 @@ function renderTable(data) {
 
           if(col.includes("youtu")){
             let id = col.includes("v=")?col.split("v=")[1].split("&")[0]:col.split("youtu.be/")[1];
-            let index = mediaList.length;
-            mediaList.push({type:"youtube",id:id});
-
-            content = `<div onclick="openModalByIndex(${index})" style="color:blue;cursor:pointer;">▶ Video</div>`;
-          }
-
-          else if(col.match(/\.(jpg|png|jpeg|webp|gif)/i)){
-            let index = mediaList.length;
-            mediaList.push({type:"image",src:col});
-
-            content = `<img src="${col}" onclick="openModalByIndex(${index})" style="width:60px;border-radius:6px;cursor:pointer;">`;
-          }
-
-          else {
-            content = `<a href="${col}" target="_blank" style="background:#2196F3;color:white;padding:5px 10px;border-radius:6px;text-decoration:none;">🔗 Open</a>`;
-          }
-        }
-
-        table += `<td>${content}</td>`;
-      }
-    });
-
-    table += "</tr>";
-  });
-
-  document.getElementById("dataTable").innerHTML = table;
-}
-
-/* Modal */
-function openModalByIndex(i){
-  currentIndex=i;
-  showMedia();
-  document.getElementById("mediaModal").style.display="flex";
-}
-
-function showMedia(){
-  let item=mediaList[currentIndex];
-  let html=item.type==="image"
-    ? `<img src="${item.src}">`
-    : `<iframe src="https://www.youtube.com/embed/${item.id}" frameborder="0" allowfullscreen></iframe>`;
-  document.getElementById("modalContent").innerHTML=html;
-}
-
-function closeModal(){
-  document.getElementById("mediaModal").style.display="none";
-}
-
-function nextMedia(){
-  currentIndex=(currentIndex+1)%mediaList.length;
-  showMedia();
-}
-
-function prevMedia(){
-  currentIndex=(currentIndex-1+mediaList.length)%mediaList.length;
-  showMedia();
-}
-
-/* Date Parser (fixed) */
-function parseDate(str){
-  if(!str) return null;
-  str=str.trim();
-
-  if(/^\d{4}-\d{2}-\d{2}/.test(str)) return new Date(str);
-
-  if(str.includes("/")){
-    let p=str.split("/");
-    let d=parseInt(p[0]), m=parseInt(p[1]), y=parseInt(p[2]);
-    if(d>12) return new Date(y,m-1,d);
-    else return new Date(y,d-1,m);
-  }
-
-  if(str.includes("-")){
-    let p=str.split("-");
-    return new Date(p[2],p[1]-1,p[0]);
-  }
-
-  let d=new Date(str);
-  return isNaN(d)?null:d;
-}
-
-/* Filter */
-document.getElementById("searchBox").addEventListener("input",filterData);
-document.getElementById("filterDate").addEventListener("change",filterData);
-
-function filterData(){
-  let search=document.getElementById("searchBox").value.toLowerCase();
-  let selected=document.getElementById("filterDate").value;
-
-  let header=originalData[0];
-  let dateIndex=header.findIndex(c=>c.toLowerCase().includes("survey issued date"));
-
-  let filtered=originalData.filter((row,i)=>{
-    if(i===0) return true;
-
-    let text=row.join(" ").toLowerCase().includes(search);
-
-    let dateOk=true;
-    if(selected && dateIndex!==-1){
-      let r=parseDate(row[dateIndex]);
-      let s=new Date(selected);
-      dateOk=r && r.toDateString()===s.toDateString();
-    }
-
-    return text && dateOk;
-  });
-
-  renderTable(filtered);
-}
-</script>
-
-</body>
-</html>
+            let index = media
