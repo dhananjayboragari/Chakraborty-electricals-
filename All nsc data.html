@@ -84,6 +84,14 @@ currentPage=1;
 displayData();
 });
 
+// ✅ ONLY ADD THIS FUNCTION
+function makeLinkClickable(text){
+if(!text) return "";
+return text.replace(/(https?:\/\/[^\s]+)/g, function(url){
+return '<a href="'+url+'" target="_blank">'+url+'</a>';
+});
+}
+
 function loadData(){
 let url=document.getElementById("sheetSelect").value;
 if(!url) return;
@@ -119,7 +127,8 @@ let table="<table>";
 pageData.forEach((row,i)=>{
 table+="<tr>";
 row.forEach(col=>{
-table+=i===0?"<th>"+col+"</th>":"<td>"+(col||"")+"</td>";
+let value = makeLinkClickable(col || "");
+table+=i===0?"<th>"+value+"</th>":"<td>"+value+"</td>";
 });
 table+="</tr>";
 });
@@ -132,7 +141,8 @@ let headers=filteredData[0];
 pageData.slice(1).forEach(row=>{
 cards+="<div class='card'>";
 row.forEach((col,i)=>{
-cards+=`<p><b>${headers[i]}:</b> ${col||""}</p>`;
+let value = makeLinkClickable(col || "");
+cards+=`<p><b>${headers[i]}:</b> ${value}</p>`;
 });
 cards+="</div>";
 });
