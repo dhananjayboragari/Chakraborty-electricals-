@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Sheet App</title>
+<style>
+body {font-family: Arial; margin:0; background:#f5f5f5;}
+.header {background:#2196F3; color:white; padding:15px; text-align:center; font-size:20px; font-weight:bold;}
+.controls {display:flex; flex-wrap:wrap; gap:10px; padding:10px;}
+input {padding:8px; border:1px solid #ccc; border-radius:6px;}
+.table-box {margin:10px; background:white; border-radius:10px; max-height:80vh; overflow:auto; box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+table {width:100%; border-collapse:collapse;}
+th, td {padding:10px; border:1px solid #ddd;}
+th {position:sticky; top:0; background:#4CAF50; color:white; z-index:2;}
+tr:hover td {background:#f1f7ff;}
+td {word-break:break-word; white-space:normal; max-width:200px;}
+.date-box {position:relative;}
+.date-box input {padding-right:35px;}
+.date-box::after {content:"📅"; position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none;}
+td img {width:60px; border-radius:6px; cursor:pointer;}
+a {background:#2196F3; color:white; padding:5px 10px; border-radius:6px; text-decoration:none;}
+@media(max-width:600px){table {font-size:12px;}}
+</style>
+</head>
+<body>
+
+<div class="header">📊 Chakraborty Electricals Meter Replace Dashboard</div>
+
+<div class="controls">
+  <div class="date-box">
+    <input type="date" id="filterDate">
+  </div>
+</div>
+
+<div class="table-box">
+  <table id="dataTable"></table>
+</div>
+
+<script>
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS1x7qupRdBzHQn71Qe2QSeE90t8Zf2etCYCEUNK3FgjY4nwc9CLsCeoRNbyYm_Eguo7f1FKpyfRBGd/pub?gid=1879015650&single=true&output=csv";
+let originalData = [];
+let hideIndexes = [];
+
+/* CSV Parser */
+function parseCSV(text){
+  const rows = [];
+  const lines = text.split(/\r?\n/).filter(l=>l.trim()!=='');
+  lines.forEach(line=>{
+    const row = [];
+    let value='', insideQuote=false;
+    for(let i=0;i<line.length;i++){
+      const char=line[i];
+      if(char==='"') insideQuote=!insideQuote;
+      else if(char===',' && !insideQuote){ row.push(value.trim()); value=''; }
+      else value+=char;
+    }
+    row.push(value.trim());
+    rows.push(row);
+  });
+  return rows;
+}
+
+/* Universal Date Parser */
+function parseAnyDate(str){
+  if(!str) return null;
+  str = str.trim();
+  // Try Date constructor first
+  let d = new Date(str);
+  if(!isNaN(d)) return d;
+  // Try dd/mm/yyyy or dd-mm-yyyy
+  let m1 = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if(m1) return new Date(`${m1[3]}-${m1[2]}-${m1[1]}`);
+  // Try mm/dd/yyyy
+  let m2 = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if(m2) return new Date(`${m2[3]}-${m2[1]}-${m2[2]}`);
+  return null;
+}
+
+/* Fetch CSV */
+fetch(sheetURL)
+.then(res=>res.text())
+.then(data=>{
+  originalData=parseCSV(data);
+  const header=originalData[0];
+  hideIndexes = header.map((h,i)=>{
+    if(!h) return;
+    const n=h.toLowerCase();
+    if(n.includes('timestamp') || n.includes('email address')) return i;
+  }).filter(i=>i!==undefined);
+  renderTable(originalData);
+});
+
+/* Render Table */
+function renderTable(data){
+  const table=document.getElementById('dataTable');
+  table.innerHTML='';
+  data.forEach((row,i)=>{
+    const tr=document.createElement('tr');
+    row.forEach((col,idx)=>{
+      if(hideIndexes.includes(idx)) return;
+      const cell=i===0 ? document.createElement('th') : document.createElement('td');
+      let content=col||'';
+      if(i!==0 && content.startsWith('http')){
+        if(content.match(/\.(jpg|jpeg|png|gif|webp)$/i)) content=`<img src="${content}">`;
+        else content=`<a href="${content}" target="_blank">🔗 Open</a>`;
+      }
+      cell.innerHTML=content;
+      tr.appendChild(cell);
+    });
+    table.appendChild(tr);
+  });
+}
+
+/* Date Filter */
+document.getElementById('filterDate').addEventListener('change', ()=>{
+  const selected=document.getElementById('filterDate').value;
+  const header=originalData[0];
+  const dateIndex=header.findIndex(c=>c && c.toLowerCase().includes('issue date'));
+  if(!selected || dateIndex===-1){ renderTable(originalData); return; }
+
+  const sDate=new Date(selected);
+  const filtered=[header];
+
+  for(let i=1;i<originalData.length;i++){
+    const row=originalData[i];
+    const rDate=parseAnyDate(row[dateIndex]);
+    if(rDate && rDate.toDateString()===sDate.toDateString()) filtered.push(row);
+  }
+
+  renderTable(filtered);
+});
+</script>
+
+</body>
+</html>
