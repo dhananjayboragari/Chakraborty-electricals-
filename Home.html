@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submission Page with Planets</title>
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  min-height:100vh;
+  overflow:hidden;
+  background:#0f2027;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start; 
+  padding-top:250px; /* Sun-এর নিচে buttons রাখতে adjust */
+  position:relative;
+}
+
+canvas#solarBg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+}
+
+.container{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  max-width:360px;
+  width:100%;
+  z-index:1;
+  position:relative;
+}
+
+.card-box{
+  position:relative;
+}
+
+.card-border{
+  padding:1.5px;
+  border-radius:20px;
+  background:linear-gradient(270deg,red,orange,yellow,green,cyan,blue,violet);
+  background-size:400% 400%;
+  animation:borderMove 12s linear infinite;
+}
+
+@keyframes borderMove{
+  0%{background-position:0%}
+  100%{background-position:400%}
+}
+
+.card-btn{
+  background:white;
+  border-radius:16px;
+  padding:18px;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-btn:active{
+  transform: scale(0.90);
+  box-shadow:0 2px 6px rgba(0,0,0,0.5);
+}
+
+.card-btn img{
+  width:55px;
+  margin-bottom:10px;
+}
+
+.card-btn h3{
+  margin:0;
+  font-size:15px;
+}
+
+.loader{
+  width:0%;
+  height:5px;
+  border-radius:5px;
+  margin-top:10px;
+  background:linear-gradient(90deg,#00ffcc,#ff00ff,#00ffcc);
+  background-size:200% 100%;
+  box-shadow:0 0 5px #00ffcc,0 0 10px #ff00ff;
+  animation:loaderFlash 1.2s linear infinite;
+  transition: width 0.1s linear, box-shadow 0.2s linear;
+  position:relative;
+  overflow:hidden;
+}
+
+.loader::after{
+  content:"";
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle, rgba(255,255,255,0.2), transparent);
+  animation:smoke 1.5s linear infinite;
+}
+
+@keyframes loaderFlash{
+  0%{background-position:0%}
+  100%{background-position:200%}
+}
+
+@keyframes smoke{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}
+}
+
+a{text-decoration:none; color:black; display:block;}
+</style>
+</head>
+<body>
+
+<canvas id="solarBg"></canvas>
+
+<div class="container">
+
+  <div class="card-box">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfPDJCc6WFasOdEVKTlv2MOEPw5O4u_2mMquTvfMh0FoFuKoA/viewform?vc=0&c=0&w=1&flr=0" onclick="startLoad(event,this)">
+      <div class="card-border">
+        <div class="card-btn">
+          <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png">
+          <h3>MAINTENANCE SURVEY SUBMISSION</h3>
+        </div>
+      </div>
+      <div class="loader"></div>
+    </a>
+  </div>
+
+  <div class="card-box">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdE1kctTAAPxyYRIf4z78__6dhLRMeNXbfIJHOlUEEflBMWYg/viewform" onclick="startLoad(event,this)">
+      <div class="card-border">
+        <div class="card-btn">
+          <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png">
+          <h3>MAINTENANCE COMPLETION</h3>
+        </div>
+      </div>
+      <div class="loader"></div>
+    </a>
+  </div>
+
+</div>
+
+<script>
+// Button Loader
+function startLoad(e, el){
+  e.preventDefault();
+  let loader = el.querySelector(".loader");
+  let width = 0;
+
+  let iframe = document.createElement("iframe");
+  iframe.src = el.href;
+  iframe.style.display = "none";
+  document.body.appendChild(iframe);
+
+  let run = setInterval(()=>{
+    if(width < 60) width += 0.8;
+    else if(width < 85) width += 0.3;
+    else if(width < 90) width += 0.15;
+    else if(width < 95) width += 0.05;
+
+    loader.style.width = width + "%";
+  },120);
+
+  iframe.onload = function(){
+    clearInterval(run);
+    loader.style.width = "100%";
+    window.location.href = el.href;
+    iframe.remove();
+  }
+}
+
+// Solar Background with Orbiting Planets
+const canvas = document.getElementById("solarBg");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Stars
+let stars = [];
+for(let i=0;i<200;i++){
+  stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, speed: Math.random()*0.05+0.02});
+}
+
+// Sun
+let sun = { x: canvas.width/2, y: 100, r: 80 };
+
+// Planets
+let planets = [
+  { r: 8, distance: 130, angle: Math.random()*Math.PI*2, speed:0.005, color:"#FF4500"},
+  { r: 12, distance: 180, angle: Math.random()*Math.PI*2, speed:0.003, color:"#1E90FF"},
+  { r: 6, distance: 220, angle: Math.random()*Math.PI*2, speed:0.007, color:"#32CD32"}
+];
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Sun
+  let grad = ctx.createRadialGradient(sun.x,sun.y,0,sun.x,sun.y,sun.r);
+  grad.addColorStop(0,"#FFD700");
+  grad.addColorStop(0.6,"#FF8C00");
+  grad.addColorStop(1,"transparent");
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(sun.x,sun.y,sun.r,0,Math.PI*2);
+  ctx.fill();
+
+  // Sun Rays
+  for(let i=0;i<20;i++){
+    let angle = Date.now()/1000 + i*Math.PI/10;
+    ctx.strokeStyle = `rgba(255,215,0,0.08)`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(sun.x,sun.y);
+    ctx.lineTo(sun.x + Math.cos(angle)*150, sun.y + Math.sin(angle)*150);
+    ctx.stroke();
+  }
+
+  // Planets
+  planets.forEach(p=>{
+    p.angle += p.speed;
+    let px = sun.x + Math.cos(p.angle)*p.distance;
+    let py = sun.y + Math.sin(p.angle)*p.distance;
+
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(px, py, p.r, 0, Math.PI*2);
+    ctx.fill();
+
+    // Orbit path
+    ctx.strokeStyle="rgba(255,255,255,0.05)";
+    ctx.beginPath();
+    ctx.arc(sun.x,sun.y,p.distance,0,Math.PI*2);
+    ctx.stroke();
+  });
+
+  // Stars
+  stars.forEach(s=>{
+    s.x += s.speed;
+    if(s.x>canvas.width) s.x=0;
+    ctx.fillStyle="white";
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+window.addEventListener("resize", ()=>{
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  sun.x = canvas.width/2;
+});
+</script>
+</body>
+</html
