@@ -3,126 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Office Login</title>
+<title>Secure Login</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-*{box-sizing:border-box;}
 body{
   margin:0;
-  font-family:'Segoe UI';
+  font-family:Segoe UI;
   background:#eef2f7;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
 }
-
 .card{
   background:#fff;
   padding:30px;
   width:90%;
   max-width:360px;
   border-radius:16px;
-  box-shadow:0 15px 30px rgba(0,0,0,0.1);
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
   text-align:center;
 }
-
 .icon-box{
   width:70px;height:70px;
   background:#007bff;
   border-radius:50%;
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   margin:auto;
 }
 .icon-box i{color:#fff;font-size:28px;}
-
-.company{
-  margin-top:10px;
-  margin-bottom:5px;
-  color:#007bff;
-  font-weight:600;
-  letter-spacing:1px;
-}
-
+.company{color:#007bff;margin:10px 0;}
 .input-box{position:relative;margin:12px 0;}
-
-.left{
-  position:absolute;
-  left:10px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#888;
-}
-
-.right{
-  position:absolute;
-  right:10px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
-  color:#888;
-}
-
-input{
-  width:100%;
-  padding:12px 40px;
-  border:1px solid #ccc;
-  border-radius:8px;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  background:#007bff;
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-button.loading{
-  opacity:0.7;
-  pointer-events:none;
-}
-
-.msg{
-  font-size:14px;
-  margin-top:10px;
-}
-
-.success{color:green;}
-.error{color:red;}
-
-.remember{
-  text-align:left;
-  font-size:14px;
-}
-
-.link{
-  display:block;
-  margin-top:10px;
-  color:#007bff;
-  cursor:pointer;
-  font-size:14px;
-}
+.left{position:absolute;left:10px;top:50%;transform:translateY(-50%);}
+.right{position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;}
+input{width:100%;padding:12px 40px;border:1px solid #ccc;border-radius:8px;}
+button{width:100%;padding:12px;background:#007bff;color:#fff;border:none;border-radius:8px;}
+.msg{margin-top:10px;}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-
-<div class="icon-box">
-<i class="fas fa-user"></i>
-</div>
-
-<div class="company">
-M/S Chakraborty Electricals
-</div>
+<div class="icon-box"><i class="fas fa-user"></i></div>
+<div class="company">M/S Chakraborty Electricals</div>
 
 <h2>Login</h2>
 
@@ -137,95 +65,115 @@ M/S Chakraborty Electricals
 <i class="fas fa-eye right" onclick="togglePassword()"></i>
 </div>
 
-<div class="remember">
-<input type="checkbox" id="remember"> Remember Me
-</div>
+<label><input type="checkbox" id="remember"> Remember Me</label>
 
-<button id="btn" onclick="login()">Login</button>
+<button onclick="login()">Login</button>
 
 <div id="msg" class="msg"></div>
-
-<span class="link" onclick="location.href='signup.html'">Create Account</span>
-<span class="link" onclick="location.href='forgot.html'">Forgot Password?</span>
-
 </div>
 
-<!-- 👁 Toggle -->
 <script>
+// 👁 Toggle
 function togglePassword(){
 let p=document.getElementById("password");
-let icon=document.querySelector(".right");
-
-if(p.type==="password"){
-  p.type="text";
-  icon.classList.replace("fa-eye","fa-eye-slash");
-}else{
-  p.type="password";
-  icon.classList.replace("fa-eye-slash","fa-eye");
+p.type = p.type==="password" ? "text":"password";
 }
-}
-</script>
 
-<!-- 🔥 Remember Me Load -->
-<script>
+// 🔐 Crypto Encrypt
+async function encrypt(text){
+const enc = new TextEncoder().encode(text);
+const key = await crypto.subtle.generateKey(
+  {name:"AES-GCM",length:256},
+  true,
+  ["encrypt","decrypt"]
+);
+const iv = crypto.getRandomValues(new Uint8Array(12));
+const encrypted = await crypto.subtle.encrypt({name:"AES-GCM",iv},key,enc);
+
+return {
+  data: Array.from(new Uint8Array(encrypted)),
+  iv: Array.from(iv)
+};
+}
+
+// 🔓 Decrypt
+async function decrypt(data,iv,key){
+const decrypted = await crypto.subtle.decrypt(
+  {name:"AES-GCM",iv:new Uint8Array(iv)},
+  key,
+  new Uint8Array(data)
+);
+return new TextDecoder().decode(decrypted);
+}
+
+// 🖥️ Device ID
+function getDeviceID(){
+let id = localStorage.getItem("deviceID");
+if(!id){
+  id = "DEV-"+Math.random().toString(36).substr(2,9);
+  localStorage.setItem("deviceID",id);
+}
+return id;
+}
+
+// 🔥 Load
 window.onload = function(){
-let saved = localStorage.getItem("user");
-
-if(saved){
-  document.getElementById("email").value = saved;
+let email = localStorage.getItem("user");
+if(email){
+  document.getElementById("email").value = email;
   document.getElementById("remember").checked = true;
 }
 }
+
+// ⌨ Enter Login
+document.addEventListener("keypress",(e)=>{
+if(e.key==="Enter") login();
+});
 </script>
 
-<!-- 🔐 Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
-  authDomain: "chakraborty-ele-login.firebaseapp.com",
-  projectId: "chakraborty-ele-login"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-
-// 🔥 Auto login redirect
-onAuthStateChanged(auth, (user) => {
-  if(user){
-    window.location.href = "home.html";
-  }
+const app = initializeApp({
+  apiKey:"AIzaSy...",
+  authDomain:"chakraborty-ele-login.firebaseapp.com"
 });
 
-// 🔥 Login
-window.login = function(){
-let btn=document.getElementById("btn");
-let msg=document.getElementById("msg");
+const auth = getAuth();
 
-btn.classList.add("loading");
+// 🔥 Login
+window.login = async function(){
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
+let msg = document.getElementById("msg");
+
 msg.innerHTML="⏳ Logging in...";
 
-signInWithEmailAndPassword(auth,email.value,password.value)
-.then(()=>{
-msg.innerHTML="✅ Login Success";
-msg.className="msg success";
+try{
+await signInWithEmailAndPassword(auth,email,password);
 
-// ✅ Remember Me Save
-if(document.getElementById("remember").checked){
-  localStorage.setItem("user",email.value);
-}else{
-  localStorage.removeItem("user");
+// 🖥️ Device Check
+let device = getDeviceID();
+let savedDevice = localStorage.getItem("lastDevice");
+
+if(savedDevice && savedDevice !== device){
+  alert("⚠️ New Device Detected!");
 }
 
+localStorage.setItem("lastDevice",device);
+
+// 🔐 Remember
+if(document.getElementById("remember").checked){
+  localStorage.setItem("user",email);
+}
+
+msg.innerHTML="✅ Login Success";
 setTimeout(()=>location.href="home.html",1000);
-})
-.catch(e=>{
+
+}catch(e){
 msg.innerHTML="❌ "+e.message;
-msg.className="msg error";
-})
-.finally(()=>btn.classList.remove("loading"));
+}
 }
 </script>
 
