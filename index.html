@@ -46,7 +46,6 @@ body{
   color:#007bff;
   font-weight:600;
   letter-spacing:1px;
-  font-size:16px;
 }
 
 .input-box{position:relative;margin:12px 0;}
@@ -151,6 +150,7 @@ M/S Chakraborty Electricals
 
 </div>
 
+<!-- 👁 Toggle -->
 <script>
 function togglePassword(){
 let p=document.getElementById("password");
@@ -166,9 +166,22 @@ if(p.type==="password"){
 }
 </script>
 
+<!-- 🔥 Remember Me Load -->
+<script>
+window.onload = function(){
+let saved = localStorage.getItem("user");
+
+if(saved){
+  document.getElementById("email").value = saved;
+  document.getElementById("remember").checked = true;
+}
+}
+</script>
+
+<!-- 🔐 Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
@@ -179,6 +192,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 
+// 🔥 Auto login redirect
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    window.location.href = "home.html";
+  }
+});
+
+// 🔥 Login
 window.login = function(){
 let btn=document.getElementById("btn");
 let msg=document.getElementById("msg");
@@ -191,8 +212,11 @@ signInWithEmailAndPassword(auth,email.value,password.value)
 msg.innerHTML="✅ Login Success";
 msg.className="msg success";
 
+// ✅ Remember Me Save
 if(document.getElementById("remember").checked){
-localStorage.setItem("user",email.value);
+  localStorage.setItem("user",email.value);
+}else{
+  localStorage.removeItem("user");
 }
 
 setTimeout(()=>location.href="home.html",1000);
