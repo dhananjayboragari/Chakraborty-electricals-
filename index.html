@@ -3,47 +3,103 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Chakraborty Electricals</title>
+<title>Office Login</title>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-body {
+*{box-sizing:border-box;}
+body{
   margin:0;
-  font-family:Arial;
+  font-family:'Segoe UI';
+  background:#eef2f7;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
-  background:#f5f5f5;
 }
 
-.card {
-  width:350px;
-  padding:30px;
+.card{
   background:#fff;
-  border-radius:15px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+  padding:30px;
+  width:90%;
+  max-width:360px;
+  border-radius:16px;
+  box-shadow:0 15px 30px rgba(0,0,0,0.1);
   text-align:center;
 }
 
-input {
-  width:100%;
-  padding:12px;
-  margin:10px 0;
+.icon-box{
+  width:70px;height:70px;
+  background:#007bff;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:auto;
+}
+.icon-box i{color:#fff;font-size:28px;}
+
+.input-box{position:relative;margin:12px 0;}
+
+.left{
+  position:absolute;
+  left:10px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#888;
 }
 
-button {
+.right{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  color:#888;
+}
+
+input{
+  width:100%;
+  padding:12px 40px;
+  border:1px solid #ccc;
+  border-radius:8px;
+}
+
+button{
   width:100%;
   padding:12px;
-  margin-top:10px;
+  background:#007bff;
+  color:#fff;
+  border:none;
+  border-radius:8px;
   cursor:pointer;
 }
 
-#msg {
+button.loading{
+  opacity:0.7;
+  pointer-events:none;
+}
+
+.msg{
+  font-size:14px;
   margin-top:10px;
-  color:red;
+}
+
+.success{color:green;}
+.error{color:red;}
+
+.remember{
+  text-align:left;
+  font-size:14px;
+}
+
+.link{
+  display:block;
+  margin-top:10px;
+  color:#007bff;
+  cursor:pointer;
+  font-size:14px;
 }
 </style>
 </head>
@@ -51,86 +107,85 @@ button {
 <body>
 
 <div class="card">
-  <h2>Chakraborty Electricals</h2>
 
-  <input type="email" id="email" placeholder="Enter Email">
-  <input type="password" id="password" placeholder="Enter Password">
+<div class="icon-box"><i class="fas fa-user"></i></div>
+<h2>Login</h2>
 
-  <button onclick="signup()">Sign Up</button>
-  <button onclick="login()">Login</button>
-  <button onclick="resetPassword()">Forgot Password</button>
+<div class="input-box">
+<i class="fas fa-envelope left"></i>
+<input id="email" placeholder="Email">
+</div>
 
-  <p id="msg"></p>
+<div class="input-box">
+<i class="fas fa-lock left"></i>
+<input id="password" type="password" placeholder="Password">
+<i class="fas fa-eye right" onclick="togglePassword()"></i>
+</div>
+
+<div class="remember">
+<input type="checkbox" id="remember"> Remember Me
+</div>
+
+<button id="btn" onclick="login()">Login</button>
+
+<div id="msg" class="msg"></div>
+
+<span class="link" onclick="location.href='signup.html'">Create Account</span>
+<span class="link" onclick="location.href='forgot.html'">Forgot Password?</span>
+
 </div>
 
 <script>
-// 🔥 তোমার Firebase Config
+function togglePassword(){
+let p=document.getElementById("password");
+let icon=document.querySelector(".right");
+
+if(p.type==="password"){
+  p.type="text";
+  icon.classList.replace("fa-eye","fa-eye-slash");
+}else{
+  p.type="password";
+  icon.classList.replace("fa-eye-slash","fa-eye");
+}
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
   authDomain: "chakraborty-ele-login.firebaseapp.com",
-  projectId: "chakraborty-ele-login",
-  storageBucket: "chakraborty-ele-login.firebasestorage.app",
-  messagingSenderId: "414542805581",
-  appId: "1:414542805581:web:cfd13593767abbb51cba04"
+  projectId: "chakraborty-ele-login"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
 
-// ✅ Signup
-function signup(){
-  const email = emailInput();
-  const pass = passInput();
+window.login = function(){
+let btn=document.getElementById("btn");
+let msg=document.getElementById("msg");
 
-  auth.createUserWithEmailAndPassword(email, pass)
-  .then((userCredential)=>{
-    userCredential.user.sendEmailVerification();
-    showMsg("Signup done! Check email 📧");
-  })
-  .catch(err=>showMsg(err.message));
+btn.classList.add("loading");
+msg.innerHTML="⏳ Logging in...";
+
+signInWithEmailAndPassword(auth,email.value,password.value)
+.then(()=>{
+msg.innerHTML="✅ Login Success";
+msg.className="msg success";
+
+if(document.getElementById("remember").checked){
+localStorage.setItem("user",email.value);
 }
 
-// ✅ Login
-function login(){
-  const email = emailInput();
-  const pass = passInput();
-
-  auth.signInWithEmailAndPassword(email, pass)
-  .then((userCredential)=>{
-    if(userCredential.user.emailVerified){
-      window.location.href="home.html";
-    }else{
-      showMsg("Verify your email first ❗");
-    }
-  })
-  .catch(err=>showMsg(err.message));
-}
-
-// ✅ Reset Password
-function resetPassword(){
-  const email = emailInput();
-
-  auth.sendPasswordResetEmail(email)
-  .then(()=>showMsg("Reset link sent 📩"))
-  .catch(err=>showMsg(err.message));
-}
-
-// 🔄 Auto Login Redirect
-auth.onAuthStateChanged((user)=>{
-  if(user && user.emailVerified){
-    window.location.href="home.html";
-  }
-});
-
-// 🔧 Helpers
-function emailInput(){
-  return document.getElementById('email').value.trim();
-}
-function passInput(){
-  return document.getElementById('password').value.trim();
-}
-function showMsg(msg){
-  document.getElementById('msg').innerText = msg;
+setTimeout(()=>location.href="home.html",1000);
+})
+.catch(e=>{
+msg.innerHTML="❌ "+e.message;
+msg.className="msg error";
+})
+.finally(()=>btn.classList.remove("loading"));
 }
 </script>
 
