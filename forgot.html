@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reset Password</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{box-sizing:border-box;}
+body{font-family:sans-serif;background:#eef2f7;display:flex;justify-content:center;align-items:center;height:100vh;}
+
+.card{background:#fff;padding:30px;width:90%;max-width:360px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.1);text-align:center;}
+
+.input-box{position:relative;margin:12px 0;}
+.left{position:absolute;left:10px;top:50%;transform:translateY(-50%);}
+
+input{width:100%;padding:12px 40px;border:1px solid #ccc;border-radius:8px;}
+
+button{width:100%;padding:12px;background:#007bff;color:#fff;border:none;border-radius:8px;}
+
+.msg{margin-top:10px;font-size:14px;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>Reset Password</h2>
+
+<div class="input-box">
+<i class="fas fa-envelope left"></i>
+<input id="email" placeholder="Enter Email">
+</div>
+
+<button onclick="reset()">Send Reset Link</button>
+
+<div id="msg" class="msg"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+authDomain:"chakraborty-ele-login.firebaseapp.com",
+projectId:"chakraborty-ele-login"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth();
+
+window.reset=function(){
+let msg=document.getElementById("msg");
+
+sendPasswordResetEmail(auth,email.value)
+.then(()=>msg.innerHTML="✅ Check your email")
+.catch(e=>msg.innerHTML="❌ "+e.message);
+}
+</script>
+
+</body>
+</html>
