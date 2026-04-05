@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Chakraborty Electricals</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:#f5f5f5;
+}
+
+.card {
+  width:350px;
+  padding:30px;
+  background:#fff;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+  text-align:center;
+}
+
+input {
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+}
+
+button {
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+#msg {
+  margin-top:10px;
+  color:red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Chakraborty Electricals</h2>
+
+  <input type="email" id="email" placeholder="Enter Email">
+  <input type="password" id="password" placeholder="Enter Password">
+
+  <button onclick="signup()">Sign Up</button>
+  <button onclick="login()">Login</button>
+  <button onclick="resetPassword()">Forgot Password</button>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+// 🔥 তোমার Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+  authDomain: "chakraborty-ele-login.firebaseapp.com",
+  projectId: "chakraborty-ele-login",
+  storageBucket: "chakraborty-ele-login.firebasestorage.app",
+  messagingSenderId: "414542805581",
+  appId: "1:414542805581:web:cfd13593767abbb51cba04"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// ✅ Signup
+function signup(){
+  const email = emailInput();
+  const pass = passInput();
+
+  auth.createUserWithEmailAndPassword(email, pass)
+  .then((userCredential)=>{
+    userCredential.user.sendEmailVerification();
+    showMsg("Signup done! Check email 📧");
+  })
+  .catch(err=>showMsg(err.message));
+}
+
+// ✅ Login
+function login(){
+  const email = emailInput();
+  const pass = passInput();
+
+  auth.signInWithEmailAndPassword(email, pass)
+  .then((userCredential)=>{
+    if(userCredential.user.emailVerified){
+      window.location.href="home.html";
+    }else{
+      showMsg("Verify your email first ❗");
+    }
+  })
+  .catch(err=>showMsg(err.message));
+}
+
+// ✅ Reset Password
+function resetPassword(){
+  const email = emailInput();
+
+  auth.sendPasswordResetEmail(email)
+  .then(()=>showMsg("Reset link sent 📩"))
+  .catch(err=>showMsg(err.message));
+}
+
+// 🔄 Auto Login Redirect
+auth.onAuthStateChanged((user)=>{
+  if(user && user.emailVerified){
+    window.location.href="home.html";
+  }
+});
+
+// 🔧 Helpers
+function emailInput(){
+  return document.getElementById('email').value.trim();
+}
+function passInput(){
+  return document.getElementById('password').value.trim();
+}
+function showMsg(msg){
+  document.getElementById('msg').innerText = msg;
+}
+</script>
+
+</body>
+</html>
