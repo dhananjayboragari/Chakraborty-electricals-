@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signup</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{box-sizing:border-box;}
+body{font-family:sans-serif;background:#eef2f7;display:flex;justify-content:center;align-items:center;height:100vh;}
+
+.card{background:#fff;padding:30px;width:90%;max-width:360px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.1);text-align:center;}
+
+.input-box{position:relative;margin:12px 0;}
+.left{position:absolute;left:10px;top:50%;transform:translateY(-50%);}
+.right{position:absolute;right:10px;top:50%;cursor:pointer;}
+
+input{width:100%;padding:12px 40px;border:1px solid #ccc;border-radius:8px;}
+
+button{width:100%;padding:12px;background:#007bff;color:#fff;border:none;border-radius:8px;}
+
+.msg{margin-top:10px;font-size:14px;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>Create Account</h2>
+
+<div class="input-box">
+<i class="fas fa-envelope left"></i>
+<input id="email" placeholder="Email">
+</div>
+
+<div class="input-box">
+<i class="fas fa-lock left"></i>
+<input id="password" type="password" placeholder="Password">
+<i class="fas fa-eye right" onclick="toggle1()"></i>
+</div>
+
+<div class="input-box">
+<i class="fas fa-lock left"></i>
+<input id="confirm" type="password" placeholder="Confirm Password">
+<i class="fas fa-eye right" onclick="toggle2()"></i>
+</div>
+
+<button onclick="signup()">Sign Up</button>
+
+<div id="msg" class="msg"></div>
+</div>
+
+<script>
+function toggle1(){
+let p=password; p.type=p.type==="password"?"text":"password";
+}
+function toggle2(){
+let p=confirm; p.type=p.type==="password"?"text":"password";
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+authDomain:"chakraborty-ele-login.firebaseapp.com",
+projectId:"chakraborty-ele-login"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth();
+
+window.signup=function(){
+let msg=document.getElementById("msg");
+
+if(password.value!==confirm.value){
+msg.innerHTML="❌ Password not match";
+return;
+}
+
+createUserWithEmailAndPassword(auth,email.value,password.value)
+.then(()=>{
+msg.innerHTML="✅ Account Created";
+setTimeout(()=>location="index.html",1000);
+})
+.catch(e=>msg.innerHTML="❌ "+e.message);
+}
+</script>
+
+</body>
+</html>
