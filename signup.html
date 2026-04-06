@@ -18,6 +18,7 @@ body{
   height:100vh;
 }
 .card{
+  position:relative;
   background: rgba(255,255,255,0.85);
   backdrop-filter: blur(10px);
   padding:30px 25px;
@@ -47,28 +48,32 @@ input:focus{border-color:#28a745;box-shadow:0 0 5px rgba(40,167,69,0.2);}
 button{width:100%;padding:14px;background:#28a745;color:#fff;border:none;border-radius:12px;font-size:16px;margin-top:12px;cursor:pointer;}
 button:hover{background:#218838;}
 .msg{margin-top:12px;font-size:14px;min-height:18px;}
-.success{color:green;}
-.error{color:red;}
 .link{display:block;margin-top:12px;color:#007bff;cursor:pointer;text-decoration:underline;}
 
-/* 🔥 Toast */
+/* 🔥 Center Popup */
 #toast{
-  position:fixed;
-  top:20px;
+  position:absolute;
+  top:50%;
   left:50%;
-  transform:translateX(-50%);
-  background:#333;
-  color:#fff;
-  padding:14px 20px;
-  border-radius:10px;
+  transform:translate(-50%,-50%);
+  background:#fff3cd;
+  color:#333;
+  padding:20px 18px;
+  border-radius:15px;
   font-size:14px;
-  opacity:0;
-  pointer-events:none;
-  transition:0.4s;
-  z-index:9999;
+  width:90%;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  display:none;
+  z-index:999;
+  text-align:left;
 }
-#toast.show{
-  opacity:1;
+#toast.show{display:block;}
+#toast .close-btn{
+  position:absolute;
+  top:8px;
+  right:10px;
+  cursor:pointer;
+  font-size:18px;
 }
 </style>
 </head>
@@ -101,10 +106,14 @@ button:hover{background:#218838;}
 
   <div id="msg" class="msg"></div>
   <span class="link" onclick="location.href='index.html'">Back to Login</span>
-</div>
 
-<!-- 🔥 Toast -->
-<div id="toast"></div>
+  <!-- 🔥 Popup -->
+  <div id="toast">
+    <span class="close-btn" onclick="closeToast()">&times;</span>
+    <div id="toastContent"></div>
+  </div>
+
+</div>
 
 <script>
 function toggle(id,icon){
@@ -118,16 +127,15 @@ function toggle(id,icon){
   }
 }
 
-// 🔥 Toast Function
-function showToast(message, color="#333"){
+function showToast(message){
   const toast = document.getElementById("toast");
-  toast.innerHTML = message;
-  toast.style.background = color;
+  const content = document.getElementById("toastContent");
+  content.innerHTML = message;
   toast.classList.add("show");
+}
 
-  setTimeout(()=>{
-    toast.classList.remove("show");
-  },4000);
+function closeToast(){
+  document.getElementById("toast").classList.remove("show");
 }
 </script>
 
@@ -149,7 +157,7 @@ window.signup = async function(){
   const conf=document.getElementById("confirm").value;
   const msg=document.getElementById("msg");
 
-  msg.style.color="red";
+  msg.innerHTML="";
 
   if(!email || !pass || !conf){
     msg.innerHTML="❌ All fields required";
@@ -172,15 +180,17 @@ window.signup = async function(){
 
     await sendEmailVerification(currentUser);
 
-    // 🔥 Toast Success Message
+    // 🔥 Popup Message
     showToast(
-      "✅ Account Created!<br>\
-      <i class='fas fa-envelope-open-text'></i> Check inbox or Spam folder.<br>\
-      <i class='fas fa-shield-alt'></i> Spam open করে \"Not Spam\" click করো → next time Inbox-এ আসবে",
-      "#28a745"
+      "✅ <b style='color:#28a745'>Account Created!</b><br>\
+      <i class='fas fa-envelope-open-text' style='color:#ff9800'></i> \
+      <span style='color:#555'>Check your inbox or spam folder.</span><br><br>\
+      <i class='fas fa-exclamation-circle' style='color:#dc3545'></i> \
+      <span style='color:#000'>Didn’t find the email?</span><br>\
+      👉 <span style='color:#007bff'>Spam open করো</span> → \
+      <b style='color:#dc3545'>\"Not Spam\"</b> click করো → \
+      <b style='color:#28a745'>Inbox</b>-এ আসবে"
     );
-
-    msg.innerHTML="";
 
   }catch(e){
     msg.innerHTML="❌ "+e.message;
