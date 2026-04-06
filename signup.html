@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create Account</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
 *{box-sizing:border-box;}
 body{
@@ -49,22 +50,49 @@ button:hover{background:#218838;}
 .success{color:green;}
 .error{color:red;}
 .link{display:block;margin-top:12px;color:#007bff;cursor:pointer;text-decoration:underline;}
+
+/* 🔥 Toast */
+#toast{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#333;
+  color:#fff;
+  padding:14px 20px;
+  border-radius:10px;
+  font-size:14px;
+  opacity:0;
+  pointer-events:none;
+  transition:0.4s;
+  z-index:9999;
+}
+#toast.show{
+  opacity:1;
+}
 </style>
 </head>
+
 <body>
+
 <div class="card">
   <div class="icon-box"><i class="fas fa-user-plus"></i></div>
   <div class="company">M/S Chakraborty Electricals</div>
   <h2>Create Account</h2>
 
-  <div class="input-box"><i class="fas fa-envelope left"></i>
+  <div class="input-box">
+    <i class="fas fa-envelope left"></i>
     <input id="email" placeholder="Email">
   </div>
-  <div class="input-box"><i class="fas fa-lock left"></i>
+
+  <div class="input-box">
+    <i class="fas fa-lock left"></i>
     <input id="password" type="password" placeholder="Password">
     <i class="fas fa-eye right" onclick="toggle('password',this)"></i>
   </div>
-  <div class="input-box"><i class="fas fa-lock left"></i>
+
+  <div class="input-box">
+    <i class="fas fa-lock left"></i>
     <input id="confirm" type="password" placeholder="Confirm Password">
     <i class="fas fa-eye right" onclick="toggle('confirm',this)"></i>
   </div>
@@ -75,11 +103,31 @@ button:hover{background:#218838;}
   <span class="link" onclick="location.href='index.html'">Back to Login</span>
 </div>
 
+<!-- 🔥 Toast -->
+<div id="toast"></div>
+
 <script>
 function toggle(id,icon){
   let p=document.getElementById(id);
-  if(p.type==="password"){p.type="text";icon.classList.replace("fa-eye","fa-eye-slash");}
-  else{p.type="password";icon.classList.replace("fa-eye-slash","fa-eye");}
+  if(p.type==="password"){
+    p.type="text";
+    icon.classList.replace("fa-eye","fa-eye-slash");
+  }else{
+    p.type="password";
+    icon.classList.replace("fa-eye-slash","fa-eye");
+  }
+}
+
+// 🔥 Toast Function
+function showToast(message, color="#333"){
+  const toast = document.getElementById("toast");
+  toast.innerHTML = message;
+  toast.style.background = color;
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },4000);
 }
 </script>
 
@@ -91,6 +139,7 @@ const app = initializeApp({
   apiKey:"AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
   authDomain:"chakraborty-ele-login.firebaseapp.com"
 });
+
 const auth = getAuth();
 let currentUser=null;
 
@@ -101,23 +150,43 @@ window.signup = async function(){
   const msg=document.getElementById("msg");
 
   msg.style.color="red";
-  if(!email || !pass || !conf){msg.innerHTML="❌ All fields required"; return;}
-  if(pass!==conf){msg.innerHTML="❌ Password not match"; return;}
-  if(pass.length<6){msg.innerHTML="❌ Password must be 6+ characters"; return;}
+
+  if(!email || !pass || !conf){
+    msg.innerHTML="❌ All fields required";
+    return;
+  }
+
+  if(pass!==conf){
+    msg.innerHTML="❌ Password not match";
+    return;
+  }
+
+  if(pass.length<6){
+    msg.innerHTML="❌ Password must be 6+ characters";
+    return;
+  }
 
   try{
     const userCredential = await createUserWithEmailAndPassword(auth,email,pass);
     currentUser = userCredential.user;
+
     await sendEmailVerification(currentUser);
 
-    msg.style.color="green";
-    msg.innerHTML="✅ Account Created! Check your inbox or spam folder for verification link.<br>📩 Didn’t find the email? Check Spam folder.<br>👉 Spam open করো \"Not Spam\" click করো → পরের বার Inbox-এ আসবে।";
+    // 🔥 Toast Success Message
+    showToast(
+      "✅ Account Created!<br>\
+      <i class='fas fa-envelope-open-text'></i> Check inbox or Spam folder.<br>\
+      <i class='fas fa-shield-alt'></i> Spam open করে \"Not Spam\" click করো → next time Inbox-এ আসবে",
+      "#28a745"
+    );
+
+    msg.innerHTML="";
 
   }catch(e){
-    console.log(e);
     msg.innerHTML="❌ "+e.message;
   }
 }
 </script>
+
 </body>
 </html>
