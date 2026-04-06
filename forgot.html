@@ -124,7 +124,7 @@ Enter your email to receive password reset link
 
 <div id="msg" class="msg"></div>
 
-<span class="link" onclick="location.href='index.html'">Back to Login</span>
+<br><span class="link" onclick="location.href='index.html'">Back to Login</span>
 
 </div>
 
@@ -161,7 +161,7 @@ msg.innerHTML="⏳ Sending reset link...";
 
 sendPasswordResetEmail(auth,email)
 .then(()=>{
-  msg.innerHTML="✅ Reset link sent! Check your email";
+  msg.innerHTML="✅ Reset link sent! Check your inbox or Spam folder for the Created new password";
   msg.className="msg success";
 })
 .catch(e=>{
