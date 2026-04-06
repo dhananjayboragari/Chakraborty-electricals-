@@ -4,31 +4,130 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Secure Login</title>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
 *{box-sizing:border-box;}
-body{margin:0;font-family:'Segoe UI';background:#eef2f7;display:flex;justify-content:center;align-items:center;height:100vh;}
-.card{background:#fff;padding:25px;width:90%;max-width:360px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.1);text-align:center;overflow:hidden;}
-.icon-box{width:70px;height:70px;background:#007bff;border-radius:50%;display:flex;justify-content:center;align-items:center;margin:0 auto 10px;}
+
+body{
+  margin:0;
+  font-family:'Segoe UI';
+  background:#eef2f7;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+/* ✅ CARD FIX */
+.card{
+  background:#fff;
+  padding:25px;
+  width:90%;
+  max-width:360px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  text-align:center;
+  overflow:hidden; /* FIX */
+}
+
+/* ICON */
+.icon-box{
+  width:70px;height:70px;
+  background:#007bff;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:0 auto 10px;
+}
 .icon-box i{color:#fff;font-size:28px;}
-.company{color:#007bff;font-weight:600;margin-bottom:10px;}
-.input-box{position:relative;width:100%;margin:12px 0;}
-.left{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#888;}
-.right{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#888;}
-input{width:100%;padding:12px 40px;border:1px solid #ccc;border-radius:8px;outline:none;font-size:14px;}
-button{width:100%;padding:12px;background:#007bff;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;}
+
+.company{
+  color:#007bff;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+/* INPUT BOX FIX */
+.input-box{
+  position:relative;
+  width:100%;
+  margin:12px 0;
+}
+
+/* ICON LEFT */
+.left{
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#888;
+}
+
+/* ICON RIGHT */
+.right{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  color:#888;
+}
+
+/* INPUT FIX */
+input{
+  width:100%;
+  padding:12px 40px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  outline:none;
+  font-size:14px;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:12px;
+  background:#007bff;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:10px;
+}
+
 .msg{margin-top:10px;font-size:14px;}
 .success{color:green;}
 .error{color:red;}
-.remember{text-align:left;font-size:14px;margin-top:5px;}
-.link{display:block;margin-top:10px;color:#007bff;cursor:pointer;font-size:14px;}
+
+.remember{
+  text-align:left;
+  font-size:14px;
+  margin-top:5px;
+}
+
+.link{
+  display:block;
+  margin-top:10px;
+  color:#007bff;
+  cursor:pointer;
+  font-size:14px;
+}
 </style>
 </head>
 
 <body>
+
 <div class="card">
-<div class="icon-box"><i class="fas fa-user"></i></div>
+
+<div class="icon-box">
+<i class="fas fa-user"></i>
+</div>
+
 <div class="company">M/S Chakraborty Electricals</div>
+
 <h2>Login</h2>
 
 <div class="input-box">
@@ -47,38 +146,64 @@ button{width:100%;padding:12px;background:#007bff;color:#fff;border:none;border-
 </div>
 
 <button onclick="login()">Login</button>
+
 <div id="msg" class="msg"></div>
 
 <span class="link" onclick="location.href='signup.html'">Create Account</span>
 <span class="link" onclick="location.href='forgot.html'">Forgot Password?</span>
+
 </div>
 
+<!-- 👁 Toggle -->
 <script>
-// Toggle password
 function togglePassword(){
 let p=document.getElementById("password");
 let icon=document.querySelector(".right");
-if(p.type==="password"){p.type="text";icon.classList.replace("fa-eye","fa-eye-slash");}
-else{p.type="password";icon.classList.replace("fa-eye-slash","fa-eye");}
-}
 
-// Device ID
+if(p.type==="password"){
+  p.type="text";
+  icon.classList.replace("fa-eye","fa-eye-slash");
+}else{
+  p.type="password";
+  icon.classList.replace("fa-eye-slash","fa-eye");
+}
+}
+</script>
+
+<!-- 🖥️ Device -->
+<script>
 function getDeviceID(){
 let id = localStorage.getItem("deviceID");
-if(!id){id = "DEV-"+Math.random().toString(36).substr(2,9); localStorage.setItem("deviceID",id);}
+if(!id){
+  id = "DEV-"+Math.random().toString(36).substr(2,9);
+  localStorage.setItem("deviceID",id);
+}
 return id;
 }
+</script>
 
-// Remember Me load
+<!-- 🔥 Load -->
+<script>
 window.onload = function(){
 let email = localStorage.getItem("user");
-if(email){document.getElementById("email").value = email; document.getElementById("remember").checked = true;}
+if(email){
+  document.getElementById("email").value = email;
+  document.getElementById("remember").checked = true;
 }
+}
+</script>
 
-// Enter key login
-document.addEventListener("keydown", function(e){if(e.key==="Enter"){login();}});
+<!-- ⌨ Enter -->
+<script>
+document.addEventListener("keydown", function(e){
+if(e.key==="Enter"){
+  login();
+}
+});
+</script>
 
-// Firebase
+<!-- 🔐 Firebase -->
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -93,23 +218,36 @@ window.login = async function(){
 let email = document.getElementById("email").value;
 let password = document.getElementById("password").value;
 let msg = document.getElementById("msg");
+
 msg.innerHTML="⏳ Logging in...";
 
 try{
 await signInWithEmailAndPassword(auth,email,password);
 
+// 🖥️ Device check
 let device = getDeviceID();
 let last = localStorage.getItem("lastDevice");
-if(last && last !== device){alert("⚠️ New Device Detected!");}
+
+if(last && last !== device){
+  alert("⚠️ New Device Detected!");
+}
 localStorage.setItem("lastDevice",device);
 
-if(document.getElementById("remember").checked){localStorage.setItem("user",email);}
-else{localStorage.removeItem("user");}
+// Remember
+if(document.getElementById("remember").checked){
+  localStorage.setItem("user",email);
+}else{
+  localStorage.removeItem("user");
+}
 
 msg.innerHTML="✅ Login Success";
 setTimeout(()=>location.href="home.html",1000);
-}catch(e){msg.innerHTML="❌ "+e.message;}
+
+}catch(e){
+msg.innerHTML="❌ "+e.message;
+}
 }
 </script>
+
 </body>
 </html>
