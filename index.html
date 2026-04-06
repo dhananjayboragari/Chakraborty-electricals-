@@ -48,6 +48,7 @@ button{width:100%;padding:12px;background:#007bff;color:#fff;border:none;border-
 
 <button onclick="login()">Login</button>
 <div id="msg" class="msg"></div>
+
 <span class="link" onclick="location.href='signup.html'">Create Account</span>
 <span class="link" onclick="location.href='forgot.html'">Forgot Password?</span>
 </div>
@@ -68,7 +69,7 @@ if(!id){id = "DEV-"+Math.random().toString(36).substr(2,9); localStorage.setItem
 return id;
 }
 
-// Remember me load
+// Remember Me load
 window.onload = function(){
 let email = localStorage.getItem("user");
 if(email){document.getElementById("email").value = email; document.getElementById("remember").checked = true;}
