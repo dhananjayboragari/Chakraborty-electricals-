@@ -49,8 +49,6 @@ button:hover{background:#218838;}
 .success{color:green;}
 .error{color:red;}
 .link{display:block;margin-top:12px;color:#007bff;cursor:pointer;text-decoration:underline;}
-#resend{display:none;width:100%;padding:12px;margin-top:10px;border:none;border-radius:12px;background:#ffc107;color:#fff;cursor:pointer;}
-#resend:hover{background:#e0a800;}
 </style>
 </head>
 <body>
@@ -72,7 +70,7 @@ button:hover{background:#218838;}
   </div>
 
   <button onclick="signup()">Sign Up</button>
-  <button id="resend" onclick="resendEmail()">Resend Verification Email</button>
+
   <div id="msg" class="msg"></div>
   <span class="link" onclick="location.href='index.html'">Back to Login</span>
 </div>
@@ -101,7 +99,6 @@ window.signup = async function(){
   const pass=document.getElementById("password").value;
   const conf=document.getElementById("confirm").value;
   const msg=document.getElementById("msg");
-  const resendBtn=document.getElementById("resend");
 
   msg.style.color="red";
   if(!email || !pass || !conf){msg.innerHTML="❌ All fields required"; return;}
@@ -114,21 +111,11 @@ window.signup = async function(){
     await sendEmailVerification(currentUser);
 
     msg.style.color="green";
-    msg.innerHTML="✅ Account Created! Check your inbox or spam folder for verification link.";
-    resendBtn.style.display="block";
-
-    // ❌ Auto redirect removed
+    msg.innerHTML="✅ Account Created! Check your inbox or spam folder for verification link.<br>📩 Didn’t find the email? Check Spam folder.<br>👉 Spam open করো \"Not Spam\" click করো → পরের বার Inbox-এ আসবে।";
 
   }catch(e){
     console.log(e);
     msg.innerHTML="❌ "+e.message;
-  }
-}
-
-window.resendEmail = async function(){
-  if(currentUser){
-    await sendEmailVerification(currentUser);
-    alert("Verification email resent! Check inbox or spam folder.");
   }
 }
 </script>
