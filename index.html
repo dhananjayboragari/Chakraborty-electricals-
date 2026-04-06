@@ -9,115 +9,147 @@
 
 <style>
 *{box-sizing:border-box;}
-
 body{
   margin:0;
-  font-family:'Segoe UI';
-  background:#eef2f7;
+  font-family:'Segoe UI', sans-serif;
+  background:linear-gradient(135deg,#e0eafc,#cfdef3);
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
 }
 
-/* ✅ CARD FIX */
+/* Glassmorphism Card with subtle shadow */
 .card{
-  background:#fff;
-  padding:25px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center; /* vertical center for all content */
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  padding:30px 25px;
   width:90%;
   max-width:360px;
-  border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  border-radius:20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   text-align:center;
-  overflow:hidden; /* FIX */
+  transition:0.3s ease;
 }
 
-/* ICON */
+.card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+/* Icon */
 .icon-box{
-  width:70px;height:70px;
+  width:80px;height:80px;
   background:#007bff;
   border-radius:50%;
   display:flex;
   justify-content:center;
   align-items:center;
-  margin:0 auto 10px;
+  margin:0 auto 15px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
 }
-.icon-box i{color:#fff;font-size:28px;}
+.icon-box i{color:#fff;font-size:32px;}
 
 .company{
   color:#007bff;
   font-weight:600;
-  margin-bottom:10px;
+  margin-bottom:15px;
+  font-size:18px;
 }
 
-/* INPUT BOX FIX */
+/* Inputs */
 .input-box{
   position:relative;
   width:100%;
-  margin:12px 0;
+  margin:10px 0;
 }
 
-/* ICON LEFT */
-.left{
+.left, .right{
   position:absolute;
-  left:12px;
   top:50%;
   transform:translateY(-50%);
   color:#888;
 }
 
-/* ICON RIGHT */
-.right{
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
-  color:#888;
-}
+.left{ left:12px; }
+.right{ right:12px; cursor:pointer; }
 
-/* INPUT FIX */
 input{
   width:100%;
-  padding:12px 40px;
+  padding:14px 45px;
   border:1px solid #ccc;
-  border-radius:8px;
+  border-radius:12px;
   outline:none;
-  font-size:14px;
+  font-size:15px;
+  transition:0.2s;
 }
 
-/* BUTTON */
+input:focus{
+  border-color:#007bff;
+  box-shadow:0 0 5px rgba(0,123,255,0.2);
+}
+
+/* Button */
 button{
   width:100%;
-  padding:12px;
+  padding:14px;
   background:#007bff;
   color:#fff;
   border:none;
-  border-radius:8px;
+  border-radius:12px;
   cursor:pointer;
-  margin-top:10px;
+  font-size:16px;
+  margin-top:12px;
+  transition:0.3s;
 }
 
-.msg{margin-top:10px;font-size:14px;}
+button:hover{
+  background:#0056b3;
+}
+
+/* Messages */
+.msg{
+  margin-top:12px;
+  font-size:14px;
+  min-height:18px;
+}
 .success{color:green;}
 .error{color:red;}
 
+/* Checkbox fix */
 .remember{
-  text-align:left;
+  display:flex;
+  align-items:center;
   font-size:14px;
-  margin-top:5px;
+  margin-top:12px;
+}
+.remember input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  margin:0 8px 0 0;
+  vertical-align:middle;
+  cursor:pointer;
+  transition:none;
+}
+.remember input[type="checkbox"]:focus{
+  outline:none;
+  box-shadow:none;
 }
 
 .link{
   display:block;
-  margin-top:10px;
+  margin-top:12px;
   color:#007bff;
   cursor:pointer;
   font-size:14px;
+  text-decoration:underline;
 }
 </style>
 </head>
-
 <body>
 
 <div class="card">
@@ -154,55 +186,36 @@ button{
 
 </div>
 
-<!-- 👁 Toggle -->
 <script>
 function togglePassword(){
-let p=document.getElementById("password");
-let icon=document.querySelector(".right");
+  let p=document.getElementById("password");
+  let icon=document.querySelector(".right");
+  if(p.type==="password"){
+    p.type="text";
+    icon.classList.replace("fa-eye","fa-eye-slash");
+  }else{
+    p.type="password";
+    icon.classList.replace("fa-eye-slash","fa-eye");
+  }
+}
 
-if(p.type==="password"){
-  p.type="text";
-  icon.classList.replace("fa-eye","fa-eye-slash");
-}else{
-  p.type="password";
-  icon.classList.replace("fa-eye-slash","fa-eye");
-}
-}
-</script>
-
-<!-- 🖥️ Device -->
-<script>
-function getDeviceID(){
-let id = localStorage.getItem("deviceID");
-if(!id){
-  id = "DEV-"+Math.random().toString(36).substr(2,9);
-  localStorage.setItem("deviceID",id);
-}
-return id;
-}
-</script>
-
-<!-- 🔥 Load -->
-<script>
+// Auto-fill Remembered Email
 window.onload = function(){
-let email = localStorage.getItem("user");
-if(email){
-  document.getElementById("email").value = email;
-  document.getElementById("remember").checked = true;
+  let email = localStorage.getItem("user");
+  if(email){
+    document.getElementById("email").value = email;
+    document.getElementById("remember").checked = true;
+  }
 }
-}
-</script>
 
-<!-- ⌨ Enter -->
-<script>
+// Enter Key
 document.addEventListener("keydown", function(e){
-if(e.key==="Enter"){
-  login();
-}
+  if(e.key==="Enter"){
+    login();
+  }
 });
 </script>
 
-<!-- 🔐 Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -215,37 +228,48 @@ const app = initializeApp({
 const auth = getAuth();
 
 window.login = async function(){
-let email = document.getElementById("email").value;
-let password = document.getElementById("password").value;
-let msg = document.getElementById("msg");
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+  let msg = document.getElementById("msg");
 
-msg.innerHTML="⏳ Logging in...";
+  msg.innerHTML="⏳ Logging in...";
 
-try{
-await signInWithEmailAndPassword(auth,email,password);
+  try{
+    await signInWithEmailAndPassword(auth,email,password);
 
-// 🖥️ Device check
-let device = getDeviceID();
-let last = localStorage.getItem("lastDevice");
+    if(document.getElementById("remember").checked){
+      localStorage.setItem("user",email);
+    }else{
+      localStorage.removeItem("user");
+    }
 
-if(last && last !== device){
-  alert("⚠️ New Device Detected!");
-}
-localStorage.setItem("lastDevice",device);
+    msg.innerHTML="✅ Login Success";
+    setTimeout(()=>location.href="home.html",1000);
 
-// Remember
-if(document.getElementById("remember").checked){
-  localStorage.setItem("user",email);
-}else{
-  localStorage.removeItem("user");
-}
-
-msg.innerHTML="✅ Login Success";
-setTimeout(()=>location.href="home.html",1000);
-
-}catch(e){
-msg.innerHTML="❌ "+e.message;
-}
+  }catch(e){
+    let customMsg = "Login failed. Please try again.";
+    switch(e.code){
+      case "auth/invalid-email":
+        customMsg = "Invalid email address.";
+        break;
+      case "auth/user-not-found":
+        customMsg = "User not found. Please check your email or sign up.";
+        break;
+      case "auth/wrong-password":
+        customMsg = "Password is incorrect. Please try again.";
+        break;
+      case "auth/too-many-requests":
+        customMsg = "Too many attempts. Please wait a while and try again.";
+        break;
+      case "auth/network-request-failed":
+        customMsg = "Network error. Check your internet connection.";
+        break;
+      case "auth/invalid-credential":
+        customMsg = "Email or password is incorrect.";
+        break;
+    }
+    msg.innerHTML = "❌ " + customMsg;
+  }
 }
 </script>
 
