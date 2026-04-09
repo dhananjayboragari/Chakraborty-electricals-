@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profile Page</title>
+<title>Signup Page</title>
 <style>
 body{
   font-family: Arial, sans-serif;
@@ -17,7 +17,7 @@ body{
   margin:0;
 }
 
-.profile-box{
+.signup-box{
   background: rgba(255,255,255,0.1);
   padding: 30px 40px;
   border-radius: 20px;
@@ -25,15 +25,7 @@ body{
   width: 300px;
 }
 
-.profile-box img{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  object-fit:cover;
-  margin-bottom:15px;
-}
-
-.profile-box input{
+.signup-box input{
   width: 100%;
   padding: 8px;
   margin:5px 0;
@@ -51,29 +43,27 @@ button{
   color:black;
   font-weight:bold;
 }
-
 </style>
 </head>
 <body>
 
-<div class="profile-box">
-  <h2>Profile</h2>
-  <img id="photo" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile Photo">
-  <input type="file" id="photoInput">
-  <p id="name">Loading name...</p>
-  <p id="email">Loading email...</p>
-  <input type="text" id="nameEdit" placeholder="Edit Name">
-  <button id="updateBtn">Update Profile</button>
-  <button id="logoutBtn">Logout</button>
+<div class="signup-box">
+  <h2>Signup</h2>
+  <input type="text" id="name" placeholder="Enter Name"><br>
+  <input type="email" id="email" placeholder="Enter Email"><br>
+  <input type="password" id="password" placeholder="Enter Password (6+ chars)"><br>
+  <input type="file" id="photo" accept="image/*"><br>
+  <button onclick="signup()">Signup</button>
+  <p>Already have account? <a href="login.html">Login</a></p>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-// Firebase config
+// 🔥 Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
   authDomain: "chakraborty-ele-login.firebaseapp.com",
@@ -88,56 +78,50 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-let currentUser;
+window.signup = async function() {
+  try {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const file = document.getElementById("photo").files[0];
 
-// Auth check
-onAuthStateChanged(auth, async (user)=>{
-  if(user){
-    currentUser = user;
-    document.getElementById("email").innerText = "Email: " + user.email;
-
-    // Firestore fetch
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
-    if(docSnap.exists()){
-      const data = docSnap.data();
-      document.getElementById("name").innerText = "Name: " + data.name;
-      document.getElementById("nameEdit").value = data.name;
-      if(data.photo) document.getElementById("photo").src = data.photo;
+    if(!name || !email || !password){
+      alert("All fields are required!");
+      return;
     }
-  } else {
+
+    if(password.length < 6){
+      alert("Password must be at least 6 characters!");
+      return;
+    }
+
+    // 🔥 Create user
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
+
+    // 🔥 Upload photo if selected
+    let photoURL = "";
+    if(file){
+      const storageRef = ref(storage, `profileImages/${user.uid}`);
+      await uploadBytes(storageRef, file);
+      photoURL = await getDownloadURL(storageRef);
+    }
+
+    // 🔥 Save in Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      name: name,
+      email: email,
+      photo: photoURL
+    });
+
+    alert("Signup Success ✅");
     window.location.href = "login.html";
+
+  } catch(error) {
+    console.error(error);
+    alert("Signup Failed: " + error.message);
   }
-});
-
-// Logout
-document.getElementById("logoutBtn").addEventListener("click", async ()=>{
-  await signOut(auth);
-  window.location.href="login.html";
-});
-
-// Update profile
-document.getElementById("updateBtn").addEventListener("click", async ()=>{
-  const newName = document.getElementById("nameEdit").value;
-  const file = document.getElementById("photoInput").files[0];
-
-  const docRef = doc(db, "users", currentUser.uid);
-  let updateData = { name: newName };
-
-  // Upload photo if selected
-  if(file){
-    const storageRef = ref(storage, `profileImages/${currentUser.uid}`);
-    await uploadBytes(storageRef, file);
-    const photoURL = await getDownloadURL(storageRef);
-    updateData.photo = photoURL;
-    document.getElementById("photo").src = photoURL;
-  }
-
-  await updateDoc(docRef, updateData);
-  document.getElementById("name").innerText = "Name: " + newName;
-  alert("Profile Updated ✅");
-});
-
+}
 </script>
 
 </body>
