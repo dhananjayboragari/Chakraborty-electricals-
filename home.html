@@ -39,9 +39,7 @@ canvas#solarBg{
   position:relative;
 }
 
-.card-box{
-  position:relative;
-}
+.card-box{ position:relative; }
 
 .card-border{
   padding:1.5px;
@@ -77,28 +75,42 @@ canvas#solarBg{
 
 a{text-decoration:none; color:black; display:block;}
 
-/* PROFILE BUTTON */
+/* ================= PROFILE BUTTON ================= */
+
 #profileBtn{
   position:fixed;
   top:10px;
   right:10px;
-  padding:10px 15px;
+
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  padding:6px 10px;
+  font-size:13px;
+
+  background:rgba(0,255,204,0.9);
   border:none;
-  border-radius:10px;
-  background:#00ffcc;
-  font-weight:bold;
+  border-radius:20px;
+
   cursor:pointer;
   z-index:999;
+
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  transition:0.2s;
 }
 
-/* PROFILE MODAL */
+#profileBtn:hover{
+  transform:scale(1.05);
+}
+
+/* ================= PROFILE MODAL ================= */
+
 #profileModal{
   display:none;
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  top:0;left:0;
+  width:100%;height:100%;
   background:rgba(0,0,0,0.6);
   backdrop-filter:blur(8px);
   justify-content:center;
@@ -106,7 +118,6 @@ a{text-decoration:none; color:black; display:block;}
   z-index:1000;
 }
 
-/* PROFILE BOX */
 #profileBox{
   width:320px;
   padding:22px;
@@ -128,7 +139,7 @@ a{text-decoration:none; color:black; display:block;}
   outline:none;
 }
 
-button{
+button.action{
   width:100%;
   padding:10px;
   margin-top:8px;
@@ -148,9 +159,9 @@ button{
   color:white;
 }
 
-@keyframes pop {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@keyframes pop{
+  from{transform:scale(0.8);opacity:0;}
+  to{transform:scale(1);opacity:1;}
 }
 </style>
 </head>
@@ -158,7 +169,9 @@ button{
 <body>
 
 <!-- PROFILE BUTTON -->
-<button id="profileBtn" onclick="openProfile()">👤 Profile</button>
+<button id="profileBtn" onclick="openProfile()">
+  👤 Profile
+</button>
 
 <!-- PROFILE MODAL -->
 <div id="profileModal" onclick="closeProfile()">
@@ -174,8 +187,8 @@ button{
     <p id="email"></p>
     <p id="uid"></p>
 
-    <button class="saveBtn" onclick="saveProfile()">Save / Update</button>
-    <button class="closeBtn" onclick="closeProfile()">Close</button>
+    <button class="action saveBtn" onclick="saveProfile()">Save / Update</button>
+    <button class="action closeBtn" onclick="closeProfile()">Close</button>
 
   </div>
 </div>
@@ -224,68 +237,81 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let currentUser;
+let user = null;
+let userName = "";
 
-/* USER LOGIN */
-onAuthStateChanged(auth, (user)=>{
-  if(user){
-    currentUser = user;
+/* AUTH */
+onAuthStateChanged(auth, async (u) => {
+  if (u) {
+    user = u;
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+
+    if (snap.exists()) {
+      const data = snap.data();
+      userName = data.name || "";
+    }
+
+    // 🔥 BUTTON TEXT UPDATE
+    document.getElementById("profileBtn").innerText =
+      userName ? "👤 " + userName : "👤 Profile";
   }
 });
 
 /* OPEN PROFILE */
-window.openProfile = async function(){
+window.openProfile = async function () {
 
-  if(!currentUser) return alert("Not logged in!");
+  if (!user) return alert("Login first!");
 
   document.getElementById("profileModal").style.display = "flex";
 
-  document.getElementById("email").innerText = "Email: " + currentUser.email;
-  document.getElementById("uid").innerText = "UID: " + currentUser.uid;
+  document.getElementById("email").innerText = "Email: " + user.email;
+  document.getElementById("uid").innerText = "UID: " + user.uid;
 
-  const snap = await getDoc(doc(db, "users", currentUser.uid));
+  const snap = await getDoc(doc(db, "users", user.uid));
 
-  if(snap.exists()){
-    let data = snap.data();
+  if (snap.exists()) {
+    const data = snap.data();
 
     document.getElementById("name").value = data.name || "";
     document.getElementById("phone").value = data.phone || "";
     document.getElementById("address").value = data.address || "";
 
     document.getElementById("userTitle").innerText =
-      data.name && data.name.trim() !== ""
-        ? "👤 " + data.name
-        : "👤 Profile";
-  } else {
-    document.getElementById("userTitle").innerText = "👤 Profile";
+      data.name ? "👤 " + data.name : "👤 Profile";
   }
 };
 
-/* SAVE / UPDATE */
-window.saveProfile = async function(){
+/* SAVE */
+window.saveProfile = async function () {
 
-  let name = document.getElementById("name").value;
-  let phone = document.getElementById("phone").value;
-  let address = document.getElementById("address").value;
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
 
-  await setDoc(doc(db, "users", currentUser.uid), {
+  await setDoc(doc(db, "users", user.uid), {
     name,
     phone,
     address,
-    email: currentUser.email,
-    uid: currentUser.uid
+    email: user.email,
+    uid: user.uid
   }, { merge: true });
 
-  alert("Profile Saved / Updated!");
+  alert("Saved!");
+
+  // update button instantly
+  userName = name;
+  document.getElementById("profileBtn").innerText =
+    userName ? "👤 " + userName : "👤 Profile";
 };
 
 /* CLOSE */
-window.closeProfile = function(){
+window.closeProfile = function () {
   document.getElementById("profileModal").style.display = "none";
 };
 </script>
 
-<!-- SOLAR BACKGROUND (UNCHANGED) -->
+<!-- SOLAR BACKGROUND -->
 <script>
 const canvas = document.getElementById("solarBg");
 const ctx = canvas.getContext("2d");
