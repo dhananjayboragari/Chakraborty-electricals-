@@ -63,12 +63,6 @@ canvas#solarBg{
   text-align:center;
   cursor:pointer;
   box-shadow:0 6px 18px rgba(0,0,0,0.3);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.card-btn:active{
-  transform: scale(0.90);
-  box-shadow:0 2px 6px rgba(0,0,0,0.5);
 }
 
 .card-btn img{
@@ -105,25 +99,58 @@ a{text-decoration:none; color:black; display:block;}
   left:0;
   width:100%;
   height:100%;
-  background:rgba(0,0,0,0.7);
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
   justify-content:center;
   align-items:center;
   z-index:1000;
 }
 
+/* PROFILE BOX */
 #profileBox{
-  background:white;
-  color:black;
-  padding:20px;
-  border-radius:15px;
-  width:300px;
+  width:320px;
+  padding:22px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  color:white;
   text-align:center;
+  animation:pop 0.3s ease;
 }
 
 #profileBox input{
   width:100%;
-  padding:8px;
-  margin:5px 0;
+  padding:10px;
+  margin:6px 0;
+  border-radius:10px;
+  border:none;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.saveBtn{
+  background:linear-gradient(90deg,#00ffcc,#00d4ff);
+  color:black;
+}
+
+.closeBtn{
+  background:rgba(255,0,0,0.7);
+  color:white;
+}
+
+@keyframes pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 </style>
 </head>
@@ -135,19 +162,21 @@ a{text-decoration:none; color:black; display:block;}
 
 <!-- PROFILE MODAL -->
 <div id="profileModal" onclick="closeProfile()">
+
   <div id="profileBox" onclick="event.stopPropagation()">
 
-    <h3>👤 Profile</h3>
+    <h2 id="userTitle">👤 Profile</h2>
 
     <input type="text" id="name" placeholder="Enter Name">
     <input type="text" id="phone" placeholder="Enter Phone">
     <input type="text" id="address" placeholder="Enter Address">
 
-    <p id="email">Loading...</p>
+    <p id="email"></p>
     <p id="uid"></p>
 
-    <button onclick="saveProfile()">Save / Update</button>
-    <button onclick="closeProfile()">Close</button>
+    <button class="saveBtn" onclick="saveProfile()">Save / Update</button>
+    <button class="closeBtn" onclick="closeProfile()">Close</button>
+
   </div>
 </div>
 
@@ -197,32 +226,42 @@ const db = getFirestore(app);
 
 let currentUser;
 
-/* USER */
+/* USER LOGIN */
 onAuthStateChanged(auth, (user)=>{
   if(user){
     currentUser = user;
-    document.getElementById("email").innerText = "Email: " + user.email;
-    document.getElementById("uid").innerText = "UID: " + user.uid;
   }
 });
 
 /* OPEN PROFILE */
 window.openProfile = async function(){
+
   if(!currentUser) return alert("Not logged in!");
 
   document.getElementById("profileModal").style.display = "flex";
+
+  document.getElementById("email").innerText = "Email: " + currentUser.email;
+  document.getElementById("uid").innerText = "UID: " + currentUser.uid;
 
   const snap = await getDoc(doc(db, "users", currentUser.uid));
 
   if(snap.exists()){
     let data = snap.data();
+
     document.getElementById("name").value = data.name || "";
     document.getElementById("phone").value = data.phone || "";
     document.getElementById("address").value = data.address || "";
+
+    document.getElementById("userTitle").innerText =
+      data.name && data.name.trim() !== ""
+        ? "👤 " + data.name
+        : "👤 Profile";
+  } else {
+    document.getElementById("userTitle").innerText = "👤 Profile";
   }
 };
 
-/* SAVE / UPDATE PROFILE */
+/* SAVE / UPDATE */
 window.saveProfile = async function(){
 
   let name = document.getElementById("name").value;
@@ -246,10 +285,11 @@ window.closeProfile = function(){
 };
 </script>
 
-<!-- SOLAR ANIMATION (UNCHANGED) -->
+<!-- SOLAR BACKGROUND (UNCHANGED) -->
 <script>
 const canvas = document.getElementById("solarBg");
 const ctx = canvas.getContext("2d");
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
