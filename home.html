@@ -2,26 +2,16 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Single Page App</title>
+<title>Home</title>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
-<div id="loginBox">
-  <h2>Login</h2>
+<h3 id="status">Loading...</h3>
 
-  <input id="email" placeholder="Email"><br><br>
-  <input id="password" type="password" placeholder="Password"><br><br>
-
-  <button onclick="loginUser()">Login</button>
-
-  <p id="msg"></p>
-</div>
-
-<!-- ================= PROFILE ================= -->
+<!-- ================= PROFILE FORM ================= -->
 <div id="profileBox" style="display:none;">
-  <h2>Complete Profile</h2>
+  <h2>Complete Your Profile</h2>
 
   <input id="name" placeholder="Name"><br><br>
   <input id="phone" placeholder="Phone"><br><br>
@@ -34,9 +24,9 @@
 <div id="homeBox" style="display:none;">
   <h2>Dashboard</h2>
 
-  <p>Name: <span id="dname"></span></p>
-  <p>Phone: <span id="dphone"></span></p>
-  <p>Agency: <span id="dagency"></span></p>
+  <p><b>Name:</b> <span id="dname"></span></p>
+  <p><b>Phone:</b> <span id="dphone"></span></p>
+  <p><b>Agency:</b> <span id="dagency"></span></p>
 
   <button onclick="logout()">Logout</button>
 </div>
@@ -46,7 +36,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getAuth,
-  signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -61,60 +50,27 @@ import {
 const firebaseConfig = {
   apiKey: "YOUR_KEY",
   authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_ID"
+  projectId: "YOUR_PROJECT_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ================= LOGIN =================
-window.loginUser = async function(){
-
-  let email = document.getElementById("email").value;
-  let pass = document.getElementById("password").value;
-
-  try{
-    await signInWithEmailAndPassword(auth, email, pass);
-    document.getElementById("msg").innerText = "Login success";
-  }catch(e){
-    document.getElementById("msg").innerText = e.message;
-  }
-}
-
-// ================= SAVE PROFILE =================
-window.saveProfile = async function(){
-
-  const user = auth.currentUser;
-
-  await setDoc(doc(db, "users", user.uid), {
-    name: name.value,
-    phone: phone.value,
-    agency: agency.value,
-    profileComplete: true
-  });
-
-  showHome({ name:name.value, phone:phone.value, agency:agency.value });
-}
-
-// ================= LOGOUT =================
-window.logout = async function(){
-  await signOut(auth);
-  location.reload();
-}
-
-// ================= MAIN LOGIC =================
+// ================= MAIN CHECK =================
 onAuthStateChanged(auth, async (user) => {
 
   if(!user){
-    showLogin();
+    window.location.href = "index.html";
     return;
   }
 
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
 
-  // ❌ profile নাই
+  document.getElementById("status").style.display = "none";
+
+  // ❌ profile does not exist
   if(!snap.exists()){
     showProfile();
     return;
@@ -122,7 +78,7 @@ onAuthStateChanged(auth, async (user) => {
 
   const data = snap.data();
 
-  // ❌ incomplete
+  // ❌ profile incomplete
   if(data.profileComplete !== true){
     showProfile();
     return;
@@ -132,27 +88,44 @@ onAuthStateChanged(auth, async (user) => {
   showHome(data);
 });
 
-// ================= UI CONTROL =================
-function showLogin(){
-  loginBox.style.display = "block";
-  profileBox.style.display = "none";
-  homeBox.style.display = "none";
+// ================= SAVE PROFILE =================
+window.saveProfile = async function(){
+
+  const user = auth.currentUser;
+
+  await setDoc(doc(db,"users",user.uid),{
+    name: name.value,
+    phone: phone.value,
+    agency: agency.value,
+    profileComplete: true
+  });
+
+  showHome({
+    name: name.value,
+    phone: phone.value,
+    agency: agency.value
+  });
 }
 
+// ================= LOGOUT =================
+window.logout = async function(){
+  const auth = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+  location.href = "index.html";
+}
+
+// ================= UI CONTROL =================
 function showProfile(){
-  loginBox.style.display = "none";
   profileBox.style.display = "block";
   homeBox.style.display = "none";
 }
 
 function showHome(data){
-  loginBox.style.display = "none";
   profileBox.style.display = "none";
   homeBox.style.display = "block";
 
-  document.getElementById("dname").innerText = data.name;
-  document.getElementById("dphone").innerText = data.phone;
-  document.getElementById("dagency").innerText = data.agency;
+  dname.innerText = data.name;
+  dphone.innerText = data.phone;
+  dagency.innerText = data.agency;
 }
 
 </script>
