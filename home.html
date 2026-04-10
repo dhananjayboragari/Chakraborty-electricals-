@@ -14,17 +14,17 @@ body{
   height:100vh;
   background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
   color:white;
-  flex-direction: column;
   margin:0;
 }
 
 .profile-box{
   background: rgba(255,255,255,0.1);
-  padding: 30px 40px;
+  padding: 30px;
   border-radius: 20px;
   text-align:center;
-  width: 320px;
+  width: 340px;
   box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
 }
 
 .profile-box img{
@@ -32,27 +32,43 @@ body{
   height:100px;
   border-radius:50%;
   object-fit:cover;
-  margin-bottom:15px;
+  margin-bottom:10px;
   border:2px solid white;
 }
 
 .profile-box input{
   width: 100%;
-  padding: 8px;
-  margin:5px 0;
-  border-radius:5px;
+  padding: 10px;
+  margin:6px 0;
+  border-radius:6px;
   border:none;
 }
 
+.profile-box input:focus{
+  outline:none;
+  border:2px solid #00ffcc;
+}
+
 button{
-  padding:10px 20px;
+  padding:10px 15px;
   margin-top:10px;
   border:none;
   border-radius:10px;
   cursor:pointer;
+  font-weight:bold;
+}
+
+#updateBtn{
   background: linear-gradient(90deg,#00ffcc,#ff00ff);
   color:black;
-  font-weight:bold;
+  width:100%;
+}
+
+#logoutBtn{
+  background:red;
+  color:white;
+  width:100%;
+  margin-top:8px;
 }
 
 button:disabled{
@@ -65,7 +81,7 @@ button:disabled{
 <body>
 
 <div class="profile-box">
-  <h2>Profile</h2>
+  <h2>My Profile</h2>
 
   <img id="photo" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
 
@@ -87,12 +103,12 @@ import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/fi
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
-  authDomain: "chakraborty-ele-login.firebaseapp.com",
-  projectId: "chakraborty-ele-login",
-  storageBucket: "chakraborty-ele-login.firebasestorage.app",
-  messagingSenderId: "414542805581",
-  appId: "1:414542805581:web:cfd13593767abbb51cba04"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -103,6 +119,7 @@ const storage = getStorage(app);
 let currentUser = null;
 
 const updateBtn = document.getElementById("updateBtn");
+const nameEdit = document.getElementById("nameEdit");
 
 onAuthStateChanged(auth, async (user)=>{
   if(user){
@@ -116,8 +133,8 @@ onAuthStateChanged(auth, async (user)=>{
     if(docSnap.exists()){
       const data = docSnap.data();
 
-      document.getElementById("name").innerText = "Name: " + data.name;
-      document.getElementById("nameEdit").value = data.name || "";
+      document.getElementById("name").innerText = "Name: " + (data.name || "");
+      nameEdit.value = data.name || "";
 
       if(data.photo){
         document.getElementById("photo").src = data.photo;
@@ -131,16 +148,31 @@ onAuthStateChanged(auth, async (user)=>{
   }
 });
 
+// Enable button on change
+nameEdit.addEventListener("input", ()=>{
+  updateBtn.disabled = false;
+});
+
 document.getElementById("logoutBtn").addEventListener("click", async ()=>{
   await signOut(auth);
   window.location.href = "login.html";
 });
 
 updateBtn.addEventListener("click", async ()=>{
-  try {
-    if(!currentUser) return alert("User not loaded");
 
-    const newName = document.getElementById("nameEdit").value;
+  try {
+    if(!currentUser) return;
+
+    const newName = nameEdit.value.trim();
+
+    if(!newName){
+      alert("Name cannot be empty");
+      return;
+    }
+
+    updateBtn.innerText = "Updating...";
+    updateBtn.disabled = true;
+
     const file = document.getElementById("photoInput").files[0];
 
     const docRef = doc(db, "users", currentUser.uid);
@@ -149,8 +181,9 @@ updateBtn.addEventListener("click", async ()=>{
       name: newName
     };
 
+    // upload photo if exists
     if(file){
-      const storageRef = ref(storage, `profileImages/${currentUser.uid}`);
+      const storageRef = ref(storage, `profileImages/${currentUser.uid}_${Date.now()}`);
       await uploadBytes(storageRef, file);
 
       const photoURL = await getDownloadURL(storageRef);
@@ -165,9 +198,15 @@ updateBtn.addEventListener("click", async ()=>{
 
     alert("Profile Updated ✅");
 
+    updateBtn.innerText = "Update Profile";
+    updateBtn.disabled = false;
+
   } catch (err) {
     console.error(err);
-    alert("Update failed ❌ Console check করো");
+    alert("Update failed ❌ Check console");
+
+    updateBtn.innerText = "Update Profile";
+    updateBtn.disabled = false;
   }
 });
 </script>
