@@ -3,213 +3,362 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home</title>
+<title>Submission Page</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
+  min-height:100vh;
+  overflow:hidden;
   background:#0f2027;
   color:white;
-  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding-top:250px;
 }
 
-/* BACKGROUND */
-canvas{
+canvas#solarBg{
   position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
   z-index:-1;
 }
 
-/* PROFILE BUTTON (same design) */
-#profileBtn{
-  position:fixed;
-  top:10px;
-  right:10px;
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  border:none;
-  background:rgba(0,255,204,0.2);
-  color:#00ffcc;
-  font-size:16px;
-}
-
-/* CARDS */
 .container{
-  margin-top:200px;
   display:flex;
   flex-direction:column;
   gap:20px;
-  align-items:center;
+  max-width:360px;
+  width:100%;
 }
 
-.card{
-  width:260px;
-  padding:20px;
-  text-align:center;
+/* CARD */
+.card-border{
+  padding:1.5px;
   border-radius:20px;
-  background:rgba(255,255,255,0.1);
-  backdrop-filter:blur(10px);
+  background:linear-gradient(270deg,red,orange,yellow,green,cyan,blue,violet);
+  background-size:400% 400%;
+  animation:borderMove 12s linear infinite;
 }
 
-a{text-decoration:none;color:white;}
+@keyframes borderMove{
+  100%{background-position:400%}
+}
 
-/* PROFILE MODAL */
+.card-btn{
+  background:white;
+  border-radius:16px;
+  padding:18px;
+  text-align:center;
+}
+
+.card-btn img{width:55px;}
+
+a{text-decoration:none;color:black;display:block;}
+
+/* PROFILE BUTTON */
+#profileBtn{
+  position:fixed;
+  top:8px;
+  right:8px;
+  padding:5px 8px;
+  font-size:12px;
+  border:none;
+  border-radius:15px;
+  background:#00ffcc;
+  cursor:pointer;
+  z-index:999;
+}
+
+/* MODAL */
 #profileModal{
   display:none;
   position:fixed;
   top:0;left:0;
   width:100%;height:100%;
   background:rgba(0,0,0,0.6);
+  display:none;
   justify-content:center;
   align-items:center;
 }
 
 #profileBox{
-  width:300px;
+  width:320px;
   padding:20px;
   border-radius:20px;
   background:rgba(255,255,255,0.1);
+  color:white;
+  text-align:center;
 }
 
-input{
+#profileBox input{
   width:100%;
-  margin:5px 0;
   padding:10px;
+  margin:6px 0;
+  border-radius:10px;
+  border:none;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
   border:none;
   border-radius:10px;
 }
 
-/* POPUP (same simple design) */
-#popup{
-  display:none;
+.saveBtn{background:#00ffcc;}
+.closeBtn{background:red;color:white;}
+
+/* 🔥 CUSTOM POPUP */
+#customPopup{
   position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
   background:rgba(0,0,0,0.6);
+  display:none;
   justify-content:center;
   align-items:center;
+  z-index:2000;
 }
 
 .popupBox{
   background:white;
   color:black;
   padding:20px;
-  border-radius:15px;
+  border-radius:12px;
+  text-align:center;
+  width:280px;
+  animation:pop 0.3s ease;
+}
+
+.popupBox button{
+  margin-top:10px;
+  padding:8px;
+  background:#00c896;
+  color:white;
+  border:none;
+  border-radius:8px;
+}
+
+@keyframes pop{
+  from{transform:scale(0.7);opacity:0;}
+  to{transform:scale(1);opacity:1;}
 }
 </style>
 </head>
 
 <body>
 
-<button id="profileBtn" onclick="openProfile()">👤</button>
-
-<div class="container">
-  <a href="submit report.html">
-    <div class="card">Submit Report</div>
-  </a>
-
-  <a href="view report.html">
-    <div class="card">All Reports</div>
-  </a>
-</div>
+<button id="profileBtn" onclick="openProfile()">👤 Profile</button>
 
 <!-- PROFILE -->
-<div id="profileModal">
-  <div id="profileBox">
+<div id="profileModal" onclick="closeProfile()">
+  <div id="profileBox" onclick="event.stopPropagation()">
 
-    <h3>Profile</h3>
+    <h3 id="userTitle">Profile</h3>
 
     <input id="name" placeholder="Name">
     <input id="phone" placeholder="Phone">
     <input id="address" placeholder="Address">
 
-    <button onclick="saveProfile()">Save</button>
-    <button onclick="closeProfile()">Close</button>
+    <p id="email"></p>
+    <p id="uid"></p>
+
+    <button class="saveBtn" onclick="saveProfile()">Save</button>
+    <button class="closeBtn" onclick="closeProfile()">Close</button>
 
   </div>
 </div>
 
-<!-- POPUP -->
-<div id="popup">
+<!-- 🔥 CUSTOM POPUP -->
+<div id="customPopup">
   <div class="popupBox">
-    <p id="msg"></p>
+    <p id="popupText"></p>
     <button onclick="closePopup()">OK</button>
   </div>
 </div>
 
+<canvas id="solarBg"></canvas>
+
+<div class="container">
+  <a href="submit report.html">
+    <div class="card-border">
+      <div class="card-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png">
+        <h3>Submit Report</h3>
+      </div>
+    </div>
+  </a>
+
+  <a href="view report.html">
+    <div class="card-border">
+      <div class="card-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png">
+        <h3>All Reports</h3>
+      </div>
+    </div>
+  </a>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore,doc,getDoc,setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig={
-  apiKey:"YOUR KEY",
-  authDomain:"YOUR DOMAIN",
-  projectId:"YOUR ID",
+const firebaseConfig = {
+  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+  authDomain: "chakraborty-ele-login.firebaseapp.com",
+  projectId: "chakraborty-ele-login",
+  appId: "1:414542805581:web:cfd13593767abbb51cba04"
 };
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-let user;
+let user = null;
+let userName = "";
 
-onAuthStateChanged(auth, async(u)=>{
-  if(u){
-    user=u;
+onAuthStateChanged(auth, async (u) => {
+  if (u) {
+    user = u;
 
-    const snap=await getDoc(doc(db,"users",u.uid));
+    const snap = await getDoc(doc(db, "users", user.uid));
 
-    if(snap.exists()){
-      const data=snap.data();
+    if (snap.exists()) {
+      const data = snap.data();
 
-      // 🔥 username show (FIRST LETTER)
-      if(data.name){
-        document.getElementById("profileBtn").innerText =
-          data.name.charAt(0).toUpperCase();
+      userName = data.name || "";
+
+      if (!data.name || !data.phone || !data.address) {
+        openProfile(true);
       }
-    }else{
-      openProfile();
     }
+
+    document.getElementById("profileBtn").innerText =
+      userName ? "👤 " + userName : "Profile";
   }
 });
 
-window.openProfile=function(){
-  document.getElementById("profileModal").style.display="flex";
+window.openProfile = async function (force=false) {
+  if (!user) return;
+
+  document.getElementById("profileModal").style.display = "flex";
+
+  document.getElementById("email").innerText = "Email: " + user.email;
+  document.getElementById("uid").innerText = "UID: " + user.uid;
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+
+  if (snap.exists()) {
+    const data = snap.data();
+
+    document.getElementById("name").value = data.name || "";
+    document.getElementById("phone").value = data.phone || "";
+    document.getElementById("address").value = data.address || "";
+  }
+
+  if (force) {
+    showPopup("Please complete your profile first!");
+  }
+};
+
+window.saveProfile = async function () {
+
+  await setDoc(doc(db, "users", user.uid), {
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value,
+    address: document.getElementById("address").value,
+    email: user.email,
+    uid: user.uid
+  }, { merge: true });
+
+  userName = document.getElementById("name").value;
+
+  document.getElementById("profileBtn").innerText =
+    userName ? "👤 " + userName : "Profile";
+
+  showPopup("Profile Completed!");
+  document.getElementById("profileModal").style.display = "none";
+};
+
+window.closeProfile = function () {
+  document.getElementById("profileModal").style.display = "none";
+};
+
+/* POPUP */
+window.showPopup = function(msg){
+  document.getElementById("popupText").innerText = msg;
+  document.getElementById("customPopup").style.display = "flex";
 }
 
-window.closeProfile=function(){
-  document.getElementById("profileModal").style.display="none";
+window.closePopup = function(){
+  document.getElementById("customPopup").style.display = "none";
+}
+</script>
+
+<script>
+const canvas = document.getElementById("solarBg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+for(let i=0;i<200;i++){
+  stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:1,s:Math.random()*0.05});
 }
 
-window.saveProfile=async function(){
-  const userName = document.getElementById("name").value;
+let sun = {x:canvas.width/2,y:100,r:80};
 
-  await setDoc(doc(db,"users",user.uid),{
-    name:userName,
-    phone:phone.value,
-    address:address.value
+let planets = [
+  {r:8,d:130,a:0,s:0.005,c:"#FF4500"},
+  {r:12,d:180,a:1,s:0.003,c:"#1E90FF"},
+  {r:6,d:220,a:2,s:0.007,c:"#32CD32"}
+];
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  let g = ctx.createRadialGradient(sun.x,sun.y,0,sun.x,sun.y,sun.r);
+  g.addColorStop(0,"#FFD700");
+  g.addColorStop(1,"transparent");
+
+  ctx.fillStyle=g;
+  ctx.beginPath();
+  ctx.arc(sun.x,sun.y,sun.r,0,Math.PI*2);
+  ctx.fill();
+
+  planets.forEach(p=>{
+    p.a += p.s;
+    let x = sun.x + Math.cos(p.a)*p.d;
+    let y = sun.y + Math.sin(p.a)*p.d;
+    ctx.fillStyle=p.c;
+    ctx.beginPath();
+    ctx.arc(x,y,p.r,0,Math.PI*2);
+    ctx.fill();
   });
 
-  // 🔥 instant update button
-  document.getElementById("profileBtn").innerText =
-    userName ? userName.charAt(0).toUpperCase() : "👤";
+  stars.forEach(s=>{
+    s.x += s.s;
+    if(s.x>canvas.width) s.x=0;
+    ctx.fillStyle="white";
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+  });
 
-  showPopup("Saved Successfully");
-  closeProfile();
+  requestAnimationFrame(draw);
 }
 
-function showPopup(t){
-  msg.innerText=t;
-  document.getElementById("popup").style.display="flex";
-}
-
-window.closePopup=function(){
-  document.getElementById("popup").style.display="none";
-}
+draw();
 </script>
 
 </body>
