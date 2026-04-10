@@ -17,7 +17,6 @@ body{
   justify-content:center;
   align-items:flex-start;
   padding-top:250px;
-  position:relative;
 }
 
 canvas#solarBg{
@@ -35,12 +34,9 @@ canvas#solarBg{
   gap:20px;
   max-width:360px;
   width:100%;
-  z-index:1;
-  position:relative;
 }
 
-.card-box{position:relative;}
-
+/* CARD */
 .card-border{
   padding:1.5px;
   border-radius:20px;
@@ -50,7 +46,6 @@ canvas#solarBg{
 }
 
 @keyframes borderMove{
-  0%{background-position:0%}
   100%{background-position:400%}
 }
 
@@ -59,25 +54,22 @@ canvas#solarBg{
   border-radius:16px;
   padding:18px;
   text-align:center;
-  cursor:pointer;
 }
 
-.card-btn img{
-  width:55px;
-}
+.card-btn img{width:55px;}
 
 a{text-decoration:none;color:black;display:block;}
 
 /* PROFILE BUTTON */
 #profileBtn{
   position:fixed;
-  top:10px;
-  right:10px;
-  padding:6px 10px;
-  font-size:13px;
+  top:8px;
+  right:8px;
+  padding:5px 8px;
+  font-size:12px;
   border:none;
-  border-radius:20px;
-  background:rgba(0,255,204,0.9);
+  border-radius:15px;
+  background:#00ffcc;
   cursor:pointer;
   z-index:999;
 }
@@ -89,10 +81,9 @@ a{text-decoration:none;color:black;display:block;}
   top:0;left:0;
   width:100%;height:100%;
   background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(8px);
+  display:none;
   justify-content:center;
   align-items:center;
-  z-index:1000;
 }
 
 #profileBox{
@@ -100,7 +91,6 @@ a{text-decoration:none;color:black;display:block;}
   padding:20px;
   border-radius:20px;
   background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.2);
   color:white;
   text-align:center;
 }
@@ -119,19 +109,56 @@ button{
   margin-top:8px;
   border:none;
   border-radius:10px;
-  font-weight:bold;
-  cursor:pointer;
 }
 
-.saveBtn{background:#00ffcc;color:black;}
+.saveBtn{background:#00ffcc;}
 .closeBtn{background:red;color:white;}
+
+/* 🔥 CUSTOM POPUP */
+#customPopup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+}
+
+.popupBox{
+  background:white;
+  color:black;
+  padding:20px;
+  border-radius:12px;
+  text-align:center;
+  width:280px;
+  animation:pop 0.3s ease;
+}
+
+.popupBox button{
+  margin-top:10px;
+  padding:8px;
+  background:#00c896;
+  color:white;
+  border:none;
+  border-radius:8px;
+}
+
+@keyframes pop{
+  from{transform:scale(0.7);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
 </style>
 </head>
 
 <body>
 
-<button id="profileBtn" onclick="openProfile()">Profile</button>
+<button id="profileBtn" onclick="openProfile()">👤 Profile</button>
 
+<!-- PROFILE -->
 <div id="profileModal" onclick="closeProfile()">
   <div id="profileBox" onclick="event.stopPropagation()">
 
@@ -150,30 +177,34 @@ button{
   </div>
 </div>
 
+<!-- 🔥 CUSTOM POPUP -->
+<div id="customPopup">
+  <div class="popupBox">
+    <p id="popupText"></p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
 <canvas id="solarBg"></canvas>
 
 <div class="container">
-  <div class="card-box">
-    <a href="submit report.html">
-      <div class="card-border">
-        <div class="card-btn">
-          <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png">
-          <h3>Submit Report</h3>
-        </div>
+  <a href="submit report.html">
+    <div class="card-border">
+      <div class="card-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png">
+        <h3>Submit Report</h3>
       </div>
-    </a>
-  </div>
+    </div>
+  </a>
 
-  <div class="card-box">
-    <a href="view report.html">
-      <div class="card-border">
-        <div class="card-btn">
-          <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png">
-          <h3>All Reports</h3>
-        </div>
+  <a href="view report.html">
+    <div class="card-border">
+      <div class="card-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png">
+        <h3>All Reports</h3>
       </div>
-    </a>
-  </div>
+    </div>
+  </a>
 </div>
 
 <script type="module">
@@ -195,7 +226,6 @@ const db = getFirestore(app);
 let user = null;
 let userName = "";
 
-/* LOGIN CHECK */
 onAuthStateChanged(auth, async (u) => {
   if (u) {
     user = u;
@@ -207,7 +237,6 @@ onAuthStateChanged(auth, async (u) => {
 
       userName = data.name || "";
 
-      // FORCE PROFILE CHECK
       if (!data.name || !data.phone || !data.address) {
         openProfile(true);
       }
@@ -215,13 +244,10 @@ onAuthStateChanged(auth, async (u) => {
 
     document.getElementById("profileBtn").innerText =
       userName ? "👤 " + userName : "Profile";
-
   }
 });
 
-/* OPEN PROFILE */
 window.openProfile = async function (force=false) {
-
   if (!user) return;
 
   document.getElementById("profileModal").style.display = "flex";
@@ -237,17 +263,13 @@ window.openProfile = async function (force=false) {
     document.getElementById("name").value = data.name || "";
     document.getElementById("phone").value = data.phone || "";
     document.getElementById("address").value = data.address || "";
-
-    document.getElementById("userTitle").innerText =
-      data.name ? "👤 " + data.name : "Profile";
   }
 
   if (force) {
-    alert("Please complete your profile first!");
+    showPopup("Please complete your profile first!");
   }
 };
 
-/* SAVE */
 window.saveProfile = async function () {
 
   await setDoc(doc(db, "users", user.uid), {
@@ -258,20 +280,28 @@ window.saveProfile = async function () {
     uid: user.uid
   }, { merge: true });
 
-  alert("Profile Completed!");
-
   userName = document.getElementById("name").value;
 
   document.getElementById("profileBtn").innerText =
     userName ? "👤 " + userName : "Profile";
 
+  showPopup("Profile Completed!");
   document.getElementById("profileModal").style.display = "none";
 };
 
-/* CLOSE */
 window.closeProfile = function () {
   document.getElementById("profileModal").style.display = "none";
 };
+
+/* POPUP */
+window.showPopup = function(msg){
+  document.getElementById("popupText").innerText = msg;
+  document.getElementById("customPopup").style.display = "flex";
+}
+
+window.closePopup = function(){
+  document.getElementById("customPopup").style.display = "none";
+}
 </script>
 
 <script>
