@@ -3,67 +3,163 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simple Profile</title>
+<title>Submission Page with Planets</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
+  min-height:100vh;
+  overflow:hidden;
   background:#0f2027;
   color:white;
   display:flex;
   justify-content:center;
-  align-items:center;
-  height:100vh;
+  align-items:flex-start; 
+  padding-top:250px;
+  position:relative;
 }
 
-.box{
-  background:rgba(0,0,0,0.6);
+canvas#solarBg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+}
+
+.container{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  max-width:360px;
+  width:100%;
+  z-index:1;
+  position:relative;
+}
+
+/* PROFILE BUTTON */
+.profileBtn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  padding:10px 15px;
+  background:#00ffcc;
+  color:black;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:999;
+}
+
+/* PROFILE MODAL */
+#profileModal{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+
+#profileBox{
+  background:white;
+  color:black;
   padding:20px;
   border-radius:15px;
   width:300px;
   text-align:center;
 }
 
-input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border:none;
-  border-radius:8px;
+.card-box{
+  position:relative;
 }
 
-button{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  background:#00ffcc;
-  font-weight:bold;
+.card-border{
+  padding:1.5px;
+  border-radius:20px;
+  background:linear-gradient(270deg,red,orange,yellow,green,cyan,blue,violet);
+  background-size:400% 400%;
+  animation:borderMove 12s linear infinite;
 }
+
+@keyframes borderMove{
+  0%{background-position:0%}
+  100%{background-position:400%}
+}
+
+.card-btn{
+  background:white;
+  border-radius:16px;
+  padding:18px;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,0.3);
+}
+
+.card-btn img{
+  width:55px;
+}
+a{text-decoration:none; color:black; display:block;}
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <h3>👤 Profile</h3>
+<!-- PROFILE BUTTON -->
+<button class="profileBtn" onclick="openProfile()">👤 Profile</button>
 
-  <input type="text" id="name" placeholder="Enter Name">
+<!-- PROFILE MODAL -->
+<div id="profileModal" onclick="closeProfile()">
+  <div id="profileBox" onclick="event.stopPropagation()">
+    <h3>👤 User Profile</h3>
+    <p id="pName">Name: Loading...</p>
+    <p id="pEmail">Email: Loading...</p>
+    <p id="pUID">UID: Loading...</p>
+    <p id="pPhone">Phone: Loading...</p>
+    <p id="pAddress">Address: Loading...</p>
+    <button onclick="closeProfile()">Close</button>
+  </div>
+</div>
 
-  <p id="email">Loading...</p>
-  <p id="uid"></p>
+<canvas id="solarBg"></canvas>
 
-  <button onclick="saveProfile()">Save Name</button>
-  <button onclick="logout()">Logout</button>
+<div class="container">
+
+  <div class="card-box">
+    <a href="submit report.html">
+      <div class="card-border">
+        <div class="card-btn">
+          <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png">
+          <h3>Submit Report</h3>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="card-box">
+    <a href="view report.html">
+      <div class="card-border">
+        <div class="card-btn">
+          <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png">
+          <h3>All Reports Views</h3>
+        </div>
+      </div>
+    </a>
+  </div>
+
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* FIREBASE CONFIG */
 const firebaseConfig = {
@@ -79,40 +175,96 @@ const db = getFirestore(app);
 
 let currentUser;
 
-/* LOAD USER */
-onAuthStateChanged(auth, async (user)=>{
+/* USER DETECT */
+onAuthStateChanged(auth, (user)=>{
   if(user){
     currentUser = user;
-
-    document.getElementById("email").innerText = "Email: " + user.email;
-    document.getElementById("uid").innerText = "UID: " + user.uid;
-
-    const snap = await getDoc(doc(db, "users", user.uid));
-
-    if(snap.exists()){
-      document.getElementById("name").value = snap.data().name || "";
-    }
   }
 });
 
-/* SAVE NAME */
-window.saveProfile = async function(){
-  let name = document.getElementById("name").value;
+/* OPEN PROFILE */
+window.openProfile = async function(){
+  if(!currentUser) return alert("Not logged in!");
 
-  await setDoc(doc(db, "users", currentUser.uid), {
-    name: name,
-    email: currentUser.email,
-    uid: currentUser.uid
+  document.getElementById("profileModal").style.display = "flex";
+
+  const snap = await getDoc(doc(db, "users", currentUser.uid));
+
+  if(snap.exists()){
+    const data = snap.data();
+
+    document.getElementById("pName").innerText = "Name: " + (data.name || "N/A");
+    document.getElementById("pEmail").innerText = "Email: " + (data.email || currentUser.email);
+    document.getElementById("pUID").innerText = "UID: " + currentUser.uid;
+    document.getElementById("pPhone").innerText = "Phone: " + (data.phone || "N/A");
+    document.getElementById("pAddress").innerText = "Address: " + (data.address || "N/A");
+  } else {
+    document.getElementById("pName").innerText = "No Data Found";
+  }
+};
+
+/* CLOSE PROFILE */
+window.closeProfile = function(){
+  document.getElementById("profileModal").style.display = "none";
+};
+</script>
+
+<!-- YOUR ORIGINAL SOLAR SCRIPT SAME -->
+<script>
+// Solar Background with Orbiting Planets (UNCHANGED)
+const canvas = document.getElementById("solarBg");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+for(let i=0;i<200;i++){
+  stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, speed: Math.random()*0.05+0.02});
+}
+
+let sun = { x: canvas.width/2, y: 100, r: 80 };
+
+let planets = [
+  { r: 8, distance: 130, angle: Math.random()*Math.PI*2, speed:0.005, color:"#FF4500"},
+  { r: 12, distance: 180, angle: Math.random()*Math.PI*2, speed:0.003, color:"#1E90FF"},
+  { r: 6, distance: 220, angle: Math.random()*Math.PI*2, speed:0.007, color:"#32CD32"}
+];
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  let grad = ctx.createRadialGradient(sun.x,sun.y,0,sun.x,sun.y,sun.r);
+  grad.addColorStop(0,"#FFD700");
+  grad.addColorStop(1,"transparent");
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(sun.x,sun.y,sun.r,0,Math.PI*2);
+  ctx.fill();
+
+  planets.forEach(p=>{
+    p.angle += p.speed;
+    let px = sun.x + Math.cos(p.angle)*p.distance;
+    let py = sun.y + Math.sin(p.angle)*p.distance;
+
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(px, py, p.r, 0, Math.PI*2);
+    ctx.fill();
   });
 
-  alert("Name Saved!");
-};
+  stars.forEach(s=>{
+    s.x += s.speed;
+    if(s.x>canvas.width) s.x=0;
+    ctx.fillStyle="white";
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+  });
 
-/* LOGOUT */
-window.logout = function(){
-  signOut(auth);
-  window.location.href = "index.html";
-};
+  requestAnimationFrame(draw);
+}
+
+draw();
 </script>
 
 </body>
