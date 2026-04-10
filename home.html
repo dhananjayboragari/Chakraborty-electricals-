@@ -1,27 +1,104 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Auto Profile System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile Dashboard</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial;
+  background: linear-gradient(135deg,#1f1c2c,#928dab);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* CARD */
+.card{
+  width:320px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border-radius:20px;
+  padding:20px;
+  color:white;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  text-align:center;
+  animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn{
+  from{transform:translateY(30px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+
+/* PROFILE IMAGE */
+.card img{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  border:3px solid white;
+  object-fit:cover;
+  margin-bottom:10px;
+}
+
+/* INPUTS */
+input{
+  width:90%;
+  padding:10px;
+  margin:8px 0;
+  border:none;
+  border-radius:10px;
+  outline:none;
+}
+
+/* BUTTON */
+button{
+  width:95%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  background:#00c6ff;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#0072ff;
+  transform:scale(1.03);
+}
+
+/* WARNING */
+#warning{
+  font-size:12px;
+  color:yellow;
+  margin-top:5px;
+}
+</style>
 </head>
 
 <body>
 
-<h2>Profile Dashboard</h2>
+<div class="card">
 
-<img id="photo" width="100" height="100"
-style="border-radius:50%; background:#ddd;"><br><br>
+  <img id="photo" src="https://via.placeholder.com/100">
 
-<p>Email: <span id="email"></span></p>
+  <h3 id="email">Loading...</h3>
 
-<p id="warning" style="color:red;"></p>
+  <input type="text" id="name" placeholder="Enter your name">
+  <input type="text" id="photoURL" placeholder="Photo URL">
 
-<input type="text" id="name" placeholder="Enter Name"><br><br>
-<input type="text" id="photoURL" placeholder="Enter Photo URL"><br><br>
+  <p id="warning"></p>
 
-<button onclick="saveProfile()">Save / Update</button>
-<button onclick="logout()">Logout</button>
+  <button onclick="saveProfile()">Save Profile</button>
+  <button onclick="logout()" style="background:#ff4b5c;">Logout</button>
 
-<p id="status"></p>
+</div>
 
 
 <script type="module">
@@ -42,7 +119,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-// 🔥 Firebase config
+// 🔥 Firebase config (তোমারটা বসাও)
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_AUTH_DOMAIN",
@@ -60,16 +137,15 @@ const nameEl = document.getElementById("name");
 const photoEl = document.getElementById("photo");
 const photoInput = document.getElementById("photoURL");
 const warning = document.getElementById("warning");
-const status = document.getElementById("status");
 
 let uid = null;
 
 
-// 👤 LOAD USER
+// LOAD PROFILE
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
-    window.location.href = "login.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -87,69 +163,51 @@ onAuthStateChanged(auth, async (user) => {
     photoEl.src = data.photoURL || "https://via.placeholder.com/100";
 
   } else {
-    // নতুন user create
     await setDoc(ref, {
       email: user.email,
       name: "",
       photoURL: ""
     });
-
-    photoEl.src = "https://via.placeholder.com/100";
   }
 
   checkWarning();
 });
 
 
-// ⚠️ Warning check function
-function checkWarning() {
-
-  if (!nameEl.value || !photoInput.value) {
-    warning.innerText = "⚠️ Please update your profile (Name + Photo missing)";
-  } else {
-    warning.innerText = "";
-  }
-}
-
-
-// 💾 SAVE / AUTO UPDATE
+// SAVE PROFILE
 window.saveProfile = async function () {
 
   const ref = doc(db, "users", uid);
 
-  const name = nameEl.value.trim();
-  const photo = photoInput.value.trim();
-
-  try {
-    await updateDoc(ref, {
-      name: name,
-      photoURL: photo
-    });
-
-  } catch {
+  await updateDoc(ref, {
+    name: nameEl.value || "",
+    photoURL: photoInput.value || ""
+  }).catch(async () => {
     await setDoc(ref, {
       email: emailEl.innerText,
-      name: name,
-      photoURL: photo
+      name: nameEl.value || "",
+      photoURL: photoInput.value || ""
     });
-  }
+  });
 
-  // 🔥 INSTANT UI UPDATE
-  photoEl.src = photo || "https://via.placeholder.com/100";
-
-  status.innerText = "Profile Updated ✅";
+  photoEl.src = photoInput.value || "https://via.placeholder.com/100";
 
   checkWarning();
 };
 
 
-// 🔄 LIVE UPDATE WHILE TYPING (AUTO UI)
-nameEl.addEventListener("input", checkWarning);
-photoInput.addEventListener("input", checkWarning);
+// WARNING CHECK
+function checkWarning(){
+  if(!nameEl.value || !photoInput.value){
+    warning.innerText = "⚠️ Please complete your profile";
+  }else{
+    warning.innerText = "";
+  }
+}
 
 
-// 🚪 LOGOUT
-window.logout = function () {
+// LOGOUT
+window.logout = function(){
   signOut(auth);
 };
 
