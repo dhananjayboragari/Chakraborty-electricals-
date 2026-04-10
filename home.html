@@ -1,39 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Profile Page</title>
+  <title>Firebase Full Dashboard</title>
 </head>
 
 <body>
 
-<h2>User Profile</h2>
+<h2>Firebase Dashboard</h2>
 
-<img id="photo" width="100" height="100" style="border-radius:50%"><br><br>
+<!-- LOGIN SECTION -->
+<div id="loginBox">
+  <h3>Login</h3>
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
 
-<p><b>Name:</b> <span id="name">Loading...</span></p>
-<p><b>Email:</b> <span id="email">Loading...</span></p>
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+</div>
 
-<button onclick="logout()">Logout</button>
+<hr>
+
+<!-- DASHBOARD -->
+<div id="dashboard" style="display:none;">
+
+  <h3>Profile</h3>
+
+  <img id="photo" width="100" height="100" style="border-radius:50%"><br><br>
+
+  <p>Email: <span id="userEmail"></span></p>
+
+  <input type="text" id="name" placeholder="Enter Name"><br><br>
+  <input type="text" id="photoURL" placeholder="Photo URL"><br><br>
+
+  <button onclick="saveProfile()">Save Profile</button>
+  <button onclick="logout()">Logout</button>
+
+  <p id="status"></p>
+
+</div>
 
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
   getAuth,
-  onAuthStateChanged,
-  signOut
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import {
   getFirestore,
   doc,
-  getDoc
+  getDoc,
+  setDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+
+// 🔥 YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
+  projectId: "YOUR_PROJECT_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -41,36 +72,103 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 
-// Profile Load
+// UI
+const loginBox = document.getElementById("loginBox");
+const dashboard = document.getElementById("dashboard");
+
+const emailEl = document.getElementById("email");
+const passEl = document.getElementById("password");
+
+const userEmail = document.getElementById("userEmail");
+const nameEl = document.getElementById("name");
+const photoEl = document.getElementById("photo");
+const photoURL = document.getElementById("photoURL");
+const status = document.getElementById("status");
+
+let uid = null;
+
+
+// 🔐 SIGNUP
+window.signup = function () {
+  createUserWithEmailAndPassword(auth, emailEl.value, passEl.value)
+  .then(() => alert("Signup Success"))
+  .catch(e => alert(e.message));
+};
+
+
+// 🔐 LOGIN
+window.login = function () {
+  signInWithEmailAndPassword(auth, emailEl.value, passEl.value)
+  .then(() => alert("Login Success"))
+  .catch(e => alert(e.message));
+};
+
+
+// 🚪 LOGOUT
+window.logout = function () {
+  signOut(auth);
+};
+
+
+// 👤 AUTH CHECK
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
 
-    email.innerText = user.email;
+  if (!user) {
+    loginBox.style.display = "block";
+    dashboard.style.display = "none";
+    return;
+  }
 
-    // Firestore থেকে data আনবো
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
+  uid = user.uid;
 
-    if (docSnap.exists()) {
-      const data = docSnap.data();
+  loginBox.style.display = "none";
+  dashboard.style.display = "block";
 
-      name.innerText = data.name || "No Name";
-      photo.src = data.photoURL || "https://via.placeholder.com/100";
-    } else {
-      name.innerText = "No profile data";
-      photo.src = "https://via.placeholder.com/100";
-    }
+  userEmail.innerText = user.email;
 
+  const ref = doc(db, "users", uid);
+  const snap = await getDoc(ref);
+
+  if (snap.exists()) {
+    const data = snap.data();
+    nameEl.value = data.name || "";
+    photoURL.value = data.photoURL || "";
+    photoEl.src = data.photoURL || "https://via.placeholder.com/100";
   } else {
-    window.location.href = "login.html";
+    await setDoc(ref, {
+      email: user.email,
+      name: "",
+      photoURL: ""
+    });
   }
 });
 
 
-// Logout
-window.logout = function() {
-  signOut(auth);
-}
+// 💾 SAVE PROFILE
+window.saveProfile = async function () {
+
+  const ref = doc(db, "users", uid);
+
+  try {
+    await updateDoc(ref, {
+      name: nameEl.value,
+      photoURL: photoURL.value
+    });
+
+    photoEl.src = photoURL.value || "https://via.placeholder.com/100";
+
+    status.innerText = "Profile Updated ✅";
+
+  } catch (e) {
+    await setDoc(ref, {
+      name: nameEl.value,
+      photoURL: photoURL.value,
+      email: userEmail.innerText
+    });
+
+    status.innerText = "Profile Created & Saved ✅";
+  }
+};
 
 </script>
 
