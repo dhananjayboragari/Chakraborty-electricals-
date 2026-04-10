@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Firebase Profile Page</title>
+<title>Simple Profile</title>
 
 <style>
 body{
@@ -11,153 +11,108 @@ body{
   font-family:Arial;
   background:#0f2027;
   color:white;
-  overflow:hidden;
   display:flex;
   justify-content:center;
-  align-items:flex-start;
-  padding-top:180px;
+  align-items:center;
+  height:100vh;
 }
 
-/* USER BOX */
-#userBox{
-  position:fixed;
-  top:10px;
-  left:10px;
-  background:rgba(0,0,0,0.7);
-  padding:12px 15px;
-  border-radius:10px;
-  font-size:13px;
-  color:#00ffcc;
-  z-index:999;
-  min-width:220px;
-}
-
-/* BUTTONS */
-.container{
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-  width:320px;
-}
-
-.card{
-  background:white;
-  color:black;
-  padding:15px;
+.box{
+  background:rgba(0,0,0,0.6);
+  padding:20px;
   border-radius:15px;
+  width:300px;
   text-align:center;
-  cursor:pointer;
-  transition:0.2s;
-  font-weight:bold;
 }
 
-.card:active{
-  transform:scale(0.95);
-}
-
-/* BACKGROUND */
-canvas{
-  position:fixed;
-  top:0;
-  left:0;
+input{
   width:100%;
-  height:100%;
-  z-index:-1;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:8px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:#00ffcc;
+  font-weight:bold;
 }
 </style>
 </head>
 
 <body>
 
-<!-- USER INFO -->
-<div id="userBox">Loading user...</div>
+<div class="box">
+  <h3>👤 Profile</h3>
 
-<canvas id="bg"></canvas>
+  <input type="text" id="name" placeholder="Enter Name">
 
-<div class="container">
-  <div class="card" onclick="location.href='submit report.html'">
-    📩 Submit Report
-  </div>
+  <p id="email">Loading...</p>
+  <p id="uid"></p>
 
-  <div class="card" onclick="location.href='view report.html'">
-    📊 View Reports
-  </div>
+  <button onclick="saveProfile()">Save Name</button>
+  <button onclick="logout()">Logout</button>
 </div>
 
-<!-- ================= FIREBASE MODULAR ================= -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* YOUR FIREBASE CONFIG */
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
   authDomain: "chakraborty-ele-login.firebaseapp.com",
   projectId: "chakraborty-ele-login",
-  storageBucket: "chakraborty-ele-login.firebasestorage.app",
-  messagingSenderId: "414542805581",
   appId: "1:414542805581:web:cfd13593767abbb51cba04"
 };
 
-/* INIT */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-/* USER SHOW */
-onAuthStateChanged(auth, (user) => {
-  const box = document.getElementById("userBox");
+let currentUser;
 
+/* LOAD USER */
+onAuthStateChanged(auth, async (user)=>{
   if(user){
-    box.innerHTML = `
-      👤 Logged In <br>
-      🆔 UID: ${user.uid} <br>
-      📧 Email: ${user.email || "No Email"}
-    `;
-  } else {
-    box.innerHTML = "❌ Not Logged In";
+    currentUser = user;
+
+    document.getElementById("email").innerText = "Email: " + user.email;
+    document.getElementById("uid").innerText = "UID: " + user.uid;
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+
+    if(snap.exists()){
+      document.getElementById("name").value = snap.data().name || "";
+    }
   }
 });
 
-/* BACKGROUND ANIMATION */
-const canvas = document.getElementById("bg");
-const ctx = canvas.getContext("2d");
+/* SAVE NAME */
+window.saveProfile = async function(){
+  let name = document.getElementById("name").value;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let stars = [];
-
-for(let i=0;i<150;i++){
-  stars.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*1.5,
-    speed:Math.random()*0.5
-  });
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  stars.forEach(s=>{
-    s.x += s.speed;
-    if(s.x > canvas.width) s.x = 0;
-
-    ctx.fillStyle="white";
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fill();
+  await setDoc(doc(db, "users", currentUser.uid), {
+    name: name,
+    email: currentUser.email,
+    uid: currentUser.uid
   });
 
-  requestAnimationFrame(animate);
-}
+  alert("Name Saved!");
+};
 
-animate();
-
-window.addEventListener("resize",()=>{
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
+/* LOGOUT */
+window.logout = function(){
+  signOut(auth);
+  window.location.href = "index.html";
+};
 </script>
 
 </body>
