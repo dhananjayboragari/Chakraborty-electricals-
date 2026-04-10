@@ -2,96 +2,45 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard</title>
-
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#0f172a;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  color:white;
-}
-
-.card{
-  width:320px;
-  background:#1e293b;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
-}
-
-img{
-  width:90px;
-  height:90px;
-  border-radius:50%;
-  object-fit:cover;
-  border:2px solid white;
-}
-
-input{
-  width:90%;
-  padding:10px;
-  margin:8px 0;
-  border-radius:8px;
-  border:none;
-  outline:none;
-}
-
-button{
-  width:95%;
-  padding:10px;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-.save{
-  background:#22c55e;
-}
-
-.logout{
-  background:#ef4444;
-}
-
-.warning{
-  font-size:12px;
-  color:yellow;
-}
-</style>
+<title>Single Page App</title>
 </head>
 
 <body>
 
-<div class="card">
-
-  <img id="photo" src="https://via.placeholder.com/90"><br><br>
-
-  <h3 id="email">Loading...</h3>
-
-  <input type="text" id="name" placeholder="Enter Name">
-  <input type="text" id="photoURL" placeholder="Photo URL">
-
-  <p class="warning" id="warning"></p>
-
-  <button class="save" onclick="saveProfile()">Save Profile</button>
-  <button class="logout" onclick="logout()">Logout</button>
-
+<!-- ================= LOGIN VIEW ================= -->
+<div id="loginBox">
+  <h2>Login</h2>
+  <input id="email" placeholder="Email"><br><br>
+  <input id="password" type="password" placeholder="Password"><br><br>
+  <button onclick="loginUser()">Login</button>
+  <p id="msg"></p>
 </div>
 
+<!-- ================= PROFILE SETUP ================= -->
+<div id="profileBox" style="display:none;">
+  <h2>Complete Profile</h2>
+  <input id="name" placeholder="Name"><br><br>
+  <input id="phone" placeholder="Phone"><br><br>
+  <input id="agency" placeholder="Agency"><br><br>
+  <button onclick="saveProfile()">Save</button>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div id="homeBox" style="display:none;">
+  <h2>Dashboard</h2>
+  <p>Name: <span id="dname"></span></p>
+  <p>Phone: <span id="dphone"></span></p>
+  <p>Agency: <span id="dagency"></span></p>
+
+  <button onclick="logout()">Logout</button>
+</div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
   getAuth,
+  signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -100,113 +49,107 @@ import {
   getFirestore,
   doc,
   getDoc,
-  setDoc,
-  updateDoc
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-
-// 🔥 YOUR FIREBASE CONFIG
+// 🔥 Firebase Config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID"
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// ================= LOGIN =================
+window.loginUser = async function(){
 
-// UI
-const emailEl = document.getElementById("email");
-const nameEl = document.getElementById("name");
-const photoEl = document.getElementById("photo");
-const photoInput = document.getElementById("photoURL");
-const warning = document.getElementById("warning");
+  let email = document.getElementById("email").value;
+  let pass = document.getElementById("password").value;
 
-let uid = null;
-
-
-// 🚨 SAFE AUTH CHECK (NO LOOP / NO CLOSE)
-onAuthStateChanged(auth, async (user) => {
-
-  if (user) {
-
-    uid = user.uid;
-    emailEl.innerText = user.email;
-
-    const ref = doc(db, "users", uid);
-    const snap = await getDoc(ref);
-
-    if (snap.exists()) {
-      const data = snap.data();
-
-      nameEl.value = data.name || "";
-      photoInput.value = data.photoURL || "";
-      photoEl.src = data.photoURL || "https://via.placeholder.com/90";
-
-    } else {
-      await setDoc(ref, {
-        email: user.email,
-        name: "",
-        photoURL: ""
-      });
-
-      photoEl.src = "https://via.placeholder.com/90";
-    }
-
-    checkWarning();
-
-  } else {
-    // ❌ NO INSTANT REDIRECT (prevents auto close)
-    console.log("No user detected, staying on page safely...");
-  }
-
-});
-
-
-// 💾 SAVE PROFILE (NO REDIRECT)
-window.saveProfile = async function () {
-
-  if (!uid) return;
-
-  const ref = doc(db, "users", uid);
-
-  try {
-    await updateDoc(ref, {
-      name: nameEl.value || "",
-      photoURL: photoInput.value || ""
-    });
-  } catch {
-    await setDoc(ref, {
-      email: emailEl.innerText,
-      name: nameEl.value || "",
-      photoURL: photoInput.value || ""
-    });
-  }
-
-  photoEl.src = photoInput.value || "https://via.placeholder.com/90";
-
-  checkWarning();
-};
-
-
-// ⚠️ WARNING SYSTEM
-function checkWarning() {
-  if (!nameEl.value || !photoInput.value) {
-    warning.innerText = "⚠️ Please update your profile (Name + Photo missing)";
-  } else {
-    warning.innerText = "";
+  try{
+    await signInWithEmailAndPassword(auth, email, pass);
+    document.getElementById("msg").innerText = "Login success";
+  }catch(e){
+    document.getElementById("msg").innerText = e.message;
   }
 }
 
+// ================= SAVE PROFILE =================
+window.saveProfile = async function(){
 
-// 🚪 LOGOUT ONLY (HERE REDIRECT ALLOWED)
-window.logout = function () {
-  signOut(auth).then(() => {
-    window.location.href = "index.html";
+  const user = auth.currentUser;
+
+  await setDoc(doc(db, "users", user.uid), {
+    name: name.value,
+    phone: phone.value,
+    agency: agency.value,
+    profileComplete: true
   });
-};
+
+  showHome(user);
+}
+
+// ================= LOGOUT =================
+window.logout = async function(){
+  await signOut(auth);
+  location.reload();
+}
+
+// ================= MAIN LOGIC =================
+onAuthStateChanged(auth, async (user) => {
+
+  if(!user){
+    showLogin();
+    return;
+  }
+
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+
+  // ❌ no profile
+  if(!snap.exists()){
+    showProfile();
+    return;
+  }
+
+  const data = snap.data();
+
+  // ❌ incomplete
+  if(data.profileComplete !== true){
+    showProfile();
+    return;
+  }
+
+  // ✅ profile done
+  showHome(user, data);
+});
+
+
+// ================= UI CONTROL =================
+function showLogin(){
+  loginBox.style.display = "block";
+  profileBox.style.display = "none";
+  homeBox.style.display = "none";
+}
+
+function showProfile(){
+  loginBox.style.display = "none";
+  profileBox.style.display = "block";
+  homeBox.style.display = "none";
+}
+
+function showHome(user, data){
+  loginBox.style.display = "none";
+  profileBox.style.display = "none";
+  homeBox.style.display = "block";
+
+  document.getElementById("dname").innerText = data?.name || "";
+  document.getElementById("dphone").innerText = data?.phone || "";
+  document.getElementById("dagency").innerText = data?.agency || "";
+}
 
 </script>
 
