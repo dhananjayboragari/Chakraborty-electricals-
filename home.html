@@ -3,25 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <title>Home</title>
+<style>
+body{
+  font-family:Arial;
+  background:#f4f6f9;
+  margin:0;
+  padding:20px;
+}
+
+.box{
+  max-width:400px;
+  margin:auto;
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+h2{text-align:center;}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:1px solid #ccc;
+  border-radius:10px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  background:#007bff;
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+button:hover{background:#0056b3;}
+
+#dashboard p{
+  background:#f1f1f1;
+  padding:10px;
+  border-radius:8px;
+}
+</style>
 </head>
 
 <body>
 
 <h3 id="status">Loading...</h3>
 
-<!-- ================= PROFILE FORM ================= -->
-<div id="profileBox" style="display:none;">
-  <h2>Complete Your Profile</h2>
+<!-- PROFILE -->
+<div id="profileBox" class="box" style="display:none;">
+  <h2>Complete Profile</h2>
 
-  <input id="name" placeholder="Name"><br><br>
-  <input id="phone" placeholder="Phone"><br><br>
-  <input id="agency" placeholder="Agency"><br><br>
+  <input id="name" placeholder="Name">
+  <input id="phone" placeholder="Phone">
+  <input id="agency" placeholder="Agency">
 
   <button onclick="saveProfile()">Save Profile</button>
 </div>
 
-<!-- ================= DASHBOARD ================= -->
-<div id="homeBox" style="display:none;">
+<!-- DASHBOARD -->
+<div id="dashboard" class="box" style="display:none;">
   <h2>Dashboard</h2>
 
   <p><b>Name:</b> <span id="dname"></span></p>
@@ -33,44 +79,33 @@
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
+const app = initializeApp({
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
   projectId: "YOUR_PROJECT_ID"
-};
+});
 
-const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 // ================= MAIN CHECK =================
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async (user)=>{
 
   if(!user){
-    window.location.href = "index.html";
+    window.location.href="index.html";
     return;
   }
 
-  const ref = doc(db, "users", user.uid);
+  const ref = doc(db,"users",user.uid);
   const snap = await getDoc(ref);
 
-  document.getElementById("status").style.display = "none";
+  document.getElementById("status").style.display="none";
 
-  // ❌ profile does not exist
+  // ❌ profile not exist
   if(!snap.exists()){
     showProfile();
     return;
@@ -78,14 +113,13 @@ onAuthStateChanged(auth, async (user) => {
 
   const data = snap.data();
 
-  // ❌ profile incomplete
+  // ❌ not complete
   if(data.profileComplete !== true){
     showProfile();
     return;
   }
 
-  // ✅ dashboard
-  showHome(data);
+  showDashboard(data);
 });
 
 // ================= SAVE PROFILE =================
@@ -94,38 +128,38 @@ window.saveProfile = async function(){
   const user = auth.currentUser;
 
   await setDoc(doc(db,"users",user.uid),{
-    name: name.value,
-    phone: phone.value,
-    agency: agency.value,
-    profileComplete: true
+    name:name.value,
+    phone:phone.value,
+    agency:agency.value,
+    profileComplete:true
   });
 
-  showHome({
-    name: name.value,
-    phone: phone.value,
-    agency: agency.value
+  showDashboard({
+    name:name.value,
+    phone:phone.value,
+    agency:agency.value
   });
 }
 
 // ================= LOGOUT =================
 window.logout = async function(){
-  const auth = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
-  location.href = "index.html";
+  await signOut(auth);
+  window.location.href="index.html";
 }
 
-// ================= UI CONTROL =================
+// ================= UI FUNCTIONS =================
 function showProfile(){
-  profileBox.style.display = "block";
-  homeBox.style.display = "none";
+  profileBox.style.display="block";
+  dashboard.style.display="none";
 }
 
-function showHome(data){
-  profileBox.style.display = "none";
-  homeBox.style.display = "block";
+function showDashboard(data){
+  profileBox.style.display="none";
+  dashboard.style.display="block";
 
-  dname.innerText = data.name;
-  dphone.innerText = data.phone;
-  dagency.innerText = data.agency;
+  dname.innerText=data.name;
+  dphone.innerText=data.phone;
+  dagency.innerText=data.agency;
 }
 
 </script>
