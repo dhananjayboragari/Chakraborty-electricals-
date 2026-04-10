@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Submission Page with Planets</title>
+<title>Submission Page</title>
 
 <style>
 body{
@@ -15,7 +15,7 @@ body{
   color:white;
   display:flex;
   justify-content:center;
-  align-items:flex-start; 
+  align-items:flex-start;
   padding-top:250px;
   position:relative;
 }
@@ -39,7 +39,7 @@ canvas#solarBg{
   position:relative;
 }
 
-.card-box{ position:relative; }
+.card-box{position:relative;}
 
 .card-border{
   padding:1.5px;
@@ -60,52 +60,29 @@ canvas#solarBg{
   padding:18px;
   text-align:center;
   cursor:pointer;
-  box-shadow:0 6px 18px rgba(0,0,0,0.3);
 }
 
 .card-btn img{
   width:55px;
-  margin-bottom:10px;
 }
 
-.card-btn h3{
-  margin:0;
-  font-size:15px;
-}
+a{text-decoration:none;color:black;display:block;}
 
-a{text-decoration:none; color:black; display:block;}
-
-/* ================= PROFILE BUTTON ================= */
-
+/* PROFILE BUTTON */
 #profileBtn{
   position:fixed;
   top:10px;
   right:10px;
-
-  display:flex;
-  align-items:center;
-  gap:6px;
-
   padding:6px 10px;
   font-size:13px;
-
-  background:rgba(0,255,204,0.9);
   border:none;
   border-radius:20px;
-
+  background:rgba(0,255,204,0.9);
   cursor:pointer;
   z-index:999;
-
-  box-shadow:0 4px 12px rgba(0,0,0,0.3);
-  transition:0.2s;
 }
 
-#profileBtn:hover{
-  transform:scale(1.05);
-}
-
-/* ================= PROFILE MODAL ================= */
-
+/* MODAL */
 #profileModal{
   display:none;
   position:fixed;
@@ -120,14 +97,12 @@ a{text-decoration:none; color:black; display:block;}
 
 #profileBox{
   width:320px;
-  padding:22px;
+  padding:20px;
   border-radius:20px;
   background:rgba(255,255,255,0.1);
   border:1px solid rgba(255,255,255,0.2);
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
   color:white;
   text-align:center;
-  animation:pop 0.3s ease;
 }
 
 #profileBox input{
@@ -136,59 +111,41 @@ a{text-decoration:none; color:black; display:block;}
   margin:6px 0;
   border-radius:10px;
   border:none;
-  outline:none;
 }
 
-button.action{
+button{
   width:100%;
   padding:10px;
   margin-top:8px;
   border:none;
-  border-radius:12px;
-  cursor:pointer;
+  border-radius:10px;
   font-weight:bold;
+  cursor:pointer;
 }
 
-.saveBtn{
-  background:linear-gradient(90deg,#00ffcc,#00d4ff);
-  color:black;
-}
-
-.closeBtn{
-  background:rgba(255,0,0,0.7);
-  color:white;
-}
-
-@keyframes pop{
-  from{transform:scale(0.8);opacity:0;}
-  to{transform:scale(1);opacity:1;}
-}
+.saveBtn{background:#00ffcc;color:black;}
+.closeBtn{background:red;color:white;}
 </style>
 </head>
 
 <body>
 
-<!-- PROFILE BUTTON -->
-<button id="profileBtn" onclick="openProfile()">
-  👤 Profile
-</button>
+<button id="profileBtn" onclick="openProfile()">Profile</button>
 
-<!-- PROFILE MODAL -->
 <div id="profileModal" onclick="closeProfile()">
-
   <div id="profileBox" onclick="event.stopPropagation()">
 
-    <h2 id="userTitle">👤 Profile</h2>
+    <h3 id="userTitle">Profile</h3>
 
-    <input type="text" id="name" placeholder="Enter Name">
-    <input type="text" id="phone" placeholder="Enter Phone">
-    <input type="text" id="address" placeholder="Enter Address">
+    <input id="name" placeholder="Name">
+    <input id="phone" placeholder="Phone">
+    <input id="address" placeholder="Address">
 
     <p id="email"></p>
     <p id="uid"></p>
 
-    <button class="action saveBtn" onclick="saveProfile()">Save / Update</button>
-    <button class="action closeBtn" onclick="closeProfile()">Close</button>
+    <button class="saveBtn" onclick="saveProfile()">Save</button>
+    <button class="closeBtn" onclick="closeProfile()">Close</button>
 
   </div>
 </div>
@@ -196,7 +153,6 @@ button.action{
 <canvas id="solarBg"></canvas>
 
 <div class="container">
-
   <div class="card-box">
     <a href="submit report.html">
       <div class="card-border">
@@ -213,12 +169,11 @@ button.action{
       <div class="card-border">
         <div class="card-btn">
           <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png">
-          <h3>All Reports Views</h3>
+          <h3>All Reports</h3>
         </div>
       </div>
     </a>
   </div>
-
 </div>
 
 <script type="module">
@@ -240,7 +195,7 @@ const db = getFirestore(app);
 let user = null;
 let userName = "";
 
-/* AUTH */
+/* LOGIN CHECK */
 onAuthStateChanged(auth, async (u) => {
   if (u) {
     user = u;
@@ -249,19 +204,25 @@ onAuthStateChanged(auth, async (u) => {
 
     if (snap.exists()) {
       const data = snap.data();
+
       userName = data.name || "";
+
+      // FORCE PROFILE CHECK
+      if (!data.name || !data.phone || !data.address) {
+        openProfile(true);
+      }
     }
 
-    // 🔥 BUTTON TEXT UPDATE
     document.getElementById("profileBtn").innerText =
-      userName ? "👤 " + userName : "👤 Profile";
+      userName ? "👤 " + userName : "Profile";
+
   }
 });
 
 /* OPEN PROFILE */
-window.openProfile = async function () {
+window.openProfile = async function (force=false) {
 
-  if (!user) return alert("Login first!");
+  if (!user) return;
 
   document.getElementById("profileModal").style.display = "flex";
 
@@ -278,31 +239,33 @@ window.openProfile = async function () {
     document.getElementById("address").value = data.address || "";
 
     document.getElementById("userTitle").innerText =
-      data.name ? "👤 " + data.name : "👤 Profile";
+      data.name ? "👤 " + data.name : "Profile";
+  }
+
+  if (force) {
+    alert("Please complete your profile first!");
   }
 };
 
 /* SAVE */
 window.saveProfile = async function () {
 
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const address = document.getElementById("address").value;
-
   await setDoc(doc(db, "users", user.uid), {
-    name,
-    phone,
-    address,
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value,
+    address: document.getElementById("address").value,
     email: user.email,
     uid: user.uid
   }, { merge: true });
 
-  alert("Saved!");
+  alert("Profile Completed!");
 
-  // update button instantly
-  userName = name;
+  userName = document.getElementById("name").value;
+
   document.getElementById("profileBtn").innerText =
-    userName ? "👤 " + userName : "👤 Profile";
+    userName ? "👤 " + userName : "Profile";
+
+  document.getElementById("profileModal").style.display = "none";
 };
 
 /* CLOSE */
@@ -311,7 +274,6 @@ window.closeProfile = function () {
 };
 </script>
 
-<!-- SOLAR BACKGROUND -->
 <script>
 const canvas = document.getElementById("solarBg");
 const ctx = canvas.getContext("2d");
@@ -321,41 +283,41 @@ canvas.height = window.innerHeight;
 
 let stars = [];
 for(let i=0;i<200;i++){
-  stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, speed: Math.random()*0.05+0.02});
+  stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:1,s:Math.random()*0.05});
 }
 
-let sun = { x: canvas.width/2, y: 100, r: 80 };
+let sun = {x:canvas.width/2,y:100,r:80};
 
 let planets = [
-  { r: 8, distance: 130, angle: Math.random()*Math.PI*2, speed:0.005, color:"#FF4500"},
-  { r: 12, distance: 180, angle: Math.random()*Math.PI*2, speed:0.003, color:"#1E90FF"},
-  { r: 6, distance: 220, angle: Math.random()*Math.PI*2, speed:0.007, color:"#32CD32"}
+  {r:8,d:130,a:0,s:0.005,c:"#FF4500"},
+  {r:12,d:180,a:1,s:0.003,c:"#1E90FF"},
+  {r:6,d:220,a:2,s:0.007,c:"#32CD32"}
 ];
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  let grad = ctx.createRadialGradient(sun.x,sun.y,0,sun.x,sun.y,sun.r);
-  grad.addColorStop(0,"#FFD700");
-  grad.addColorStop(1,"transparent");
-  ctx.fillStyle = grad;
+  let g = ctx.createRadialGradient(sun.x,sun.y,0,sun.x,sun.y,sun.r);
+  g.addColorStop(0,"#FFD700");
+  g.addColorStop(1,"transparent");
+
+  ctx.fillStyle=g;
   ctx.beginPath();
   ctx.arc(sun.x,sun.y,sun.r,0,Math.PI*2);
   ctx.fill();
 
   planets.forEach(p=>{
-    p.angle += p.speed;
-    let px = sun.x + Math.cos(p.angle)*p.distance;
-    let py = sun.y + Math.sin(p.angle)*p.distance;
-
-    ctx.fillStyle = p.color;
+    p.a += p.s;
+    let x = sun.x + Math.cos(p.a)*p.d;
+    let y = sun.y + Math.sin(p.a)*p.d;
+    ctx.fillStyle=p.c;
     ctx.beginPath();
-    ctx.arc(px, py, p.r, 0, Math.PI*2);
+    ctx.arc(x,y,p.r,0,Math.PI*2);
     ctx.fill();
   });
 
   stars.forEach(s=>{
-    s.x += s.speed;
+    s.x += s.s;
     if(s.x>canvas.width) s.x=0;
     ctx.fillStyle="white";
     ctx.beginPath();
@@ -365,6 +327,7 @@ function draw(){
 
   requestAnimationFrame(draw);
 }
+
 draw();
 </script>
 
