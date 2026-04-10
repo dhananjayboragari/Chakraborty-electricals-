@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Profile Dashboard</title>
+  <title>Auto Profile System</title>
 </head>
 
 <body>
 
-<h2>My Profile</h2>
+<h2>Profile Dashboard</h2>
 
-<img id="photo" width="100" height="100" style="border-radius:50%; background:#ddd;"><br><br>
+<img id="photo" width="100" height="100"
+style="border-radius:50%; background:#ddd;"><br><br>
 
-<p>Email: <span id="email">Loading...</span></p>
+<p>Email: <span id="email"></span></p>
+
+<p id="warning" style="color:red;"></p>
 
 <input type="text" id="name" placeholder="Enter Name"><br><br>
 <input type="text" id="photoURL" placeholder="Enter Photo URL"><br><br>
 
-<button onclick="saveProfile()">Save Profile</button>
+<button onclick="saveProfile()">Save / Update</button>
 <button onclick="logout()">Logout</button>
 
 <p id="status"></p>
@@ -39,7 +42,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-// 🔥 তোমার Firebase config বসাও
+// 🔥 Firebase config
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_AUTH_DOMAIN",
@@ -56,21 +59,21 @@ const emailEl = document.getElementById("email");
 const nameEl = document.getElementById("name");
 const photoEl = document.getElementById("photo");
 const photoInput = document.getElementById("photoURL");
+const warning = document.getElementById("warning");
 const status = document.getElementById("status");
 
 let uid = null;
 
 
-// 👤 USER CHECK
+// 👤 LOAD USER
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
-    window.location.href = "login.html"; // তোমার login page
+    window.location.href = "login.html";
     return;
   }
 
   uid = user.uid;
-
   emailEl.innerText = user.email;
 
   const ref = doc(db, "users", uid);
@@ -84,6 +87,7 @@ onAuthStateChanged(auth, async (user) => {
     photoEl.src = data.photoURL || "https://via.placeholder.com/100";
 
   } else {
+    // নতুন user create
     await setDoc(ref, {
       email: user.email,
       name: "",
@@ -92,34 +96,56 @@ onAuthStateChanged(auth, async (user) => {
 
     photoEl.src = "https://via.placeholder.com/100";
   }
+
+  checkWarning();
 });
 
 
-// 💾 SAVE PROFILE
+// ⚠️ Warning check function
+function checkWarning() {
+
+  if (!nameEl.value || !photoInput.value) {
+    warning.innerText = "⚠️ Please update your profile (Name + Photo missing)";
+  } else {
+    warning.innerText = "";
+  }
+}
+
+
+// 💾 SAVE / AUTO UPDATE
 window.saveProfile = async function () {
 
   const ref = doc(db, "users", uid);
 
+  const name = nameEl.value.trim();
+  const photo = photoInput.value.trim();
+
   try {
     await updateDoc(ref, {
-      name: nameEl.value || "",
-      photoURL: photoInput.value || ""
+      name: name,
+      photoURL: photo
     });
 
-    photoEl.src = photoInput.value || "https://via.placeholder.com/100";
-
-    status.innerText = "Profile Updated Successfully ✅";
-
-  } catch (e) {
+  } catch {
     await setDoc(ref, {
-      name: nameEl.value || "",
-      photoURL: photoInput.value || "",
-      email: emailEl.innerText
+      email: emailEl.innerText,
+      name: name,
+      photoURL: photo
     });
-
-    status.innerText = "Profile Created & Saved ✅";
   }
+
+  // 🔥 INSTANT UI UPDATE
+  photoEl.src = photo || "https://via.placeholder.com/100";
+
+  status.innerText = "Profile Updated ✅";
+
+  checkWarning();
 };
+
+
+// 🔄 LIVE UPDATE WHILE TYPING (AUTO UI)
+nameEl.addEventListener("input", checkWarning);
+photoInput.addEventListener("input", checkWarning);
 
 
 // 🚪 LOGOUT
