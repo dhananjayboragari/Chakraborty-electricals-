@@ -7,27 +7,33 @@
 
 <body>
 
-<!-- ================= LOGIN VIEW ================= -->
+<!-- ================= LOGIN ================= -->
 <div id="loginBox">
   <h2>Login</h2>
+
   <input id="email" placeholder="Email"><br><br>
   <input id="password" type="password" placeholder="Password"><br><br>
+
   <button onclick="loginUser()">Login</button>
+
   <p id="msg"></p>
 </div>
 
-<!-- ================= PROFILE SETUP ================= -->
+<!-- ================= PROFILE ================= -->
 <div id="profileBox" style="display:none;">
   <h2>Complete Profile</h2>
+
   <input id="name" placeholder="Name"><br><br>
   <input id="phone" placeholder="Phone"><br><br>
   <input id="agency" placeholder="Agency"><br><br>
-  <button onclick="saveProfile()">Save</button>
+
+  <button onclick="saveProfile()">Save Profile</button>
 </div>
 
 <!-- ================= DASHBOARD ================= -->
 <div id="homeBox" style="display:none;">
   <h2>Dashboard</h2>
+
   <p>Name: <span id="dname"></span></p>
   <p>Phone: <span id="dphone"></span></p>
   <p>Agency: <span id="dagency"></span></p>
@@ -38,7 +44,7 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
+import {
   getAuth,
   signInWithEmailAndPassword,
   onAuthStateChanged,
@@ -52,7 +58,6 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 Firebase Config
 const firebaseConfig = {
   apiKey: "YOUR_KEY",
   authDomain: "YOUR_DOMAIN",
@@ -89,7 +94,7 @@ window.saveProfile = async function(){
     profileComplete: true
   });
 
-  showHome(user);
+  showHome({ name:name.value, phone:phone.value, agency:agency.value });
 }
 
 // ================= LOGOUT =================
@@ -109,7 +114,7 @@ onAuthStateChanged(auth, async (user) => {
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
 
-  // ❌ no profile
+  // ❌ profile নাই
   if(!snap.exists()){
     showProfile();
     return;
@@ -123,10 +128,9 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  // ✅ profile done
-  showHome(user, data);
+  // ✅ dashboard
+  showHome(data);
 });
-
 
 // ================= UI CONTROL =================
 function showLogin(){
@@ -141,14 +145,14 @@ function showProfile(){
   homeBox.style.display = "none";
 }
 
-function showHome(user, data){
+function showHome(data){
   loginBox.style.display = "none";
   profileBox.style.display = "none";
   homeBox.style.display = "block";
 
-  document.getElementById("dname").innerText = data?.name || "";
-  document.getElementById("dphone").innerText = data?.phone || "";
-  document.getElementById("dagency").innerText = data?.agency || "";
+  document.getElementById("dname").innerText = data.name;
+  document.getElementById("dphone").innerText = data.phone;
+  document.getElementById("dagency").innerText = data.agency;
 }
 
 </script>
