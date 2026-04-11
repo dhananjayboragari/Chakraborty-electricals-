@@ -60,7 +60,7 @@ canvas#solarBg{
 
 a{text-decoration:none;color:black;display:block;}
 
-/* ✅ PROFILE BUTTON (AUTO SIZE FIX) */
+/* ✅ PROFILE BUTTON (FIXED ONLY) */
 #profileBtn{
   position:fixed;
   top:8px;
@@ -76,16 +76,29 @@ a{text-decoration:none;color:black;display:block;}
   z-index:999;
 
   display:flex;
+  flex-direction:column;
   align-items:center;
-  gap:6px;
+  justify-content:center;
 
-  font-size:11px;
+  gap:2px;
 
   width:auto;
   min-width:50px;
-  max-width:150px;
+  max-width:120px;
 
   white-space:nowrap;
+}
+
+#profileBtn .icon{
+  font-size:16px;
+  line-height:16px;
+}
+
+#profileName{
+  font-size:10px;
+  max-width:110px;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 /* MODAL */
@@ -158,7 +171,6 @@ button{
   border:none;
   border-radius:8px;
 }
-
 </style>
 </head>
 
@@ -166,7 +178,8 @@ button{
 
 <!-- ✅ PROFILE BUTTON -->
 <button id="profileBtn" onclick="openProfile()">
-  👤 <span id="profileName">Profile</span>
+  <div class="icon">👤</div>
+  <div id="profileName">Profile</div>
 </button>
 
 <!-- PROFILE MODAL -->
@@ -296,11 +309,10 @@ window.showPopup = function(msg){
 
 window.closePopup = function(){
   document.getElementById("customPopup").style.display = "none";
-}
+};
 </script>
 
 <script>
-// background (unchanged)
 const canvas = document.getElementById("solarBg");
 const ctx = canvas.getContext("2d");
 
@@ -334,6 +346,7 @@ function draw(){
 
   requestAnimationFrame(draw);
 }
+
 draw();
 </script>
 
