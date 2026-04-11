@@ -34,7 +34,7 @@ canvas#solarBg{
 .container{
   display:flex;
   flex-direction:column;
-  gap:20px;
+  gap:30px;
   max-width:360px;
   width:100%;
 }
@@ -189,6 +189,18 @@ button{
 }
 
 
+.card-border{
+  transition:0.3s;
+}
+
+.card-border:hover{
+  transform:scale(1.03);
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+
+
+  
 
 /* MOBILE RESPONSIVE */
 @media (max-width: 600px) {
@@ -199,7 +211,7 @@ button{
 
   .container{
     max-width:90%;
-    gap:12px;
+    gap:25px;
   }
 
   .card-btn{
@@ -279,7 +291,7 @@ button{
     <div class="card-border">
       <div class="card-btn">
         <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png">
-        <h3>All Reports</h3>
+        <h3>View All Reports</h3>
       </div>
     </div>
   </a>
