@@ -1,26 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#0f2027;
-  color:white;
-}
+body{font-family:Arial;margin:0;background:#f2f2f2;}
 
 #profileBtn{
   position:fixed;
-  top:10px;
-  right:10px;
-  background:#00ffcc;
+  top:15px;
+  right:15px;
+  background:#007bff;
+  color:white;
   border:none;
-  padding:6px 10px;
-  border-radius:15px;
+  padding:12px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:18px;
 }
 
 #profileModal{
@@ -33,177 +30,236 @@ body{
   align-items:center;
 }
 
-#profileBox{
+#box{
   background:white;
-  color:black;
   padding:20px;
-  border-radius:15px;
-  width:300px;
+  width:320px;
   text-align:center;
+  border-radius:15px;
 }
 
 #profileImg{
-  width:80px;
-  height:80px;
+  width:90px;
+  height:90px;
   border-radius:50%;
   object-fit:cover;
+  margin-bottom:10px;
 }
 
 input{
   width:100%;
-  margin:5px 0;
-  padding:8px;
+  padding:12px;
+  margin:6px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
 }
 
 button{
   width:100%;
-  margin-top:5px;
-  padding:8px;
+  padding:12px;
+  margin-top:8px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.saveBtn{background:#28a745;color:white;}
+.closeBtn{background:#dc3545;color:white;}
+.logoutBtn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#ff4444;
+  color:white;
+  border:none;
+  padding:12px;
+  border-radius:10px;
 }
 </style>
+
 </head>
 
 <body>
 
-<button id="profileBtn" onclick="openProfile()">👤 Profile</button>
+<button id="profileBtn" onclick="openProfile()">👤</button>
+<button class="logoutBtn" onclick="logout()">Logout</button>
 
 <div id="profileModal">
-  <div id="profileBox">
+  <div id="box">
 
-    <img id="profileImg" src="https://via.placeholder.com/80"><br>
-    <input type="file" id="imageFile">
+    <img id="profileImg" src="https://via.placeholder.com/90"><br>
+    <input type="file" id="imageFile"><br>
 
     <input id="name" placeholder="Name">
     <input id="phone" placeholder="Phone">
     <input id="address" placeholder="Address">
 
     <p id="email"></p>
-    <p id="uid"></p>
 
-    <button onclick="saveProfile()">Save</button>
-    <button onclick="closeProfile()">Close</button>
+    <button class="saveBtn" onclick="saveProfile()">Save</button>
+    <button class="closeBtn" onclick="closeProfile()">Close</button>
 
   </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  appId: "YOUR_APP_ID"
-};
+/* 🔥 CONFIG */
+const app = initializeApp({
+  apiKey:"AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+  authDomain:"chakraborty-ele-login.firebaseapp.com",
+  projectId:"chakraborty-ele-login"
+});
 
-const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+/* 🔥 SESSION FIX */
+await setPersistence(auth, browserLocalPersistence);
+
 let user = null;
-let userLoaded = false;
+let authReady = false;
 let oldImage = "";
 
-/* AUTH FIX */
-onAuthStateChanged(auth, async (u) => {
-  if (u) {
+/* 🔥 AUTH CHECK */
+onAuthStateChanged(auth, (u)=>{
+  authReady = true;
+
+  if(u){
     user = u;
-    userLoaded = true;
-    console.log("User Loaded:", user.uid);
-  } else {
+    console.log("User:", user.uid);
+  }else{
     alert("Login again");
-    window.location.href = "index.html";
+    location.href="index.html";
   }
 });
 
-/* OPEN PROFILE */
-window.openProfile = async function () {
+/* WAIT AUTH */
+async function waitAuth(){
+  while(!authReady){
+    await new Promise(r=>setTimeout(r,200));
+  }
+}
 
-  if (!userLoaded) {
-    alert("Wait...");
+/* OPEN PROFILE */
+window.openProfile = async function(){
+
+  await waitAuth();
+
+  if(!user){
+    alert("Login required");
     return;
   }
 
-  profileModal.style.display = "flex";
-
+  profileModal.style.display="flex";
   email.innerText = user.email;
-  uid.innerText = user.uid;
 
-  const snap = await getDoc(doc(db, "users", user.uid));
+  try{
+    const snap = await getDoc(doc(db,"users",user.uid));
 
-  if (snap.exists()) {
-    const data = snap.data();
+    if(snap.exists()){
+      const d = snap.data();
 
-    name.value = data.name || "";
-    phone.value = data.phone || "";
-    address.value = data.address || "";
+      name.value = d.name || "";
+      phone.value = d.phone || "";
+      address.value = d.address || "";
 
-    if (data.photo) {
-      profileImg.src = data.photo;
-      oldImage = data.photo;
+      if(d.photo){
+        profileImg.src = d.photo;
+        oldImage = d.photo;
+      }
     }
+
+  }catch(e){
+    console.error(e);
+    alert("Load error");
   }
 };
 
 /* IMAGE PREVIEW */
-imageFile.onchange = () => {
-  const file = imageFile.files[0];
-  if (file) profileImg.src = URL.createObjectURL(file);
+imageFile.onchange = ()=>{
+  profileImg.src = URL.createObjectURL(imageFile.files[0]);
 };
 
-/* IMGBB */
-async function uploadToImgBB(file) {
-  const apiKey = "6094dcb16d1f9a749d1293721f5305af";
+/* IMGBB UPLOAD */
+async function uploadImage(file){
+  try{
+    const apiKey = "5325807c73ecd952ea8069cfd40c82ed";
 
-  let formData = new FormData();
-  formData.append("image", file);
+    let fd = new FormData();
+    fd.append("image", file);
 
-  let res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-    method: "POST",
-    body: formData
-  });
+    let res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`,{
+      method:"POST",
+      body:fd
+    });
 
-  let data = await res.json();
-  return data.data.url;
+    let data = await res.json();
+
+    if(data.success){
+      return data.data.url;
+    }else{
+      throw "Upload failed";
+    }
+
+  }catch(err){
+    alert("Image upload failed");
+    return oldImage;
+  }
 }
 
-/* SAVE */
-window.saveProfile = async function () {
+/* SAVE PROFILE */
+window.saveProfile = async function(){
 
-  if (!userLoaded) {
-    alert("User not ready");
+  await waitAuth();
+
+  if(!user){
+    alert("Login required");
     return;
   }
 
-  let file = imageFile.files[0];
-  let finalImage = oldImage;
+  try{
 
-  if (file) {
-    finalImage = await uploadToImgBB(file);
+    let file = imageFile.files[0];
+    let img = oldImage;
+
+    if(file){
+      img = await uploadImage(file);
+    }
+
+    await setDoc(doc(db,"users",user.uid),{
+      name: name.value.trim(),
+      phone: phone.value.trim(),
+      address: address.value.trim(),
+      email: user.email,
+      photo: img
+    });
+
+    alert("✅ Profile Saved");
+    profileModal.style.display="none";
+
+  }catch(e){
+    console.error(e);
+    alert("❌ Save failed");
   }
-
-  await setDoc(doc(db, "users", user.uid), {
-    name: name.value,
-    phone: phone.value,
-    address: address.value,
-    email: user.email,
-    uid: user.uid,
-    photo: finalImage
-  });
-
-  alert("Saved Successfully");
-
-  profileBtn.innerHTML =
-    `<img src="${finalImage}" style="width:25px;height:25px;border-radius:50%;">`;
-
-  profileModal.style.display = "none";
 };
 
-window.closeProfile = function () {
-  profileModal.style.display = "none";
+/* CLOSE */
+window.closeProfile = ()=>{
+  profileModal.style.display="none";
 };
+
+/* LOGOUT */
+window.logout = async function(){
+  await signOut(auth);
+  location.href="index.html";
+};
+
 </script>
 
 </body>
