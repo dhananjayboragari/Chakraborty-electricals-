@@ -278,6 +278,70 @@ button{
 }
 
 
+
+
+  
+
+.header{
+  position:fixed;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:6px 12px;
+  border-radius:25px;
+
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(10px);
+
+  border:1px solid rgba(255,255,255,0.2);
+
+  z-index:1000;
+}
+
+.logo{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  box-shadow:0 0 10px rgba(0,255,204,0.5);
+}
+
+/* MULTI COLOR TEXT */
+.typing{
+  font-size:14px;
+  font-weight:bold;
+
+  background:linear-gradient(
+    90deg,
+    red,
+    orange,
+    yellow,
+    green,
+    cyan,
+    blue,
+    violet
+  );
+
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  color:transparent;
+
+  animation:colorMove 5s linear infinite;
+  white-space:nowrap;
+}
+
+/* COLOR ANIMATION */
+@keyframes colorMove{
+  0%{background-position:0%}
+  100%{background-position:300%}
+}
+
+  
+
                   
 </style>
 </head>
@@ -285,6 +349,12 @@ button{
 <body>
 
 <canvas id="solarBg"></canvas>
+
+<div class="header">
+  <img src="https://i.ibb.co/CkSk2z9/file-00000000f9a071fabf74e40b4725537a.png" class="logo">
+  <span class="typing">Welcome to M/s Chakraborty Electricals</span>
+</div>
+  
   
 <!-- PROFILE BUTTON -->
 <button id="profileBtn" onclick="openProfile()">
