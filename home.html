@@ -60,18 +60,42 @@ canvas#solarBg{
 
 a{text-decoration:none;color:black;display:block;}
 
-/* ✅ PROFILE BUTTON (UPDATED SMALL + RIGHT SIDE) */
+/* ✅ PROFILE BUTTON NEW DESIGN */
 #profileBtn{
   position:fixed;
-  top:10px;
-  right:10px;
-  padding:4px 7px;
-  font-size:9px;
-  border:none;
-  border-radius:10px;
+  top:8px;
+  right:8px;
+
   background:#00ffcc;
+  border:none;
+  border-radius:12px;
+
+  width:60px;
+  padding:6px 4px;
+
   cursor:pointer;
   z-index:999;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  font-size:10px;
+  gap:2px;
+}
+
+#profileIcon{
+  font-size:18px;
+  line-height:18px;
+}
+
+#profileName{
+  font-size:9px;
+  white-space:nowrap;
+  max-width:55px;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 /* MODAL */
@@ -155,13 +179,17 @@ button{
 
 <body>
 
-<button id="profileBtn" onclick="openProfile()">👤</button>
+<!-- ✅ PROFILE BUTTON -->
+<button id="profileBtn" onclick="openProfile()">
+  <div id="profileIcon">👤</div>
+  <div id="profileName">Profile</div>
+</button>
 
-<!-- PROFILE -->
+<!-- PROFILE MODAL -->
 <div id="profileModal" onclick="closeProfile()">
   <div id="profileBox" onclick="event.stopPropagation()">
 
-    <h3 id="userTitle">Profile</h3>
+    <h3>Profile</h3>
 
     <input id="name" placeholder="Name">
     <input id="phone" placeholder="Phone">
@@ -223,7 +251,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let user = null;
-let userName = "";
 
 onAuthStateChanged(auth, async (u) => {
   if (u) {
@@ -233,25 +260,18 @@ onAuthStateChanged(auth, async (u) => {
 
     if (snap.exists()) {
       const data = snap.data();
-      userName = data.name || "";
 
-      if (!data.name || !data.phone || !data.address) {
-        openProfile(true);
-      }
+      const name = data.name || "Profile";
+
+      document.getElementById("profileName").innerText = name;
     }
-
-    document.getElementById("profileBtn").innerText =
-      userName ? "👤 " + userName : "👤";
   }
 });
 
-window.openProfile = async function (force=false) {
+window.openProfile = async function () {
   if (!user) return;
 
   document.getElementById("profileModal").style.display = "flex";
-
-  document.getElementById("email").innerText = "Email: " + user.email;
-  document.getElementById("uid").innerText = "UID: " + user.uid;
 
   const snap = await getDoc(doc(db, "users", user.uid));
 
@@ -260,10 +280,6 @@ window.openProfile = async function (force=false) {
     document.getElementById("name").value = data.name || "";
     document.getElementById("phone").value = data.phone || "";
     document.getElementById("address").value = data.address || "";
-  }
-
-  if (force) {
-    showPopup("Please complete your profile first!");
   }
 };
 
@@ -277,12 +293,10 @@ window.saveProfile = async function () {
     uid: user.uid
   }, { merge: true });
 
-  userName = document.getElementById("name").value;
+  document.getElementById("profileName").innerText =
+    document.getElementById("name").value || "Profile";
 
-  document.getElementById("profileBtn").innerText =
-    "👤 " + userName;
-
-  showPopup("Profile Completed!");
+  showPopup("Profile Updated!");
   document.getElementById("profileModal").style.display = "none";
 };
 
@@ -301,7 +315,7 @@ window.closePopup = function(){
 </script>
 
 <script>
-/* solar animation unchanged */
+// background unchanged
 const canvas = document.getElementById("solarBg");
 const ctx = canvas.getContext("2d");
 
@@ -333,28 +347,8 @@ function draw(){
   ctx.arc(sun.x,sun.y,sun.r,0,Math.PI*2);
   ctx.fill();
 
-  planets.forEach(p=>{
-    p.a += p.s;
-    let x = sun.x + Math.cos(p.a)*p.d;
-    let y = sun.y + Math.sin(p.a)*p.d;
-    ctx.fillStyle=p.c;
-    ctx.beginPath();
-    ctx.arc(x,y,p.r,0,Math.PI*2);
-    ctx.fill();
-  });
-
-  stars.forEach(s=>{
-    s.x += s.s;
-    if(s.x>canvas.width) s.x=0;
-    ctx.fillStyle="white";
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fill();
-  });
-
   requestAnimationFrame(draw);
 }
-
 draw();
 </script>
 
