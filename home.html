@@ -60,15 +60,15 @@ canvas#solarBg{
 
 a{text-decoration:none;color:black;display:block;}
 
-/* PROFILE BUTTON */
+/* ✅ PROFILE BUTTON (UPDATED SMALL + RIGHT SIDE) */
 #profileBtn{
   position:fixed;
-  top:8px;
-  right:8px;
-  padding:5px 8px;
-  font-size:12px;
+  top:10px;
+  right:10px;
+  padding:4px 7px;
+  font-size:9px;
   border:none;
-  border-radius:15px;
+  border-radius:10px;
   background:#00ffcc;
   cursor:pointer;
   z-index:999;
@@ -76,7 +76,6 @@ a{text-decoration:none;color:black;display:block;}
 
 /* MODAL */
 #profileModal{
-  display:none;
   position:fixed;
   top:0;left:0;
   width:100%;height:100%;
@@ -114,7 +113,7 @@ button{
 .saveBtn{background:#00ffcc;}
 .closeBtn{background:red;color:white;}
 
-/* ?? CUSTOM POPUP */
+/* POPUP */
 #customPopup{
   position:fixed;
   top:0;
@@ -156,7 +155,7 @@ button{
 
 <body>
 
-<button id="profileBtn" onclick="openProfile()">?? Profile</button>
+<button id="profileBtn" onclick="openProfile()">👤</button>
 
 <!-- PROFILE -->
 <div id="profileModal" onclick="closeProfile()">
@@ -177,7 +176,7 @@ button{
   </div>
 </div>
 
-<!-- ?? CUSTOM POPUP -->
+<!-- POPUP -->
 <div id="customPopup">
   <div class="popupBox">
     <p id="popupText"></p>
@@ -234,7 +233,6 @@ onAuthStateChanged(auth, async (u) => {
 
     if (snap.exists()) {
       const data = snap.data();
-
       userName = data.name || "";
 
       if (!data.name || !data.phone || !data.address) {
@@ -243,7 +241,7 @@ onAuthStateChanged(auth, async (u) => {
     }
 
     document.getElementById("profileBtn").innerText =
-      userName ? "?? " + userName : "Profile";
+      userName ? "👤 " + userName : "👤";
   }
 });
 
@@ -259,7 +257,6 @@ window.openProfile = async function (force=false) {
 
   if (snap.exists()) {
     const data = snap.data();
-
     document.getElementById("name").value = data.name || "";
     document.getElementById("phone").value = data.phone || "";
     document.getElementById("address").value = data.address || "";
@@ -283,7 +280,7 @@ window.saveProfile = async function () {
   userName = document.getElementById("name").value;
 
   document.getElementById("profileBtn").innerText =
-    userName ? "?? " + userName : "Profile";
+    "👤 " + userName;
 
   showPopup("Profile Completed!");
   document.getElementById("profileModal").style.display = "none";
@@ -293,7 +290,6 @@ window.closeProfile = function () {
   document.getElementById("profileModal").style.display = "none";
 };
 
-/* POPUP */
 window.showPopup = function(msg){
   document.getElementById("popupText").innerText = msg;
   document.getElementById("customPopup").style.display = "flex";
@@ -305,6 +301,7 @@ window.closePopup = function(){
 </script>
 
 <script>
+/* solar animation unchanged */
 const canvas = document.getElementById("solarBg");
 const ctx = canvas.getContext("2d");
 
