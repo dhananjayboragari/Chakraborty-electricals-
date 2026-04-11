@@ -81,7 +81,6 @@ a{text-decoration:none;color:black;display:block;}
   top:0;left:0;
   width:100%;height:100%;
   background:rgba(0,0,0,0.6);
-  display:none;
   justify-content:center;
   align-items:center;
 }
@@ -93,6 +92,14 @@ a{text-decoration:none;color:black;display:block;}
   background:rgba(255,255,255,0.1);
   color:white;
   text-align:center;
+}
+
+#profileImg{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  object-fit:cover;
+  margin-bottom:10px;
 }
 
 #profileBox input{
@@ -162,7 +169,8 @@ button{
 <div id="profileModal" onclick="closeProfile()">
   <div id="profileBox" onclick="event.stopPropagation()">
 
-    <h3 id="userTitle">Profile</h3>
+    <img id="profileImg" src="https://via.placeholder.com/80"><br>
+    <input type="file" id="imageFile">
 
     <input id="name" placeholder="Name">
     <input id="phone" placeholder="Phone">
@@ -224,8 +232,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let user = null;
-let userName = "";
+let oldImage = "";
 
+/* AUTH */
 onAuthStateChanged(auth, async (u) => {
   if (u) {
     user = u;
@@ -234,73 +243,99 @@ onAuthStateChanged(auth, async (u) => {
 
     if (snap.exists()) {
       const data = snap.data();
+      oldImage = data.photo || "";
 
-      userName = data.name || "";
-
-      if (!data.name || !data.phone || !data.address) {
-        openProfile(true);
+      if (data.photo) {
+        profileBtn.innerHTML =
+          `<img src="${data.photo}" style="width:25px;height:25px;border-radius:50%;">`;
       }
     }
-
-    document.getElementById("profileBtn").innerText =
-      userName ? "👤 " + userName : "Profile";
   }
 });
 
-window.openProfile = async function (force=false) {
-  if (!user) return;
+/* OPEN PROFILE */
+window.openProfile = async function () {
+  profileModal.style.display = "flex";
 
-  document.getElementById("profileModal").style.display = "flex";
-
-  document.getElementById("email").innerText = "Email: " + user.email;
-  document.getElementById("uid").innerText = "UID: " + user.uid;
+  email.innerText = "Email: " + user.email;
+  uid.innerText = "UID: " + user.uid;
 
   const snap = await getDoc(doc(db, "users", user.uid));
 
   if (snap.exists()) {
     const data = snap.data();
 
-    document.getElementById("name").value = data.name || "";
-    document.getElementById("phone").value = data.phone || "";
-    document.getElementById("address").value = data.address || "";
-  }
+    name.value = data.name || "";
+    phone.value = data.phone || "";
+    address.value = data.address || "";
 
-  if (force) {
-    showPopup("Please complete your profile first!");
+    if (data.photo) {
+      profileImg.src = data.photo;
+      oldImage = data.photo;
+    }
   }
 };
 
+/* LIVE PREVIEW */
+imageFile.onchange = () => {
+  const file = imageFile.files[0];
+  if (file) profileImg.src = URL.createObjectURL(file);
+};
+
+/* IMGBB UPLOAD */
+async function uploadToImgBB(file) {
+  const apiKey = "5325807c73ecd952ea8069cfd40c82ed";
+
+  let formData = new FormData();
+  formData.append("image", file);
+
+  let res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+    method: "POST",
+    body: formData
+  });
+
+  let data = await res.json();
+  return data.data.url;
+}
+
+/* SAVE */
 window.saveProfile = async function () {
 
+  let file = imageFile.files[0];
+  let finalImage = oldImage;
+
+  if (file) {
+    finalImage = await uploadToImgBB(file);
+  }
+
   await setDoc(doc(db, "users", user.uid), {
-    name: document.getElementById("name").value,
-    phone: document.getElementById("phone").value,
-    address: document.getElementById("address").value,
+    name: name.value,
+    phone: phone.value,
+    address: address.value,
     email: user.email,
-    uid: user.uid
+    uid: user.uid,
+    photo: finalImage
   }, { merge: true });
 
-  userName = document.getElementById("name").value;
+  profileBtn.innerHTML =
+    `<img src="${finalImage}" style="width:25px;height:25px;border-radius:50%;">`;
 
-  document.getElementById("profileBtn").innerText =
-    userName ? "👤 " + userName : "Profile";
-
-  showPopup("Profile Completed!");
-  document.getElementById("profileModal").style.display = "none";
+  showPopup("Profile Updated!");
+  profileModal.style.display = "none";
 };
 
 window.closeProfile = function () {
-  document.getElementById("profileModal").style.display = "none";
+  profileModal.style.display = "none";
 };
 
 /* POPUP */
 window.showPopup = function(msg){
-  document.getElementById("popupText").innerText = msg;
-  document.getElementById("customPopup").style.display = "flex";
+  popupText.innerText = msg;
+  customPopup.style.display = "flex";
 }
 
 window.closePopup = function(){
-  document.getElementById("customPopup").style.display = "none";
+  customPopup.style.display = "none";
 }
 </script>
 
