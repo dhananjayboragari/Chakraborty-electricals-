@@ -19,6 +19,7 @@ body{
   padding-top:250px;
 }
 
+/* BACKGROUND */
 canvas#solarBg{
   position:fixed;
   top:0;
@@ -28,6 +29,7 @@ canvas#solarBg{
   z-index:-1;
 }
 
+/* CONTAINER */
 .container{
   display:flex;
   flex-direction:column;
@@ -60,17 +62,15 @@ canvas#solarBg{
 
 a{text-decoration:none;color:black;display:block;}
 
-/* ✅ PROFILE BUTTON (FIXED ONLY) */
+/* ✅ PROFILE BUTTON MODERN */
 #profileBtn{
   position:fixed;
-  top:8px;
-  right:8px;
+  top:10px;
+  right:10px;
 
-  background:#00ffcc;
+  padding:8px 10px;
   border:none;
-  border-radius:12px;
-
-  padding:6px 10px;
+  border-radius:16px;
 
   cursor:pointer;
   z-index:999;
@@ -79,24 +79,38 @@ a{text-decoration:none;color:black;display:block;}
   flex-direction:column;
   align-items:center;
   justify-content:center;
-
   gap:2px;
 
   width:auto;
-  min-width:50px;
-  max-width:120px;
+  min-width:52px;
 
-  white-space:nowrap;
+  background:rgba(0, 255, 204, 0.15);
+  backdrop-filter: blur(10px);
+
+  border:1px solid rgba(0,255,204,0.4);
+
+  box-shadow: 0 0 12px rgba(0,255,204,0.3);
 }
 
 #profileBtn .icon{
-  font-size:16px;
-  line-height:16px;
+  font-size:18px;
+  width:34px;
+  height:34px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background: linear-gradient(135deg,#00ffcc,#0077ff);
+  box-shadow: 0 0 10px rgba(0,255,204,0.5);
 }
 
 #profileName{
   font-size:10px;
-  max-width:110px;
+  color:white;
+  max-width:90px;
   overflow:hidden;
   text-overflow:ellipsis;
 }
@@ -176,7 +190,7 @@ button{
 
 <body>
 
-<!-- ✅ PROFILE BUTTON -->
+<!-- PROFILE BUTTON -->
 <button id="profileBtn" onclick="openProfile()">
   <div class="icon">👤</div>
   <div id="profileName">Profile</div>
@@ -257,13 +271,24 @@ onAuthStateChanged(auth, async (u) => {
 
     if (snap.exists()) {
       const data = snap.data();
+
       document.getElementById("profileName").innerText =
         data.name ? data.name : "Profile";
+
+      const isComplete =
+        data.name && data.phone && data.address;
+
+      if (!isComplete) {
+        setTimeout(() => openProfile(true), 500);
+      }
+
+    } else {
+      setTimeout(() => openProfile(true), 500);
     }
   }
 });
 
-window.openProfile = async function () {
+window.openProfile = async function (force=false) {
   if (!user) return;
 
   document.getElementById("profileModal").style.display = "flex";
@@ -272,6 +297,7 @@ window.openProfile = async function () {
 
   if (snap.exists()) {
     const data = snap.data();
+
     document.getElementById("name").value = data.name || "";
     document.getElementById("phone").value = data.phone || "";
     document.getElementById("address").value = data.address || "";
@@ -279,6 +305,10 @@ window.openProfile = async function () {
 
   document.getElementById("email").innerText = "Email: " + user.email;
   document.getElementById("uid").innerText = "UID: " + user.uid;
+
+  if (force) {
+    showPopup("Please complete your profile!");
+  }
 };
 
 window.saveProfile = async function () {
@@ -325,12 +355,6 @@ for(let i=0;i<200;i++){
 }
 
 let sun = {x:canvas.width/2,y:100,r:80};
-
-let planets = [
-  {r:8,d:130,a:0,s:0.005,c:"#FF4500"},
-  {r:12,d:180,a:1,s:0.003,c:"#1E90FF"},
-  {r:6,d:220,a:2,s:0.007,c:"#32CD32"}
-];
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
