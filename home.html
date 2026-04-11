@@ -19,6 +19,7 @@ body{
   align-items:flex-start; 
   padding-top:250px; /* Sun-এর নিচে buttons রাখতে adjust */
   position:relative;
+  z-index:0;
 }
 
 canvas#solarBg{
@@ -315,7 +316,7 @@ button{
 
   border:1px solid rgba(255,255,255,0.2);
 
-  z-index:1000;
+  z-index:10;
 }
 
 .logo{
@@ -475,7 +476,7 @@ onAuthStateChanged(auth, async (u) => {
 
 window.openProfile = async function (force=false) {
   if (!user) return;
-
+  
   document.getElementById("profileModal").style.display = "flex";
 
   const snap = await getDoc(doc(db, "users", user.uid));
