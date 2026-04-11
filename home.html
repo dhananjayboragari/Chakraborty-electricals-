@@ -60,7 +60,7 @@ canvas#solarBg{
 
 a{text-decoration:none;color:black;display:block;}
 
-/* ✅ PROFILE BUTTON NEW DESIGN */
+/* ✅ PROFILE BUTTON (AUTO SIZE FIX) */
 #profileBtn{
   position:fixed;
   top:8px;
@@ -70,41 +70,31 @@ a{text-decoration:none;color:black;display:block;}
   border:none;
   border-radius:12px;
 
-  width:60px;
-  padding:6px 4px;
+  padding:6px 10px;
 
   cursor:pointer;
   z-index:999;
 
   display:flex;
-  flex-direction:column;
   align-items:center;
-  justify-content:center;
+  gap:6px;
 
-  font-size:10px;
-  gap:2px;
-}
+  font-size:11px;
 
-#profileIcon{
-  font-size:18px;
-  line-height:18px;
-}
+  width:auto;
+  min-width:50px;
+  max-width:150px;
 
-#profileName{
-  font-size:9px;
   white-space:nowrap;
-  max-width:55px;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
 
 /* MODAL */
 #profileModal{
+  display:none;
   position:fixed;
   top:0;left:0;
   width:100%;height:100%;
   background:rgba(0,0,0,0.6);
-  display:none;
   justify-content:center;
   align-items:center;
 }
@@ -158,7 +148,6 @@ button{
   border-radius:12px;
   text-align:center;
   width:280px;
-  animation:pop 0.3s ease;
 }
 
 .popupBox button{
@@ -170,10 +159,6 @@ button{
   border-radius:8px;
 }
 
-@keyframes pop{
-  from{transform:scale(0.7);opacity:0;}
-  to{transform:scale(1);opacity:1;}
-}
 </style>
 </head>
 
@@ -181,8 +166,7 @@ button{
 
 <!-- ✅ PROFILE BUTTON -->
 <button id="profileBtn" onclick="openProfile()">
-  <div id="profileIcon">👤</div>
-  <div id="profileName">Profile</div>
+  👤 <span id="profileName">Profile</span>
 </button>
 
 <!-- PROFILE MODAL -->
@@ -260,10 +244,8 @@ onAuthStateChanged(auth, async (u) => {
 
     if (snap.exists()) {
       const data = snap.data();
-
-      const name = data.name || "Profile";
-
-      document.getElementById("profileName").innerText = name;
+      document.getElementById("profileName").innerText =
+        data.name ? data.name : "Profile";
     }
   }
 });
@@ -281,6 +263,9 @@ window.openProfile = async function () {
     document.getElementById("phone").value = data.phone || "";
     document.getElementById("address").value = data.address || "";
   }
+
+  document.getElementById("email").innerText = "Email: " + user.email;
+  document.getElementById("uid").innerText = "UID: " + user.uid;
 };
 
 window.saveProfile = async function () {
@@ -296,7 +281,7 @@ window.saveProfile = async function () {
   document.getElementById("profileName").innerText =
     document.getElementById("name").value || "Profile";
 
-  showPopup("Profile Updated!");
+  showPopup("Profile Saved!");
   document.getElementById("profileModal").style.display = "none";
 };
 
@@ -315,7 +300,7 @@ window.closePopup = function(){
 </script>
 
 <script>
-// background unchanged
+// background (unchanged)
 const canvas = document.getElementById("solarBg");
 const ctx = canvas.getContext("2d");
 
