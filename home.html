@@ -173,7 +173,7 @@ button{
   display:none;
   justify-content:center;
   align-items:center;
-  z-index:2000;
+  z-index:100000;
 }
 
 .popupBox{
@@ -476,9 +476,11 @@ onAuthStateChanged(auth, async (u) => {
 
 window.openProfile = async function (force=false) {
   if (!user) return;
-  
-  document.getElementById("profileModal").style.display = "flex";
 
+  document.getElementById("profileModal").style.display = "flex";
+  
+
+  document.body.style.overflow = "hidden";
   const snap = await getDoc(doc(db, "users", user.uid));
 
   if (snap.exists()) {
@@ -516,6 +518,7 @@ window.saveProfile = async function () {
 
 window.closeProfile = function () {
   document.getElementById("profileModal").style.display = "none";
+  document.body.style.overflow = "auto";
 };
 
 window.showPopup = function(msg){
