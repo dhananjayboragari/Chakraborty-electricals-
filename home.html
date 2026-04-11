@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submission Page</title>
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:20px;
+  color:#fff;
+
+  background: url("https://i.ibb.co/sdNSg0QZ/Amazing-Wallpapers-For-Phone.jpg") no-repeat center center fixed;
+  background-size:cover;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.05);
+  z-index:-1;
+}
+
+.container{
+  display:flex;
+  flex-direction:column;
+  gap:12px; 
+  max-width:400px; 
+  width:100%;
+  margin:auto;
+  margin-top:60px;
+}
+
+.card-box{position:relative;}
+
+.card-border{
+  padding:1.5px;
+  border-radius:20px;
+  background: linear-gradient(90deg, #FF7F50, #FF6347);
+  transition: transform 0.3s ease;
+}
+
+.card-border:hover{
+  transform: scale(1.05);
+}
+
+.card-btn{
+  background:#ffffff;
+  border-radius:16px;
+  padding:0 8px;
+  width:100%;
+  height:120px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,0.25);
+}
+
+.card-btn img{
+  max-width:70%;
+  max-height:70%;
+  object-fit:contain;
+  margin-bottom:8px;
+}
+
+.card-btn h3{
+  margin:0;
+  font-size:16px;
+  color:#222;
+  text-align:center;
+}
+
+.loader{
+  width:0%;
+  height:5px;
+  border-radius:5px;
+  margin-top:6px;
+  background:linear-gradient(90deg,#00ffcc,#ff00ff,#00ffcc);
+  animation:loaderFlash 1.2s linear infinite;
+  background-size:200%;
+}
+
+@keyframes loaderFlash{
+  0%{background-position:0%}
+  100%{background-position:200%}
+}
+
+a{text-decoration:none;color:black;display:block;}
+
+/* HEADER SAME */
+.page-header{
+  position:fixed;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:100;
+  width:95%;
+  max-width:900px;
+  padding:14px 26px;
+  border-radius:40px;
+  background: linear-gradient(270deg,#00c6ff,#7b2ff7,#ff4d88,#ff7f50,#00c6ff);
+  background-size:400% 400%;
+  animation: gradientFlow 8s ease infinite;
+  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  text-align:center;
+}
+
+.page-header h1{
+  margin:0;
+  font-size:28px;
+  color:#fff;
+}
+
+/* PROFILE NAME DISPLAY (optional if you add later) */
+#profileName{
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<header class="page-header">
+  <h1>Welcome to Dhupguri CCC</h1>
+</header>
+
+<div class="container">
+
+<div class="card-box">
+<a href="nsc related submission.html" onclick="startLoad(event,this)">
+<div class="card-border">
+<div class="card-btn">
+<img src="https://i.ibb.co/40XBqT3/home-logo-design-template-18f0f2043869d72f86eb721a8c49c2a0-screen.jpg">
+<h3>NSC RELATED SUBMISSION</h3>
+</div>
+</div>
+<div class="loader"></div>
+</a>
+</div>
+
+<div class="card-box">
+<a href="maintenance related submission.html" onclick="startLoad(event,this)">
+<div class="card-border">
+<div class="card-btn">
+<img src="https://i.ibb.co/cS5RxkYh/image-7bb722d0.png">
+<h3>MAINTENANCE RELATED SUBMISSION</h3>
+</div>
+</div>
+<div class="loader"></div>
+</a>
+</div>
+
+<div class="card-box">
+<a href="duare sarkar related.html" onclick="startLoad(event,this)">
+<div class="card-border">
+<div class="card-btn">
+<img src="https://i.ibb.co/kVZZ7bFs/1608928703-duare-sarkar.jpg">
+<h3>DUARE SARKAR RELATED</h3>
+</div>
+</div>
+<div class="loader"></div>
+</a>
+</div>
+
+<div class="card-box">
+<a href="all estimate submission.html" onclick="startLoad(event,this)">
+<div class="card-border">
+<div class="card-btn">
+<img src="https://i.ibb.co/Z69dW15f/pngtree-real-estimate-logo-vector-png-image-6667830.png">
+<h3>ALL ESTIMATE SUBMISSION</h3>
+</div>
+</div>
+<div class="loader"></div>
+</a>
+</div>
+
+<div class="card-box">
+<a href="meter replacement.html" onclick="startLoad(event,this)">
+<div class="card-border">
+<div class="card-btn">
+<img src="https://i.ibb.co/HfXJz8mC/creative-elegant-minimalistic-logo-design-vector-technology-software-company-1287271-45842.jpg">
+<h3>METER REPLACEMENT</h3>
+</div>
+</div>
+<div class="loader"></div>
+</a>
+</div>
+
+<div class="card-box">
+<a href="download.html" onclick="startLoad(event,this)">
+<div class="card-border">
+<div class="card-btn">
+<img src="https://i.ibb.co/PvhX5Z3x/Screenshot-20260305-221032-Chat-GPT-removebg-preview-2.png">
+<h3>DOWNLOAD</h3>
+</div>
+</div>
+<div class="loader"></div>
+</a>
+</div>
+
+<div class="card-box">
+<a href="send feedback.html" onclick="startLoad(event,this)">
+<div class="card-border">
+<div class="card-btn">
+<img src="https://i.ibb.co/DPRJvfRh/570.png">
+<h3>SEND FEEDBACK</h3>
+</div>
+</div>
+<div class="loader"></div>
+</a>
+</div>
+
+<div class="card-box">
+<a href="contact us.html" onclick="startLoad(event,this)">
+<div class="card-border">
+<div class="card-btn">
+<img src="https://i.ibb.co/q3Zt54rR/images.jpg">
+<h3>CONTACT US</h3>
+</div>
+</div>
+<div class="loader"></div>
+</a>
+</div>
+
+</div>
+
+<script>
+function startLoad(e, el){
+  e.preventDefault();
+  let loader = el.querySelector(".loader");
+  let width = 0;
+
+  let iframe = document.createElement("iframe");
+  iframe.src = el.href;
+  iframe.style.display = "none";
+  document.body.appendChild(iframe);
+
+  let run = setInterval(()=>{
+    if(width < 60) width += 0.8;
+    else if(width < 85) width += 0.3;
+    else if(width < 90) width += 0.15;
+    else if(width < 95) width += 0.05;
+
+    loader.style.width = width + "%";
+  },120);
+
+  iframe.onload = function(){
+    clearInterval(run);
+    loader.style.width = "100%";
+    window.location.href = el.href;
+    iframe.remove();
+  }
+}
+</script>
+
+<!-- 🔥 FIREBASE + PROFILE SYSTEM -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZd10BUgRR9IEQ2kENQ_bXZiThegHRY-I",
+  authDomain: "dhupguri-ccc.firebaseapp.com",
+  projectId: "dhupguri-ccc",
+  storageBucket: "dhupguri-ccc.firebasestorage.app",
+  messagingSenderId: "278611213070",
+  appId: "1:278611213070:web:f9652c7965f472164c355f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 🔥 PROFILE LOGIC
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+
+  if (snap.exists()) {
+    const data = snap.data();
+
+    console.log("User Profile:", data);
+
+    // optional future use
+    // document.getElementById("profileName").innerText = data.name;
+  }
+});
+</script>
+
+</body>
+</html>
