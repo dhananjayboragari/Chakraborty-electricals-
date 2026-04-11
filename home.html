@@ -1,121 +1,104 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Submission Page</title>
 
 <style>
-*{box-sizing:border-box;}
-
 body{
   margin:0;
   font-family:Arial;
   min-height:100vh;
+  overflow:hidden;
+  background:#0f2027;
+  color:white;
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  padding:20px;
-  background:url("https://i.ibb.co/sdNSg0QZ/Amazing-Wallpapers-For-Phone.jpg") no-repeat center center fixed;
-  background-size:cover;
+  padding-top:250px;
 }
 
-/* HEADER */
-.page-header{
+/* BACKGROUND */
+canvas#solarBg{
   position:fixed;
-  top:10px;
-  left:50%;
-  transform:translateX(-50%);
-  width:95%;
-  max-width:900px;
-  padding:14px;
-  border-radius:40px;
-  background:linear-gradient(270deg,#00c6ff,#7b2ff7,#ff4d88,#ff7f50);
-  text-align:center;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
 }
 
-/* 🔥 PROFILE BUTTON (MODERN UI) */
-#profileBtn{
-  position:fixed;
-  top:15px;
-  right:15px;
-
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  border:none;
-  cursor:pointer;
-
-  background:rgba(255,255,255,0.12);
-  backdrop-filter:blur(10px);
-
-  box-shadow:0 0 15px rgba(0,255,204,0.5);
-  font-size:20px;
-
-  transition:0.25s;
-}
-
-#profileBtn:hover{
-  transform:scale(1.1) rotate(5deg);
-  box-shadow:0 0 25px rgba(0,255,204,0.9);
-}
-
-/* name tag */
-#profileNameTag{
-  position:fixed;
-  top:70px;
-  right:10px;
-  font-size:11px;
-  padding:4px 8px;
-  border-radius:10px;
-  background:rgba(0,0,0,0.35);
-  backdrop-filter:blur(8px);
-  color:#fff;
-  max-width:120px;
-  overflow:hidden;
-}
-
-/* container */
+/* CONTAINER */
 .container{
   display:flex;
   flex-direction:column;
-  gap:12px;
-  max-width:400px;
+  gap:20px;
+  max-width:360px;
   width:100%;
-  margin-top:80px;
 }
 
-/* cards (FULL RESTORED STYLE) */
+/* CARD */
 .card-border{
-  padding:2px;
-  border-radius:18px;
-  background:linear-gradient(90deg,#ff7f50,#ff6347);
+  padding:1.5px;
+  border-radius:20px;
+  background:linear-gradient(270deg,red,orange,yellow,green,cyan,blue,violet);
+  background-size:400% 400%;
+  animation:borderMove 12s linear infinite;
+}
+
+@keyframes borderMove{
+  100%{background-position:400%}
 }
 
 .card-btn{
-  background:#fff;
+  background:white;
+  border-radius:16px;
+  padding:18px;
+  text-align:center;
+  color:black;
+}
+
+.card-btn img{width:55px;}
+
+a{text-decoration:none;color:black;display:block;}
+
+/* PROFILE BUTTON */
+#profileBtn{
+  position:fixed;
+  top:12px;
+  right:12px;
+  padding:6px;
   border-radius:14px;
-  height:110px;
+  border:none;
+  cursor:pointer;
+  z-index:999;
   display:flex;
   flex-direction:column;
-  justify-content:center;
   align-items:center;
+  background:rgba(0,255,204,0.15);
+  border:1px solid rgba(0,255,204,0.4);
+  backdrop-filter:blur(10px);
 }
 
-.card-btn img{
-  width:40px;
-  height:40px;
-  object-fit:contain;
-  margin-bottom:5px;
+#profileBtn .icon{
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:linear-gradient(135deg,#00ffcc,#0077ff);
 }
 
-.card-btn h3{
-  font-size:13px;
-  margin:0;
-  color:#222;
+#profileName{
+  font-size:10px;
+  max-width:80px;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-/* modal */
+/* MODAL */
 #profileModal{
   display:none;
   position:fixed;
@@ -123,46 +106,72 @@ body{
   background:rgba(0,0,0,0.6);
   justify-content:center;
   align-items:center;
+  z-index:2000;
 }
 
 #profileBox{
-  width:320px;
-  background:#fff;
+  width:300px;
   padding:20px;
-  border-radius:15px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(12px);
+  text-align:center;
 }
 
 #profileBox input{
   width:100%;
   padding:10px;
   margin:6px 0;
+  border-radius:8px;
+  border:none;
 }
 
 button{
   width:100%;
   padding:10px;
   margin-top:8px;
+  border:none;
+  border-radius:8px;
 }
 
-.saveBtn{background:#00ffcc;border:none;}
-.closeBtn{background:red;color:#fff;border:none;}
+.saveBtn{background:#00ffcc;}
+.closeBtn{background:red;color:white;}
+
+/* POPUP */
+#customPopup{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,0.6);
+  z-index:3000;
+}
+
+.popupBox{
+  background:white;
+  color:black;
+  padding:18px;
+  border-radius:10px;
+  width:260px;
+  text-align:center;
+}
 </style>
 </head>
 
 <body>
 
-<header class="page-header">
-  <h1>Welcome to Dhupguri CCC</h1>
-</header>
-
-<!-- PROFILE UI -->
-<button id="profileBtn">👤</button>
-<div id="profileNameTag">Profile</div>
+<!-- PROFILE BUTTON -->
+<button id="profileBtn" onclick="openProfile()">
+  <div class="icon">👤</div>
+  <div id="profileName">Profile</div>
+</button>
 
 <!-- PROFILE MODAL -->
-<div id="profileModal">
-  <div id="profileBox">
-    <h3>User Profile</h3>
+<div id="profileModal" onclick="closeProfile()">
+  <div id="profileBox" onclick="event.stopPropagation()">
+
+    <h3>Profile</h3>
 
     <input id="name" placeholder="Name">
     <input id="phone" placeholder="Phone">
@@ -173,43 +182,50 @@ button{
 
     <button class="saveBtn" onclick="saveProfile()">Save</button>
     <button class="closeBtn" onclick="closeProfile()">Close</button>
+
   </div>
 </div>
 
-<!-- ALL BUTTONS (FULL RESTORED - NO MISSING) -->
-<div class="container">
-
-  <a href="nsc related submission.html"><div class="card-border"><div class="card-btn"><img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png"><h3>NSC RELATED SUBMISSION</h3></div></div></a>
-
-  <a href="maintenance related submission.html"><div class="card-border"><div class="card-btn"><img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png"><h3>MAINTENANCE RELATED SUBMISSION</h3></div></div></a>
-
-  <a href="duare sarkar related.html"><div class="card-border"><div class="card-btn"><img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png"><h3>DUARE SARKAR RELATED</h3></div></div></a>
-
-  <a href="all estimate submission.html"><div class="card-border"><div class="card-btn"><img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png"><h3>ALL ESTIMATE SUBMISSION</h3></div></div></a>
-
-  <a href="meter replacement.html"><div class="card-border"><div class="card-btn"><img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png"><h3>METER REPLACEMENT</h3></div></div></a>
-
-  <a href="download.html"><div class="card-border"><div class="card-btn"><img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png"><h3>DOWNLOAD</h3></div></div></a>
-
-  <a href="send feedback.html"><div class="card-border"><div class="card-btn"><img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png"><h3>SEND FEEDBACK</h3></div></div></a>
-
-  <a href="contact us.html"><div class="card-border"><div class="card-btn"><img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png"><h3>CONTACT US</h3></div></div></a>
-
+<!-- POPUP -->
+<div id="customPopup">
+  <div class="popupBox">
+    <p id="popupText"></p>
+    <button onclick="closePopup()">OK</button>
+  </div>
 </div>
 
-<!-- FIREBASE FULL LOGIC -->
+<canvas id="solarBg"></canvas>
+
+<div class="container">
+  <a href="submit report.html">
+    <div class="card-border">
+      <div class="card-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png">
+        <h3>Submit Report</h3>
+      </div>
+    </div>
+  </a>
+
+  <a href="view report.html">
+    <div class="card-border">
+      <div class="card-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png">
+        <h3>All Reports</h3>
+      </div>
+    </div>
+  </a>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCZd10BUgRR9IEQ2kENQ_bXZiThegHRY-I",
-  authDomain: "dhupguri-ccc.firebaseapp.com",
-  projectId: "dhupguri-ccc",
-  storageBucket: "dhupguri-ccc.firebasestorage.app",
-  messagingSenderId: "278611213070",
-  appId: "1:278611213070:web:f9652c7965f472164c355f"
+  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+  authDomain: "chakraborty-ele-login.firebaseapp.com",
+  projectId: "chakraborty-ele-login",
+  appId: "1:414542805581:web:cfd13593767abbb51cba04"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -218,36 +234,51 @@ const db = getFirestore(app);
 
 let user = null;
 
-/* AUTO PROFILE CHECK (IMPORTANT LOGIC) */
-onAuthStateChanged(auth, async (u)=>{
-  if(!u) return;
+onAuthStateChanged(auth, async (u) => {
+  if (!u) return;
 
   user = u;
 
-  const snap = await getDoc(doc(db,"users",user.uid));
-  const data = snap.exists() ? snap.data() : null;
+  const snap = await getDoc(doc(db, "users", user.uid));
 
-  email.innerText = user.email;
-  uid.innerText = user.uid;
+  if (snap.exists()) {
+    const data = snap.data();
 
-  profileNameTag.innerText = data?.name || "Profile";
+    document.getElementById("profileName").innerText =
+      data.name || "Profile";
 
-  const isComplete = data?.name && data?.phone && data?.address;
+    if (!data.name || !data.phone || !data.address) {
+      setTimeout(() => openProfile(true), 500);
+    }
 
-  if(!isComplete){
-    setTimeout(()=>openProfile(true),600);
+  } else {
+    setTimeout(() => openProfile(true), 500);
   }
 });
 
-/* OPEN */
-window.openProfile = function(force=false){
-  profileModal.style.display="flex";
-  if(force) alert("Please complete your profile!");
+window.openProfile = async function(force=false){
+  if (!user) return;
+
+  document.getElementById("profileModal").style.display = "flex";
+
+  const snap = await getDoc(doc(db,"users",user.uid));
+
+  if (snap.exists()){
+    const d = snap.data();
+    name.value = d.name || "";
+    phone.value = d.phone || "";
+    address.value = d.address || "";
+  }
+
+  email.innerText = "Email: " + user.email;
+  uid.innerText = "UID: " + user.uid;
+
+  if(force){
+    showPopup("Please complete your profile!");
+  }
 };
 
-/* SAVE */
 window.saveProfile = async function(){
-
   await setDoc(doc(db,"users",user.uid),{
     name:name.value,
     phone:phone.value,
@@ -256,18 +287,50 @@ window.saveProfile = async function(){
     uid:user.uid
   },{merge:true});
 
-  profileNameTag.innerText = name.value;
+  profileName.innerText = name.value || "Profile";
 
+  showPopup("Profile Saved!");
   closeProfile();
-  alert("Profile Saved!");
 };
 
-/* CLOSE */
 window.closeProfile = function(){
-  profileModal.style.display="none";
+  document.getElementById("profileModal").style.display="none";
 };
 
-document.getElementById("profileBtn").onclick = ()=>openProfile();
+window.showPopup = function(msg){
+  popupText.innerText = msg;
+  customPopup.style.display="flex";
+};
+
+window.closePopup = function(){
+  customPopup.style.display="none";
+};
+</script>
+
+<script>
+const canvas=document.getElementById("solarBg");
+const ctx=canvas.getContext("2d");
+
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let sun={x:canvas.width/2,y:100,r:80};
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  let g=ctx.createRadialGradient(sun.x,sun.y,0,sun.x,sun.y,sun.r);
+  g.addColorStop(0,"#FFD700");
+  g.addColorStop(1,"transparent");
+
+  ctx.fillStyle=g;
+  ctx.beginPath();
+  ctx.arc(sun.x,sun.y,sun.r,0,Math.PI*2);
+  ctx.fill();
+
+  requestAnimationFrame(draw);
+}
+draw();
 </script>
 
 </body>
