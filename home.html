@@ -190,7 +190,7 @@ button{
 
 
 .card-border{
-  transition:0.3s;
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card-border:hover{
@@ -198,8 +198,52 @@ button{
   box-shadow:0 10px 25px rgba(0,0,0,0.3);
 }
 
+.card-border:active{
+  transform:scale(0.97);
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
 
 
+
+
+
+
+  
+
+
+.card-btn{
+  position:relative;
+  overflow:hidden;
+}
+
+.card-btn:after{
+  content:"";
+  position:absolute;
+  width:0;
+  height:0;
+  background:rgba(255,255,255,0.4);
+  border-radius:50%;
+  transform:scale(0);
+  opacity:0;
+  transition:0.5s;
+  left:50%;
+  top:50%;
+}
+
+.card-btn:active:after{
+  width:200px;
+  height:200px;
+  transform:scale(1);
+  opacity:1;
+  left:50%;
+  top:50%;
+}
+
+
+
+
+
+  
   
 
 /* MOBILE RESPONSIVE */
