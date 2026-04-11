@@ -356,10 +356,13 @@ a{
 
 
 <!-- PROFILE BUTTON -->
-<button id="profileBtn" onclick="openProfile()">
+<button id="profileBtn">
   <div class="icon">👨‍💼</div>
   <div id="profileName">Profile</div>
 </button>
+
+
+  
 
 <!-- PROFILE MODAL -->
 <div id="profileModal" onclick="closeProfile()">
@@ -548,7 +551,12 @@ const db = getFirestore(app);
 
 let user = null;
 
+// DEBUG
+console.log("JS Loaded ✅");
+
 onAuthStateChanged(auth, async (u) => {
+  console.log("User:", u);
+
   if (u) {
     user = u;
 
@@ -570,8 +578,20 @@ onAuthStateChanged(auth, async (u) => {
   }
 });
 
+// ✅ BUTTON CLICK FIX
+document.getElementById("profileBtn").addEventListener("click", () => {
+  if(!user){
+    alert("Login required ❌");
+    return;
+  }
+  openProfile();
+});
+
 window.openProfile = async function(force=false){
-  if (!user) return;
+  if (!user){
+    alert("User not logged in ❌");
+    return;
+  }
 
   document.getElementById("profileModal").style.display = "flex";
   document.body.style.overflow = "hidden";
