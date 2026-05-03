@@ -448,11 +448,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+  const db = getFirestore(app);
 let user = null;
 
-let selectedImageBase64 = "";
-
-let user = null;
+window.selectedImageBase64 = "";
 
 onAuthStateChanged(auth, async (u) => {
   if (u) {
@@ -519,12 +518,12 @@ window.saveProfile = async function () {
   let imageUrl = "";
 
   // 👉 যদি নতুন image select করা থাকে
-  if(selectedImageBase64){
+  if(window.selectedImageBase64){
 
     const apiKey = "a5d421a5cbe17ebcfd2e0b90915c2501";
 
     const formData = new FormData();
-    formData.append("image", selectedImageBase64);
+    formData.append("image", window.selectedImageBase64);
 
     const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
       method: "POST",
@@ -561,7 +560,7 @@ window.saveProfile = async function () {
   document.getElementById("profileName").innerText =
     document.getElementById("name").value || "Profile";
 
-  selectedImageBase64 = "";
+  window.selectedImageBase64 = "";
 
   alert("Profile Saved!");
   document.getElementById("profileModal").style.display = "none";
@@ -667,7 +666,7 @@ window.addEventListener("load", () => {
     const reader = new FileReader();
 
     reader.onloadend = function(){
-      selectedImageBase64 = reader.result.split(',')[1];
+      window.selectedImageBase64 = reader.result.split(',')[1];
 
       document.getElementById("profileImg").src = reader.result;
       document.getElementById("profileImg").style.display = "block";
