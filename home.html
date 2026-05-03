@@ -442,7 +442,46 @@ button{
   font-size:12px;
   cursor:pointer;
 }
-  
+
+
+
+
+#loader{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+
+  display:none;
+  justify-content:center;
+  align-items:center;
+
+  z-index:200000;
+}
+
+.loaderBox{
+  text-align:center;
+  color:white;
+}
+
+.iconSpin{
+  font-size:50px;
+  animation:spin 1.2s linear infinite;
+  margin-bottom:10px;
+}
+
+#loaderText{
+  font-size:16px;
+}
+
+@keyframes spin{
+  100%{transform:rotate(360deg);}
+}
+
+
+    
                   
 </style>
 </head>
@@ -532,6 +571,18 @@ button{
     </div>
   </a>
 </div>
+
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loaderBox">
+    <div class="iconSpin">⚙️</div>
+    <p id="loaderText">Please wait...</p>
+  </div>
+</div>
+
+
+  
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -626,9 +677,18 @@ if (data.photoURL) {
   }
 };
 
-window.saveProfile = async function () {
 
+
+
+
+
+  
+window.saveProfile = async function () {
+  
+showLoader();
+document.getElementById("loaderText").innerText = "Saving profile...";
   let imageUrl = "";
+  
 
   try {
 
@@ -675,6 +735,8 @@ window.saveProfile = async function () {
       document.getElementById("defaultIcon").style.display = "none";
     }
 
+
+    hideLoader();
     // 👉 SUCCESS POPUP
     showPopup("✅ Profile saved successfully");
 
@@ -710,6 +772,18 @@ window.closeProfile = function () {
 window.closePopup = function(){
   document.getElementById("customPopup").style.display = "none";
 };
+
+
+
+function showLoader(){
+  document.getElementById("loader").style.display = "flex";
+}
+
+function hideLoader(){
+  document.getElementById("loader").style.display = "none";
+}
+
+
 
   
   
