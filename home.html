@@ -458,7 +458,7 @@ button{
   
   
 <!-- PROFILE BUTTON -->
-<button id="profileBtn" onclick="openProfile()">
+<button id="profileBtn">
   <div class="icon">
   <img id="profileImg" style="display:none; width:100%; height:100%; border-radius:50%;">
   <span id="defaultIcon">👨‍💼</span>
@@ -824,6 +824,10 @@ document.getElementById("imageUpload").addEventListener("change", function(e){
   };
 
   reader.readAsDataURL(file);
+});
+
+  document.getElementById("profileBtn").addEventListener("click", () => {
+  openProfile();
 });
   });
 
