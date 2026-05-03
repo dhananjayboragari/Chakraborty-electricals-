@@ -11,7 +11,7 @@ body{
   margin:0;
   font-family:Arial;
   min-height:100vh;
-  overflow:hidden;
+  overflow:auto;
   background:#0f2027;
   color:white;
   display:flex;
@@ -558,8 +558,10 @@ onAuthStateChanged(auth, async (u) => {
 
     const snap = await getDoc(doc(db, "users", user.uid));
 
-    if (snap.exists()) {
-      const data = snap.data();
+ // ✅ Preview image show in modal
+if (data.photoURL) {
+  document.getElementById("previewImg").src = data.photoURL;
+};
 
       // ✅ Name show
       document.getElementById("profileName").innerText =
@@ -784,13 +786,23 @@ draw();
 window.addEventListener("resize", ()=>{
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+  function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   sun.x = canvas.width/2;
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+  sun.x = canvas.width/2;
+
+  
 });
 
 
 
-window.addEventListener("load", () => {
-  document.getElementById("imageUpload").addEventListener("change", function(e){
+document.getElementById("imageUpload").addEventListener("change", function(e){
   const file = e.target.files[0];
   if(!file) return;
 
@@ -799,28 +811,23 @@ window.addEventListener("load", () => {
   reader.onloadend = function(){
     const img = reader.result;
 
-    // avatar preview
     const preview = document.getElementById("previewImg");
     preview.src = img;
 
-    // small animation
     preview.style.transform = "scale(0.8)";
     setTimeout(()=>{
       preview.style.transform = "scale(1)";
     },100);
 
-    // profile button image update
     document.getElementById("profileImg").src = img;
     document.getElementById("profileImg").style.display = "block";
     document.getElementById("defaultIcon").style.display = "none";
 
-    // base64 save
     window.selectedImageBase64 = img.split(',')[1];
   };
 
   reader.readAsDataURL(file);
 });
-
   
 
 </script>
