@@ -567,6 +567,23 @@ window.saveProfile = async function () {
 };
 
 
+window.closeProfile = function () {
+  document.getElementById("profileModal").style.display = "none";
+  document.body.style.overflow = "auto";
+};
+
+
+
+  window.showPopup = function(msg){
+  document.getElementById("popupText").innerText = msg;
+  document.getElementById("customPopup").style.display = "flex";
+};
+
+window.closePopup = function(){
+  document.getElementById("customPopup").style.display = "none";
+};
+
+  
   
 </script>
 
