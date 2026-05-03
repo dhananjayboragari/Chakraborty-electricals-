@@ -586,8 +586,16 @@ if (snap.exists()) {
 }
     
 });
+
+
+
 window.openProfile = async function (force=false) {
-  if (!user) return;
+  console.log("🔥 openProfile called");
+
+  if (!user){
+    console.log("❌ user not ready");
+    return;
+  }
 
   document.getElementById("profileModal").style.display = "flex";
   
@@ -828,7 +836,11 @@ document.getElementById("imageUpload").addEventListener("change", function(e){
 });
 
   document.getElementById("profileBtn").addEventListener("click", () => {
-  openProfile();
+  if (typeof openProfile === "function") {
+    openProfile();
+  } else {
+    alert("❌ openProfile not found");
+  }
 });
   });
 
