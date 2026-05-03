@@ -557,6 +557,7 @@ onAuthStateChanged(auth, async (u) => {
     user = u;
 
     const snap = await getDoc(doc(db, "users", user.uid));
+const snap = await getDoc(doc(db, "users", user.uid));
 
 if(snap.exists()){
   const data = snap.data();
@@ -575,6 +576,12 @@ if(snap.exists()){
   } else {
     document.getElementById("profileImg").style.display = "none";
     document.getElementById("defaultIcon").style.display = "block";
+  }
+
+  const isComplete = data.name && data.phone && data.address;
+
+  if (!isComplete) {
+    setTimeout(() => openProfile(true), 500);
   }
 }
 
