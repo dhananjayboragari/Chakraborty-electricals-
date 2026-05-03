@@ -517,55 +517,69 @@ window.saveProfile = async function () {
 
   let imageUrl = "";
 
-  // 👉 যদি নতুন image select করা থাকে
-  if(window.selectedImageBase64){
+  try {
 
-    const apiKey = "a5d421a5cbe17ebcfd2e0b90915c2501";
+    // 👉 image থাকলে upload
+    if(window.selectedImageBase64){
 
-    const formData = new FormData();
-    formData.append("image", window.selectedImageBase64);
+      const apiKey = "a5d421a5cbe17ebcfd2e0b90915c2501";
 
-    const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-      method: "POST",
-      body: formData
-    });
+      const formData = new FormData();
+      formData.append("image", window.selectedImageBase64);
 
-    const data = await res.json();
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: "POST",
+        body: formData
+      });
 
-    if(data.success){
-      imageUrl = data.data.url;
-    } else {
-      alert("Image upload failed!");
-      return;
+      const data = await res.json();
+
+      if(data.success){
+        imageUrl = data.data.url;
+      } else {
+        showPopup("❌ Image upload failed");
+        return;
+      }
     }
+
+    // 👉 Firebase save
+    await setDoc(doc(db, "users", user.uid), {
+      name: document.getElementById("name").value,
+      phone: document.getElementById("phone").value,
+      address: document.getElementById("address").value,
+      email: user.email,
+      uid: user.uid,
+      ...(imageUrl && { photoURL: imageUrl })
+    }, { merge: true });
+
+    // 👉 UI update
+    document.getElementById("profileName").innerText =
+      document.getElementById("name").value || "Profile";
+
+    if(imageUrl){
+      document.getElementById("profileImg").src = imageUrl;
+      document.getElementById("profileImg").style.display = "block";
+      document.getElementById("defaultIcon").style.display = "none";
+    }
+
+    // 👉 SUCCESS POPUP
+    showPopup("✅ Profile saved successfully");
+
+    document.getElementById("profileModal").style.display = "none";
+
+  } catch (e) {
+    console.log(e);
+
+    // 👉 ERROR POPUP
+    showPopup("❌ Something went wrong");
   }
-
-  // 👉 Firebase save
-  await setDoc(doc(db, "users", user.uid), {
-    name: document.getElementById("name").value,
-    phone: document.getElementById("phone").value,
-    address: document.getElementById("address").value,
-    email: user.email,
-    uid: user.uid,
-    ...(imageUrl && { photoURL: imageUrl })
-  }, { merge: true });
-
-  // 👉 UI update
-  if(imageUrl){
-    document.getElementById("profileImg").src = imageUrl;
-    document.getElementById("profileImg").style.display = "block";
-    document.getElementById("defaultIcon").style.display = "none";
-  }
-
-  document.getElementById("profileName").innerText =
-    document.getElementById("name").value || "Profile";
-
-  window.selectedImageBase64 = "";
-
-  alert("Profile Saved!");
-  document.getElementById("profileModal").style.display = "none";
 };
 
+
+
+
+
+  
 
 window.closeProfile = function () {
   document.getElementById("profileModal").style.display = "none";
@@ -577,6 +591,7 @@ window.closeProfile = function () {
   window.showPopup = function(msg){
   document.getElementById("popupText").innerText = msg;
   document.getElementById("customPopup").style.display = "flex";
+    setTimeout(closePopup, 2000);
 };
 
 window.closePopup = function(){
