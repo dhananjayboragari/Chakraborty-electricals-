@@ -378,14 +378,17 @@ button{
   
 <!-- PROFILE BUTTON -->
 <button id="profileBtn" onclick="openProfile()">
-  <div class="icon">👨‍💼</div>
+  <div class="icon">
+  <img id="profileImg" style="display:none; width:100%; height:100%; border-radius:50%;">
+  <span id="defaultIcon">👨‍💼</span>
+</div>
   <div id="profileName">Profile</div>
 </button>
 
 <!-- PROFILE MODAL -->
 <div id="profileModal" onclick="closeProfile()">
   <div id="profileBox" onclick="event.stopPropagation()">
-
+<input type="file" id="imageUpload">
     <h3>Profile</h3>
 
     <input id="name" placeholder="Name">
@@ -447,9 +450,21 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let user = null;
+let selectedImageBase64 = "";
 
 onAuthStateChanged(auth, async (u) => {
+
+
+if (data.photoURL) {
+  document.getElementById("profileImg").src = data.photoURL;
+  document.getElementById("profileImg").style.display = "block";
+  document.getElementById("defaultIcon").style.display = "none";
+}
+
+
+
+
+  
   if (u) {
     user = u;
 
@@ -501,34 +516,59 @@ window.openProfile = async function (force=false) {
 
 window.saveProfile = async function () {
 
+  let imageUrl = "";
+
+  // 👉 যদি নতুন image select করা থাকে
+  if(selectedImageBase64){
+
+    const apiKey = "a5d421a5cbe17ebcfd2e0b90915c2501";
+
+    const formData = new FormData();
+    formData.append("image", selectedImageBase64);
+
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+      imageUrl = data.data.url;
+    } else {
+      alert("Image upload failed!");
+      return;
+    }
+  }
+
+  // 👉 Firebase save
   await setDoc(doc(db, "users", user.uid), {
     name: document.getElementById("name").value,
     phone: document.getElementById("phone").value,
     address: document.getElementById("address").value,
     email: user.email,
-    uid: user.uid
+    uid: user.uid,
+    ...(imageUrl && { photoURL: imageUrl })
   }, { merge: true });
+
+  // 👉 UI update
+  if(imageUrl){
+    document.getElementById("profileImg").src = imageUrl;
+    document.getElementById("profileImg").style.display = "block";
+    document.getElementById("defaultIcon").style.display = "none";
+  }
 
   document.getElementById("profileName").innerText =
     document.getElementById("name").value || "Profile";
 
-  showPopup("Profile Saved!");
+  selectedImageBase64 = "";
+
+  alert("Profile Saved!");
   document.getElementById("profileModal").style.display = "none";
 };
 
-window.closeProfile = function () {
-  document.getElementById("profileModal").style.display = "none";
-  document.body.style.overflow = "auto";
-};
 
-window.showPopup = function(msg){
-  document.getElementById("popupText").innerText = msg;
-  document.getElementById("customPopup").style.display = "flex";
-}
-
-window.closePopup = function(){
-  document.getElementById("customPopup").style.display = "none";
-};
+  
 </script>
 
 <script>
@@ -618,6 +658,26 @@ window.addEventListener("resize", ()=>{
 });
 
 
+
+document.getElementById("imageUpload").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onloadend = function(){
+    selectedImageBase64 = reader.result.split(',')[1];
+
+    // preview show
+    document.getElementById("profileImg").src = reader.result;
+    document.getElementById("profileImg").style.display = "block";
+    document.getElementById("defaultIcon").style.display = "none";
+  }
+
+  reader.readAsDataURL(file);
+});
+
+  
 
 </script>
 
