@@ -600,7 +600,11 @@ window.openProfile = async function (force=false) {
 
   if (snap.exists()) {
     const data = snap.data();
-
+    
+// ✅ Preview image show in modal
+if (data.photoURL) {
+  document.getElementById("previewImg").src = data.photoURL;
+}
     document.getElementById("name").value = data.name || "";
     document.getElementById("phone").value = data.phone || "";
     document.getElementById("address").value = data.address || "";
