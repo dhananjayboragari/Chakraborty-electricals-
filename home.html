@@ -558,10 +558,25 @@ onAuthStateChanged(auth, async (u) => {
 
     const snap = await getDoc(doc(db, "users", user.uid));
 
- // ✅ Preview image show in modal
-if (data.photoURL) {
-  document.getElementById("previewImg").src = data.photoURL;
-};
+if(snap.exists()){
+  const data = snap.data();
+
+  if (data.photoURL) {
+    document.getElementById("previewImg").src = data.photoURL;
+  }
+
+  document.getElementById("profileName").innerText =
+    data.name ? data.name : "Profile";
+
+  if (data.photoURL) {
+    document.getElementById("profileImg").src = data.photoURL;
+    document.getElementById("profileImg").style.display = "block";
+    document.getElementById("defaultIcon").style.display = "none";
+  } else {
+    document.getElementById("profileImg").style.display = "none";
+    document.getElementById("defaultIcon").style.display = "block";
+  }
+}
 
       // ✅ Name show
       document.getElementById("profileName").innerText =
@@ -800,10 +815,9 @@ resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
   
-});
 
 
-
+window.addEventListener("DOMContentLoaded", ()=>{
 document.getElementById("imageUpload").addEventListener("change", function(e){
   const file = e.target.files[0];
   if(!file) return;
@@ -830,7 +844,7 @@ document.getElementById("imageUpload").addEventListener("change", function(e){
 
   reader.readAsDataURL(file);
 });
-  
+  });
 
 </script>
 
