@@ -787,19 +787,17 @@ function draw(){
 
 draw();
 
-window.addEventListener("resize", ()=>{
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  function resizeCanvas(){
+function resizeCanvas(){
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   sun.x = canvas.width/2;
 }
 
+// first time call
 resizeCanvas();
+
+// resize হলে call
 window.addEventListener("resize", resizeCanvas);
-  sun.x = canvas.width/2;
 
   
 });
