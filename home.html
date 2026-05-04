@@ -626,7 +626,13 @@ onAuthStateChanged(auth, async (u) => {
         document.getElementById("defaultIcon").style.display = "block";
       }
 
-      const isComplete = data.name && data.phone && data.address;
+      const missingFields = getMissingFields(data);
+
+if (missingFields.length > 0) {
+  setTimeout(() => {
+    openProfile(true, missingFields);
+  }, 500);
+}
 
       if (!isComplete) {
         setTimeout(() => openProfile(true), 500);
@@ -643,7 +649,7 @@ onAuthStateChanged(auth, async (u) => {
 
 
 
-window.openProfile = async function (force=false) {
+window.openProfile = async function (force=false, missingFields=[]) {
   console.log("🔥 openProfile called");
 
   if (!user){
@@ -672,9 +678,12 @@ if (data.photoURL) {
   document.getElementById("email").innerText = "Email: " + user.email;
   document.getElementById("uid").innerText = "UID: " + user.uid;
 
-  if (force) {
-    showPopup("Please complete your profile!");
-  }
+if (force) {
+  let msg = "⚠️ Complete your profile\n\nMissing:\n";
+  msg += missingFields.join("\n");
+
+  showPopup(msg);
+}
 };
 
 
@@ -748,6 +757,21 @@ document.getElementById("loaderText").innerText = "Saving profile...";
     // 👉 ERROR POPUP
     showPopup("❌ Something went wrong");
   }
+
+// ✅ save এর পর আবার check
+const newData = {
+  name: document.getElementById("name").value,
+  phone: document.getElementById("phone").value,
+  address: document.getElementById("address").value,
+  photoURL: document.getElementById("profileImg").src
+};
+
+const missingFields = getMissingFields(newData);
+
+if(missingFields.length > 0){
+  showPopup("⚠️ Still missing:\n" + missingFields.join(", "));
+}
+  
 };
 
 
@@ -912,6 +936,20 @@ document.getElementById("imageUpload").addEventListener("change", function(e){
   reader.readAsDataURL(file);
 });
   });
+
+
+
+function getMissingFields(data){
+  let missing = [];
+
+  if(!data.name) missing.push("Name");
+  if(!data.phone) missing.push("Phone");
+  if(!data.address) missing.push("Address");
+  if(!data.photoURL) missing.push("Profile Image");
+
+  return missing;
+}
+  
 
 </script>
 
