@@ -619,14 +619,21 @@ function resetTimer() {
   }
 }
 
-function logoutUser() {
-  localStorage.setItem("logout_event", Date.now()); // ADD THIS
+function logoutUser(){
 
-  signOut(auth).then(() => {
-    window.isLoggedOut = true;
-    showPopup("⚠️ No activity detected\nClick OK to login again");
-  });
+  localStorage.setItem("logout_event", Date.now());
+
+  window.isLoggedOut = true;
+
+  showPopup("⚠️ No activity detected\nClick OK to login again");
+
+  setTimeout(() => {
+    signOut(auth).then(() => {
+      console.log("Logged out");
+    });
+  }, 500);
 }
+  
   ["click","mousemove","keydown","scroll","touchstart"].forEach(event => {
   document.addEventListener(event, resetTimer);
 });
