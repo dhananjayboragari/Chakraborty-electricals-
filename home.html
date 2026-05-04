@@ -620,12 +620,15 @@ function resetTimer() {
 }
 
 function logoutUser() {
-  localStorage.setItem("logout_event", Date.now()); 
+
+  window.isLoggedOut = true;
 
   signOut(auth).then(() => {
-    window.isLoggedOut = true;
+
     showPopup("⚠️ No activity detected\nClick OK to login again");
+
   });
+
 }
   
   ["click","mousemove","keydown","scroll","touchstart"].forEach(event => {
@@ -829,11 +832,14 @@ window.closeProfile = function () {
 };
 
 window.closePopup = function(){
+
   document.getElementById("customPopup").style.display = "none";
 
   if(window.isLoggedOut){
+    window.isLoggedOut = false;
     window.location.href = "index.html";
   }
+
 };
 
 
@@ -847,11 +853,7 @@ function hideLoader(){
 }
 
 
-window.addEventListener("storage", (event) => {
-  if (event.key === "logout_event") {
-    window.location.href = "index.html";
-  }
-});
+
   
   
 </script>
