@@ -599,11 +599,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
   const db = getFirestore(app);
-  window.openProfile = openProfile;
-window.closeProfile = closeProfile;
-window.saveProfile = saveProfile;
-window.showPopup = showPopup;
-window.closePopup = closePopup;
+ 
 let user = null;
 
 let inactivityTime = 60000; // 3 min
