@@ -1002,6 +1002,20 @@ function getMissingFields(data){
 }
   
 
+
+
+window.addEventListener("load", () => {
+  if(localStorage.getItem("showLogoutPopup") === "true"){
+
+    window.isLoggedOut = true; // 👈 important
+
+    showPopup("⚠️ Session expired\nClick OK to login again");
+
+    localStorage.removeItem("showLogoutPopup");
+  }
+});
+
+  
 </script>
 
 </body>
