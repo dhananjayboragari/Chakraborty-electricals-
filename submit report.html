@@ -166,13 +166,13 @@ let timeout;
 function logoutUser(){
   localStorage.setItem("showLogoutPopup", "true"); // 👈 ADD
   localStorage.setItem("logout_event", Date.now());
-  window.location.href = "index.html";
+  window.location.href = "home.html";
 }
 
 // ===== STORAGE SYNC (সব tab logout) =====
 window.addEventListener("storage", (event) => {
   if (event.key === "logout_event") {
-    window.location.href = "index.html";
+    window.location.href = "home.html";
   }
 });
 
