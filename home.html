@@ -600,8 +600,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
   const db = getFirestore(app);
 
-  onAuthStateChanged(auth, (u) => {
+onAuthStateChanged(auth, (u) => {
   if (!u) {
+
+    // 🔥 যদি logout popup already চলছে, redirect করো না
+    if(window.isLoggedOut){
+      return;
+    }
+
     window.location.href = "index.html";
   }
 });
