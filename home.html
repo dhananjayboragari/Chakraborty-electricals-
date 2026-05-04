@@ -599,6 +599,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
   const db = getFirestore(app);
+
+  onAuthStateChanged(auth, (u) => {
+  if (!u) {
+    window.location.href = "index.html";
+  }
+});
  
 let user = null;
 
@@ -614,6 +620,8 @@ function resetTimer() {
 }
 
 function logoutUser() {
+  localStorage.setItem("logout_event", Date.now()); // ADD THIS
+
   signOut(auth).then(() => {
     window.isLoggedOut = true;
     showPopup("⚠️ No activity detected\nClick OK to login again");
@@ -838,7 +846,11 @@ function hideLoader(){
 }
 
 
-
+window.addEventListener("storage", (event) => {
+  if (event.key === "logout_event") {
+    window.location.href = "index.html";
+  }
+});
   
   
 </script>
