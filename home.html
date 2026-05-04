@@ -611,9 +611,8 @@ function resetTimer() {
 
 function logoutUser() {
   signOut(auth).then(() => {
-    showPopup("⚠️ No activity detected\nLogging out...");
-
-    
+    window.isLoggedOut = true;
+    showPopup("⚠️ No activity detected\nClick OK");
   });
 }
   ["click","mousemove","keydown","scroll","touchstart"].forEach(event => {
@@ -818,6 +817,10 @@ window.closeProfile = function () {
 
 window.closePopup = function(){
   document.getElementById("customPopup").style.display = "none";
+
+  if(window.isLoggedOut){
+    window.location.href = "index.html";
+  }
 };
 
 
