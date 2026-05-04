@@ -164,7 +164,8 @@ let timeout;
 
 // ===== LOGOUT FUNCTION =====
 function logoutUser(){
-  localStorage.setItem("logout_event", Date.now()); // অন্য tab sync
+  localStorage.setItem("showLogoutPopup", "true"); // 👈 ADD
+  localStorage.setItem("logout_event", Date.now());
   window.location.href = "index.html";
 }
 
