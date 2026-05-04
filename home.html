@@ -613,9 +613,7 @@ function logoutUser() {
   signOut(auth).then(() => {
     showPopup("⚠️ No activity detected\nLogging out...");
 
-    setTimeout(() => {
-      window.location.href = "index.html"; // login page
-    }, 1500);
+    
   });
 }
   ["click","mousemove","keydown","scroll","touchstart"].forEach(event => {
