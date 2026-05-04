@@ -619,19 +619,13 @@ function resetTimer() {
   }
 }
 
-function logoutUser(){
+function logoutUser() {
+  localStorage.setItem("logout_event", Date.now()); 
 
-  localStorage.setItem("logout_event", Date.now());
-
-  window.isLoggedOut = true;
-
-  showPopup("⚠️ No activity detected\nClick OK to login again");
-
-  setTimeout(() => {
-    signOut(auth).then(() => {
-      console.log("Logged out");
-    });
-  }, 500);
+  signOut(auth).then(() => {
+    window.isLoggedOut = true;
+    showPopup("⚠️ No activity detected\nClick OK to login again");
+  });
 }
   
   ["click","mousemove","keydown","scroll","touchstart"].forEach(event => {
