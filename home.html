@@ -599,6 +599,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
   const db = getFirestore(app);
+  window.openProfile = openProfile;
+window.closeProfile = closeProfile;
+window.saveProfile = saveProfile;
+window.showPopup = showPopup;
+window.closePopup = closePopup;
 let user = null;
 
 let inactivityTime = 60000; // 3 min
@@ -606,13 +611,16 @@ let timeout;
 
 function resetTimer() {
   clearTimeout(timeout);
-  timeout = setTimeout(logoutUser, inactivityTime);
+
+  if(user){
+    timeout = setTimeout(logoutUser, inactivityTime);
+  }
 }
 
 function logoutUser() {
   signOut(auth).then(() => {
     window.isLoggedOut = true;
-    showPopup("⚠️ No activity detected\nClick OK");
+    showPopup("⚠️ No activity detected\nClick OK to login again");
   });
 }
   ["click","mousemove","keydown","scroll","touchstart"].forEach(event => {
