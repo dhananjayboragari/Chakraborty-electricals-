@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body { font-family: Arial; padding:20px; background:#f5f5f5;}
+    .card {
+      display:inline-block;
+      margin:10px;
+      padding:15px;
+      background:#fff;
+      border-radius:10px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    }
+    select, input { padding:8px; margin:5px; }
+    table {
+      border-collapse: collapse;
+      width:100%;
+      margin-top:20px;
+      background:#fff;
+    }
+    th, td {
+      border:1px solid #ddd;
+      padding:8px;
+      text-align:center;
+    }
+    th { background:#eee; }
+  </style>
+</head>
+
+<body>
+
+<h2>📊 Invoice Dashboard</h2>
+
+<!-- Filters -->
+<select id="fyFilter"><option value="all">All Financial Year</option></select>
+<select id="divisionFilter"><option value="all">All Division</option></select>
+<select id="billFilter">
+  <option value="all">All Bills</option>
+  <option value="paid">Paid</option>
+  <option value="pending">Pending</option>
+</select>
+
+<input type="text" id="search" placeholder="🔍 Search...">
+
+<!-- Cards -->
+<div class="card">Total Invoice: <b id="totalInvoice"></b></div>
+<div class="card">Total Amount: ₹<b id="totalAmount"></b></div>
+
+<div class="card">Paid Count: <b id="paidCount"></b></div>
+<div class="card">Pending Count: <b id="pendingCount"></b></div>
+
+<div class="card">Paid Amount: ₹<b id="paid"></b></div>
+<div class="card">Pending Amount: ₹<b id="pending"></b></div>
+
+<div class="card">Division Paid: <b id="divPaidCount"></b></div>
+<div class="card">Division Pending: <b id="divPendingCount"></b></div>
+
+<!-- Chart -->
+<canvas id="chart" height="120"></canvas>
+
+<!-- Table -->
+<table>
+<thead>
+<tr>
+<th>Invoice No</th>
+<th>Date</th>
+<th>Work Name</th>
+<th>Total</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="data"></tbody>
+</table>
+
+<script>
+
+const sheetID = "1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU";
+const sheetName = "INVOICE FOR ALL BILL";
+const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
+
+let originalData = [];
+let chartInstance = null;
+
+// ✅ Money Format (₹ + comma + 2 digit)
+function formatMoney(val){
+  return Number(val || 0).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+// FY extract
+function getFY(inv){
+  if(!inv) return "Unknown";
+  let m = inv.match(/\d{4}-\d{4}/);
+  return m ? m[0] : "Unknown";
+}
+
+// FILTER
+function applyFilters(){
+
+  let fy = document.getElementById("fyFilter").value;
+  let div = document.getElementById("divisionFilter").value;
+  let bill = document.getElementById("billFilter").value;
+  let search = document.getElementById("search").value.toLowerCase();
+
+  let filtered = originalData.filter(r => {
+
+    let fyMatch = (fy==="all") || (getFY(r.INVOICE_NO)===fy);
+
+    let divVal = (r["SUBMIT BY DIVISION"]||"").toLowerCase().trim();
+    let divMatch = (div==="all") || (divVal===div);
+
+    let status = (r["PAYMENT STATUS"]||"").toUpperCase().trim();
+    let isPaid = status.includes("BILL PAYMENT");
+
+    let billMatch =
+      (bill==="all") ||
+      (bill==="paid" && isPaid) ||
+      (bill==="pending" && !isPaid);
+
+    let searchMatch =
+      Object.values(r).join(" ").toLowerCase().includes(search);
+
+    return fyMatch && divMatch && billMatch && searchMatch;
+  });
+
+  render(filtered);
+}
+
+// RENDER
+function render(data){
+
+  let total=0, paid=0, pending=0;
+  let paidCount=0, pendingCount=0;
+
+  let divPaid=0, divPending=0;
+
+  let rows="";
+
+  data.forEach(r => {
+
+    let amt = parseFloat(r.TOTAL||0);
+    total += amt;
+
+    let status = (r["PAYMENT STATUS"]||"").toUpperCase().trim();
+    let isPaid = status.includes("BILL PAYMENT");
+
+    if(isPaid){
+      paid += amt;
+      paidCount++;
+      divPaid++;
+    } else {
+      pending += amt;
+      pendingCount++;
+      divPending++;
+    }
+
+    rows += `
+    <tr>
+      <td>${r.INVOICE_NO}</td>
+      <td>${r.INVOICE_DATE}</td>
+      <td>${r["WORK NAME"]}</td>
+      <td>${formatMoney(amt)}</td>
+      <td style="color:${isPaid?'green':'red'}">
+        ${r["PAYMENT STATUS"]||"NO"}
+      </td>
+    </tr>`;
+  });
+
+  document.getElementById("totalInvoice").innerText = data.length;
+  document.getElementById("totalAmount").innerText = formatMoney(total);
+
+  document.getElementById("paidCount").innerText = paidCount;
+  document.getElementById("pendingCount").innerText = pendingCount;
+
+  document.getElementById("paid").innerText = formatMoney(paid);
+  document.getElementById("pending").innerText = formatMoney(pending);
+
+  document.getElementById("divPaidCount").innerText = divPaid;
+  document.getElementById("divPendingCount").innerText = divPending;
+
+  document.getElementById("data").innerHTML = rows;
+
+  if(chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(document.getElementById("chart"), {
+    type:'pie',
+    data:{
+      labels:["Paid","Pending"],
+      datasets:[{ data:[paid,pending] }]
+    }
+  });
+}
+
+// FETCH
+fetch(url)
+.then(res => res.json())
+.then(data => {
+
+  originalData = data;
+
+  let fySet = new Set();
+  let divSet = new Set();
+
+  data.forEach(r => {
+    fySet.add(getFY(r.INVOICE_NO));
+
+    if(r["SUBMIT BY DIVISION"]){
+      divSet.add(r["SUBMIT BY DIVISION"].toLowerCase().trim());
+    }
+  });
+
+  let fySelect = document.getElementById("fyFilter");
+  let divSelect = document.getElementById("divisionFilter");
+
+  fySelect.innerHTML = '<option value="all">All Financial Year</option>';
+  divSelect.innerHTML = '<option value="all">All Division</option>';
+
+  fySet.forEach(f=>{
+    let o=document.createElement("option");
+    o.value=f; o.textContent=f;
+    fySelect.appendChild(o);
+  });
+
+  divSet.forEach(d=>{
+    let o=document.createElement("option");
+    o.value=d; o.textContent=d.toUpperCase();
+    divSelect.appendChild(o);
+  });
+
+  render(data);
+});
+
+// EVENTS
+document.getElementById("fyFilter").addEventListener("change", applyFilters);
+document.getElementById("divisionFilter").addEventListener("change", applyFilters);
+document.getElementById("billFilter").addEventListener("change", applyFilters);
+document.getElementById("search").addEventListener("keyup", applyFilters);
+
+</script>
+
+</body>
+</html>
