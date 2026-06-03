@@ -175,10 +175,12 @@
 <table>
 <thead>
 <tr>
+  <th>Sl no</th>
 <th>Invoice No</th>
-<th>Date</th>
+<th>Invoice Date</th>
 <th>PO No</th>
-<th>Division</th>
+<th>Division Name</th>
+<th>DIVISION Submit Date</th>
 <th>Work Name</th>
 <th>Total Amount</th>
 <th>Status</th>
@@ -289,16 +291,19 @@ function render(data){
       divisionMap[divName].pendingAmt += amt;
     }
 
-    rows += `
-    <tr>
-      <td>${r.INVOICE_NO}</td>
-      <td>${r.INVOICE_DATE}</td>
-      <td>${r["PO NO"] || "-"}</td>
-      <td><span class="badge" style="background:${getDivisionColor(divName)}">${divName}</span></td>
-      <td>${r["WORK NAME"]}</td>
-      <td>${formatMoney(amt)}</td>
-      <td style="color:${isPaid?'green':'red'}">${r["PAYMENT STATUS"]||"NO"}</td>
-    </tr>`;
+  rows += `
+<tr>
+  <td>${r["SL NO"] || "-"}</td>
+  <td>${r["INVOICE_NO"] || r["INVOICE NO"] || r["INVOICE-NO"] || "-"}</td>
+  <td>${r["INVOICE_DATE"] || r["INVOICE DATE"] || "-"}</td>
+  <td>${r["PO NO"] || "-"}</td>
+  <td><span class="badge" style="background:${getDivisionColor(divName)}">${divName}</span></td>
+  <td>${r["SUBMIT DATE DIVISION"] || "-"}</td>
+  <td>${r["WORK NAME"] || "-"}</td>
+  <td>${formatMoney(amt)}</td>
+  <td style="color:${isPaid?'green':'red'}">${r["PAYMENT STATUS"]||"NO"}</td>
+</tr>`;
+
   });
 
   let divHTML = "";
