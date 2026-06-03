@@ -127,6 +127,14 @@
       transform:scale(1.01);
     }
 
+#divisionWise{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  white-space:nowrap;
+}
+    
+
   </style>
 </head>
 
@@ -299,11 +307,12 @@ function render(data){
     let color = getDivisionColor(div);
 
     divHTML += `
-    <div style="margin-top:6px;">
-      <span class="badge" style="background:${color}">${div}</span>
-      | Pending: <b style="color:red">${divisionMap[div].pending}</b>
-      | Paid: <b style="color:green">${divisionMap[div].paid}</b>
-    </div>`;
+<span style="white-space:nowrap;">
+  <span class="badge" style="background:${color}">${div}</span>
+  | Pending: <b style="color:red">${divisionMap[div].pending}</b>
+  / Paid: <b style="color:green">${divisionMap[div].paid}</b>
+</span>
+`;
   }
 
   document.getElementById("divisionWise").innerHTML = divHTML;
