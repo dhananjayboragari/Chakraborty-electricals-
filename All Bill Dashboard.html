@@ -4,71 +4,175 @@
   <title>Invoice Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: Arial; padding:20px; background:#f5f5f5;}
-    .card {
-      display:inline-block;
-      margin:10px;
-      padding:15px;
-      background:#fff;
-      border-radius:10px;
-      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(120deg,#f8fafc,#e2e8f0);
+      padding:20px;
+      color:#0f172a;
     }
-    select, input { padding:8px; margin:5px; }
-    table {
-      border-collapse: collapse;
+
+    h2{
+      margin-bottom:15px;
+    }
+
+    select, input {
+      padding:10px;
+      margin:5px;
+      border-radius:8px;
+      border:1px solid #ddd;
+      background:#fff;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      position:relative;
+      overflow:hidden;
+      background:#fff;
+      border-radius:16px;
+      padding:18px;
+      margin:10px;
+      display:inline-block;
+      min-width:180px;
+
+      box-shadow: 
+        0 4px 20px rgba(0,0,0,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+
+      transition: all 0.3s ease;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
       width:100%;
+      height:4px;
+      background: linear-gradient(90deg,#3b82f6,#06b6d4,#22c55e);
+    }
+
+    .card:hover{
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+
+    .card b{
+      font-size:20px;
+      display:block;
+      margin-top:5px;
+    }
+
+    /* ===== BADGE ===== */
+    .badge{
+      padding:5px 12px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:600;
+      color:#fff;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* ===== CHART ===== */
+    .chart-box{
+      background:#fff;
+      border-radius:16px;
+      padding:15px;
+      margin-top:10px;
+      height:260px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    /* ===== TABLE ===== */
+    table {
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
       margin-top:20px;
       background:#fff;
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 10px 30px rgba(0,0,0,0.06);
+      display:block;
+      overflow-x:auto;
     }
-    th, td {
-      border:1px solid #ddd;
-      padding:8px;
-      text-align:center;
+
+    th {
+      background: linear-gradient(90deg,#3b82f6,#06b6d4);
+      color:#fff;
+      padding:14px;
+      font-size:13px;
+      text-transform:uppercase;
     }
-    th { background:#eee; }
+
+    td {
+      padding:12px;
+      font-size:13px;
+      border-bottom:1px solid #f1f5f9;
+    }
+
+    tr:nth-child(even){
+      background:#f8fafc;
+    }
+
+    tr{
+      transition:0.2s;
+    }
+
+    tr:hover{
+      background:#e0f2fe;
+      transform:scale(1.01);
+    }
+
   </style>
 </head>
 
 <body>
 
-<h2>📊 Invoice Dashboard</h2>
+<h2>📊  M/S Chakraborty Electricals Invoice Dashboard</h2>
 
-<!-- Filters -->
-<select id="fyFilter"><option value="all">All Financial Year</option></select>
-<select id="divisionFilter"><option value="all">All Division</option></select>
+<!-- FILTER -->
+<select id="fyFilter"><option value="all">All FINANCIAL YEAR</option></select>
+<select id="divisionFilter"><option value="all">All DIVISION</option></select>
 <select id="billFilter">
-  <option value="all">All Bills</option>
+  <option value="all">All STATUS</option>
   <option value="paid">Paid</option>
   <option value="pending">Pending</option>
 </select>
 
-<input type="text" id="search" placeholder="🔍 Search...">
+<input type="text" id="search" placeholder="🔎 Search...">
 
-<!-- Cards -->
-<div class="card">Total Invoice: <b id="totalInvoice"></b></div>
-<div class="card">Total Amount: ₹<b id="totalAmount"></b></div>
+<!-- CARDS -->
+<div class="card">Total Invoice <b id="totalInvoice"></b></div>
+<div class="card">Total Amount  ₹ <b id="totalAmount"></b></div>
+<div class="card">Paid Count <b id="paidCount"></b></div>
+<div class="card">Pending Count <b id="pendingCount"></b></div>
+<div class="card">Paid Amount  ₹ <b id="paid"></b></div>
+<div class="card">Pending Amount  ₹ <b id="pending"></b></div>
 
-<div class="card">Paid Count: <b id="paidCount"></b></div>
-<div class="card">Pending Count: <b id="pendingCount"></b></div>
+<div class="card" style="min-width:300px;">
+  <b>Division Summary</b>
+  <div id="divisionWise"></div>
+</div>
 
-<div class="card">Paid Amount: ₹<b id="paid"></b></div>
-<div class="card">Pending Amount: ₹<b id="pending"></b></div>
+<!-- CHART -->
+<div class="chart-box">
+  <canvas id="chart"></canvas>
+</div>
 
-<div class="card">Division Paid: <b id="divPaidCount"></b></div>
-<div class="card">Division Pending: <b id="divPendingCount"></b></div>
-
-<!-- Chart -->
-<canvas id="chart" height="120"></canvas>
-
-<!-- Table -->
+<!-- TABLE -->
 <table>
 <thead>
 <tr>
 <th>Invoice No</th>
 <th>Date</th>
+<th>PO No</th>
+<th>Division</th>
 <th>Work Name</th>
-<th>Total</th>
+<th>Total Amount</th>
 <th>Status</th>
 </tr>
 </thead>
@@ -77,6 +181,8 @@
 
 <script>
 
+// SAME LOGIC
+
 const sheetID = "1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU";
 const sheetName = "INVOICE FOR ALL BILL";
 const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
@@ -84,22 +190,29 @@ const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
 let originalData = [];
 let chartInstance = null;
 
-// ✅ Money Format (₹ + comma + 2 digit)
 function formatMoney(val){
-  return Number(val || 0).toLocaleString('en-IN', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+  return Number(val || 0).toLocaleString('en-IN',{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
   });
 }
 
-// FY extract
 function getFY(inv){
   if(!inv) return "Unknown";
   let m = inv.match(/\d{4}-\d{4}/);
   return m ? m[0] : "Unknown";
 }
 
-// FILTER
+function getDivisionColor(div){
+  div = (div || "").toLowerCase();
+  if(div.includes("electrical")) return "#3b82f6";
+  if(div.includes("civil")) return "#22c55e";
+  if(div.includes("mechanical")) return "#f97316";
+  if(div.includes("store")) return "#a855f7";
+  if(div.includes("it")) return "#06b6d4";
+  return "#64748b";
+}
+
 function applyFilters(){
 
   let fy = document.getElementById("fyFilter").value;
@@ -110,7 +223,6 @@ function applyFilters(){
   let filtered = originalData.filter(r => {
 
     let fyMatch = (fy==="all") || (getFY(r.INVOICE_NO)===fy);
-
     let divVal = (r["SUBMIT BY DIVISION"]||"").toLowerCase().trim();
     let divMatch = (div==="all") || (divVal===div);
 
@@ -131,14 +243,12 @@ function applyFilters(){
   render(filtered);
 }
 
-// RENDER
 function render(data){
 
   let total=0, paid=0, pending=0;
   let paidCount=0, pendingCount=0;
 
-  let divPaid=0, divPending=0;
-
+  let divisionMap = {};
   let rows="";
 
   data.forEach(r => {
@@ -149,54 +259,81 @@ function render(data){
     let status = (r["PAYMENT STATUS"]||"").toUpperCase().trim();
     let isPaid = status.includes("BILL PAYMENT");
 
+    let divName = (r["SUBMIT BY DIVISION"] || "Unknown").trim();
+
     if(isPaid){
       paid += amt;
       paidCount++;
-      divPaid++;
     } else {
       pending += amt;
       pendingCount++;
-      divPending++;
+    }
+
+    if(!divisionMap[divName]){
+      divisionMap[divName] = { paid:0, pending:0, paidAmt:0, pendingAmt:0 };
+    }
+
+    if(isPaid){
+      divisionMap[divName].paid++;
+      divisionMap[divName].paidAmt += amt;
+    } else {
+      divisionMap[divName].pending++;
+      divisionMap[divName].pendingAmt += amt;
     }
 
     rows += `
     <tr>
       <td>${r.INVOICE_NO}</td>
       <td>${r.INVOICE_DATE}</td>
+      <td>${r["PO NO"] || "-"}</td>
+      <td><span class="badge" style="background:${getDivisionColor(divName)}">${divName}</span></td>
       <td>${r["WORK NAME"]}</td>
       <td>${formatMoney(amt)}</td>
-      <td style="color:${isPaid?'green':'red'}">
-        ${r["PAYMENT STATUS"]||"NO"}
-      </td>
+      <td style="color:${isPaid?'green':'red'}">${r["PAYMENT STATUS"]||"NO"}</td>
     </tr>`;
   });
 
+  let divHTML = "";
+
+  for(let div in divisionMap){
+    let color = getDivisionColor(div);
+
+    divHTML += `
+    <div style="margin-top:6px;">
+      <span class="badge" style="background:${color}">${div}</span>
+      | Pending: <b style="color:red">${divisionMap[div].pending}</b>
+      | Paid: <b style="color:green">${divisionMap[div].paid}</b>
+    </div>`;
+  }
+
+  document.getElementById("divisionWise").innerHTML = divHTML;
+
   document.getElementById("totalInvoice").innerText = data.length;
   document.getElementById("totalAmount").innerText = formatMoney(total);
-
   document.getElementById("paidCount").innerText = paidCount;
   document.getElementById("pendingCount").innerText = pendingCount;
-
   document.getElementById("paid").innerText = formatMoney(paid);
   document.getElementById("pending").innerText = formatMoney(pending);
-
-  document.getElementById("divPaidCount").innerText = divPaid;
-  document.getElementById("divPendingCount").innerText = divPending;
-
   document.getElementById("data").innerHTML = rows;
 
   if(chartInstance) chartInstance.destroy();
 
   chartInstance = new Chart(document.getElementById("chart"), {
-    type:'pie',
+    type:'doughnut',
     data:{
       labels:["Paid","Pending"],
-      datasets:[{ data:[paid,pending] }]
+      datasets:[{
+        data:[paid,pending],
+        backgroundColor:["#22c55e","#ef4444"]
+      }]
+    },
+    options:{
+      maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom' } }
     }
   });
 }
 
-// FETCH
 fetch(url)
 .then(res => res.json())
 .then(data => {
@@ -208,7 +345,6 @@ fetch(url)
 
   data.forEach(r => {
     fySet.add(getFY(r.INVOICE_NO));
-
     if(r["SUBMIT BY DIVISION"]){
       divSet.add(r["SUBMIT BY DIVISION"].toLowerCase().trim());
     }
@@ -216,9 +352,6 @@ fetch(url)
 
   let fySelect = document.getElementById("fyFilter");
   let divSelect = document.getElementById("divisionFilter");
-
-  fySelect.innerHTML = '<option value="all">All Financial Year</option>';
-  divSelect.innerHTML = '<option value="all">All Division</option>';
 
   fySet.forEach(f=>{
     let o=document.createElement("option");
@@ -235,7 +368,6 @@ fetch(url)
   render(data);
 });
 
-// EVENTS
 document.getElementById("fyFilter").addEventListener("change", applyFilters);
 document.getElementById("divisionFilter").addEventListener("change", applyFilters);
 document.getElementById("billFilter").addEventListener("change", applyFilters);
