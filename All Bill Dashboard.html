@@ -227,7 +227,21 @@ function getFinalDivision(r){
 }
 
 
-  
+
+  function getSubmitDate(r){
+  let div = (r["SUBMIT BY DIVISION"] || "").trim();
+  let ccc = (r["SUBMIT BY CCC"] || "").trim();
+
+  if(div){
+    return r["SUBMIT DATE DIVISION"] || "-";
+  }
+
+  if(ccc){
+    return r["SUBMIT DATE CCC"] || "-";
+  }
+
+  return "-";
+}
 
 
   
@@ -316,7 +330,7 @@ function render(data){
   <td>${r["INVOICE_DATE"] || r["INVOICE DATE"] || "-"}</td>
   <td>${r["PO NO"] || "-"}</td>
   <td><span class="badge" style="background:${getDivisionColor(divName)}">${divName}</span></td>
-  <td>${r["SUBMIT DATE DIVISION"] || "-"}</td>
+  <td>${getSubmitDate(r)}</td>
   <td>${r["WORK NAME"] || "-"}</td>
   <td>${formatMoney(amt)}</td>
   <td style="color:${isPaid?'green':'red'}">${r["PAYMENT STATUS"]||"NO"}</td>
