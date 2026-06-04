@@ -62,7 +62,7 @@
 
     .card b{
       font-size:20px;
-      display:block;
+      display:inline;
       margin-top:5px;
     }
 
@@ -129,12 +129,19 @@
 
 #divisionWise{
   display:flex;
+  flex-wrap:nowrap;   /* 🔥 line break বন্ধ */
   gap:12px;
-  overflow-x:auto;
-  white-space:nowrap;
+  overflow-x:auto;    /* 🔥 scroll enable */
+  padding-bottom:5px;
 }
-    
 
+
+
+#divisionWise b{
+  display:inline !important;
+}
+
+        
   </style>
 </head>
 
@@ -179,11 +186,11 @@
 <th>Invoice No</th>
 <th>Invoice Date</th>
 <th>PO No</th>
-<th>Division Name</th>
-<th>DIVISION Submit Date</th>
+<th>Division / Ccc Name</th>
+<th>DIVISION / Ccc Submit Date</th>
 <th>Work Name</th>
 <th>Total Amount</th>
-<th>Status</th>
+<th>Payments Status</th>
 </tr>
 </thead>
 <tbody id="data"></tbody>
@@ -343,12 +350,29 @@ function render(data){
   for(let div in divisionMap){
     let color = getDivisionColor(div);
 
+    
     divHTML += `
-<span style="white-space:nowrap; margin-right:15px; display:inline-block;">
-  <span class="badge" style="background:${color}">${div}</span>
-  | Pending: <b style="color:red">${divisionMap[div].pending}</b>
-  / Paid: <b style="color:green">${divisionMap[div].paid}</b>
-</span>
+<div style="
+  min-width:150px;
+  background:#f8fafc;
+  padding:10px 14px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+">
+
+  <div style="margin-bottom:5px;">
+    <span class="badge" style="background:${color}">${div}</span>
+  </div>
+
+  <div style="font-size:13px;">
+    Pending: <b style="color:red">${divisionMap[div].pending}</b>
+  </div>
+
+  <div style="font-size:13px;">
+    Paid: <b style="color:green">${divisionMap[div].paid}</b>
+  </div>
+
+</div>
 `;
   }
 
