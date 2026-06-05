@@ -191,6 +191,7 @@
 <th>Work Name</th>
 <th>Total Amount</th>
 <th>Payments Status</th>
+  <th>Payments Date</th>
 </tr>
 </thead>
 <tbody id="data"></tbody>
@@ -341,6 +342,7 @@ function render(data){
   <td>${r["WORK NAME"] || "-"}</td>
   <td>${formatMoney(amt)}</td>
   <td style="color:${isPaid?'green':'red'}">${r["PAYMENT STATUS"]||"NO"}</td>
+<td style="color:${isPaid?'green':'red'}">${r["PAYMENT DATE"]||"NO"}</td>
 </tr>`;
 
   });
