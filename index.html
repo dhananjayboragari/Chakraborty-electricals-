@@ -126,6 +126,78 @@ button:hover{ background:#0056b3; }
 h2{
   margin:5px 0 10px; /* উপরের gap কমানো */
 }
+
+
+
+.toggle-more{
+  margin-top:10px;
+  font-size:18px;
+  cursor:pointer;
+  color:#007bff;
+  transition:0.3s;
+  text-align:center;
+}
+
+.toggle-more.active{
+  transform:rotate(180deg);
+}
+
+.extra{
+  max-height:0;
+  overflow:hidden;
+  transition:0.4s ease;
+}
+
+.extra.open{
+  max-height:250px;
+}
+
+/* social icons */
+.social{
+  margin-top:15px;
+  display:flex;
+  justify-content:center;
+  gap:15px;
+}
+
+.social i{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  color:#fff !important;
+  font-size:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  transition:all 0.3s ease;
+}
+
+  
+.social i:hover{
+  transform:translateY(-5px) scale(1.1);
+}
+
+  .fa-facebook-f{
+  background:#1877f2;
+}
+
+.fa-google{
+  background:#db4437;
+}
+
+.fa-instagram{
+  background:linear-gradient(45deg,#e1306c,#fd1d1d,#fcb045);
+}
+
+.fa-whatsapp{
+  background:#25d366;
+}
+
+  .social a{
+  text-decoration:none;
+}
   
 </style>
 </head>
@@ -162,9 +234,45 @@ h2{
 
 <div id="msg" class="msg"></div>
 
-<span class="link" onclick="location.href='signup.html'">Create Account</span>
-<span class="link" onclick="location.href='forgot.html'">Forgot Password?</span>
 
+  
+<div class="toggle-more" onclick="toggleMore()">
+  <i class="fas fa-chevron-down"></i>
+</div>
+
+<div class="extra" id="extra">
+
+  <br>
+
+  <div class="link-row">
+    <span onclick="location.href='signup.html'"><u>Create Account</u></span>
+    <br><br> <br>
+    <span onclick="location.href='forgot.html'"><u>Forgot Password</u></span>
+  </div>
+
+  <br>
+
+  <div class="social">
+    <a href="https://facebook.com" target="_blank">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+
+    <a href="https://google.com" target="_blank">
+      <i class="fab fa-google"></i>
+    </a>
+
+    <a href="https://instagram.com" target="_blank">
+      <i class="fab fa-instagram"></i>
+    </a>
+
+    <a href="https://wa.me/6294746617" target="_blank">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+  </div>
+
+</div>
+
+  
 </div>
 
 <script>
@@ -180,6 +288,17 @@ function togglePassword(){
   }
 }
 
+
+function toggleMore(){
+  const extra = document.getElementById("extra");
+  const btn = document.querySelector(".toggle-more");
+
+  extra.classList.toggle("open");
+  btn.classList.toggle("active");
+}
+
+
+  
 window.onload = function(){
   let email = localStorage.getItem("user");
   if(email){
