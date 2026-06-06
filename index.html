@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dhupguri ccc Login</title>
+<title>Chakraborty Electricals Login</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -84,7 +84,6 @@ button{
   margin-top:12px;
 }
 button:hover{ background:#0056b3; }
-
 .msg{
   margin-top:12px;
   font-size:14px;
@@ -92,19 +91,17 @@ button:hover{ background:#0056b3; }
 }
 .success{color:green;}
 .error{color:red;}
-
 .remember{
   display:flex;
   align-items:center;
   font-size:14px;
   margin-top:12px;
 }
-.remember input{
+.remember input[type="checkbox"]{
   width:16px;
   height:16px;
-  margin-right:8px;
+  margin:0 8px 0 0;
 }
-
 .link{
   display:block;
   margin-top:12px;
@@ -113,7 +110,6 @@ button:hover{ background:#0056b3; }
   font-size:14px;
   text-decoration:underline;
 }
-
 #resend{
   display:none;
   width:100%;
@@ -127,206 +123,49 @@ button:hover{ background:#0056b3; }
 }
 #resend:hover{background:#e0a800;}
 
-h2{ margin:5px 0 10px; }
-
-/* CAPS WARNING */
-#caps{
-  font-size:12px;
-  color:#dc3545;
-  display:none;
+h2{
+  margin:5px 0 10px; /* উপরের gap কমানো */
 }
-
-/* POPUP */
-.popup{
-  position:fixed;
-  top:120px;
-  left:50%;
-  transform:translateX(-50%) translateY(-20px);
-  background:#333;
-  color:#fff;
-  padding:15px 22px;
-  border-radius:12px;
-  font-size:14px;
-  opacity:0;
-  transition:all 0.4s ease;
-  z-index:9999;
-}
-.popup.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-.popup.success{ background:#28a745; }
-.popup.error{ background:#dc3545; }
-.popup.waiting{ background:#007bff; }
-
-.popup.waiting::after{
-  content:"";
-  display:inline-block;
-  width:14px;
-  height:14px;
-  margin-left:8px;
-  border:2px solid #fff;
-  border-top:2px solid transparent;
-  border-radius:50%;
-  animation:spin 0.7s linear infinite;
-}
-@keyframes spin{
-  to{ transform:rotate(360deg); }
-}
-
-
-
-/* TOGGLE BUTTON */
-.toggle-more{
-  margin-top:10px;
-  font-size:18px;
-  cursor:pointer;
-  color:#007bff;
-  transition:0.3s;
-  text-align:center;
-}
-
-/* rotate */
-.toggle-more.active{
-  transform:rotate(180deg);
-}
-
-/* HIDDEN AREA */
-.extra{
-  max-height:0;
-  overflow:hidden;
-  transition:0.4s ease;
-}
-
-/* OPEN */
-.extra.open{
-  max-height:200px;
-}
-
-/* LINKS */
   
-.social{
-  margin-top:15px;
-  display:flex;
-  justify-content:center;
-  gap:15px;
-}
-
-.social a{
-  text-decoration:none;
-}
-
-.social i{
-  width:50px;
-  height:50px;
-  line-height:50px;
-  border-radius:50%;
-  color:#fff;
-  text-align:center;
-  font-size:18px;
-  cursor:pointer;
-
-  box-shadow:0 5px 15px rgba(0,0,0,0.2);
-  transition:all 0.3s ease;
-}
-
-.social i:hover{
-  transform:translateY(-5px) scale(1.1);
-  box-shadow:0 8px 20px rgba(0,0,0,0.3);
-}
-
-.fa-facebook-f{
-  background:linear-gradient(45deg,#1877f2,#3b82f6);
-}
-.fa-google{
-  background:linear-gradient(45deg,#db4437,#ff6a00);
-}
-.fa-instagram{
-  background:linear-gradient(45deg,#e1306c,#fd1d1d,#fcb045);
-}
-.fa-whatsapp{
-  background:linear-gradient(45deg,#25d366,#128c7e);
-}
-
-         
 </style>
 </head>
 
 <body>
 
 <div class="card">
-  <div class="icon-box">
-    <i class="fas fa-user"></i>
-  </div>
 
-  <div class="company">DHUPGURI C.C.C</div>
-
-  <h2>Login</h2>
-
-  <div class="input-box">
-    <i class="fas fa-envelope left"></i>
-    <input id="email" placeholder="Email">
-  </div>
-
-  <div class="input-box">
-    <i class="fas fa-lock left"></i>
-    <input id="password" type="password" placeholder="Password" onkeyup="checkCaps(event)">
-    <i class="fas fa-eye right" onclick="togglePassword()"></i>
-  </div>
-
-  <div id="caps">⚠ Caps Lock is ON</div>
-
-  <div class="remember">
-    <input type="checkbox" id="remember"> Remember Me
-  </div>
-
-  <button onclick="login()">Login</button>
-
-  <button id="resend" onclick="resendEmail()">Resend Verification Email</button>
-
-  <div id="msg" class="msg"></div>
-
-  
-  <div class="toggle-more" onclick="toggleMore()">
-  <i class="fas fa-chevron-down"></i>
+<div class="icon-box">
+<i class="fas fa-user"></i>
 </div>
 
-<div class="extra" id="extra">
+<div class="company">M/S Chakraborty Electricals</div>
 
-  <br>
-<div class="link-row">
-  <span onclick="location.href='signup.html'"><u>Create Account</u></span>
-  <br>
-  <br>
-  <br>
-  <span onclick="location.href='forgot.html'"><u>Forgot Password</u></span>
-</div>
-<br>
-<div class="social">
+<h2>Login</h2>
 
-  <a href="https://facebook.com" target="_blank">
-    <i class="fab fa-facebook-f"></i>
-  </a>
-
-  <a href="#" onclick="googleLogin()">
-    <i class="fab fa-google"></i>
-  </a>
-
-  <a href="https://instagram.com" target="_blank">
-    <i class="fab fa-instagram"></i>
-  </a>
-
-  <a href="https://wa.me/6294746617" target="_blank">
-    <i class="fab fa-whatsapp"></i>
-  </a>
-
+<div class="input-box">
+<i class="fas fa-envelope left"></i>
+<input id="email" placeholder="Email">
 </div>
 
-  
-</div>
+<div class="input-box">
+<i class="fas fa-lock left"></i>
+<input id="password" type="password" placeholder="Password">
+<i class="fas fa-eye right" onclick="togglePassword()"></i>
 </div>
 
-<div id="popup" class="popup"></div>
+<div class="remember">
+<input type="checkbox" id="remember"> Remember Me
+</div>
+
+<button onclick="login()">Login</button>
+<button id="resend" onclick="resendEmail()">Resend Verification Email</button>
+
+<div id="msg" class="msg"></div>
+
+<span class="link" onclick="location.href='signup.html'">Create Account</span>
+<span class="link" onclick="location.href='forgot.html'">Forgot Password?</span>
+
+</div>
 
 <script>
 function togglePassword(){
@@ -341,36 +180,29 @@ function togglePassword(){
   }
 }
 
-function toggleMore(){
-  const extra = document.getElementById("extra");
-  const btn = document.querySelector(".toggle-more");
-
-  extra.classList.toggle("open");
-  btn.classList.toggle("active");
-}
-  
-function checkCaps(e){
-  const caps = document.getElementById("caps");
-  if(e.getModifierState("CapsLock")){
-    caps.style.display="block";
-  }else{
-    caps.style.display="none";
-  }
-}
-
 window.onload = function(){
-  let savedEmail = localStorage.getItem("rememberEmail");
-
-  if(savedEmail){
-    document.getElementById("email").value = savedEmail;
+  let email = localStorage.getItem("user");
+  if(email){
+    document.getElementById("email").value = email;
     document.getElementById("remember").checked = true;
-    document.getElementById("password").focus(); // 🔥 auto focus
   }
 
-  document.addEventListener("keydown", function(e){
-    if(e.key==="Enter"){ login(); }
-  });
+  // 🔥 Restore cooldown after refresh
+  const resendBtn = document.getElementById("resend");
+  let lastTime = localStorage.getItem("resendTime");
+
+  if(lastTime){
+    let diff = Math.floor((Date.now() - lastTime)/1000);
+    if(diff < 60){
+      resendBtn.style.display="block";
+      startCooldown(resendBtn,60-diff);
+    }
+  }
 }
+
+document.addEventListener("keydown", function(e){
+  if(e.key==="Enter"){ login(); }
+});
 </script>
 
 <script type="module">
@@ -378,41 +210,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({
-  apiKey: "AIzaSyCZd10BUgRR9IEQ2kENQ_bXZiThegHRY-I",
-  authDomain: "dhupguri-ccc.firebaseapp.com",
-  projectId: "dhupguri-ccc",
-  storageBucket: "dhupguri-ccc.firebasestorage.app",
-  messagingSenderId: "278611213070",
-  appId: "1:278611213070:web:f9652c7965f472164c355f"
+  apiKey:"AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+  authDomain:"chakraborty-ele-login.firebaseapp.com"
 });
 
 const auth = getAuth();
-
 let currentUser=null;
 let timerInterval=null;
-let popupTimeout;
-
-function showPopup(message,type="success"){
-  const popup = document.getElementById("popup");
-  clearTimeout(popupTimeout);
-
-  if(popup.classList.contains("show")){
-    popup.classList.remove("show");
-    setTimeout(()=>{
-      popup.innerText = message;
-      popup.className = "popup show " + type;
-    },200);
-  }else{
-    popup.innerText = message;
-    popup.className = "popup show " + type;
-  }
-
-  if(type!=="waiting"){
-    popupTimeout = setTimeout(()=>{
-      popup.classList.remove("show");
-    },10000);
-  }
-}
 
 window.login = async function(){
   let email = document.getElementById("email").value;
@@ -435,47 +239,46 @@ window.login = async function(){
       return;
     }
 
-    // 🔥 remember email only
     if(document.getElementById("remember").checked){
-      localStorage.setItem("rememberEmail", email);
+      localStorage.setItem("user",email);
     }else{
-      localStorage.removeItem("rememberEmail");
+      localStorage.removeItem("user");
     }
 
     msg.innerHTML="✅ Login Success";
-msg.style.color="green";
-
-// 🔥 IMPORTANT
-localStorage.setItem("loginSuccess", "true");
-
-// redirect
-setTimeout(()=>{
-  window.location.href = "home.html";
-},1000);
+    msg.style.color="green";
+    setTimeout(()=>location.href="home.html",1000);
 
   }catch(e){
     let customMsg = "Login failed. Please try again.";
 
     switch(e.code){
       case "auth/invalid-email":
-        customMsg="Invalid email address."; break;
+        customMsg="Invalid email address.";
+        break;
       case "auth/user-not-found":
-        customMsg="This email is not registered. Please create a new account to continue."; break;
+        customMsg="User not found. Please check your email or sign up.";
+        break;
       case "auth/wrong-password":
-        customMsg="Wrong password."; break;
+        customMsg="Password is incorrect. Please try again.";
+        break;
       case "auth/too-many-requests":
-        customMsg="Too many tries. Please wait 2 hours before trying again."; break;
+        customMsg="Too many attempts. Please wait a while and try again.";
+        break;
       case "auth/network-request-failed":
-       customMsg="Unable to connect to the server. Please check your internet or try again later."; break;
+        customMsg="Network error. Check your internet connection.";
+        break;
       case "auth/invalid-credential":
-        customMsg="Email or password incorrect."; break;
+        customMsg="Email or password is incorrect.";
+        break;
     }
 
-    msg.innerHTML="❌ "+customMsg;
+    msg.innerHTML="❌ " + customMsg;
     msg.style.color="red";
   }
 }
 
+// 🔥 Cooldown function
 function startCooldown(btn,timeLeft=60){
   btn.disabled=true;
 
@@ -496,40 +299,13 @@ window.resendEmail = async function(){
   const resendBtn = document.getElementById("resend");
 
   if(currentUser){
-    try{
-      showPopup("Sending email...","waiting");
+    await sendEmailVerification(currentUser);
+    alert("Verification email resent! Check inbox or spam folder.");
 
-      await sendEmailVerification(currentUser);
-
-      showPopup("Verification email resent!","success");
-
-      localStorage.setItem("resendTime",Date.now());
-      startCooldown(resendBtn,60);
-
-    }catch(e){
-      showPopup("Failed to resend email","error");
-    }
-  }else{
-    showPopup("Login again first","error");
+    localStorage.setItem("resendTime",Date.now());
+    startCooldown(resendBtn,60);
   }
 }
-
-
-import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-window.googleLogin = async function(){
-  const provider = new GoogleAuthProvider();
-
-  try{
-    await signInWithPopup(auth, provider);
-    alert("Google Login Success");
-    window.location.href="home.html";
-  }catch(e){
-    alert("Google login failed");
-  }
-}
-
-  
 </script>
 
 </body>
