@@ -72,6 +72,67 @@ button:hover{background:#218838;}
   font-size:18px;
   font-weight:bold;
 }
+
+
+
+  .captcha-box{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 15px;
+  border-radius:12px;
+  background:#f1f1f1;
+  border:1.5px solid #ddd;
+  font-weight:bold;
+  font-size:18px;
+  position:relative;
+}
+
+.captcha-refresh{
+  position:absolute;
+  right:15px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  color:#28a745;
+  font-size:18px;
+  transition:0.3s;
+}
+
+.captcha-refresh:hover{
+  transform:translateY(-50%) rotate(180deg);
+  color:#218838;
+}
+
+#captchaText{
+  padding-right:30px;
+  display:block;
+}
+
+/* Back button design */
+.back-btn{
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  border-radius:12px;
+  border:2px solid #ddd;
+  background:#f8f9fa;
+  color:#333;
+  font-size:15px;
+  cursor:pointer;
+  transition:0.25s;
+}
+
+.back-btn:hover{
+  background:#e9ecef;
+}
+
+.back-btn:active{
+  background:#28a745;
+  color:#fff;
+  transform:scale(0.97);
+}
+  
 </style>
 </head>
 
@@ -105,10 +166,21 @@ button:hover{background:#218838;}
     <div id="toastContent"></div>
   </div>
 
+
+  <!-- CAPTCHA -->
+<div class="captcha-box">
+  <span id="captchaText"></span>
+  <i class="fas fa-rotate-right captcha-refresh" onclick="generateCaptcha()"></i>
+</div>
+
+<div class="input-box">
+  <input type="text" id="captchaInput" placeholder="Solve CAPTCHA">
+</div>
+  
   <button onclick="signup()">Sign Up</button>
 
   <div id="msg" class="msg"></div>
-  <span class="link" onclick="location.href='index.html'">Back to Login</span>
+  <button class="back-btn" onclick="location.href='index.html'">   <i class="fas fa-arrow-left"></i> Back to Login </button>
 </div>
 
 <script>
@@ -175,6 +247,15 @@ window.signup = async function(){
     return;
   }
 
+
+  const captchaInput = document.getElementById("captchaInput").value;
+
+if(parseInt(captchaInput) !== getAnswer()){
+  msg.innerHTML="❌ Wrong CAPTCHA";
+  generateCaptcha();
+  return;
+}
+  
   try{
     const userCredential = await createUserWithEmailAndPassword(auth,email,pass);
     currentUser = userCredential.user;
@@ -204,6 +285,33 @@ window.signup = async function(){
     }
   }
 }
+</script>
+
+
+
+
+
+  <script>
+let num1, num2, operator;
+
+function generateCaptcha(){
+  const ops = ["+", "-", "×"];
+
+  num1 = Math.floor(Math.random()*10)+1;
+  num2 = Math.floor(Math.random()*10)+1;
+  operator = ops[Math.floor(Math.random()*ops.length)];
+
+  document.getElementById("captchaText").innerText =
+    num1 + " " + operator + " " + num2 + " = ?";
+}
+
+function getAnswer(){
+  if(operator === "+") return num1 + num2;
+  if(operator === "-") return num1 - num2;
+  if(operator === "×") return num1 * num2;
+}
+
+window.addEventListener("load", generateCaptcha);
 </script>
 
 </body>
