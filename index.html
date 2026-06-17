@@ -305,7 +305,11 @@ overflow:visible;
   );
 }
 
-  
+
+  input.typing {
+  background-color: #fffde7 !important;
+  transition: 0.3s;
+}
   
 </style>
 </head>
@@ -575,6 +579,32 @@ document.addEventListener("click", function (e) {
   card.classList.remove("active");
 });
 
+
+
+
+  function updateInputColor(input){
+  if(input.value.trim().length > 0){
+    input.classList.add("typing");
+  } else {
+    input.classList.remove("typing");
+  }
+}
+
+const inputs = document.querySelectorAll("input");
+
+// typing করলে
+inputs.forEach(input => {
+  input.addEventListener("input", function () {
+    updateInputColor(this);
+  });
+});
+
+// page load হলে (আগে থেকে value থাকলে)
+window.addEventListener("load", () => {
+  inputs.forEach(input => {
+    updateInputColor(input);
+  });
+});
   
 </script>
 
