@@ -201,6 +201,7 @@ cursor:pointer;">
 <th>Invoice No</th>
 <th>Invoice Date</th>
 <th>PO No</th>
+  <th>PO Date</th>
 <th>Division / Ccc Name</th>
 <th>DIVISION / Ccc Submit Date</th>
 <th>Work Name</th>
@@ -381,6 +382,9 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
 <td>${r.invoiceNo || "-"}</td>
 <td>${r.invoiceDate || "-"}</td>
 <td>${r.poNo || "-"}</td>
+
+<td>${r.poDate || "-"}</td>
+
 <td><span class="badge" style="background:${getDivisionColor(divName)}">${divName}</span></td>
 <td>${getSubmitDate(r)}</td>
 <td>${r.workName || "-"}</td>
@@ -462,6 +466,7 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
     "Invoice No": r.invoiceNo,
     "Invoice Date": r.invoiceDate,
     "PO No": r.poNo,
+    "PO Date": r.poDate,
     "Division / CCC": getFinalDivision(r),
     "Submit Date": getSubmitDate(r),
     "Work Name": r.workName,
@@ -536,10 +541,6 @@ document.getElementById("search").addEventListener("keyup", applyFilters);
 </script>
 
 
-
-
-
-
 <script>
 let inactivityTime = 180000; // 3 মিনিট
 let timeout;
@@ -575,11 +576,6 @@ function resetTimer(){
 // start timer
 resetTimer();
 </script>
-
-
-
-
-  
 
 </body>
 </html>
