@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>NSC Invoice Management System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    /* ==========================================
+   NSC Invoice Management System
+   style.css
+========================================== */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+:root{
+--bg:#0f172a;
+--card:#162033;
+--card2:#1e293b;
+--primary:#00c8ff;
+--green:#16a34a;
+--red:#dc2626;
+--yellow:#f59e0b;
+--white:#ffffff;
+--border:rgba(255,255,255,.12);
+}
+
+body{
+background:linear-gradient(135deg,#0f172a,#172554,#0f766e,#111827);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+color:#fff;
+display:flex;
+min-height:100vh;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* Sidebar */
+
+.sidebar{
+width:270px;
+background:rgba(10,15,30,.75);
+backdrop-filter:blur(20px);
+padding:25px;
+border-right:1px solid var(--border);
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+overflow:auto;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:35px;
+}
+
+.logo i{
+font-size:42px;
+color:var(--primary);
+}
+
+.logo h2{
+font-size:26px;
+font-weight:700;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+padding:16px 18px;
+margin-bottom:12px;
+border-radius:12px;
+cursor:pointer;
+transition:.35s;
+display:flex;
+align-items:center;
+gap:12px;
+font-size:15px;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active{
+background:rgba(0,200,255,.18);
+}
+
+.sidebar ul li i{
+width:22px;
+text-align:center;
+}
+
+/* Main */
+
+.main{
+margin-left:270px;
+width:calc(100% - 270px);
+padding:25px;
+}
+
+/* Header */
+
+header{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+border:1px solid var(--border);
+padding:22px 28px;
+border-radius:18px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+header h1{
+font-size:30px;
+}
+
+header p{
+color:#d8d8d8;
+margin-top:5px;
+}
+
+.profile{
+display:flex;
+align-items:center;
+gap:12px;
+font-weight:600;
+}
+
+
+    .profile-logo{
+width:55px;
+height:55px;
+border-radius:50%;
+object-fit:cover;
+border:2px solid #00c8ff;
+background:#fff;
+}
+
+/* Dashboard */
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:25px;
+}
+
+.card{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+border:1px solid var(--border);
+border-radius:18px;
+padding:25px;
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+}
+
+.card i{
+font-size:34px;
+color:var(--primary);
+margin-bottom:12px;
+}
+
+.card h2{
+font-size:34px;
+margin-bottom:5px;
+}
+
+/* Form */
+
+.formCard,
+.searchCard{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(18px);
+border:1px solid var(--border);
+border-radius:18px;
+padding:25px;
+margin-bottom:25px;
+}
+
+.formCard h2,
+.searchCard h2{
+margin-bottom:25px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+
+    .grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+width:100%;
+}
+
+.full{
+grid-column:1/-1;
+}
+
+.input{
+display:flex;
+flex-direction:column;
+}
+
+.input label{
+margin-bottom:8px;
+font-size:14px;
+font-weight:600;
+}
+
+.input input,
+.input textarea,
+.input select{
+padding:14px;
+border-radius:12px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.06);
+color:#fff;
+outline:none;
+font-size:15px;
+transition:.3s;
+
+  width:100%;
+max-width:100%;
+box-sizing:border-box;
+  
+}
+
+.input textarea{
+height:120px;
+resize:none;
+}
+
+.input input:focus,
+.input textarea:focus,
+.input select:focus{
+border-color:var(--primary);
+box-shadow:0 0 12px rgba(0,200,255,.35);
+}
+
+/* Buttons */
+
+.btnArea{
+display:flex;
+justify-content:center;
+gap:15px;
+margin-top:30px;
+flex-wrap:wrap;
+}
+
+.btnArea button,
+.searchBox button,
+.popupBtn button{
+padding:13px 30px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-size:15px;
+font-weight:600;
+transition:.3s;
+}
+
+#previewBtn{
+background:var(--primary);
+color:#fff;
+}
+
+.btnArea button:last-child{
+background:var(--red);
+color:#fff;
+}
+
+.btnArea button:hover,
+.searchBox button:hover,
+.popupBtn button:hover{
+transform:translateY(-4px);
+}
+
+/* Search */
+
+.searchBox{
+display:grid;
+grid-template-columns:220px 1fr 150px;
+gap:15px;
+margin-bottom:20px;
+}
+
+.searchBox select,
+.searchBox input{
+padding:14px;
+border-radius:12px;
+border:1px solid rgba(255,255,255,.15);
+background:rgba(255,255,255,.06);
+color:#fff;
+outline:none;
+}
+
+.searchBox button{
+background:var(--green);
+color:#fff;
+}
+
+/* Preview */
+
+#previewPopup{
+position:fixed;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(8px);
+z-index:9999;
+}
+
+.previewCard{
+width:95%;
+max-width:760px;
+background:#101828;
+border-radius:20px;
+padding:30px;
+border:1px solid rgba(255,255,255,.12);
+animation:popup .3s;
+}
+
+@keyframes popup{
+from{
+transform:scale(.92);
+opacity:0;
+}
+to{
+transform:scale(1);
+opacity:1;
+}
+}
+
+.popupBtn{
+display:flex;
+justify-content:flex-end;
+gap:15px;
+margin-top:25px;
+}
+
+#editBtn{
+background:var(--yellow);
+color:#fff;
+}
+
+#saveBtn{
+background:var(--green);
+color:#fff;
+}
+
+/* Loader */
+
+#loader{
+position:fixed;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:rgba(0,0,0,.82);
+z-index:10000;
+}
+
+.loaderCircle{
+width:70px;
+height:70px;
+border:6px solid rgba(255,255,255,.15);
+border-top:6px solid var(--primary);
+border-radius:50%;
+animation:spin .8s linear infinite;
+margin-bottom:20px;
+}
+
+@keyframes spin{
+100%{
+transform:rotate(360deg);
+}
+}
+
+/* Search Result */
+
+#searchResult{
+margin-top:20px;
+overflow:auto;
+}
+
+    #searchResult table{
+width:100%;
+border-collapse:collapse;
+background:rgba(255,255,255,.08);
+}
+
+#searchResult th,
+#searchResult td{
+padding:12px;
+border:1px solid rgba(255,255,255,.15);
+text-align:center;
+font-size:14px;
+}
+
+#searchResult th{
+background:#00c8ff;
+color:#000;
+}
+
+#searchResult tr:hover{
+background:rgba(255,255,255,.12);
+}
+
+#searchResult button{
+padding:8px 15px;
+border:none;
+border-radius:8px;
+background:#f59e0b;
+color:white;
+cursor:pointer;
+}
+
+/* Responsive */
+
+@media(max-width:992px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.main{
+margin-left:0;
+width:100%;
+}
+
+body{
+display:block;
+}
+
+}
+
+@media(max-width:768px){
+
+header{
+flex-direction:column;
+gap:15px;
+text-align:center;
+}
+
+.searchBox{
+grid-template-columns:1fr;
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.btnArea{
+flex-direction:column;
+}
+
+.btnArea button{
+width:100%;
+}
+
+.previewCard{
+padding:20px;
+}
+
+}
+
+
+
+    #newInvoiceSection,
+#searchSection,
+#downloadSection{
+display:none;
+}
+
+
+
+    #successPopup{
+position:fixed;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(8px);
+z-index:20000;
+}
+
+.successCard{
+width:90%;
+max-width:450px;
+background:#101828;
+border-radius:22px;
+padding:30px;
+text-align:center;
+border:1px solid rgba(255,255,255,.15);
+animation:popup .3s;
+}
+
+.successIcon i{
+font-size:70px;
+color:#16a34a;
+margin-bottom:15px;
+}
+
+.successCard h2{
+margin-bottom:20px;
+}
+
+#successDetails{
+background:rgba(255,255,255,.08);
+padding:20px;
+border-radius:15px;
+text-align:left;
+line-height:2;
+}
+
+.successBtn button{
+margin-top:20px;
+padding:12px 35px;
+border:none;
+border-radius:12px;
+background:#00c8ff;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+    
+    </style>
+
+</head>
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<i class="fa-solid fa-file-invoice-dollar"></i>
+
+<h2>All Bill Invoice no</h2>
+
+</div>
+
+
+  <ul>
+
+<li onclick="location.href='https://dhananjayboragari.github.io/Chakraborty-electricals-/All%20Bill%20Dashboard.html'">
+<i class="fa-solid fa-house"></i>
+Dashboard
+</li>
+
+<li onclick="showNewInvoice()">
+<i class="fa-solid fa-plus"></i>
+New Invoice
+</li>
+
+<li onclick="showSearch()">
+<i class="fa-solid fa-magnifying-glass"></i>
+Search Invoice
+</li>
+
+    <li onclick="showDownload()">
+<i class="fa-solid fa-download"></i>
+Downloads
+</li>
+
+</ul>
+    
+
+</div>
+
+<div class="main">
+
+<header>
+
+<div>
+
+<h1>Invoice Management System</h1>
+
+<p>Financial Year Invoice Portal</p>
+
+</div>
+
+<div class="profile">
+
+  <img src="https://i.ibb.co/fzFPjDVD/31092eed48aa.png" class="profile-logo">
+
+<span>M/S Chakraborty Electricals</span>
+
+</div>
+
+</header>
+
+
+
+
+<section class="formCard" id="newInvoiceSection">
+
+<h2>
+
+<i class="fa-solid fa-file-circle-plus"></i>
+
+New Invoice
+
+</h2>
+
+<form id="invoiceForm">
+
+<div class="grid">
+
+<div class="input">
+
+<label>SL No</label>
+
+<input type="text" id="slNo" readonly placeholder="Auto">
+
+</div>
+
+<div class="input">
+
+<label>Invoice No</label>
+
+<input type="text" id="invoiceNo" readonly placeholder="Auto">
+
+</div>
+
+<div class="input">
+
+<label>Invoice Date</label>
+
+<input type="date" id="invoiceDate" onkeydown="return false;">
+
+</div>
+
+<div class="input" placeholder="Auto">
+
+<label>PO No</label>
+
+<input type="number" id="poNo" placeholder="Enter po no">
+
+</div>
+
+<div class="input">
+
+<label>PO Date</label>
+
+<input type="date" id="poDate" onkeydown="return false;">
+
+</div>
+
+<div class="input full">
+
+<label>Work Name</label>
+
+<textarea id="workName" placeholder="Write work names"></textarea>
+
+</div>
+
+<div class="input">
+
+<label>Amount</label>
+
+<input type="number" id="amount" placeholder="Enter Amount">
+
+</div>
+
+<div class="input">
+
+<label>CGST %</label>
+
+<input type="number" id="cgst" value="9" onkeydown="return false;">
+
+</div>
+
+<div class="input">
+
+<label>SGST %</label>
+
+<input type="number" id="sgst" value="9" onkeydown="return false;" >
+
+</div>
+
+<div class="input">
+
+<label>Total</label>
+
+<input type="text" id="total" readonly placeholder="Auto" onkeydown="return false;" >
+
+</div>
+
+<div class="input">
+
+<label>Submit Date CCC</label>
+
+<input type="date" id="submitDateCCC" onkeydown="return false;">
+
+</div>
+
+
+  <div class="input">
+
+<label>Submit By CCC</label>
+
+<select id="submitByCCC">
+  <option value="">Select Person</option>
+  <option>DHUPGURI CCC</option>
+  
+</select>
+
+</div>
+
+<div class="input">
+
+<label>Submit Date Division</label>
+
+<input type="date" id="submitDateDivision" onkeydown="return false;">
+
+</div>
+
+
+  <div class="input">
+
+<label>Submit By Division</label>
+
+<select id="submitByDivision">
+  <option value="">Select Person</option>
+  <option>JALPAIGURI</option>
+  <option>MALBAZAR</option>
+</select>
+
+</div>
+
+<div class="input">
+
+<label>Payment Status</label>
+
+<select id="paymentStatus">
+  <option value="">Select Person</option>
+
+<option>Pending</option>
+
+<option>Processing</option>
+
+<option>BILL PAYMENT</option>
+
+<option>Rejected</option>
+
+</select>
+
+</div>
+
+<div class="input">
+
+<label>Payment Date</label>
+
+<input type="date" id="paymentDate" onkeydown="return false;">
+
+</div>
+
+</div>
+
+<div class="btnArea">
+
+<button type="button" id="previewBtn">
+
+<i class="fa-solid fa-eye"></i>
+
+Preview
+
+</button>
+
+<button type="reset">
+
+<i class="fa-solid fa-rotate-left"></i>
+
+Reset
+
+</button>
+
+</div>
+
+</form>
+
+</section>
+
+<section class="searchCard" id="searchSection">
+
+<h2>
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+Search Invoice
+
+</h2>
+
+<div class="searchBox">
+
+<select id="searchType">
+
+  <option value="poNo">PO No</option>
+  
+<option value="invoiceDate">Invoice Date</option>
+
+<option value="invoiceNo">Invoice No</option>
+
+
+
+<option value="workName">Work Name</option>
+
+</select>
+
+<input type="text"
+id="searchValue"
+placeholder="Enter Search Value">
+
+<button id="searchBtn">
+
+<i class="fa-solid fa-search"></i>
+
+Search
+
+</button>
+
+</div>
+
+<div id="searchResult">
+
+</div>
+
+</section>
+
+
+  <section class="searchCard" id="downloadSection">
+
+<h2>
+<i class="fa-solid fa-download"></i>
+Downloads
+</h2>
+
+<div class="btnArea">
+
+<button type="button" id="pdfDownloadBtn">
+<i class="fa-solid fa-file-pdf"></i>
+Download PDF
+</button>
+
+<button type="button" id="excelDownloadBtn">
+<i class="fa-solid fa-file-excel"></i>
+Download Excel
+</button>
+
+</div>
+
+</section>
+
+</div>
+
+<div id="previewPopup">
+
+<div class="previewCard">
+
+<h2>
+
+Invoice Preview
+
+</h2>
+
+<div id="previewBody">
+
+</div>
+
+<div class="popupBtn">
+
+<button id="editBtn">
+
+Edit
+
+</button>
+
+<button id="saveBtn">
+
+Save Invoice
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="loader">
+
+<div class="loaderCircle"></div>
+
+<h2>Saving Invoice...</h2>
+
+<p>Please Wait</p>
+
+</div>
+
+
+
+  <div id="successPopup">
+  <div class="successCard">
+
+    <div class="successIcon">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+
+    <h2 id="successTitle">Invoice Saved Successfully</h2>
+
+    <div id="successDetails"></div>
+
+    <div class="successBtn">
+      <button onclick="closeSuccessPopup()">
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+  
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+    import {
+  getFirestore,
+  collection,
+  getDocs,
+  getDoc,
+  query,
+  orderBy,
+  limit,
+  doc,
+  setDoc,
+      updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+  authDomain: "chakraborty-ele-login.firebaseapp.com",
+  projectId: "chakraborty-ele-login",
+  storageBucket: "chakraborty-ele-login.firebasestorage.app",
+  messagingSenderId: "414542805581",
+  appId: "1:414542805581:web:cfd13593767abbb51cba04"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+    window.db = db;
+window.getDocs = getDocs;
+    window.getDoc = getDoc;
+window.query = query;
+window.orderBy = orderBy;
+window.limit = limit;
+window.collection = collection;
+window.doc = doc;
+window.setDoc = setDoc;
+    window.updateDoc = updateDoc;
+    window.db = db;
+
+window.collection = collection;
+</script>
+
+  <script type="module">
+    window.onerror = function(msg){
+  alert(msg);
+};
+
+    // =========================
+// NSC Invoice Management
+// app.js (Production Part-1)
+// =========================
+
+// ---------- Inputs ----------
+
+const invoiceForm = document.getElementById("invoiceForm");
+
+const amount = document.getElementById("amount");
+const cgst = document.getElementById("cgst");
+const sgst = document.getElementById("sgst");
+const total = document.getElementById("total");
+
+const previewBtn = document.getElementById("previewBtn");
+const previewPopup = document.getElementById("previewPopup");
+const previewBody = document.getElementById("previewBody");
+
+const editBtn = document.getElementById("editBtn");
+const saveBtn = document.getElementById("saveBtn");
+
+const loader = document.getElementById("loader");
+    let editSLNo = "";
+    let editMode = false;
+let editDocId = "";
+    const db = window.db;
+const getDocs = window.getDocs;
+    const getDoc = window.getDoc;
+const query = window.query;
+const orderBy = window.orderBy;
+const limit = window.limit;
+const collection = window.collection;
+const doc = window.doc;
+const setDoc = window.setDoc;
+    const updateDoc = window.updateDoc;
+
+// ---------- Auto Total ----------
+
+function calculateTotal(){
+
+let basic=parseFloat(amount.value)||0;
+
+let c=parseFloat(cgst.value)||0;
+
+let s=parseFloat(sgst.value)||0;
+
+let cg=(basic*c)/100;
+
+let sg=(basic*s)/100;
+
+let finalAmount=basic+cg+sg;
+
+total.value=finalAmount.toFixed(2);
+
+}
+
+amount.addEventListener("input",calculateTotal);
+cgst.addEventListener("input",calculateTotal);
+sgst.addEventListener("input",calculateTotal);
+
+
+// ---------- Validation ----------
+
+function validateForm(){
+
+if(invoiceDate.value==""){
+alert("Select Invoice Date");
+invoiceDate.focus();
+return false;
+}
+
+if(poNo.value==""){
+alert("Enter PO Number");
+poNo.focus();
+return false;
+}
+
+if(workName.value==""){
+alert("Enter Work Name");
+workName.focus();
+return false;
+}
+
+if(amount.value==""){
+alert("Enter Amount");
+amount.focus();
+return false;
+}
+
+return true;
+
+}
+
+
+// ---------- Preview ----------
+
+previewBtn.onclick=()=>{
+
+if(!validateForm()) return;
+
+previewPopup.style.display="flex";
+
+previewBody.innerHTML=`
+
+<table style="width:100%;border-collapse:collapse;">
+
+
+<tr>
+<td><b>SL No</b></td>
+<td>${slNo.value}</td>
+</tr>
+    
+<tr>
+
+<td><b>Invoice No</b></td>
+
+<td>2026-2027/AUTO</td>
+
+</tr>
+
+<tr>
+
+<td><b>Invoice Date</b></td>
+
+<td>${invoiceDate.value}</td>
+
+</tr>
+
+<tr>
+
+<td><b>PO No</b></td>
+
+<td>${poNo.value}</td>
+
+</tr>
+
+<tr>
+
+<td><b>PO Date</b></td>
+
+<td>${poDate.value}</td>
+
+</tr>
+
+<tr>
+
+<td><b>Work Name</b></td>
+
+<td>${workName.value}</td>
+
+</tr>
+
+<tr>
+
+<td><b>Amount</b></td>
+
+<td>₹ ${amount.value}</td>
+
+</tr>
+
+<tr>
+
+<td><b>CGST</b></td>
+
+<td>${cgst.value}%</td>
+
+</tr>
+
+<tr>
+
+<td><b>SGST</b></td>
+
+<td>${sgst.value}%</td>
+
+</tr>
+
+<tr>
+
+<td><b>Total</b></td>
+
+<td><b>₹ ${total.value}</b></td>
+
+</tr>
+
+<tr>
+
+<td><b>Status</b></td>
+
+<td>${paymentStatus.value}</td>
+
+</tr>
+
+<tr>
+<td><b>Submit Date CCC</b></td>
+<td>${submitDateCCC.value}</td>
+</tr>
+
+<tr>
+<td><b>Submit By CCC</b></td>
+<td>${submitByCCC.value}</td>
+</tr>
+
+<tr>
+<td><b>Submit Date Division</b></td>
+<td>${submitDateDivision.value}</td>
+</tr>
+
+<tr>
+<td><b>Submit By Division</b></td>
+<td>${submitByDivision.value}</td>
+</tr>
+
+<tr>
+<td><b>Payment Date</b></td>
+<td>${paymentDate.value}</td>
+</tr>
+
+`;
+
+};
+
+
+// ---------- Close ----------
+
+editBtn.onclick=()=>{
+
+previewPopup.style.display="none";
+
+};
+
+
+// ---------- Save ----------
+
+saveBtn.onclick=()=>{
+
+previewPopup.style.display="none";
+
+loader.style.display="flex";
+
+saveInvoice();
+
+};
+
+
+// ---------- Save Function ----------
+
+
+    async function saveInvoice() {
+      if (editMode) {
+
+  const data = {
+    slNo: Number(slNo.value),
+    invoiceNo: invoiceNo.value,
+    financialYear: invoiceNo.value.split("/")[0],
+    invoiceDate: invoiceDate.value,
+    poNo: poNo.value,
+    poDate: poDate.value,
+    workName: workName.value,
+    amount: amount.value,
+    cgst: cgst.value,
+    sgst: sgst.value,
+    total: total.value,
+    submitDateCCC: submitDateCCC.value,
+    submitByCCC: submitByCCC.value,
+    submitDateDivision: submitDateDivision.value,
+    submitByDivision: submitByDivision.value,
+    paymentStatus: paymentStatus.value,
+    paymentDate: paymentDate.value
+  };
+
+  const oldSnap = await getDoc(doc(db, "Invoices", editDocId));
+const oldData = oldSnap.data();
+
+let changes = "";
+
+Object.keys(data).forEach(key => {
+
+  if(String(oldData[key]) !== String(data[key])){
+
+    changes += `
+    <b>${key}:</b><br>
+    Old: ${oldData[key] || "-"}<br>
+    New: ${data[key] || "-"}<br><br>
+    `;
+
+  }
+
+});
+
+
+await updateDoc(doc(db, "Invoices", editDocId), data);
+
+
+        loader.style.display = "none";
+        
+        document.getElementById("successTitle").innerText = "Invoice Updated Successfully";
+document.getElementById("successDetails").innerHTML = "";
+document.getElementById("successPopup").style.display = "flex";
+
+
+document.getElementById("successPopup").style.display="flex";
+
+  editMode = false;
+  editDocId = "";
+
+  invoiceForm.reset();
+  total.value = "";
+  loadNextInvoiceNo();
+
+  return;
+}
+
+      const invoiceDateObj = new Date(invoiceDate.value);
+
+let fyStart, fyEnd;
+
+if (invoiceDateObj.getMonth() >= 3) { // April = 3
+  fyStart = invoiceDateObj.getFullYear();
+  fyEnd = fyStart + 1;
+} else {
+  fyEnd = invoiceDateObj.getFullYear();
+  fyStart = fyEnd - 1;
+}
+
+const financialYear = `${fyStart}-${fyEnd}`;
+
+const snapshot = await getDocs(collection(db, "Invoices"));
+
+let maxNo = 0;
+
+snapshot.forEach(docSnap => {
+  const d = docSnap.data();
+
+  if (d.financialYear === financialYear) {
+    const n = parseInt(String(d.invoiceNo).split("/")[1]) || 0;
+    if (n > maxNo) maxNo = n;
+  }
+});
+
+
+      // ইউনিক SL No বের করো
+const allSnapshot = await getDocs(collection(db, "Invoices"));
+
+let nextSL = 1;
+
+allSnapshot.forEach(docSnap => {
+  const d = docSnap.data();
+  if ((d.slNo || 0) >= nextSL) {
+    nextSL = d.slNo + 1;
+  }
+});
+
+// Financial Year-এর Invoice Serial
+let invoiceSerial = maxNo + 1;
+
+const invoiceNumber =
+  financialYear + "/" + String(invoiceSerial).padStart(2, "0");
+
+const docId = financialYear + "-" + String(nextSL).padStart(2, "0");
+
+slNo.value = nextSL;
+invoiceNo.value = invoiceNumber;
+
+  try {
+
+    const data = {
+      slNo: nextSL,
+invoiceNo: invoiceNumber,
+      financialYear: financialYear,
+      invoiceDate: invoiceDate.value,
+      poNo: poNo.value,
+      poDate: poDate.value,
+      workName: workName.value,
+      amount: amount.value,
+      cgst: cgst.value,
+      sgst: sgst.value,
+      total: total.value,
+      submitDateCCC: submitDateCCC.value,
+      submitByCCC: submitByCCC.value,
+      submitDateDivision: submitDateDivision.value,
+      submitByDivision: submitByDivision.value,
+      paymentStatus: paymentStatus.value,
+      paymentDate: paymentDate.value,
+      createdAt: new Date()
+    };
+
+    if (editMode) {
+
+  await updateDoc(doc(db, "Invoices", editDocId), data);
+
+  editMode = false;
+  editDocId = "";
+
+} else {
+
+  await setDoc(doc(db, "Invoices", docId), data);
+
+}
+
+    loader.style.display = "none";
+
+
+    document.getElementById("successTitle").innerText = "Invoice Saved Successfully";
+    document.getElementById("successDetails").innerHTML = `
+<b>Invoice No:</b> ${invoiceNumber}<br>
+<b>Invoice Date:</b> ${invoiceDate.value}<br>
+<b>PO No:</b> ${poNo.value}<br>
+<b>Work Name:</b> ${workName.value}<br>
+<b>Total Amount:</b> ₹ ${total.value}
+`;
+
+document.getElementById("successPopup").style.display="flex";
+
+invoiceForm.reset();
+total.value = "";
+
+    loadNextInvoiceNo();
+    
+
+  } catch (err) {
+
+    loader.style.display = "none";
+    alert("Save Failed\n\n" + err.message);
+
+    console.error(err);
+
+}
+
+}
+
+
+// ---------- ESC ----------
+
+document.addEventListener("keydown",(e)=>{
+
+if(e.key==="Escape"){
+
+previewPopup.style.display="none";
+
+}
+
+});
+
+
+// ---------- Click Outside ----------
+
+previewPopup.onclick=(e)=>{
+
+if(e.target===previewPopup){
+
+previewPopup.style.display="none";
+
+}
+
+};
+
+
+
+    function showNewInvoice(){
+
+document.getElementById("newInvoiceSection").style.display="block";
+document.getElementById("searchSection").style.display="none";
+document.getElementById("downloadSection").style.display="none";
+
+}
+
+function showSearch(){
+
+document.getElementById("searchSection").style.display="block";
+document.getElementById("newInvoiceSection").style.display="none";
+document.getElementById("downloadSection").style.display="none";
+
+}
+
+function showDownload(){
+
+document.getElementById("downloadSection").style.display="block";
+document.getElementById("searchSection").style.display="none";
+document.getElementById("newInvoiceSection").style.display="none";
+
+}
+    
+
+    window.showNewInvoice = showNewInvoice;
+window.showSearch = showSearch;
+    window.showDownload = showDownload;
+    
+    window.editInvoice = async function(docId){
+
+  editMode = true;
+  editDocId = docId;
+
+  const snap = await getDoc(doc(db, "Invoices", docId));
+
+  if (!snap.exists()) {
+    alert("Invoice Not Found");
+    return;
+  }
+
+  const d = snap.data();
+
+  slNo.value = d.slNo;
+  invoiceNo.value = d.invoiceNo;
+  invoiceDate.value = d.invoiceDate;
+  poNo.value = d.poNo;
+  poDate.value = d.poDate;
+  workName.value = d.workName;
+  amount.value = d.amount;
+  cgst.value = d.cgst;
+  sgst.value = d.sgst;
+  total.value = d.total;
+  submitDateCCC.value = d.submitDateCCC;
+  submitByCCC.value = d.submitByCCC;
+  submitDateDivision.value = d.submitDateDivision;
+  submitByDivision.value = d.submitByDivision;
+  paymentStatus.value = d.paymentStatus;
+  paymentDate.value = d.paymentDate;
+
+  showNewInvoice();
+
+};
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+
+  input.addEventListener("keydown", function(e) {
+    e.preventDefault();
+  });
+
+});
+
+    async function loadNextInvoiceNo() {
+
+  if (!invoiceDate.value) {
+    slNo.value = "";
+    invoiceNo.value = "";
+    return;
+  }
+
+  const invoiceDateObj = new Date(invoiceDate.value);
+
+  let fyStart, fyEnd;
+
+  if (invoiceDateObj.getMonth() >= 3) {
+    fyStart = invoiceDateObj.getFullYear();
+    fyEnd = fyStart + 1;
+  } else {
+    fyEnd = invoiceDateObj.getFullYear();
+    fyStart = fyEnd - 1;
+  }
+
+  const financialYear = `${fyStart}-${fyEnd}`;
+
+  const snapshot = await getDocs(collection(db, "Invoices"));
+
+  let maxNo = 0;
+
+  snapshot.forEach(docSnap => {
+    const d = docSnap.data();
+
+    if (d.financialYear === financialYear) {
+      const n = parseInt(String(d.invoiceNo).split("/")[1]) || 0;
+      if (n > maxNo) maxNo = n;
+    }
+  });
+
+  const allSnapshot = await getDocs(collection(db, "Invoices"));  let nextSL = 1;  allSnapshot.forEach(docSnap => {   const d = docSnap.data();   if ((d.slNo || 0) >= nextSL) {     nextSL = d.slNo + 1;   } });  const invoiceSerial = maxNo + 1;
+
+
+      slNo.value = nextSL;
+invoiceNo.value =
+  financialYear + "/" + String(invoiceSerial).padStart(2, "0");
+}
+
+invoiceDate.addEventListener("change", loadNextInvoiceNo);
+
+
+    invoiceDate.addEventListener("change", loadNextInvoiceNo);
+
+const searchType = document.getElementById("searchType");
+const searchValue = document.getElementById("searchValue");
+
+searchType.addEventListener("change", () => {
+  if (searchType.value === "invoiceDate") {
+    searchValue.type = "date";
+  } else {
+    searchValue.type = "text";
+    searchValue.value = "";
+  }
+});
+    document.getElementById("searchBtn").onclick = async () => {
+
+  const type = document.getElementById("searchType").value;
+  const value = document.getElementById("searchValue").value.trim();
+
+  if (!value) {
+    alert("Enter Search Value");
+    return;
+  }
+
+  const snapshot = await getDocs(collection(db, "Invoices"));
+
+  let found = false;
+
+let html = `
+<table style="width:100%;border-collapse:collapse;">
+<thead>
+<tr style="background:#00c8ff;color:#000;">
+<th>SL</th>
+<th>Invoice No</th>
+<th>Invoice Date</th>
+<th>PO No</th>
+<th>Work Name</th>
+<th>Total</th>
+<th>Status</th>
+<th>Edit</th>
+</tr>
+</thead>
+<tbody>
+`;
+
+  snapshot.forEach(docSnap => {
+
+    const d = docSnap.data();
+
+    if (   type === "invoiceDate"     ? d.invoiceDate === value     : String(d[type]).toLowerCase().includes(value.toLowerCase()) ) {
+
+      found = true;
+
+      html += `
+<tr>
+<td>${d.slNo}</td>
+<td>${d.invoiceNo}</td>
+<td>${d.invoiceDate}</td>
+<td>${d.poNo}</td>
+<td>${d.workName}</td>
+<td>₹ ${d.total}</td>
+<td>${d.paymentStatus}</td>
+<td>
+<button onclick="editInvoice('${docSnap.id}')">
+Edit
+</button>
+</td>
+</tr>
+`;
+    }
+
+  });
+
+    html += `
+</tbody>
+</table>
+`;
+
+  document.getElementById("searchResult").innerHTML =
+    found ? html : "<h3>No Record Found</h3>";
+
+};
+
+
+
+
+    document.getElementById("excelDownloadBtn").onclick = async () => {
+      
+
+  const snapshot = await getDocs(collection(db, "Invoices"));
+
+  let data = [];
+
+  snapshot.forEach(docSnap => {
+
+    const d = docSnap.data();
+
+    data.push({
+      "SL No": d.slNo,
+      "Invoice No": d.invoiceNo,
+      "Invoice Date": d.invoiceDate,
+      "PO No": d.poNo,
+      "PO Date": d.poDate,
+      "Work Name": d.workName,
+      "Amount": d.amount,
+      "CGST %": d.cgst,
+      "SGST %": d.sgst,
+      "Total": d.total,
+      "Submit Date CCC": d.submitDateCCC,
+      "Submit By CCC": d.submitByCCC,
+      "Submit Date Division": d.submitDateDivision,
+      "Submit By Division": d.submitByDivision,
+      "Payment Status": d.paymentStatus,
+      "Payment Date": d.paymentDate
+    });
+
+  });
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(data);
+
+  XLSX.utils.book_append_sheet(wb, ws, "Invoices");
+
+  XLSX.writeFile(wb, "NSC_All_Invoices.xlsx");
+
+};
+
+    document.getElementById("pdfDownloadBtn").onclick = async () => {
+
+  const { jsPDF } = window.jspdf;
+  const docPDF = new jsPDF("l", "mm", "a4");
+
+  const snapshot = await getDocs(collection(db, "Invoices"));
+
+  let rows = [];
+
+  snapshot.forEach(docSnap => {
+    const d = docSnap.data();
+
+    rows.push([
+      d.slNo || "",
+      d.invoiceNo || "",
+      d.invoiceDate || "",
+      d.poNo || "",
+      d.poDate || "",
+      d.workName || "",
+      d.amount || "",
+      d.cgst || "",
+      d.sgst || "",
+      d.total || "",
+      d.submitDateCCC || "",
+      d.submitByCCC || "",
+      d.submitDateDivision || "",
+      d.submitByDivision || "",
+      d.paymentStatus || "",
+      d.paymentDate || ""
+    ]);
+  });
+
+  docPDF.setFontSize(16);
+  docPDF.text("NSC All Invoice Report", 14, 15);
+
+  docPDF.autoTable({
+    startY: 22,
+    head: [[
+      "SL",
+      "Invoice No",
+      "Invoice Date",
+      "PO No",
+      "PO Date",
+      "Work Name",
+      "Amount",
+      "CGST",
+      "SGST",
+      "Total",
+      "CCC Date",
+      "CCC By",
+      "Division Date",
+      "Division By",
+      "Status",
+      "Payment Date"
+    ]],
+    body: rows,
+    styles: {
+      fontSize: 7
+    },
+    headStyles: {
+      fillColor: [0, 200, 255]
+    }
+  });
+
+  docPDF.save("NSC_All_Invoices.pdf");
+
+};
+    
+    
+    window.closeSuccessPopup = function(){
+document.getElementById("successPopup").style.display="none";
+}
+    
+  </script>
+
+</body>
+</html>
