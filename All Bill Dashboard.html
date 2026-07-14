@@ -4,6 +4,8 @@
   <title>Invoice Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -160,6 +162,19 @@
 
 <input type="text" id="search" placeholder="🔎 Search...">
 
+  <button id="excelBtn" style="
+padding:12px 20px;
+margin:10px 5px;
+background:#16a34a;
+color:#fff;
+border:none;
+border-radius:10px;
+font-size:14px;
+font-weight:600;
+cursor:pointer;">
+<i class="fa-solid fa-file-excel"></i> Download Excel
+</button>
+
 <!-- CARDS -->
 <div class="card">Total Invoice <b id="totalInvoice"></b></div>
 <div class="card">Total Amount  ₹ <b id="totalAmount"></b></div>
@@ -197,13 +212,28 @@
 <tbody id="data"></tbody>
 </table>
 
-<script>
 
-// SAME LOGIC
+  <script type="module">
 
-const sheetID = "1vzR_crvKY3xPzBbSmn2ejnPm8DEKeY9DkWhwWPb2HuU";
-const sheetName = "INVOICE FOR ALL BILL";
-const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+  authDomain: "chakraborty-ele-login.firebaseapp.com",
+  projectId: "chakraborty-ele-login",
+  storageBucket: "chakraborty-ele-login.firebasestorage.app",
+  messagingSenderId: "414542805581",
+  appId: "1:414542805581:web:cfd13593767abbb51cba04"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 let originalData = [];
 let chartInstance = null;
@@ -215,37 +245,50 @@ function formatMoney(val){
   });
 }
 
-function getFY(inv){
+
+  function getFY(inv){
+
+  if(typeof inv === "object"){
+    if(inv.financialYear) return inv.financialYear;
+    inv = inv.invoiceNo || "";
+  }
+
   if(!inv) return "Unknown";
-  let m = inv.match(/\d{4}-\d{4}/);
+
+  let m = String(inv).match(/\d{4}-\d{4}/);
+
   return m ? m[0] : "Unknown";
+
 }
-
-
 
   
 // 🔥 ADD THIS
-function getFinalDivision(r){
-  let div = (r["SUBMIT BY DIVISION"] || "").trim();
-  let ccc = (r["SUBMIT BY CCC"] || "").trim();
+
+  function getFinalDivision(r){
+
+  let div = (r.submitByDivision || "").trim();
+  let ccc = (r.submitByCCC || "").trim();
 
   if(div) return div;
   if(ccc) return "CCC - " + ccc;
+
   return "Unknown";
 }
 
 
 
+
   function getSubmitDate(r){
-  let div = (r["SUBMIT BY DIVISION"] || "").trim();
-  let ccc = (r["SUBMIT BY CCC"] || "").trim();
+
+  let div = (r.submitByDivision || "").trim();
+  let ccc = (r.submitByCCC || "").trim();
 
   if(div){
-    return r["SUBMIT DATE DIVISION"] || "-";
+    return r.submitDateDivision || "-";
   }
 
   if(ccc){
-    return r["SUBMIT DATE CCC"] || "-";
+    return r.submitDateCCC || "-";
   }
 
   return "-";
@@ -272,11 +315,12 @@ function applyFilters(){
 
   let filtered = originalData.filter(r => {
 
-    let fyMatch = (fy==="all") || (getFY(r.INVOICE_NO)===fy);
+    let fyMatch = (fy === "all") || (getFY(r) === fy);
     let divVal = getFinalDivision(r).toLowerCase();
     let divMatch = (div==="all") || (divVal===div);
 
-    let status = (r["PAYMENT STATUS"]||"").toUpperCase().trim();
+
+    let status = (r.paymentStatus || "").toUpperCase().trim();
     let isPaid = status.includes("BILL PAYMENT");
 
     let billMatch =
@@ -294,6 +338,7 @@ function applyFilters(){
 }
 
 function render(data){
+  window.currentData = data;
 
   let total=0, paid=0, pending=0;
   let paidCount=0, pendingCount=0;
@@ -303,10 +348,9 @@ function render(data){
 
   data.forEach(r => {
 
-    let amt = parseFloat(r.TOTAL||0);
-    total += amt;
+    let amt = parseFloat(r.total || 0);
 
-    let status = (r["PAYMENT STATUS"]||"").toUpperCase().trim();
+let status = (r.paymentStatus || "").toUpperCase().trim();
     let isPaid = status.includes("BILL PAYMENT");
 
     let divName = getFinalDivision(r);
@@ -333,16 +377,16 @@ function render(data){
 
   rows += `
 <tr>
-  <td>${r["SL NO"] || "-"}</td>
-  <td>${r["INVOICE_NO"] || r["INVOICE NO"] || r["INVOICE-NO"] || "-"}</td>
-  <td>${r["INVOICE_DATE"] || r["INVOICE DATE"] || "-"}</td>
-  <td>${r["PO NO"] || "-"}</td>
-  <td><span class="badge" style="background:${getDivisionColor(divName)}">${divName}</span></td>
-  <td>${getSubmitDate(r)}</td>
-  <td>${r["WORK NAME"] || "-"}</td>
-  <td>${formatMoney(amt)}</td>
-  <td style="color:${isPaid?'green':'red'}">${r["PAYMENT STATUS"]||"NO"}</td>
-<td style="color:${isPaid?'green':'red'}">${r["PAYMENT DATE"]||"NO"}</td>
+<td>${r.slNo || "-"}</td>
+<td>${r.invoiceNo || "-"}</td>
+<td>${r.invoiceDate || "-"}</td>
+<td>${r.poNo || "-"}</td>
+<td><span class="badge" style="background:${getDivisionColor(divName)}">${divName}</span></td>
+<td>${getSubmitDate(r)}</td>
+<td>${r.workName || "-"}</td>
+<td>${formatMoney(amt)}</td>
+<td style="color:${isPaid?'green':'red'}">${r.paymentStatus || "NO"}</td>
+<td style="color:${isPaid?'green':'red'}">${r.paymentDate || "NO"}</td>
 </tr>`;
 
   });
@@ -406,42 +450,83 @@ function render(data){
   });
 }
 
-fetch(url)
-.then(res => res.json())
-.then(data => {
+    document.getElementById("excelBtn").onclick = function () {
 
-  originalData = data;
+  if (!window.currentData || window.currentData.length === 0) {
+    alert("No data found.");
+    return;
+  }
+
+  const exportData = window.currentData.map(r => ({
+    "SL No": r.slNo,
+    "Invoice No": r.invoiceNo,
+    "Invoice Date": r.invoiceDate,
+    "PO No": r.poNo,
+    "Division / CCC": getFinalDivision(r),
+    "Submit Date": getSubmitDate(r),
+    "Work Name": r.workName,
+    "Amount": r.total,
+    "Payment Status": r.paymentStatus,
+    "Payment Date": r.paymentDate
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(exportData);
+  const wb = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(wb, ws, "Invoices");
+
+  XLSX.writeFile(wb, "Invoice_Report.xlsx");
+
+};
+
+  async function loadInvoices() {
+
+  const snapshot = await getDocs(collection(db, "Invoices"));
+
+  originalData = [];
+
+  snapshot.forEach(docSnap => {
+    originalData.push(docSnap.data());
+  });
 
   let fySet = new Set();
   let divSet = new Set();
 
-  data.forEach(r => {
-    fySet.add(getFY(r.INVOICE_NO));
+  originalData.forEach(r => {
 
-  
-    let finalDiv = getFinalDivision(r).toLowerCase();
-divSet.add(finalDiv);
+    fySet.add(r.financialYear || getFY(r.invoiceNo));
 
-    
+    let finalDiv =
+      (r.submitByDivision || ("CCC - " + (r.submitByCCC || "")))
+      .toLowerCase();
+
+    divSet.add(finalDiv);
+
   });
 
   let fySelect = document.getElementById("fyFilter");
   let divSelect = document.getElementById("divisionFilter");
 
-  fySet.forEach(f=>{
-    let o=document.createElement("option");
-    o.value=f; o.textContent=f;
+  fySet.forEach(f => {
+    let o = document.createElement("option");
+    o.value = f;
+    o.textContent = f;
     fySelect.appendChild(o);
   });
 
-  divSet.forEach(d=>{
-    let o=document.createElement("option");
-    o.value=d; o.textContent=d.toUpperCase();
+  divSet.forEach(d => {
+    let o = document.createElement("option");
+    o.value = d;
+    o.textContent = d.toUpperCase();
     divSelect.appendChild(o);
   });
 
-  render(data);
-});
+  render(originalData);
+
+}
+
+loadInvoices();
+  
 
 document.getElementById("fyFilter").addEventListener("change", applyFilters);
 document.getElementById("divisionFilter").addEventListener("change", applyFilters);
