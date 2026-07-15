@@ -482,6 +482,14 @@ text-align:center;
 grid-template-columns:1fr;
 }
 
+  #invoiceSearchBox{
+flex-direction:column;
+}
+
+.searchBox button{
+width:100%;
+}
+
 .grid{
 grid-template-columns:1fr;
 }
@@ -561,6 +569,20 @@ font-weight:600;
 cursor:pointer;
 }
 
+
+    #invoiceSearchBox{
+display:flex;
+gap:10px;
+width:100%;
+flex-wrap:wrap;
+}
+
+#invoiceSearchBox select,
+#invoiceSearchBox input{
+flex:1;
+width:100%;
+min-width:0;
+}
     
     </style>
 
@@ -845,9 +867,24 @@ Search Invoice
 
 </select>
 
-<input type="text"
-id="searchValue"
-placeholder="Enter Search Value">
+
+  <div id="normalSearchBox">
+  <input type="text"
+         id="searchValue"
+         placeholder="Enter Search Value">
+</div>
+
+<div id="invoiceSearchBox" style="display:none;">
+
+  <select id="searchFY">
+    <option value="">Financial Year</option>
+  </select>
+
+  <input type="text"
+         id="searchInvoiceNo"
+         placeholder="Invoice Number (e.g. 05)">
+
+</div>
 
 <button id="searchBtn">
 
@@ -1579,28 +1616,113 @@ invoiceNo.value =
 invoiceDate.addEventListener("change", loadNextInvoiceNo);
 
 
-    invoiceDate.addEventListener("change", loadNextInvoiceNo);
+    // ===== Financial Year Dropdown Load =====
+
+async function loadFinancialYears(){
+
+  const snapshot = await getDocs(collection(db,"Invoices"));
+
+  const fySelect = document.getElementById("searchFY");
+
+  fySelect.innerHTML =
+    '<option value="">Financial Year</option>';
+
+  const years = new Set();
+
+  snapshot.forEach(docSnap=>{
+    const d = docSnap.data();
+
+    if(d.financialYear){
+      years.add(d.financialYear);
+    }
+  });
+
+  [...years]
+    .sort()
+    .reverse()
+    .forEach(fy=>{
+
+      const op = document.createElement("option");
+
+      op.value = fy;
+      op.textContent = fy;
+
+      fySelect.appendChild(op);
+
+    });
+
+}
+
+loadFinancialYears();
+    
 
 const searchType = document.getElementById("searchType");
 const searchValue = document.getElementById("searchValue");
 
-searchType.addEventListener("change", () => {
-  if (searchType.value === "invoiceDate") {
-    searchValue.type = "date";
-  } else {
-    searchValue.type = "text";
-    searchValue.value = "";
+
+    searchValue.addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    e.preventDefault();
+    document.getElementById("searchBtn").click();
   }
+});
+
+document.getElementById("searchInvoiceNo").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    e.preventDefault();
+    document.getElementById("searchBtn").click();
+  }
+});
+    searchType.addEventListener("change", async () => {
+
+  const normalBox = document.getElementById("normalSearchBox");
+  const invoiceBox = document.getElementById("invoiceSearchBox");
+
+  if(searchType.value === "invoiceNo"){
+
+    normalBox.style.display = "none";
+    invoiceBox.style.display = "flex";
+
+    const fy = document.getElementById("searchFY");
+    fy.innerHTML = '<option value="">Financial Year</option>';
+
+    const snapshot = await getDocs(collection(db,"Invoices"));
+
+    const years = new Set();
+
+    snapshot.forEach(docSnap=>{
+      const d = docSnap.data();
+      if(d.financialYear){
+        years.add(d.financialYear);
+      }
+    });
+
+    [...years].sort().reverse().forEach(y=>{
+      fy.innerHTML += `<option value="${y}">${y}</option>`;
+    });
+
+  }
+  else{
+
+    normalBox.style.display = "block";
+    invoiceBox.style.display = "none";
+
+    if(searchType.value==="invoiceDate"){
+      searchValue.type="date";
+    }else{
+      searchValue.type="text";
+    }
+
+    searchValue.value="";
+  }
+
 });
     document.getElementById("searchBtn").onclick = async () => {
 
   const type = document.getElementById("searchType").value;
-  const value = document.getElementById("searchValue").value.trim();
+  let value;  if(type==="invoiceNo"){    const fy = document.getElementById("searchFY").value;   const no = document.getElementById("searchInvoiceNo").value.trim();    if(!fy || !no){     alert("Select Financial Year and Enter Invoice Number");     return;   }    value = fy + "/" + no.padStart(2,"0");  }else{    value = document.getElementById("searchValue").value.trim();  }
 
-  if (!value) {
-    alert("Enter Search Value");
-    return;
-  }
+  
 
   const snapshot = await getDocs(collection(db, "Invoices"));
 
