@@ -702,7 +702,8 @@ Downloads
 
 <section class="formCard" id="newInvoiceSection">
 
-<h2>
+
+  <h2 id="formTitle">
 
 <i class="fa-solid fa-file-circle-plus"></i>
 
@@ -875,12 +876,15 @@ Preview
 
 </button>
 
-<button type="reset">
 
+  <button type="reset" id="resetBtn">
 <i class="fa-solid fa-rotate-left"></i>
-
 Reset
+</button>
 
+<button type="button" id="newInvoiceBtn" style="background:#16a34a;color:#fff;display:none;">
+<i class="fa-solid fa-file-circle-plus"></i>
+New Invoice Create
 </button>
 
 </div>
@@ -1124,6 +1128,9 @@ const editBtn = document.getElementById("editBtn");
 const saveBtn = document.getElementById("saveBtn");
 
 const loader = document.getElementById("loader");
+    const formTitle = document.getElementById("formTitle");
+const newInvoiceBtn = document.getElementById("newInvoiceBtn");
+    const resetBtn = document.getElementById("resetBtn");
     let editSLNo = "";
     let editMode = false;
 let editDocId = "";
@@ -1408,6 +1415,13 @@ document.getElementById("successPopup").style.display="flex";
   editDocId = "";
 
   invoiceForm.reset();
+        formTitle.innerHTML = `
+<i class="fa-solid fa-file-circle-plus"></i>
+New Invoice
+`;
+
+newInvoiceBtn.style.display = "none";
+        resetBtn.style.display = "inline-block";
   total.value = "";
   loadNextInvoiceNo();
 
@@ -1516,6 +1530,14 @@ invoiceNo: invoiceNumber,
 document.getElementById("successPopup").style.display="flex";
 
 invoiceForm.reset();
+
+    formTitle.innerHTML = `
+<i class="fa-solid fa-file-circle-plus"></i>
+New Invoice
+`;
+
+newInvoiceBtn.style.display = "none";
+    resetBtn.style.display = "inline-block";
 total.value = "";
 
     loadNextInvoiceNo();
@@ -1621,6 +1643,13 @@ window.showSearch = showSearch;
   paymentDate.value = d.paymentDate;
 
   showNewInvoice();
+      formTitle.innerHTML = `
+<i class="fa-solid fa-pen-to-square"></i>
+Edit Invoice
+`;
+
+newInvoiceBtn.style.display = "inline-block";
+      resetBtn.style.display = "none";
 
 };
     document.querySelectorAll('input[type="date"]').forEach(input => {
@@ -1985,6 +2014,27 @@ function closeAlertPopup(){
 
 window.showAlert = showAlert;
 window.closeAlertPopup = closeAlertPopup;
+
+
+    newInvoiceBtn.onclick = () => {
+
+  editMode = false;
+  editDocId = "";
+
+  invoiceForm.reset();
+  total.value = "";
+
+  formTitle.innerHTML = `
+  <i class="fa-solid fa-file-circle-plus"></i>
+  New Invoice
+  `;
+
+  newInvoiceBtn.style.display = "none";
+      resetBtn.style.display = "inline-block";
+
+  loadNextInvoiceNo();
+
+};
 
     
   </script>
