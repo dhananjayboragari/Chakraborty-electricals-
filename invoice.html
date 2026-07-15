@@ -583,6 +583,54 @@ flex:1;
 width:100%;
 min-width:0;
 }
+
+
+    .alertPopup{
+position:fixed;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+background:rgba(0,0,0,.7);
+backdrop-filter:blur(8px);
+z-index:99999;
+}
+
+.alertCard{
+width:90%;
+max-width:360px;
+background:#101828;
+padding:25px;
+border-radius:18px;
+text-align:center;
+border:1px solid rgba(255,255,255,.15);
+animation:popup .25s ease;
+}
+
+.alertCard i{
+font-size:60px;
+color:#f59e0b;
+margin-bottom:15px;
+}
+
+.alertCard h2{
+margin-bottom:10px;
+}
+
+.alertCard p{
+margin-bottom:20px;
+color:#ddd;
+}
+
+.alertCard button{
+padding:12px 30px;
+border:none;
+border-radius:10px;
+background:#00c8ff;
+color:#fff;
+font-weight:600;
+cursor:pointer;
+}
     
     </style>
 
@@ -991,6 +1039,19 @@ Save Invoice
       </button>
     </div>
 
+  </div>
+</div>
+
+
+  <div id="alertPopup" class="alertPopup">
+  <div class="alertCard">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <h2>Warning</h2>
+    <p id="alertMessage"></p>
+
+    <button onclick="closeAlertPopup()">
+      OK
+    </button>
   </div>
 </div>
   
@@ -1720,7 +1781,18 @@ document.getElementById("searchInvoiceNo").addEventListener("keydown", function(
     document.getElementById("searchBtn").onclick = async () => {
 
   const type = document.getElementById("searchType").value;
-  let value;  if(type==="invoiceNo"){    const fy = document.getElementById("searchFY").value;   const no = document.getElementById("searchInvoiceNo").value.trim();    if(!fy || !no){     alert("Select Financial Year and Enter Invoice Number");     return;   }    value = fy + "/" + no.padStart(2,"0");  }else{    value = document.getElementById("searchValue").value.trim();  }
+  let value;  if(type==="invoiceNo"){    const fy = document.getElementById("searchFY").value;   const no = document.getElementById("searchInvoiceNo").value.trim();    if(!fy || !no){     showAlert("Select Financial Year and Enter Invoice Number");     return;   }    value = fy + "/" + no.padStart(2,"0");  
+                                         }else{
+
+  value = document.getElementById("searchValue").value.trim();
+
+  if(value === ""){
+    showAlert("Please Enter Search Value");
+    document.getElementById("searchValue").focus();
+    return;
+}
+
+}
 
   
 
@@ -1899,6 +1971,21 @@ Edit
     window.closeSuccessPopup = function(){
 document.getElementById("successPopup").style.display="none";
 }
+
+
+
+    function showAlert(msg){
+  document.getElementById("alertMessage").innerHTML = msg;
+  document.getElementById("alertPopup").style.display = "flex";
+}
+
+function closeAlertPopup(){
+  document.getElementById("alertPopup").style.display = "none";
+}
+
+window.showAlert = showAlert;
+window.closeAlertPopup = closeAlertPopup;
+
     
   </script>
 
