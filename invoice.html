@@ -1180,6 +1180,12 @@ invoiceDate.focus();
 return false;
 }
 
+  if(poDate.value==""){
+showAlert("Please Select PO Date");
+poDate.focus();
+return false;
+}
+
 if(poNo.value==""){
 showAlert("Please Enter PO Number");
 poNo.focus();
