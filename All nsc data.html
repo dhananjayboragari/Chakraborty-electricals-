@@ -66,6 +66,7 @@ table{display:none;}
 </div>
 
 <div id="loading"></div>
+  <div id="resultCount" style="margin:10px 0;font-weight:bold;color:#007bff;"></div>
 
 <div id="tableData"></div>
 <div id="cardData"></div>
@@ -120,6 +121,8 @@ console.log(err);
 }
 
 function displayData(){
+  let totalRecords = filteredData.length > 0 ? filteredData.length - 1 : 0;
+document.getElementById("resultCount").innerHTML = "📋 Total Records: " + totalRecords;
 let start=(currentPage-1)*rowsPerPage;
 let end=start+rowsPerPage;
 let pageData=filteredData.slice(start,end);
