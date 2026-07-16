@@ -655,7 +655,7 @@ cursor:pointer;
 Dashboard
 </li>
 
-<li onclick="showNewInvoice()">
+<li onclick="openNewInvoice()">
 <i class="fa-solid fa-plus"></i>
 New Invoice
 </li>
@@ -1589,6 +1589,30 @@ document.getElementById("searchSection").style.display="none";
 document.getElementById("downloadSection").style.display="none";
 
 }
+
+
+    function openNewInvoice(){
+
+  editMode = false;
+  editDocId = "";
+
+  invoiceForm.reset();
+  total.value = "";
+
+  formTitle.innerHTML = `
+  <i class="fa-solid fa-file-circle-plus"></i>
+  New Invoice
+  `;
+
+  newInvoiceBtn.style.display = "none";
+  resetBtn.style.display = "inline-block";
+
+  showNewInvoice();
+  loadNextInvoiceNo();
+
+}
+
+window.openNewInvoice = openNewInvoice;
 
 function showSearch(){
 
