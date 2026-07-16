@@ -1661,6 +1661,9 @@ newInvoiceBtn.style.display = "inline-block";
 });
 
     async function loadNextInvoiceNo() {
+      if (editMode) {
+  return;
+}
 
   if (!invoiceDate.value) {
     slNo.value = "";
@@ -1703,7 +1706,7 @@ invoiceNo.value =
   financialYear + "/" + String(invoiceSerial).padStart(2, "0");
 }
 
-invoiceDate.addEventListener("change", loadNextInvoiceNo);
+invoiceDate.addEventListener("change", () => {   if (!editMode) {     loadNextInvoiceNo();   } });
 
 
     // ===== Financial Year Dropdown Load =====
