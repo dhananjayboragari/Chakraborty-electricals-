@@ -1175,25 +1175,25 @@ sgst.addEventListener("input",calculateTotal);
 function validateForm(){
 
 if(invoiceDate.value==""){
-alert("Select Invoice Date");
+showAlert("Please Select Invoice Date");
 invoiceDate.focus();
 return false;
 }
 
 if(poNo.value==""){
-alert("Enter PO Number");
+showAlert("Please Enter PO Number");
 poNo.focus();
 return false;
 }
 
 if(workName.value==""){
-alert("Enter Work Name");
+showAlert("Please Enter Work Name");
 workName.focus();
 return false;
 }
 
 if(amount.value==""){
-alert("Enter Amount");
+showAlert("Please Enter Amount");
 amount.focus();
 return false;
 }
