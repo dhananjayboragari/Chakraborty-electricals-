@@ -6,6 +6,10 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
+  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -175,6 +179,20 @@ cursor:pointer;">
 <i class="fa-solid fa-file-excel"></i> Download Excel
 </button>
 
+  <button id="pdfBtn" style="
+padding:12px 20px;
+margin:10px 5px;
+background:#dc2626;
+color:#fff;
+border:none;
+border-radius:10px;
+font-size:14px;
+font-weight:600;
+cursor:pointer;">
+📄 Download PDF
+</button>
+
+  
 <!-- CARDS -->
 <div class="card">Total Invoice <b id="totalInvoice"></b></div>
 <div class="card">Total Amount  ₹ <b id="totalAmount"></b></div>
@@ -481,6 +499,103 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
   XLSX.utils.book_append_sheet(wb, ws, "Invoices");
 
   XLSX.writeFile(wb, "Invoice_Report.xlsx");
+
+};
+
+    document.getElementById("pdfBtn").onclick = function(){
+
+    if(!window.currentData || window.currentData.length==0){
+        alert("No data found.");
+        return;
+    }
+
+    const {jsPDF}=window.jspdf;
+
+    const pdf=new jsPDF("l","mm","a4");
+
+    pdf.setFontSize(18);
+    pdf.text("ALL INVOICE REPORT",148,15,{align:"center"});
+
+    pdf.setFontSize(13);
+    pdf.text("M/S Chakraborty Electricals (Vendor Code :- 501520)",148,24,{align:"center"});
+
+    let fy=document.getElementById("fyFilter").value;
+    let division=document.getElementById("divisionFilter").value;
+    let status=document.getElementById("billFilter").value;
+
+    pdf.setFontSize(11);
+
+    pdf.text(
+        "Financial Year : "+(fy=="all"?"ALL":fy),
+        14,
+        35
+    );
+
+    pdf.text(
+        "Division : "+(division=="all"?"ALL":division.toUpperCase()),
+        110,
+        35
+    );
+
+    pdf.text(
+        "Status : "+(status=="all"?"ALL":status.toUpperCase()),
+        220,
+        35
+    );
+
+    pdf.line(14,40,282,40);
+
+    let rows=[];
+
+    window.currentData.forEach(r=>{
+
+        rows.push([
+            r.slNo,
+            r.invoiceNo,
+            r.invoiceDate,
+            r.poNo,
+            r.poDate,
+            getFinalDivision(r),
+            getSubmitDate(r),
+            r.workName,
+            formatMoney(r.total),
+            r.paymentStatus,
+            r.paymentDate
+        ]);
+
+    });
+
+    pdf.autoTable({
+
+        startY:45,
+
+        head:[[
+            "SL",
+            "Invoice No",
+            "Invoice Date",
+            "PO No",
+            "PO Date",
+            "Division",
+            "Submit Date",
+            "Work Name",
+            "Amount",
+            "Status",
+            "Payment Date"
+        ]],
+
+        body:rows,
+
+        styles:{
+            fontSize:7
+        },
+
+        headStyles:{
+            fillColor:[59,130,246]
+        }
+
+    });
+
+    pdf.save("Invoice_Report.pdf");
 
 };
 
