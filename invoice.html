@@ -529,44 +529,115 @@ backdrop-filter:blur(8px);
 z-index:20000;
 }
 
-.successCard{
+
+    .successCard{
 width:90%;
-max-width:450px;
-background:#101828;
-border-radius:22px;
-padding:30px;
+max-width:520px;
+background:linear-gradient(145deg,#0f172a,#1e293b);
+border-radius:28px;
+padding:35px;
 text-align:center;
 border:1px solid rgba(255,255,255,.15);
-animation:popup .3s;
+box-shadow:0 25px 60px rgba(0,0,0,.6),
+0 0 35px rgba(0,200,255,.25);
+animation:popupZoom .35s ease;
+}
+
+.successIcon{
+width:100px;
+height:100px;
+margin:0 auto 20px;
+border-radius:50%;
+background:rgba(22,163,74,.15);
+display:flex;
+align-items:center;
+justify-content:center;
+border:2px solid #16a34a;
 }
 
 .successIcon i{
-font-size:70px;
-color:#16a34a;
-margin-bottom:15px;
+font-size:55px;
+color:#22c55e;
 }
 
 .successCard h2{
-margin-bottom:20px;
+font-size:28px;
+margin-bottom:10px;
+color:#fff;
+}
+
+.successCard p{
+color:#cbd5e1;
+margin-bottom:25px;
 }
 
 #successDetails{
-background:rgba(255,255,255,.08);
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+border-radius:18px;
 padding:20px;
-border-radius:15px;
 text-align:left;
 line-height:2;
 }
+    .invoiceHighlight{
+margin-bottom:5px;
+padding:8px;
+border-radius:18px;
+text-align:center;
+background:linear-gradient(135deg,#00c8ff,#2563eb);
+box-shadow:0 10px 30px rgba(0,200,255,.35);
+border:2px solid rgba(255,255,255,.25);
+animation:glowInvoice 1.5s infinite alternate;
+}
+
+.invoiceHighlight span{
+display:block;
+font-size:14px;
+letter-spacing:2px;
+opacity:.9;
+margin-bottom:3px;
+}
+
+.invoiceHighlight h1{
+font-size:20px;
+font-weight:800;
+color:#fff;
+margin:0;
+letter-spacing:2px;
+text-shadow:0 3px 10px rgba(0,0,0,.35);
+word-break:break-word;
+}
+
+@keyframes glowInvoice{
+from{
+box-shadow:0 0 10px rgba(0,200,255,.35);
+}
+to{
+box-shadow:0 0 30px rgba(0,200,255,.8);
+}
+}
+
+#successDetails b{
+color:#38bdf8;
+}
 
 .successBtn button{
-margin-top:20px;
-padding:12px 35px;
+width:100%;
+padding:15px;
+margin-top:25px;
 border:none;
-border-radius:12px;
-background:#00c8ff;
-color:white;
-font-weight:600;
+border-radius:14px;
+background:linear-gradient(90deg,#00c8ff,#2563eb);
+color:#fff;
+font-size:16px;
+font-weight:700;
 cursor:pointer;
+transition:.3s;
+}
+
+.successBtn button:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(0,200,255,.35);
 }
 
 
@@ -1149,8 +1220,10 @@ Save Invoice
   <div class="successCard">
 
     <div class="successIcon">
-      <i class="fa-solid fa-circle-check"></i>
+    <div class="successCircle">
+        <i class="fa-solid fa-check"></i>
     </div>
+</div>
 
     <h2 id="successTitle">Invoice Saved Successfully</h2>
 
@@ -1648,11 +1721,21 @@ invoiceNo: invoiceNumber,
 
 
     document.getElementById("successTitle").innerText = "Invoice Saved Successfully";
+    
+ 
+
     document.getElementById("successDetails").innerHTML = `
-<b>Invoice No:</b> ${invoiceNumber}<br>
-<b>Invoice Date:</b> ${invoiceDate.value}<br>
-<b>PO No:</b> ${poNo.value}<br>
-<b>Work Name:</b> ${workName.value}<br>
+<div class="invoiceHighlight">
+<span>INVOICE NUMBER</span>
+<h1>${invoiceNumber}</h1>
+</div>
+
+<b>Invoice Date:</b> ${invoiceDate.value}<br><br>
+
+<b>PO No:</b> ${poNo.value}<br><br>
+
+<b>Work Name:</b> ${workName.value}<br><br>
+
 <b>Total Amount:</b> ₹ ${total.value}
 `;
 
