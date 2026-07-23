@@ -368,6 +368,7 @@ function render(data){
   data.forEach(r => {
 
     let amt = parseFloat(r.total || 0);
+    total += amt;
 
 let status = (r.paymentStatus || "").toUpperCase().trim();
     let isPaid = status.includes("BILL PAYMENT");
