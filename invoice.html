@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -858,6 +859,78 @@ line-height:1.5;
 }
 
 }
+
+
+    .ts-wrapper{
+width:100%;
+}
+
+
+    .ts-control{
+background:rgba(255,255,255,.08) !important;
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.15) !important;
+border-radius:12px !important;
+min-height:50px;
+color:#fff !important;
+box-shadow:none !important;
+}
+
+.ts-control input{
+color:#fff !important;
+}
+    .ts-control .item{
+color:#ffffff !important;
+}
+
+.ts-control .placeholder{
+color:rgba(255,255,255,.75) !important;
+}
+    
+
+.ts-dropdown{
+background:#1e293b !important;
+border:1px solid rgba(255,255,255,.15) !important;
+border-radius:12px !important;
+}
+
+.ts-dropdown .option{
+color:#fff !important;
+padding:12px 15px;
+}
+
+.ts-dropdown .option:hover,
+.ts-dropdown .active{
+background:#00c8ff !important;
+color:#000 !important;
+}
+
+.ts-dropdown .selected{
+background:#2563eb !important;
+color:#fff !important;
+}
+
+    
+
+    
+
+    .ts-control{
+    color:#fff !important;
+}
+
+.ts-control input{
+    color:#fff !important;
+    -webkit-text-fill-color:#fff !important;
+}
+
+.ts-control .item{
+    color:#fff !important;
+}
+
+.ts-control .placeholder{
+    color:#ffffff !important;
+    opacity:1 !important;
+}
     
     </style>
 
@@ -1288,6 +1361,8 @@ Save Invoice
     </button>
   </div>
 </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
   
   <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -1361,6 +1436,13 @@ const loader = document.getElementById("loader");
     const formTitle = document.getElementById("formTitle");
 const newInvoiceBtn = document.getElementById("newInvoiceBtn");
     const resetBtn = document.getElementById("resetBtn");
+    resetBtn.addEventListener("click", () => {
+    setTimeout(() => {
+        document.getElementById("submitByCCC").tomselect.clear();
+        document.getElementById("submitByDivision").tomselect.clear();
+        document.getElementById("paymentStatus").tomselect.clear();
+    }, 0);
+});
     let editSLNo = "";
     let editMode = false;
 let editDocId = "";
@@ -1805,6 +1887,9 @@ font-weight:700;
 document.getElementById("successPopup").style.display="flex";
 
 invoiceForm.reset();
+    document.getElementById("submitByCCC").tomselect.clear();
+document.getElementById("submitByDivision").tomselect.clear();
+document.getElementById("paymentStatus").tomselect.clear();
 
     formTitle.innerHTML = `
 <i class="fa-solid fa-file-circle-plus"></i>
@@ -1872,6 +1957,9 @@ document.getElementById("downloadSection").style.display="none";
   editDocId = "";
 
   invoiceForm.reset();
+      document.getElementById("submitByCCC").tomselect.clear();
+document.getElementById("submitByDivision").tomselect.clear();
+document.getElementById("paymentStatus").tomselect.clear();
   total.value = "";
 
   formTitle.innerHTML = `
@@ -1935,10 +2023,11 @@ window.showSearch = showSearch;
   sgst.value = d.sgst;
   total.value = d.total;
   submitDateCCC.value = d.submitDateCCC;
-  submitByCCC.value = d.submitByCCC;
-  submitDateDivision.value = d.submitDateDivision;
-  submitByDivision.value = d.submitByDivision;
-  paymentStatus.value = d.paymentStatus;
+      
+  document.getElementById("submitByCCC").tomselect.setValue(d.submitByCCC);
+document.getElementById("submitByDivision").tomselect.setValue(d.submitByDivision);
+document.getElementById("paymentStatus").tomselect.setValue(d.paymentStatus);
+      
   paymentDate.value = d.paymentDate;
 
   showNewInvoice();
@@ -2042,6 +2131,14 @@ async function loadFinancialYears(){
       fySelect.appendChild(op);
 
     });
+  if (fySelect.tomselect) {
+    fySelect.tomselect.destroy();
+}
+
+new TomSelect("#searchFY", {
+    create: false,
+    sortField: false
+});
 
 }
 
@@ -2077,6 +2174,9 @@ document.getElementById("searchInvoiceNo").addEventListener("keydown", function(
 
     const fy = document.getElementById("searchFY");
     fy.innerHTML = '<option value="">Financial Year</option>';
+    if (fy.tomselect) {
+    fy.tomselect.destroy();
+}
 
     const snapshot = await getDocs(collection(db,"Invoices"));
 
@@ -2092,6 +2192,14 @@ document.getElementById("searchInvoiceNo").addEventListener("keydown", function(
     [...years].sort().reverse().forEach(y=>{
       fy.innerHTML += `<option value="${y}">${y}</option>`;
     });
+
+    if (document.getElementById("searchFY").tomselect) {
+    document.getElementById("searchFY").tomselect.destroy();
+}
+    new TomSelect("#searchFY", {
+    create: false,
+    sortField: false
+});
 
   }
   else{
@@ -2325,7 +2433,16 @@ window.closeAlertPopup = closeAlertPopup;
   editDocId = "";
 
   invoiceForm.reset();
+
+  document.getElementById("submitByCCC").tomselect.clear();
+  document.getElementById("submitByDivision").tomselect.clear();
+  document.getElementById("paymentStatus").tomselect.clear();
+
   total.value = "";
+
+  // SL No এবং Invoice No এখনই বের করবে না
+  slNo.value = "";
+  invoiceNo.value = "";
 
   formTitle.innerHTML = `
   <i class="fa-solid fa-file-circle-plus"></i>
@@ -2333,11 +2450,29 @@ window.closeAlertPopup = closeAlertPopup;
   `;
 
   newInvoiceBtn.style.display = "none";
-      resetBtn.style.display = "inline-block";
-
-  loadNextInvoiceNo();
+  resetBtn.style.display = "inline-block";
 
 };
+
+    new TomSelect("#submitByCCC",{
+    create:false,
+    sortField:false
+});
+
+new TomSelect("#submitByDivision",{
+    create:false,
+    sortField:false
+});
+
+new TomSelect("#paymentStatus",{
+    create:false,
+    sortField:false
+});
+
+new TomSelect("#searchType",{
+    create:false,
+    sortField:false
+});
 
     
   </script>
