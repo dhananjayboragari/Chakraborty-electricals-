@@ -330,6 +330,17 @@ outline:none;
 background:var(--green);
 color:#fff;
 }
+    #invoiceSearchBox{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.searchBox button{
+    height:50px;
+    align-self:center;
+    padding:0 25px;
+}
 
 /* Preview */
 
@@ -931,6 +942,9 @@ color:#fff !important;
     color:#ffffff !important;
     opacity:1 !important;
 }
+
+
+    
     
     </style>
 
@@ -1156,6 +1170,15 @@ New Invoice
 
 </div>
 
+  <div class="input" id="remarksBox" style="display:none;">
+
+<label>Remarks</label>
+
+<textarea id="remarks"
+placeholder="Enter Rejected Remarks"></textarea>
+
+</div>
+  
 <div class="input">
 
 <label>Payment Date</label>
@@ -1424,6 +1447,9 @@ const amount = document.getElementById("amount");
 const cgst = document.getElementById("cgst");
 const sgst = document.getElementById("sgst");
 const total = document.getElementById("total");
+    const paymentStatus = document.getElementById("paymentStatus");
+const remarks = document.getElementById("remarks");
+const remarksBox = document.getElementById("remarksBox");
 
 const previewBtn = document.getElementById("previewBtn");
 const previewPopup = document.getElementById("previewPopup");
@@ -1481,6 +1507,21 @@ amount.addEventListener("input",calculateTotal);
 cgst.addEventListener("input",calculateTotal);
 sgst.addEventListener("input",calculateTotal);
 
+    paymentStatus.addEventListener("change", () => {
+
+    if (paymentStatus.value === "Rejected") {
+
+        remarksBox.style.display = "flex";
+
+    } else {
+
+        remarksBox.style.display = "none";
+        remarks.value = "";
+
+    }
+
+});
+
 
 // ---------- Validation ----------
 
@@ -1516,6 +1557,19 @@ if(amount.value==""){
 showAlert("Please Enter Amount");
 amount.focus();
 return false;
+}
+
+    if(
+paymentStatus.value==="Rejected" &&
+remarks.value.trim()===""
+){
+
+showAlert("Please Enter Rejected Remarks");
+
+remarks.focus();
+
+return false;
+
 }
 
 return true;
@@ -1646,6 +1700,20 @@ previewPopup.style.display="flex";
 <td><b>Payment Date</b></td>
 <td>${paymentDate.value}</td>
 </tr>
+
+    ${
+paymentStatus.value==="Rejected"
+?
+
+`
+<tr>
+<td><b>Remarks</b></td>
+<td>${remarks.value}</td>
+</tr>
+`
+
+:""
+}
     </table>
 
 `;
@@ -1698,7 +1766,8 @@ saveInvoice();
     submitDateDivision: submitDateDivision.value,
     submitByDivision: submitByDivision.value,
     paymentStatus: paymentStatus.value,
-    paymentDate: paymentDate.value
+    paymentDate: paymentDate.value,
+    remarks: paymentStatus.value === "Rejected"   ? remarks.value.trim()   : ""
   };
 
   const oldSnap = await getDoc(doc(db, "Invoices", editDocId));
@@ -1821,6 +1890,7 @@ invoiceNo: invoiceNumber,
       submitByDivision: submitByDivision.value,
       paymentStatus: paymentStatus.value,
       paymentDate: paymentDate.value,
+      remarks: paymentStatus.value === "Rejected"   ? remarks.value.trim()   : "",
       createdAt: new Date()
     };
 
@@ -1887,6 +1957,8 @@ font-weight:700;
 document.getElementById("successPopup").style.display="flex";
 
 invoiceForm.reset();
+    document.getElementById("remarksBox").style.display = "none";
+remarks.value = "";
     document.getElementById("submitByCCC").tomselect.clear();
 document.getElementById("submitByDivision").tomselect.clear();
 document.getElementById("paymentStatus").tomselect.clear();
@@ -1972,6 +2044,8 @@ document.getElementById("paymentStatus").tomselect.clear();
 
   showNewInvoice();
   loadNextInvoiceNo();
+      document.getElementById("remarksBox").style.display = "none";
+remarks.value = "";
 
 }
 
@@ -2032,6 +2106,13 @@ window.showSearch = showSearch;
     submitDateCCC.value = d.submitDateCCC || "";
     submitDateDivision.value = d.submitDateDivision || "";
     paymentDate.value = d.paymentDate || "";
+    remarks.value = d.remarks || "";
+
+if (d.paymentStatus === "Rejected") {
+    remarksBox.style.display = "flex";
+} else {
+    remarksBox.style.display = "none";
+}
 }, 100);
       
   paymentDate.value = d.paymentDate;
@@ -2330,7 +2411,8 @@ Edit
       "Submit Date Division": d.submitDateDivision,
       "Submit By Division": d.submitByDivision,
       "Payment Status": d.paymentStatus,
-      "Payment Date": d.paymentDate
+      "Payment Date": d.paymentDate,
+    "Remarks": d.remarks
     });
 
   });
@@ -2372,7 +2454,8 @@ Edit
       d.submitDateDivision || "",
       d.submitByDivision || "",
       d.paymentStatus || "",
-      d.paymentDate || ""
+      d.paymentDate || "",
+    d.remarks || ""
     ]);
   });
 
@@ -2398,7 +2481,8 @@ docPDF.setFontSize(14);
       "Division Date",
       "Division By",
       "Status",
-      "Payment Date"
+      "Payment Date",
+    "Remarks"
     ]],
     body: rows,
     styles: {
@@ -2445,7 +2529,16 @@ window.closeAlertPopup = closeAlertPopup;
   document.getElementById("paymentStatus").tomselect.clear();
 
   total.value = "";
+      
 
+      invoiceForm.reset();
+
+document.getElementById("submitByCCC").tomselect.clear();
+document.getElementById("submitByDivision").tomselect.clear();
+document.getElementById("paymentStatus").tomselect.clear();
+
+total.value = "";
+      
   // SL No এবং Invoice No এখনই বের করবে না
   slNo.value = "";
   invoiceNo.value = "";
