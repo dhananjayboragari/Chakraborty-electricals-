@@ -2024,9 +2024,15 @@ window.showSearch = showSearch;
   total.value = d.total;
   submitDateCCC.value = d.submitDateCCC;
       
-  document.getElementById("submitByCCC").tomselect.setValue(d.submitByCCC);
-document.getElementById("submitByDivision").tomselect.setValue(d.submitByDivision);
-document.getElementById("paymentStatus").tomselect.setValue(d.paymentStatus);
+  setTimeout(() => {
+    document.getElementById("submitByCCC").tomselect.setValue(d.submitByCCC || "");
+    document.getElementById("submitByDivision").tomselect.setValue(d.submitByDivision || "");
+    document.getElementById("paymentStatus").tomselect.setValue(d.paymentStatus || "");
+
+    submitDateCCC.value = d.submitDateCCC || "";
+    submitDateDivision.value = d.submitDateDivision || "";
+    paymentDate.value = d.paymentDate || "";
+}, 100);
       
   paymentDate.value = d.paymentDate;
 
