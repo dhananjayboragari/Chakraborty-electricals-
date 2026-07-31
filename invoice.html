@@ -1448,6 +1448,9 @@ const cgst = document.getElementById("cgst");
 const sgst = document.getElementById("sgst");
 const total = document.getElementById("total");
     const paymentStatus = document.getElementById("paymentStatus");
+    const submitByCCC = document.getElementById("submitByCCC");
+
+const submitByDivision = document.getElementById("submitByDivision");
 const remarks = document.getElementById("remarks");
 const remarksBox = document.getElementById("remarksBox");
 
@@ -1740,12 +1743,6 @@ loader.style.display="flex";
 
 saveInvoice();
 
-  setTimeout(() => {
-  document.getElementById("submitByCCC").tomselect.clear(true);
-  document.getElementById("submitByDivision").tomselect.clear(true);
-  document.getElementById("paymentStatus").tomselect.clear(true);
-}, 100);
-
 };
 
 
@@ -1894,9 +1891,12 @@ invoiceNo: invoiceNumber,
       total: total.value,
       submitDateCCC: submitDateCCC.value,
       submitDateDivision: submitDateDivision.value,
-      submitByCCC: document.getElementById("submitByCCC").tomselect.getValue(),
-submitByDivision: document.getElementById("submitByDivision").tomselect.getValue(),
-paymentStatus: document.getElementById("paymentStatus").tomselect.getValue(),
+      
+      submitByCCC: submitByCCC.value,
+
+submitByDivision: submitByDivision.value,
+
+paymentStatus: paymentStatus.value,
       
       paymentDate: paymentDate.value,
       remarks: paymentStatus.value === "Rejected"   ? remarks.value.trim()   : "",
