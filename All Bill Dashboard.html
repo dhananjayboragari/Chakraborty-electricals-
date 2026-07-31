@@ -120,6 +120,12 @@
       border-bottom:1px solid #f1f5f9;
     }
 
+    td:last-child{
+  max-width:220px;
+  white-space:normal;
+  word-break:break-word;
+}
+
     tr:nth-child(even){
       background:#f8fafc;
     }
@@ -158,10 +164,11 @@
 <!-- FILTER -->
 <select id="fyFilter"><option value="all">All FINANCIAL YEAR</option></select>
 <select id="divisionFilter"><option value="all">All DIVISION</option></select>
-<select id="billFilter">
+
+  
+
+  <select id="billFilter">
   <option value="all">All STATUS</option>
-  <option value="paid">Paid</option>
-  <option value="pending">Pending</option>
 </select>
 
 <input type="text" id="search" placeholder="🔎 Search...">
@@ -226,6 +233,7 @@ cursor:pointer;">
 <th>Total Amount</th>
 <th>Payments Status</th>
   <th>Payments Date</th>
+  <th>Remarks</th>
 </tr>
 </thead>
 <tbody id="data"></tbody>
@@ -339,13 +347,11 @@ function applyFilters(){
     let divMatch = (div==="all") || (divVal===div);
 
 
-    let status = (r.paymentStatus || "").toUpperCase().trim();
-    let isPaid = status.includes("BILL PAYMENT");
+    let status = (r.paymentStatus || "").trim();
 
-    let billMatch =
-      (bill==="all") ||
-      (bill==="paid" && isPaid) ||
-      (bill==="pending" && !isPaid);
+let billMatch =
+  (bill === "all") ||
+  (status === bill);
 
     let searchMatch =
       Object.values(r).join(" ").toLowerCase().includes(search);
@@ -410,6 +416,7 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
 <td>${formatMoney(amt)}</td>
 <td style="color:${isPaid?'green':'red'}">${r.paymentStatus || "NO"}</td>
 <td style="color:${isPaid?'green':'red'}">${r.paymentDate || "NO"}</td>
+    <td>${r.remarks || "-"}</td>
 </tr>`;
 
   });
@@ -491,7 +498,8 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
     "Work Name": r.workName,
     "Amount": r.total,
     "Payment Status": r.paymentStatus,
-    "Payment Date": r.paymentDate
+    "Payment Date": r.paymentDate,
+    "Remarks": r.remarks || "-"
   }));
 
   const ws = XLSX.utils.json_to_sheet(exportData);
@@ -561,7 +569,8 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
             r.workName,
             formatMoney(r.total),
             r.paymentStatus,
-            r.paymentDate
+            r.paymentDate,
+    r.remarks || "-"
         ]);
 
     });
@@ -581,7 +590,8 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
             "Work Name",
             "Amount",
             "Status",
-            "Payment Date"
+            "Payment Date",
+    "Remarks"
         ]],
 
         body:rows,
@@ -612,6 +622,7 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
 
   let fySet = new Set();
   let divSet = new Set();
+    let statusSet = new Set();
 
   originalData.forEach(r => {
 
@@ -622,11 +633,13 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
       .toLowerCase();
 
     divSet.add(finalDiv);
+    statusSet.add((r.paymentStatus || "NO STATUS").trim());
 
   });
 
   let fySelect = document.getElementById("fyFilter");
   let divSelect = document.getElementById("divisionFilter");
+    let billSelect = document.getElementById("billFilter");
 
   fySet.forEach(f => {
     let o = document.createElement("option");
@@ -641,6 +654,13 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
     o.textContent = d.toUpperCase();
     divSelect.appendChild(o);
   });
+
+    statusSet.forEach(s => {
+    let o = document.createElement("option");
+    o.value = s;
+    o.textContent = s;
+    billSelect.appendChild(o);
+});
 
   render(originalData);
 
