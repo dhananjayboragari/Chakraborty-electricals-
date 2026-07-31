@@ -2528,9 +2528,45 @@ docPDF.setFontSize(14);
 };
     
     
-    window.closeSuccessPopup = function(){
-document.getElementById("successPopup").style.display="none";
-}
+    window.closeSuccessPopup = function () {
+
+    // Success Popup বন্ধ
+    document.getElementById("successPopup").style.display = "none";
+
+    // Edit Mode শেষ
+    editMode = false;
+    editDocId = "";
+
+    // Form Reset
+    invoiceForm.reset();
+
+    // TomSelect Clear
+    document.getElementById("submitByCCC").tomselect.clear();
+    document.getElementById("submitByDivision").tomselect.clear();
+    document.getElementById("paymentStatus").tomselect.clear();
+
+    // Remarks Hide
+    remarksBox.style.display = "none";
+    remarks.value = "";
+
+    // Total Clear
+    total.value = "";
+
+    // New Invoice Mode
+    formTitle.innerHTML = `
+    <i class="fa-solid fa-file-circle-plus"></i>
+    New Invoice
+    `;
+
+    newInvoiceBtn.style.display = "none";
+    resetBtn.style.display = "inline-block";
+
+    // নতুন Invoice No লোড
+    loadNextInvoiceNo();
+
+    // New Invoice Page দেখাও
+    showNewInvoice();
+};
 
 
 
