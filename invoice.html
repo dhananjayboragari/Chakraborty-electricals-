@@ -1740,6 +1740,12 @@ loader.style.display="flex";
 
 saveInvoice();
 
+  setTimeout(() => {
+  document.getElementById("submitByCCC").tomselect.clear(true);
+  document.getElementById("submitByDivision").tomselect.clear(true);
+  document.getElementById("paymentStatus").tomselect.clear(true);
+}, 100);
+
 };
 
 
@@ -1956,12 +1962,15 @@ font-weight:700;
 
 document.getElementById("successPopup").style.display="flex";
 
-invoiceForm.reset();
-    document.getElementById("remarksBox").style.display = "none";
+
+    invoiceForm.reset();
+
+document.getElementById("remarksBox").style.display = "none";
 remarks.value = "";
-    document.getElementById("submitByCCC").tomselect.clear();
-document.getElementById("submitByDivision").tomselect.clear();
-document.getElementById("paymentStatus").tomselect.clear();
+
+document.getElementById("submitByCCC").tomselect.clear(true);
+document.getElementById("submitByDivision").tomselect.clear(true);
+document.getElementById("paymentStatus").tomselect.clear(true);
 
     formTitle.innerHTML = `
 <i class="fa-solid fa-file-circle-plus"></i>
@@ -2029,9 +2038,23 @@ document.getElementById("downloadSection").style.display="none";
   editDocId = "";
 
   invoiceForm.reset();
-      document.getElementById("submitByCCC").tomselect.clear();
-document.getElementById("submitByDivision").tomselect.clear();
-document.getElementById("paymentStatus").tomselect.clear();
+
+      const ccc = document.getElementById("submitByCCC").tomselect;
+const div = document.getElementById("submitByDivision").tomselect;
+const status = document.getElementById("paymentStatus").tomselect;
+
+ccc.clear();
+div.clear();
+status.clear();
+
+ccc.setValue("");
+div.setValue("");
+status.setValue("");
+
+ccc.refreshOptions(false);
+div.refreshOptions(false);
+status.refreshOptions(false);
+      
   total.value = "";
 
   formTitle.innerHTML = `
@@ -2524,9 +2547,21 @@ window.closeAlertPopup = closeAlertPopup;
 
   invoiceForm.reset();
 
-  document.getElementById("submitByCCC").tomselect.clear();
-  document.getElementById("submitByDivision").tomselect.clear();
-  document.getElementById("paymentStatus").tomselect.clear();
+      const ccc = document.getElementById("submitByCCC").tomselect;
+const div = document.getElementById("submitByDivision").tomselect;
+const status = document.getElementById("paymentStatus").tomselect;
+
+ccc.clear();
+div.clear();
+status.clear();
+
+ccc.setValue("");
+div.setValue("");
+status.setValue("");
+
+ccc.refreshOptions(false);
+div.refreshOptions(false);
+status.refreshOptions(false);
 
   total.value = "";
       
