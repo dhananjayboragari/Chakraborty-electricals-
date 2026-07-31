@@ -2354,7 +2354,28 @@ document.getElementById("searchInvoiceNo").addEventListener("keydown", function(
 
   const snapshot = await getDocs(collection(db, "Invoices"));
 
+
+
+
+    
   let found = false;
+let hasRemarks = false;
+
+// প্রথমে চেক করবে কোনো রেকর্ডে Remarks আছে কিনা
+snapshot.forEach(docSnap => {
+    const d = docSnap.data();
+
+    if (
+        (type === "invoiceDate"
+            ? d.invoiceDate === value
+            : String(d[type]).toLowerCase().includes(value.toLowerCase()))
+        &&
+        d.remarks &&
+        d.remarks.trim() !== ""
+    ) {
+        hasRemarks = true;
+    }
+});
 
 let html = `
 <table style="width:100%;border-collapse:collapse;">
@@ -2367,6 +2388,7 @@ let html = `
 <th>Work Name</th>
 <th>Total</th>
 <th>Status</th>
+${hasRemarks ? "<th>Remarks</th>" : ""}
 <th>Edit</th>
 </tr>
 </thead>
@@ -2380,6 +2402,9 @@ let html = `
     if (   type === "invoiceDate"     ? d.invoiceDate === value     : String(d[type]).toLowerCase().includes(value.toLowerCase()) ) {
 
       found = true;
+      if (d.remarks && d.remarks.trim() !== "") {
+    hasRemarks = true;
+}
 
       html += `
 <tr>
@@ -2389,7 +2414,11 @@ let html = `
 <td>${d.poNo}</td>
 <td>${d.workName}</td>
 <td>₹ ${d.total}</td>
-<td>${d.paymentStatus}</td>
+
+    <td>${d.paymentStatus}</td>
+
+${hasRemarks ? `<td>${d.remarks || ""}</td>` : ""}
+
 <td>
 <button onclick="editInvoice('${docSnap.id}')">
 Edit
