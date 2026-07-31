@@ -1920,6 +1920,9 @@ invoiceNo: invoiceNumber,
     
  
 
+    const invoiceDateFormatted = invoiceDate.value
+  ? invoiceDate.value.split("-").reverse().join("/")
+  : "";
     document.getElementById("successDetails").innerHTML = `
 <div class="invoiceHighlight">
 <span>INVOICE NUMBER</span>
@@ -1928,7 +1931,8 @@ invoiceNo: invoiceNumber,
 
 <div style="margin-top:15px;">
 
-<b>Invoice Date :</b> ${invoiceDate.value}<br><br>
+    <b>Invoice Date :</b> ${invoiceDateFormatted}<br><br>
+
 
 <b>PO No :</b> ${poNo.value}<br><br>
 
