@@ -1768,6 +1768,8 @@ saveInvoice();
     sgst: sgst.value,
     total: total.value,
     submitDateCCC: submitDateCCC.value,
+
+    
     submitByCCC: submitByCCC.value,
     submitDateDivision: submitDateDivision.value,
     submitByDivision: submitByDivision.value,
@@ -1891,10 +1893,11 @@ invoiceNo: invoiceNumber,
       sgst: sgst.value,
       total: total.value,
       submitDateCCC: submitDateCCC.value,
-      submitByCCC: submitByCCC.value,
       submitDateDivision: submitDateDivision.value,
-      submitByDivision: submitByDivision.value,
-      paymentStatus: paymentStatus.value,
+      submitByCCC: document.getElementById("submitByCCC").tomselect.getValue(),
+submitByDivision: document.getElementById("submitByDivision").tomselect.getValue(),
+paymentStatus: document.getElementById("paymentStatus").tomselect.getValue(),
+      
       paymentDate: paymentDate.value,
       remarks: paymentStatus.value === "Rejected"   ? remarks.value.trim()   : "",
       createdAt: new Date()
