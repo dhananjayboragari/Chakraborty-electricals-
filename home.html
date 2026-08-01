@@ -11,12 +11,14 @@ body{
   margin:0;
   font-family:Arial;
   min-height:100vh;
+  box-sizing:border-box;
   overflow:auto;
   background:#0f2027;
   color:white;
   display:flex;
-  justify-content:center;
-  align-items:flex-start; 
+   flex-direction:column;
+  padding-bottom:15px;
+align-items:center;
   padding-top:250px; /* Sun-এর নিচে buttons রাখতে adjust */
   position:relative;
   z-index:0;
@@ -36,7 +38,7 @@ canvas#solarBg{
   display:flex;
   flex-direction:column;
   gap:30px;
-  max-width:360px;
+  max-width:300px;
   width:100%;
 }
 
@@ -56,7 +58,7 @@ canvas#solarBg{
 .card-btn{
   background:white;
   border-radius:16px;
-  padding:18px;
+  padding:10px 12px;
   text-align:center;
 }
 
@@ -481,6 +483,91 @@ button{
 }
 
 
+
+  .footer{
+  width:100%;
+  margin-top:40px;
+  margin-bottom:00px;
+  display:flex;
+  justify-content:center;
+}
+
+.footer-content{
+  width:90%;
+  max-width:500px;
+  padding:18px;
+
+  text-align:center;
+
+  border-radius:18px;
+
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(15px);
+
+  border:1px solid rgba(255,255,255,0.15);
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.35),
+    0 0 15px rgba(0,255,204,.18);
+}
+
+.footer-title{
+  font-size:18px;
+  font-weight:bold;
+
+  background:linear-gradient(
+      90deg,
+      #00ffcc,
+      #00bfff,
+      #7b61ff,
+      #00ffcc
+  );
+
+  background-size:300%;
+  -webkit-background-clip:text;
+  color:transparent;
+
+  animation:footerGlow 6s linear infinite;
+}
+
+.footer-version{
+  margin-top:8px;
+  font-size:13px;
+  color:#d8d8d8;
+}
+
+.footer-copy{
+  margin-top:6px;
+  font-size:12px;
+  color:#bdbdbd;
+}
+
+@keyframes footerGlow{
+  100%{
+    background-position:300%;
+  }
+}
+
+@media(max-width:600px){
+
+.footer-content{
+    width:94%;
+    padding:15px;
+}
+
+.footer-title{
+    font-size:16px;
+}
+
+.footer-version{
+    font-size:12px;
+}
+
+.footer-copy{
+    font-size:11px;
+}
+
+}
     
                   
 </style>
@@ -582,6 +669,23 @@ button{
 </div>
 
 
+  <footer class="footer">
+  <div class="footer-content">
+
+    <div class="footer-title">
+      ⚡ M/s Chakraborty Electricals
+    </div>
+
+    <div class="footer-version">
+      Submission Portal • Version 1.0.0
+    </div>
+
+    <div class="footer-copy">
+      © 2026 All Rights Reserved
+    </div>
+
+  </div>
+</footer>
   
 
 <script type="module">
