@@ -216,9 +216,7 @@ button{
   z-index:10000;
 }
 
-.header{
-  z-index:1000;
-}
+
 
 
 
@@ -291,85 +289,145 @@ button{
   }
 }
 
-
-
-
-
-
-  
-
-  
-
-.header{
+  .topCard{
   position:fixed;
+    isolation:isolate;
   top:10px;
   left:50%;
   transform:translateX(-50%);
 
+  width:94%;
+  max-width:700px;
+  height:80px;
+
   display:flex;
+  justify-content:space-between;
   align-items:center;
-  gap:10px;
 
-  padding:6px 12px;
-  border-radius:25px;
+  padding:12px 18px;
 
-  background:rgba(0,0,0,0.35);
-  backdrop-filter:blur(10px);
+  border-radius:24px;
 
-  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,.08);
+    background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));
+overflow:hidden;
+  backdrop-filter:blur(20px);
 
-  z-index:10;
+  border:1px solid rgba(255,255,255,.15);
+
+  box-shadow:
+  0 8px 30px rgba(0,0,0,.35),
+  0 0 18px rgba(0,255,255,.18);
+
+  z-index:10000;
 }
 
-.logo{
-  width:35px;
-  height:30px;
-  border-radius:50%;
-  box-shadow:0 0 10px rgba(0,255,204,0.5);
-}
-
-/* MULTI COLOR TEXT */
-.typing{
-  font-size:20px;
-  font-weight:bold;
+  .topCard::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
 
   background:linear-gradient(
-    90deg,
-    red,
-    orange,
-    yellow,
-    green,
-    cyan,
-    blue,
-    violet
+      90deg,
+      #00e5ff,
+      #00ff99,
+      #ffee00,
+      #ff3d71,
+      #8a2be2,
+      #00e5ff
   );
 
   background-size:300% 300%;
-  -webkit-background-clip:text;
-  color:transparent;
+  animation:rgbBorder 6s linear infinite;
 
-  animation:colorMove 5s linear infinite;
-  white-space:nowrap;
+  z-index:-2;
 }
 
-/* COLOR ANIMATION */
-@keyframes colorMove{
-  0%{background-position:0%}
-  100%{background-position:300%}
+.topCard::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+
+  border-radius:22px;
+
+  background:rgba(15,32,39,.88);
+  backdrop-filter:blur(18px);
+
+  z-index:-1;
 }
 
-  @media (max-width:600px){
-  .typing{
-    font-size:18px;
+@keyframes rgbBorder{
+  100%{
+    background-position:300%;
   }
 }
 
+.leftArea{
+  display:flex;
+  align-items:center;
+}
 
+.companyLogo{
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  margin-right:14px;
+  box-shadow:0 0 15px rgba(0,255,255,.35);
+}
 
+.companyName{
+  color:#fff;
+  font-size:18px;
+  font-weight:bold;
+}
 
+.welcomeText{
+  color:#8de7ff;
+  font-size:13px;
+  margin-top:2px;
+}
 
+  .userEmail{
+  margin-top:3px;
+  font-size:12px;
+  color:#d9f3ff;
+  opacity:.9;
+}
 
+#topUserName{
+  color:white;
+  font-size:15px;
+  font-weight:600;
+}
 
+#profileBtn{
+  width:60px;
+  height:60px;
+
+  border-radius:50%;
+
+  overflow:hidden;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  background:linear-gradient(135deg,#00e5ff,#0072ff);
+
+  box-shadow:0 0 18px rgba(0,255,255,.45);
+
+  cursor:pointer;
+}
+
+#profileBtn img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+#defaultIcon{
+  font-size:28px;
+}
 
 .avatarWrapper{
   text-align:center;
@@ -483,91 +541,6 @@ button{
 }
 
 
-
-  .footer{
-  width:100%;
-  margin-top:40px;
-  margin-bottom:00px;
-  display:flex;
-  justify-content:center;
-}
-
-.footer-content{
-  width:90%;
-  max-width:500px;
-  padding:18px;
-
-  text-align:center;
-
-  border-radius:18px;
-
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(15px);
-
-  border:1px solid rgba(255,255,255,0.15);
-
-  box-shadow:
-    0 8px 25px rgba(0,0,0,.35),
-    0 0 15px rgba(0,255,204,.18);
-}
-
-.footer-title{
-  font-size:18px;
-  font-weight:bold;
-
-  background:linear-gradient(
-      90deg,
-      #00ffcc,
-      #00bfff,
-      #7b61ff,
-      #00ffcc
-  );
-
-  background-size:300%;
-  -webkit-background-clip:text;
-  color:transparent;
-
-  animation:footerGlow 6s linear infinite;
-}
-
-.footer-version{
-  margin-top:8px;
-  font-size:13px;
-  color:#d8d8d8;
-}
-
-.footer-copy{
-  margin-top:6px;
-  font-size:12px;
-  color:#bdbdbd;
-}
-
-@keyframes footerGlow{
-  100%{
-    background-position:300%;
-  }
-}
-
-@media(max-width:600px){
-
-.footer-content{
-    width:94%;
-    padding:15px;
-}
-
-.footer-title{
-    font-size:16px;
-}
-
-.footer-version{
-    font-size:12px;
-}
-
-.footer-copy{
-    font-size:11px;
-}
-
-}
     
                   
 </style>
@@ -577,20 +550,45 @@ button{
 
 <canvas id="solarBg"></canvas>
 
-<div class="header">
-  <img src="https://i.ibb.co/CkSk2z9/file-00000000f9a071fabf74e40b4725537a.png" class="logo">
-  <span class="typing">M/s Chakraborty Electricals</span>
+
+  <div class="topCard">
+
+  <div class="leftArea">
+
+    <img src="https://i.ibb.co/fzFPjDVD/31092eed48aa.png" class="companyLogo">
+
+    <div class="companyText">
+
+      <div class="companyName">
+        M/s Chakraborty Electricals
+      </div>
+
+      <div id="greeting" class="welcomeText">
+  Welcome Back 👋
 </div>
-  
-  
-<!-- PROFILE BUTTON -->
-<button id="profileBtn" onclick="openProfile()">
-  <div class="icon">
-  <img id="profileImg" style="display:none; width:100%; height:100%; border-radius:50%;">
-  <span id="defaultIcon">👨‍💼</span>
+
+<div id="topUserName">
+  Loading...
 </div>
-  <div id="profileName">Profile</div>
-</button>
+
+<div id="topEmail" class="userEmail">
+  Loading...
+</div>
+
+    </div>
+
+  </div>
+
+  <div id="profileBtn" onclick="openProfile()">
+
+      <img id="profileImg"
+      style="display:none;">
+
+      <span id="defaultIcon">👨‍💼</span>
+
+  </div>
+
+</div>
 
 <!-- PROFILE MODAL -->
 <div id="profileModal" onclick="closeProfile()">
@@ -668,24 +666,6 @@ button{
   </div>
 </div>
 
-
-  <footer class="footer">
-  <div class="footer-content">
-
-    <div class="footer-title">
-      ⚡ M/s Chakraborty Electricals
-    </div>
-
-    <div class="footer-version">
-      Submission Portal • Version 1.0.0
-    </div>
-
-    <div class="footer-copy">
-      © 2026 All Rights Reserved
-    </div>
-
-  </div>
-</footer>
   
 
 <script type="module">
@@ -757,11 +737,26 @@ resetTimer(); // ✅ timer start
     
     const snap = await getDoc(doc(db, "users", user.uid));
 
+    const h = new Date().getHours();
+
+let greet = "Welcome Back 👋";
+
+if(h < 12){
+  greet = "🌅 Good Morning";
+}else if(h < 17){
+  greet = "☀️ Good Afternoon";
+}else{
+  greet = "🌙 Good Evening";
+}
+
+document.getElementById("greeting").innerText = greet;
+document.getElementById("topEmail").innerText = user.email;
+
     if (snap.exists()) {
       const data = snap.data();
 
-      document.getElementById("profileName").innerText =
-        data.name || "Profile";
+      document.getElementById("topUserName").innerText =
+        data.name || "User";
 
       if (data.photoURL) {
         document.getElementById("profileImg").src = data.photoURL;
@@ -883,8 +878,8 @@ document.getElementById("loaderText").innerText = "Saving profile...";
     }, { merge: true });
 
     // 👉 UI update
-    document.getElementById("profileName").innerText =
-      document.getElementById("name").value || "Profile";
+    document.getElementById("topUserName").innerText =
+      document.getElementById("name").value || "User";
 
     if(imageUrl){
       document.getElementById("profileImg").src = imageUrl;
