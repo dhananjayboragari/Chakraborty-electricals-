@@ -944,7 +944,90 @@ color:#fff !important;
 }
 
 
-    
+        /* ===========================
+   Dashboard Refresh Button
+=========================== */
+
+.dashboardTools{
+    display:none;
+    justify-content:flex-end;
+    margin-bottom:18px;
+}
+
+#refreshDashboardBtn{
+    padding:13px 24px;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+
+    background:linear-gradient(135deg,#00c8ff,#2563eb);
+
+    box-shadow:0 10px 25px rgba(0,200,255,.35);
+
+    transition:.35s;
+}
+
+#refreshDashboardBtn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 35px rgba(0,200,255,.5);
+}
+
+#refreshDashboardBtn i{
+    margin-right:8px;
+}
+
+#refreshDashboardBtn.loading i{
+    animation:spinRefresh .8s linear infinite;
+}
+
+@keyframes spinRefresh{
+
+100%{
+transform:rotate(360deg);
+}
+
+}
+
+    #dashboardLoader{
+position:absolute;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:rgba(15,23,42,.92);
+backdrop-filter:blur(8px);
+border-radius:18px;
+z-index:999;
+}
+
+#dashboardLoader i{
+font-size:55px;
+color:#00c8ff;
+animation:dashboardSpin 1s linear infinite;
+}
+
+#dashboardLoader p{
+margin-top:15px;
+font-size:17px;
+font-weight:600;
+color:#fff;
+letter-spacing:1px;
+}
+
+@keyframes dashboardSpin{
+100%{
+transform:rotate(360deg);
+}
+}
+
+#dashboardSection{
+position:relative;
+}
     
     </style>
 
@@ -964,7 +1047,7 @@ color:#fff !important;
 
   <ul>
 
-<li onclick="location.href='All Bill Dashboard.html'">
+<li onclick="showDashboard()">
 <i class="fa-solid fa-house"></i>
 Dashboard
 </li>
@@ -1302,6 +1385,36 @@ Download Excel
 </section>
 
 </div>
+
+  <section id="dashboardSection" style="display:none;">
+
+    <div class="dashboardTools">
+
+    <button id="refreshDashboardBtn" onclick="refreshDashboard()">
+        <i class="fa-solid fa-rotate-right"></i>
+        Refresh Dashboard
+    </button>
+
+</div>
+
+    <div id="dashboardLoader">
+    <i class="fa-solid fa-spinner"></i>
+    <p>Loading Dashboard...</p>
+</div>
+    
+    <iframe
+        id="dashboardFrame"
+        src=""
+        style="
+            width:100%;
+            height:80vh;
+            border:none;
+            border-radius:18px;
+            background:#fff;
+        ">
+    </iframe>
+
+</section>
 
 <div id="previewPopup">
 
@@ -2031,7 +2144,7 @@ previewPopup.style.display="none";
 
 
     function showNewInvoice(){
-
+    document.querySelector(".dashboardTools").style.display = "none";   document.getElementById("dashboardSection").style.display = "none";
 document.getElementById("newInvoiceSection").style.display="block";
 document.getElementById("searchSection").style.display="none";
 document.getElementById("downloadSection").style.display="none";
@@ -2083,6 +2196,8 @@ window.openNewInvoice = openNewInvoice;
 
 function showSearch(){
 
+  document.querySelector(".dashboardTools").style.display = "none";
+    document.getElementById("dashboardSection").style.display = "none";
 document.getElementById("searchSection").style.display="block";
 document.getElementById("newInvoiceSection").style.display="none";
 document.getElementById("downloadSection").style.display="none";
@@ -2091,6 +2206,8 @@ document.getElementById("downloadSection").style.display="none";
 
 function showDownload(){
 
+  document.querySelector(".dashboardTools").style.display = "none";
+  document.getElementById("dashboardSection").style.display = "none";
 document.getElementById("downloadSection").style.display="block";
 document.getElementById("searchSection").style.display="none";
 document.getElementById("newInvoiceSection").style.display="none";
@@ -2680,6 +2797,67 @@ new TomSelect("#searchType",{
     sortField:false
 });
 
+    
+
+    let dashboardLoaded = false;
+let dashboardLoading = false;
+
+function showDashboard(){
+
+    if(dashboardLoading) return;
+
+  document.querySelector(".dashboardTools").style.display = "flex";  document.getElementById("newInvoiceSection").style.display = "none";
+    document.getElementById("searchSection").style.display = "none";
+    document.getElementById("downloadSection").style.display = "none";
+    document.getElementById("dashboardSection").style.display = "block";
+
+    const frame = document.getElementById("dashboardFrame");
+  const loader = document.getElementById("dashboardLoader");
+
+    if(!dashboardLoaded){
+
+        dashboardLoading = true;
+
+        frame.src = "All Bill Dashboard.html";
+
+        frame.onload = function(){
+
+            dashboardLoaded = true;
+            dashboardLoading = false;
+          loader.style.display = "none";
+            frame.onload = null;
+
+        };
+
+    }
+
+}
+
+    
+
+    function refreshDashboard(){
+
+    const btn = document.getElementById("refreshDashboardBtn");
+    const frame = document.getElementById("dashboardFrame");
+
+    // Button loading effect
+    btn.classList.add("loading");
+    btn.disabled = true;
+
+    // শুধু iframe refresh হবে
+    frame.src = "All Bill Dashboard.html?refresh=" + Date.now();
+
+    // Load শেষ হলে
+    frame.onload = function () {
+        btn.classList.remove("loading");
+        btn.disabled = false;
+    };
+
+}
+
+window.refreshDashboard = refreshDashboard;
+
+window.showDashboard = showDashboard;
     
   </script>
 
