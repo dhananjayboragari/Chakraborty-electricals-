@@ -5,8 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard</title>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
+  
 <style>
 body{
 margin:0;
@@ -222,7 +232,20 @@ Column Wise Total
 </div>
 
 </div>
+  
 
+  <div style="max-width:900px;margin:10px auto;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+  <button id="excelBtn"
+    style="padding:10px 18px;border:none;border-radius:8px;background:#16a34a;color:#fff;font-weight:bold;cursor:pointer;">
+    📊 Download Excel
+  </button>
+
+  <button id="pdfBtn"
+    style="padding:10px 18px;border:none;border-radius:8px;background:#dc2626;color:#fff;font-weight:bold;cursor:pointer;">
+    📄 Download PDF
+  </button>
+</div>
+  
 <!-- TABLE -->
 <div class="tableArea">
 <table id="table">
@@ -239,11 +262,11 @@ flatpickr("#from",{dateFormat:"Y-m-d"});
 flatpickr("#to",{dateFormat:"Y-m-d"});
 },500);
 
-const URL="https://opensheet.elk.sh/1L86gZufZn66SPMcEl5FkY9PwmpKGettvUVUeQESZHRY/Form%20Responses%201";
+const SHEET_URL="https://opensheet.elk.sh/1L86gZufZn66SPMcEl5FkY9PwmpKGettvUVUeQESZHRY/Form%20Responses%201";
 
-let data=[],headers=[],DATE_COL="";
+let data=[],filteredData=[],headers=[],DATE_COL="";
 
-fetch(URL)
+fetch(SHEET_URL)
 .then(r=>r.json())
 .then(d=>{
 data=d;
@@ -264,6 +287,7 @@ o.text=removeBangla(h);
 sumCol.appendChild(o);
 });
 
+  filteredData = data;
 render(data);
 update(data);
 });
@@ -316,6 +340,7 @@ if(t && d>t) return false;
 return true;
 });
 
+  filteredData = res;
 render(res);
 update(res);
 }
@@ -339,6 +364,135 @@ const table=document.getElementById("table");
 const sumCol=document.getElementById("sumCol");
 const rows=document.getElementById("rows");
 const sum=document.getElementById("sum");
+
+  // ===== PDF Download =====
+document.getElementById("pdfBtn").addEventListener("click", () => {
+
+  
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("l", "mm", "a4");
+
+  // Title
+  doc.setFontSize(16);
+  doc.text("M/S Chakraborty Electrical", 14, 15);
+
+  doc.setFontSize(11);
+  doc.text("Disconnection Report", 14, 22);
+
+  // Header
+  const pdfHeaders = headers.filter(h =>   !h.toLowerCase().includes("timestamp") &&   !h.toLowerCase().includes("email") &&   !h.toLowerCase().includes("image") );  const head = [pdfHeaders.map(h => removeBangla(h))];
+
+  // Body
+  const body = filteredData.map(row =>
+  pdfHeaders.map(h => row[h] || "")
+);
+
+  // ===== Summary Row =====
+  const totalRow = [];
+
+  pdfHeaders.forEach((h, index) => {
+
+    if(index === 0){
+      totalRow.push("TOTAL");
+      return;
+    }
+
+    if (h.toLowerCase().includes("issued date")) {
+    totalRow.push("");
+    return;
+}
+    let total = 0;
+    let numeric = false;
+
+    filteredData.forEach(r => {
+      let n = parseFloat(
+        (r[h] || "").toString().replace(/[^0-9.-]/g, "")
+      );
+
+      if(!isNaN(n)){
+        numeric = true;
+        total += n;
+      }
+    });
+
+    totalRow.push(numeric ? total : "");
+  });
+
+  body.push(totalRow);
+
+  doc.autoTable({
+    head: head,
+    body: body,
+    startY: 28,
+    theme: "grid",
+    styles: {
+      fontSize: 8
+    },
+    headStyles: {
+      fillColor: [14,165,233]
+    },
+
+  didParseCell: function(data) {
+
+  if (data.row.index === body.length - 1) {
+
+    data.cell.styles.fontStyle = "bold";
+    data.cell.styles.fontSize = 11;
+
+    data.cell.styles.lineWidth = 1;
+
+    data.cell.styles.lineColor = [0,0,0];
+
+    data.cell.styles.minCellHeight = 10;
+
+  }
+
+},
+  
+  });
+
+
+  // ===== Summary =====
+let finalY = doc.lastAutoTable.finalY + 10;
+
+doc.setFontSize(12);
+doc.setFont(undefined, "bold");
+
+doc.text(
+  "Total Day Disconnection : " + filteredData.length,
+  14,
+  finalY
+);
+
+  doc.save("Disconnection_Report.pdf");
+
+});
+
+  // ===== Excel Download =====
+document.getElementById("excelBtn").addEventListener("click", () => {
+
+  
+
+  let exportData = filteredData.map(row => {
+    let obj = {};
+    headers.forEach(h => {
+      obj[removeBangla(h)] = row[h];
+    });
+    return obj;
+  });
+
+  let ws = XLSX.utils.json_to_sheet(exportData);
+  let wb = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(wb, ws, "Report");
+
+  
+
+  XLSX.writeFile(wb, "Disconnection_Report.xlsx");
+
+});
+  
 </script>
 
 
@@ -381,6 +535,7 @@ function resetTimer(){
 
 // start timer
 resetTimer();
+  
 </script>
 
   
