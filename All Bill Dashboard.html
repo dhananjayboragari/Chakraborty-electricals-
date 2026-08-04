@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Invoice Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -82,15 +82,7 @@
       box-shadow:0 2px 8px rgba(0,0,0,0.1);
     }
 
-    /* ===== CHART ===== */
-    .chart-box{
-      background:#fff;
-      border-radius:16px;
-      padding:15px;
-      margin-top:10px;
-      height:260px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.06);
-    }
+  
 
     /* ===== TABLE ===== */
     table {
@@ -213,10 +205,6 @@ cursor:pointer;">
   <div id="divisionWise"></div>
 </div>
 
-<!-- CHART -->
-<div class="chart-box">
-  <canvas id="chart"></canvas>
-</div>
 
 <!-- TABLE -->
 <table>
@@ -462,22 +450,6 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
   document.getElementById("pending").innerText = formatMoney(pending);
   document.getElementById("data").innerHTML = rows;
 
-  if(chartInstance) chartInstance.destroy();
-
-  chartInstance = new Chart(document.getElementById("chart"), {
-    type:'doughnut',
-    data:{
-      labels:["Paid","Pending"],
-      datasets:[{
-        data:[paid,pending],
-        backgroundColor:["#22c55e","#ef4444"]
-      }]
-    },
-    options:{
-      maintainAspectRatio:false,
-      plugins:{ legend:{ position:'bottom' } }
-    }
-  });
 }
 
     document.getElementById("excelBtn").onclick = function () {
