@@ -380,6 +380,13 @@ document.getElementById("pdfBtn").addEventListener("click", () => {
   doc.setFontSize(11);
   doc.text("Disconnection Report", 14, 22);
 
+  doc.setFontSize(10);
+
+const fromDate = from.value || "All";
+const toDate = to.value || "All";
+
+doc.text(`Filter: ${fromDate} To ${toDate}`, 14, 28);
+
   // Header
   const pdfHeaders = headers.filter(h =>   !h.toLowerCase().includes("timestamp") &&   !h.toLowerCase().includes("email") &&   !h.toLowerCase().includes("image") );  const head = [pdfHeaders.map(h => removeBangla(h))];
 
@@ -424,7 +431,7 @@ document.getElementById("pdfBtn").addEventListener("click", () => {
   doc.autoTable({
     head: head,
     body: body,
-    startY: 28,
+    startY: 34,
     theme: "grid",
     styles: {
       fontSize: 8
@@ -438,13 +445,13 @@ document.getElementById("pdfBtn").addEventListener("click", () => {
   if (data.row.index === body.length - 1) {
 
     data.cell.styles.fontStyle = "bold";
-    data.cell.styles.fontSize = 11;
+    data.cell.styles.fontSize = 9;
 
-    data.cell.styles.lineWidth = 1;
+    data.cell.styles.lineWidth = 0.4;
 
     data.cell.styles.lineColor = [0,0,0];
 
-    data.cell.styles.minCellHeight = 10;
+    data.cell.styles.minCellHeight = 6;
 
   }
 
