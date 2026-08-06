@@ -3028,9 +3028,9 @@ pdf.line(14,54,283,54);
         rows.push([
     d.slNo,
     d.invoiceNo,
-    d.invoiceDate,
+    formatDate(d.invoiceDate),
     d.poNo,
-    d.poDate,
+    formatDate(d.poDate),
     d.workName,
     d.amount,
     d.cgst + "%",
@@ -3285,6 +3285,16 @@ new TomSelect("#searchType",{
 // Filter Download Data
 // =========================
 let filteredInvoices = [];
+
+    function formatDate(dateStr){
+
+    if(!dateStr) return "";
+
+    const parts = dateStr.split("-");
+
+    return parts[2] + "-" + parts[1] + "-" + parts[0];
+
+}
     
 
     let dashboardLoaded = false;
