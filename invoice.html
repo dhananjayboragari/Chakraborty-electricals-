@@ -1031,6 +1031,31 @@ position:relative;
 width:100%;
 padding-top:25px;
 }
+
+    /* Filter Table */
+
+#filterTable table{
+    width:100%;
+    border-collapse:collapse;
+    border:1px solid rgba(255,255,255,.25);
+}
+
+#filterTable th,
+#filterTable td{
+    border:1px solid rgba(255,255,255,.25);
+    padding:12px;
+    text-align:center;
+    font-size:14px;
+}
+
+#filterTable th{
+    background:#00c8ff;
+    color:#000;
+}
+
+#filterTable tr:hover{
+    background:rgba(255,255,255,.12);
+}
     
     </style>
 
@@ -1385,6 +1410,60 @@ Download Excel
 
 </div>
 
+
+
+    <hr style="margin:30px 0;border:1px solid rgba(255,255,255,.15);">
+
+<h2>
+<i class="fa-solid fa-filter"></i>
+Download Filter Data
+</h2>
+
+<div class="grid">
+
+<div class="input">
+<label>Financial Year</label>
+<select id="downloadFY">
+<option value="">All Financial Year</option>
+</select>
+</div>
+
+<div class="input">
+<label>From Date</label>
+<input type="date" id="downloadFromDate">
+</div>
+
+<div class="input">
+<label>To Date</label>
+<input type="date" id="downloadToDate">
+</div>
+
+</div>
+
+<div class="btnArea">
+
+<button type="button" id="filterDataBtn" style="background:#2563eb;color:#fff;">
+<i class="fa-solid fa-filter"></i>
+Filter Data
+</button>
+
+<button type="button" id="filterExcelBtn">
+<i class="fa-solid fa-file-excel"></i>
+Download Excel
+</button>
+
+<button type="button" id="filterPdfBtn">
+<i class="fa-solid fa-file-pdf"></i>
+Download PDF
+</button>
+
+</div>
+
+<div id="filterSummary" style="margin-top:20px;"></div>
+
+<div id="filterTable" style="margin-top:20px;overflow:auto;"></div>
+
+    
 </section>
 
 
@@ -2380,6 +2459,46 @@ new TomSelect("#searchFY", {
 }
 
 loadFinancialYears();
+
+    async function loadDownloadFinancialYears(){
+
+    const snapshot = await getDocs(collection(db,"Invoices"));
+
+    const fy = document.getElementById("downloadFY");
+
+    fy.innerHTML = '<option value="">All Financial Year</option>';
+
+    const years = new Set();
+
+    snapshot.forEach(docSnap=>{
+        const d = docSnap.data();
+
+        if(d.financialYear){
+            years.add(d.financialYear);
+        }
+    });
+
+    [...years]
+    .sort()
+    .reverse()
+    .forEach(y=>{
+
+        fy.innerHTML += `<option value="${y}">${y}</option>`;
+
+    });
+
+    if(fy.tomselect){
+        fy.tomselect.destroy();
+    }
+
+    new TomSelect("#downloadFY",{
+        create:false,
+        sortField:false
+    });
+
+}
+
+loadDownloadFinancialYears();
     
 
 const searchType = document.getElementById("searchType");
@@ -2563,6 +2682,101 @@ Edit
 
 
 
+    document.getElementById("filterDataBtn").onclick = async () => {
+
+    const fy = document.getElementById("downloadFY").value;
+    const from = document.getElementById("downloadFromDate").value;
+    const to = document.getElementById("downloadToDate").value;
+
+    filteredInvoices = [];
+
+    const snapshot = await getDocs(collection(db,"Invoices"));
+
+    snapshot.forEach(docSnap=>{
+
+        const d = docSnap.data();
+
+        let ok = true;
+
+        if(fy && d.financialYear !== fy){
+            ok = false;
+        }
+
+        if(from && d.invoiceDate < from){
+            ok = false;
+        }
+
+        if(to && d.invoiceDate > to){
+            ok = false;
+        }
+
+        if(ok){
+            filteredInvoices.push(d);
+        }
+
+    });
+
+    let totalAmount = 0;
+
+    let html = `
+    <table style="width:100%;border-collapse:collapse;">
+    <thead>
+    <tr>
+<th>SL No</th>
+<th>Invoice No</th>
+<th>Invoice Date</th>
+<th>PO No</th>
+<th>PO Date</th>
+<th>Work Name</th>
+<th>Amount</th>
+<th>CGST %</th>
+<th>SGST %</th>
+<th>Total</th>
+<th>Submit By Division</th>
+<th>Payment Status</th>
+</tr>
+    </thead>
+    <tbody>
+    `;
+
+    filteredInvoices.forEach(d=>{
+
+        totalAmount += Number(d.total || 0);
+
+        html += `
+<tr>
+<td>${d.slNo}</td>
+<td>${d.invoiceNo}</td>
+<td>${d.invoiceDate}</td>
+<td>${d.poNo}</td>
+<td>${d.poDate}</td>
+<td>${d.workName}</td>
+<td>${d.amount}</td>
+<td>${d.cgst}%</td>
+<td>${d.sgst}%</td>
+<td>₹ ${d.total}</td>
+<td>${d.submitByDivision}</td>
+<td>${d.paymentStatus}</td>
+</tr>
+`;
+
+    });
+
+    html += "</tbody></table>";
+
+    document.getElementById("filterTable").innerHTML = html;
+
+    document.getElementById("filterSummary").innerHTML = `
+        <h3>Total Invoice : ${filteredInvoices.length}</h3>
+        <h3>Total Amount : ₹ ${totalAmount.toFixed(2)}</h3>
+    `;
+
+    if(filteredInvoices.length === 0){
+        document.getElementById("filterTable").innerHTML =
+        "<h3>No Record Found</h3>";
+    }
+
+};
     document.getElementById("excelDownloadBtn").onclick = async () => {
       
 
@@ -2605,6 +2819,42 @@ Edit
 
 };
 
+
+    document.getElementById("filterExcelBtn").onclick = () => {
+
+    if(filteredInvoices.length === 0){
+        showAlert("Please Filter Data First");
+        return;
+    }
+
+    const data = filteredInvoices.map(d => ({
+        "SL No": d.slNo,
+        "Invoice No": d.invoiceNo,
+        "Invoice Date": d.invoiceDate,
+        "PO No": d.poNo,
+        "PO Date": d.poDate,
+        "Work Name": d.workName,
+        "Amount": d.amount,
+        "CGST %": d.cgst,
+        "SGST %": d.sgst,
+        "Total": d.total,
+        "Submit Date CCC": d.submitDateCCC,
+        "Submit By CCC": d.submitByCCC,
+        "Submit Date Division": d.submitDateDivision,
+        "Submit By Division": d.submitByDivision,
+        "Payment Status": d.paymentStatus,
+        "Payment Date": d.paymentDate,
+        "Remarks": d.remarks
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Filtered Invoices");
+
+    XLSX.writeFile(wb, "Filtered_Invoices.xlsx");
+
+};
     document.getElementById("pdfDownloadBtn").onclick = async () => {
 
   const { jsPDF } = window.jspdf;
@@ -2665,17 +2915,247 @@ docPDF.setFontSize(14);
     ]],
     body: rows,
     styles: {
-      fontSize: 7
-    },
+    fontSize: 7,
+    cellPadding: 2,
+    lineWidth: 0.2,
+    lineColor: [0,0,0],
+    textColor: [0,0,0]
+},
     headStyles: {
-      fillColor: [0, 200, 255]
-    }
+    fillColor: [0,153,255],
+    textColor: 255,
+    lineWidth: 0.3,
+    lineColor: [0,0,0]
+},
+    tableLineWidth: 0.2,
+tableLineColor: [0,0,0],
   });
 
   docPDF.save("NSC_All_Invoices.pdf");
 
 };
-    
+
+    document.getElementById("filterPdfBtn").onclick = () => {
+
+    if(filteredInvoices.length === 0){
+        showAlert("Please Filter Data First");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("l","mm","a4");
+
+      // ======================
+// Professional Header
+// ======================
+
+// Logo
+if(companyLogo){
+    pdf.addImage(companyLogo,"PNG",14,8,22,22);
+}
+
+// Company Name
+pdf.setFont("helvetica","bold");
+pdf.setFontSize(18);
+pdf.text("M/S CHAKRABORTY ELECTRICALS",42,16);
+
+// Vendor Code
+pdf.setFontSize(11);
+pdf.setFont("helvetica","normal");
+pdf.text("Vendor Code : 501520",42,23);
+
+// Main Report Title
+pdf.setFontSize(16);
+pdf.setFont("helvetica","bold");
+pdf.text("INVOICE REPORT",145,7,{align:"center"});
+
+// Blue Line
+pdf.setDrawColor(0,200,255);
+pdf.setLineWidth(.8);
+pdf.line(14,34,283,34);
+
+// Financial Year
+pdf.setFontSize(11);
+pdf.setFont("helvetica","bold");
+
+pdf.text(
+"Financial Year : " +
+(document.getElementById("downloadFY").value || "All"),
+14,
+42
+);
+
+// Report Period
+pdf.text(
+"Report Period : " +
+(document.getElementById("downloadFromDate").value || "-")
++
+"  To  "
++
+(document.getElementById("downloadToDate").value || "-"),
+14,
+49
+);
+
+// Generated Time
+const now=new Date();
+
+pdf.text(
+"Generated : "
++
+now.toLocaleDateString()
++
+" "
++
+now.toLocaleTimeString(),
+200,
+49
+);
+
+// Bottom Line
+pdf.setDrawColor(180);
+pdf.line(14,54,283,54);
+
+
+    let totalAmount = 0;
+
+    let rows = [];
+
+    filteredInvoices.forEach(d=>{
+
+        totalAmount += Number(d.total || 0);
+
+        rows.push([
+    d.slNo,
+    d.invoiceNo,
+    d.invoiceDate,
+    d.poNo,
+    d.poDate,
+    d.workName,
+    d.amount,
+    d.cgst + "%",
+    d.sgst + "%",
+    d.total,
+    d.submitByDivision,
+    d.paymentStatus
+]);
+
+    });
+
+    pdf.autoTable({
+
+        startY:60,
+
+        head:[[
+    "SL No",
+    "Invoice No",
+    "Invoice Date",
+    "PO No",
+    "PO Date",
+    "Work Name",
+    "Amount",
+    "CGST %",
+    "SGST %",
+    "Total",
+    "Submit By Division",
+    "Payment Status"
+]],
+
+        body:rows,
+
+        styles:{
+    fontSize:8,
+    lineColor:[0,0,0],
+    lineWidth:0.2
+},
+
+theme:"grid",
+
+headStyles:{
+    fillColor:[0,200,255],
+    textColor:255,
+    lineColor:[0,0,0],
+    lineWidth:0.3
+},
+
+bodyStyles:{
+    lineColor:[0,0,0],
+    lineWidth:0.2
+},
+
+    });
+
+    // ======================
+// Footer & Page Number
+// ======================
+
+const totalPages = pdf.internal.getNumberOfPages();
+
+for(let i=1;i<=totalPages;i++){
+
+    pdf.setPage(i);
+
+    pdf.setDrawColor(180);
+    pdf.line(14,200,283,200);
+
+    pdf.setFontSize(9);
+    pdf.setFont("helvetica","normal");
+
+    pdf.text(
+        "Generated by Chakraborty Electricals Invoice Management System",
+        14,
+        206
+    );
+
+    pdf.text(
+        "Page " + i + " of " + totalPages,
+        283,
+        206,
+        {align:"right"}
+    );
+
+}
+
+    const y = pdf.lastAutoTable.finalY + 12;
+
+pdf.setFillColor(240,248,255);
+
+
+      pdf.setFillColor(235,245,255);
+pdf.setDrawColor(0,102,204);
+
+pdf.roundedRect(
+150,
+y,
+130,
+24,
+3,
+3,
+"FD"
+);
+
+pdf.setFont("helvetica","bold");
+pdf.setFontSize(12);
+
+
+      pdf.text(
+"Total Invoice : " + filteredInvoices.length,
+156,
+y+9
+);
+
+pdf.setFontSize(14);
+pdf.setFont("helvetica","bold");
+
+pdf.text(
+"Grand Total :  " + totalAmount.toFixed(2),
+156,
+y+18
+);
+
+    pdf.save("Filtered_Invoices_Report.pdf");
+
+};
     
     window.closeSuccessPopup = function () {
 
@@ -2800,6 +3280,11 @@ new TomSelect("#searchType",{
     sortField:false
 });
 
+
+    // =========================
+// Filter Download Data
+// =========================
+let filteredInvoices = [];
     
 
     let dashboardLoaded = false;
@@ -2862,6 +3347,37 @@ function showDashboard(){
 window.refreshDashboard = refreshDashboard;
 
 window.showDashboard = showDashboard;
+
+    // ======================
+// Company Logo
+// ======================
+
+let companyLogo = "";
+
+(async function(){
+
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+
+    img.src = "https://i.ibb.co/fzFPjDVD/31092eed48aa.png";
+
+    await new Promise(resolve=>{
+        img.onload = resolve;
+    });
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(img,0,0);
+
+    companyLogo = canvas.toDataURL("image/png");
+
+})();
     
   </script>
 
