@@ -569,12 +569,25 @@ let status = (r.paymentStatus || "").toUpperCase().trim();
         body:rows,
 
         styles:{
-            fontSize:7
-        },
+    fontSize:7,
+    lineWidth:0.2,       // Border thickness
+    lineColor:[0,0,0],   // Black border
+    cellPadding:2
+},
 
-        headStyles:{
-            fillColor:[59,130,246]
-        }
+headStyles:{
+    fillColor:[59,130,246],
+    textColor:[255,255,255],
+    lineWidth:0.3,
+    lineColor:[0,0,0]
+},
+
+bodyStyles:{
+    lineWidth:0.2,
+    lineColor:[0,0,0]
+},
+
+theme:"grid"
 
     });
 
