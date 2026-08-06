@@ -2733,6 +2733,7 @@ Edit
 <th>SGST %</th>
 <th>Total</th>
 <th>Submit By Division</th>
+<th>Division Submit Date</th>
 <th>Payment Status</th>
 </tr>
     </thead>
@@ -2756,6 +2757,7 @@ Edit
 <td>${d.sgst}%</td>
 <td>₹ ${d.total}</td>
 <td>${d.submitByDivision}</td>
+<td>${formatDate(d.submitDateDivision)}</td>
 <td>${d.paymentStatus}</td>
 </tr>
 `;
@@ -3037,6 +3039,7 @@ pdf.line(14,54,283,54);
     d.sgst + "%",
     d.total,
     d.submitByDivision,
+          formatDate(d.submitDateDivision),
     d.paymentStatus
 ]);
 
@@ -3058,6 +3061,7 @@ pdf.line(14,54,283,54);
     "SGST %",
     "Total",
     "Submit By Division",
+          "Division Submit Date",
     "Payment Status"
 ]],
 
