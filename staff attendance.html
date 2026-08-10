@@ -861,6 +861,15 @@ td select{
     display:block;
 }
 
+
+  @media(max-width:700px){
+
+    #staffReportInfo > div{
+        grid-template-columns:1fr !important;
+    }
+
+}
+
 </style>
   <!-- =========================
      FIREBASE
@@ -987,6 +996,16 @@ const db = firebase.firestore();
     <span class="menu-text">Monthly Report</span>
 
 </div>
+
+
+  <div class="menu-item"
+     onclick="showSection('staffMonthlyReport',this)">
+
+    <span class="menu-icon">👤</span>
+    <span class="menu-text">Staff Monthly Report</span>
+
+</div>
+  
 
 
     <div class="menu-title">
@@ -1311,6 +1330,27 @@ const db = firebase.firestore();
 
 </div>
 
+              <div class="module-card"
+     onclick="openModule('staffMonthlyReport')">
+
+    <div class="card-icon">
+        👤
+    </div>
+
+    <h3>
+        Staff Monthly Report
+    </h3>
+
+    <p>
+        View selected staff day-wise attendance
+    </p>
+
+    <span class="open-text">
+        Open →
+    </span>
+
+</div>
+
 
             </div>
 
@@ -1346,9 +1386,10 @@ const db = firebase.firestore();
                         </label>
 
                         <input
-                            type="text"
-                            id="empId"
-                            placeholder="Enter Employee ID">
+    type="text"
+    id="empId"
+    placeholder="Auto Generated"
+    readonly>
 
                     </div>
 
@@ -2154,6 +2195,249 @@ const db = firebase.firestore();
 
 </section>
 
+
+
+      <!-- =====================
+     STAFF MONTHLY REPORT
+===================== -->
+
+<section
+    id="staffMonthlyReport"
+    class="section">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <div class="panel-title">
+                    👤 Staff Monthly Attendance Report
+                </div>
+
+                <div style="font-size:12px;color:#777;margin-top:4px">
+
+                    Select month and staff to view day-wise attendance
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FILTER -->
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+                    Select Month
+                </label>
+
+                <input
+                    type="month"
+                    id="staffReportMonth">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Select Staff
+                </label>
+
+                <select id="staffReportEmployee">
+
+                    <option value="">
+                        -- Select Staff --
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+
+    <button
+        class="btn btn-primary"
+        onclick="generateStaffMonthlyReport()">
+
+        🔍 View Report
+
+    </button>
+
+    <button
+        class="btn btn-success"
+        onclick="downloadStaffMonthlyExcel()">
+
+        📊 Download Excel
+
+    </button>
+
+</div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <h4>
+                Present
+            </h4>
+
+            <strong
+                class="green"
+                id="staffReportPresent">
+
+                0
+
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h4>
+                Absent
+            </h4>
+
+            <strong
+                class="red"
+                id="staffReportAbsent">
+
+                0
+
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h4>
+                Leave
+            </h4>
+
+            <strong
+                class="orange"
+                id="staffReportLeave">
+
+                0
+
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h4>
+                Total Marked Days
+            </h4>
+
+            <strong
+                class="blue"
+                id="staffReportTotal">
+
+                0
+
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- STAFF INFO -->
+
+    <div
+        id="staffReportInfo"
+        class="panel"
+        style="display:none;">
+
+    </div>
+
+
+    <!-- DAY WISE TABLE -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+                📋 Day-wise Attendance & Work Details
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>SL</th>
+
+                        <th>Date</th>
+
+                        <th>Day</th>
+
+                        <th>Status</th>
+
+                        <th>In Time</th>
+
+                        <th>Out Time</th>
+
+                        <th>Working Hours</th>
+
+                        <th>Work Details</th>
+
+                        <th>Remarks</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="staffMonthlyReportTable">
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            class="empty">
+
+                            Month এবং Staff select করে
+                            View Report চাপুন
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
         <!-- =====================
              INVOICE
         ====================== -->
@@ -2238,6 +2522,11 @@ const titles={
         "Employee monthly attendance summary"
     ],
 
+  staffMonthlyReport:[
+    "Staff Monthly Report",
+    "Selected staff day-wise attendance report"
+],
+
     invoice:[
         "Invoice Management",
         "Invoice management module"
@@ -2280,6 +2569,10 @@ function showSection(id,element){
 
     if(id==="employee")
         renderEmployees();
+  if(id==="employee"){
+    renderEmployees();
+    document.getElementById("empId").value = generateEmployeeId();
+}
 
     if(id==="daily")
         renderDailyAttendance();
@@ -2292,6 +2585,9 @@ function showSection(id,element){
   
   if(id==="monthlyReport")
     generateMonthlyReport();
+
+  if(id==="staffMonthlyReport")
+    loadStaffReportEmployees();
 
     updateHomeStats();
 
@@ -2347,10 +2643,56 @@ function closeSidebar(){
    EMPLOYEE
 ========================= */
 
+  function generateEmployeeId(){
+
+    const prefix = "501520/";
+
+    let maxNumber = 0;
+
+    employees.forEach(e => {
+
+        if(!e.id) return;
+
+        let parts = e.id.split("/");
+
+        if(parts[0] === "501520" && parts[1]){
+
+            let num = parseInt(parts[1], 10);
+
+            if(!isNaN(num) && num > maxNumber){
+                maxNumber = num;
+            }
+        }
+    });
+
+    return prefix + String(maxNumber + 1).padStart(2, "0");
+}
+  
+
 async function addEmployee(){
 
-    let id =
-    document.getElementById("empId").value.trim();
+    let id = "";
+  const prefix = "501520/";
+
+let maxNumber = 0;
+
+employees.forEach(e => {
+
+    if(!e.id) return;
+
+    let parts = e.id.split("/");
+
+    if(parts[0] === "501520" && parts[1]){
+
+        let num = parseInt(parts[1], 10);
+
+        if(!isNaN(num) && num > maxNumber){
+            maxNumber = num;
+        }
+    }
+});
+
+id = prefix + String(maxNumber + 1).padStart(2, "0");
 
     let name =
     document.getElementById("empName").value.trim();
@@ -2371,12 +2713,11 @@ async function addEmployee(){
     document.getElementById("empAddress").value.trim();
 
 
-    if(!id || !name){
+    if(!name){
 
-        alert("Employee ID এবং Name দিন");
-
-        return;
-    }
+    alert("Employee Name দিন");
+    return;
+  }
 
 
     if(
@@ -2396,7 +2737,7 @@ async function addEmployee(){
 
     await db
         .collection("employees")
-        .doc(id)
+        .doc(id.replace(/\//g, "_"))
         .set({
 
             id: id,
@@ -3510,82 +3851,203 @@ function updateHomeStats(){
 
 }
 
-
-/* =========================
-   CSV DOWNLOAD
+  /* =========================
+   CSV DOWNLOAD WITH WORK DETAILS
 ========================= */
 
-function downloadCSV(){
+async function downloadCSV(){
 
     let date =
-    document.getElementById(
-        "downloadDate"
-    ).value;
+        document.getElementById(
+            "downloadDate"
+        ).value;
 
 
-    let records =
-    attendance.filter(
-        a=>a.date===date
-    );
+    if(!date){
 
-
-    if(records.length===0){
-
-        alert("এই তারিখে attendance নেই");
+        alert("আগে একটি Date select করুন");
 
         return;
     }
 
 
-    let csv =
-    "SL,Date,Employee ID,Employee Name,Status,In Time,Out Time,Working Hours,Remarks\n";
+    try{
+
+        // =========================
+        // LOAD WORK DETAILS
+        // =========================
+
+        const workDoc =
+            await db
+            .collection("dailyWorkDetails")
+            .doc(date)
+            .get();
 
 
-    records.forEach((a,i)=>{
+        let workDetails = "";
 
-        let employee =
-        employees.find(
-            e=>e.id===a.employeeId
+        if(workDoc.exists){
+
+            const data = workDoc.data();
+
+            workDetails =
+                data.details || "";
+
+        }
+
+
+        // =========================
+        // LOAD ATTENDANCE
+        // =========================
+
+        let records =
+            attendance.filter(
+                a => a.date === date
+            );
+
+
+        if(records.length === 0 && !workDetails){
+
+            alert(
+                "এই তারিখে Attendance বা Work Details কোনোটিই পাওয়া যায়নি"
+            );
+
+            return;
+        }
+
+
+        // =========================
+        // CSV HEADER
+        // =========================
+
+        let csv =
+            "SL,Date,Employee ID,Employee Name,Status,In Time,Out Time,Working Hours,Remarks,Work Details\n";
+
+
+        // =========================
+        // ATTENDANCE DATA
+        // =========================
+
+        records.forEach((a,i)=>{
+
+            let employee =
+                employees.find(
+                    e => e.id === a.employeeId
+                );
+
+
+            let employeeName =
+                employee
+                ? employee.name
+                : "";
+
+
+            let hours =
+                calculateHours(
+                    a.inTime,
+                    a.outTime
+                );
+
+
+            // CSV-এর ভিতরে comma/quote সমস্যা আটকানো
+            let remarks =
+                String(a.remarks || "")
+                .replace(/"/g,'""');
+
+
+            let work =
+                String(workDetails || "")
+                .replace(/"/g,'""')
+                .replace(/\n/g," ");
+
+
+            csv +=
+                `${i+1},` +
+                `"${a.date}",` +
+                `"${a.employeeId}",` +
+                `"${employeeName}",` +
+                `"${a.status}",` +
+                `"${a.inTime || ""}",` +
+                `"${a.outTime || ""}",` +
+                `"${hours}",` +
+                `"${remarks}",` +
+                `"${work}"\n`;
+
+        });
+
+
+        // =========================
+        // যদি Attendance না থাকে,
+        // শুধু Work Details থাকে
+        // =========================
+
+        if(records.length === 0 && workDetails){
+
+            csv +=
+                `,"${date}",,,,,,,,"${workDetails.replace(/"/g,'""').replace(/\n/g," ")}"\n`;
+
+        }
+
+
+        // =========================
+        // CREATE FILE
+        // =========================
+
+        let blob =
+            new Blob(
+                [csv],
+                {
+                    type:
+                    "text/csv;charset=utf-8;"
+                }
+            );
+
+
+        let url =
+            URL.createObjectURL(blob);
+
+
+        let link =
+            document.createElement("a");
+
+
+        link.href = url;
+
+
+        link.download =
+            `Attendance_${date}.csv`;
+
+
+        document.body.appendChild(link);
+
+
+        link.click();
+
+
+        document.body.removeChild(link);
+
+
+        URL.revokeObjectURL(url);
+
+
+    }
+    catch(error){
+
+        console.error(
+            "CSV Download Error:",
+            error
         );
 
 
-        csv +=
-        `${i+1},${a.date},${a.employeeId},${employee ? employee.name : ""},${a.status},${a.inTime},${a.outTime},${calculateHours(a.inTime,a.outTime)},"${a.remarks}"\n`;
+        alert(
+            "Excel/CSV download করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
 
-    });
-
-
-    let blob =
-    new Blob(
-        [csv],
-        {
-            type:"text/csv;charset=utf-8;"
-        }
-    );
-
-
-    let url =
-    URL.createObjectURL(blob);
-
-
-    let link =
-    document.createElement("a");
-
-
-    link.href=url;
-
-    link.download=
-    `Attendance_${date}.csv`;
-
-
-    link.click();
-
-
-    URL.revokeObjectURL(url);
+    }
 
 }
-
-
+  
 
   /* =========================
    MONTHLY REPORT
@@ -3887,7 +4349,7 @@ function downloadMonthlyCSV(){
 
             await db
                 .collection("employees")
-                .doc(employee.id)
+                .doc(employee.id.replace(/\//g, "_"))
                 .set(employee);
 
         }
@@ -3948,7 +4410,7 @@ function downloadMonthlyCSV(){
         employeeSnapshot.forEach(doc=>{
 
             employees.push({
-                id: doc.id,
+                id: doc.data().id || doc.id,
                 ...doc.data()
             });
 
@@ -4036,6 +4498,557 @@ if(monthlyMonth){
 
   loadData();
 
+
+  /* =========================
+   STAFF MONTHLY REPORT
+========================= */
+
+function loadStaffReportEmployees(){
+
+    const select =
+        document.getElementById(
+            "staffReportEmployee"
+        );
+
+    if(!select)
+        return;
+
+
+    const currentValue =
+        select.value;
+
+
+    select.innerHTML = `
+        <option value="">
+            -- Select Staff --
+        </option>
+    `;
+
+
+    employees
+        .filter(e => e.status === "Active")
+        .forEach(employee => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                employee.id;
+
+            option.textContent =
+                employee.name +
+                " (" +
+                employee.id +
+                ")";
+
+            select.appendChild(option);
+
+        });
+
+
+    if(currentValue)
+        select.value = currentValue;
+
+
+    // Default current month
+    const month =
+        document.getElementById(
+            "staffReportMonth"
+        );
+
+    if(month && !month.value){
+
+        month.value =
+            today.substring(0,7);
+
+    }
+
+}
+
+  async function generateStaffMonthlyReport(){
+
+    const month =
+        document.getElementById(
+            "staffReportMonth"
+        ).value;
+
+
+    const employeeId =
+        document.getElementById(
+            "staffReportEmployee"
+        ).value;
+
+
+    const table =
+        document.getElementById(
+            "staffMonthlyReportTable"
+        );
+
+
+    if(!month){
+
+        alert("আগে Month select করুন");
+
+        return;
+
+    }
+
+
+    if(!employeeId){
+
+        alert("আগে Staff select করুন");
+
+        return;
+
+    }
+
+
+    const employee =
+        employees.find(
+            e => e.id === employeeId
+        );
+
+
+    if(!employee){
+
+        alert("Employee পাওয়া যায়নি");
+
+        return;
+
+    }
+
+
+    /* =========================
+       EMPLOYEE INFO
+    ========================= */
+
+    const info =
+        document.getElementById(
+            "staffReportInfo"
+        );
+
+
+    info.style.display = "block";
+
+
+    info.innerHTML = `
+
+        <div style="
+            display:grid;
+            grid-template-columns:
+            repeat(3,1fr);
+            gap:15px;
+        ">
+
+            <div>
+                <b>Employee ID</b>
+                <br>
+                ${employee.id}
+            </div>
+
+            <div>
+                <b>Employee Name</b>
+                <br>
+                ${employee.name}
+            </div>
+
+            <div>
+                <b>Designation</b>
+                <br>
+                ${employee.designation || "-"}
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* =========================
+       GET MONTH DAYS
+    ========================= */
+
+    const [year,monthNumber] =
+        month.split("-").map(Number);
+
+
+    const daysInMonth =
+        new Date(
+            year,
+            monthNumber,
+            0
+        ).getDate();
+
+
+    let present = 0;
+    let absent = 0;
+    let leave = 0;
+    let totalMarked = 0;
+
+
+    table.innerHTML = "";
+
+
+    /* =========================
+       DAY BY DAY
+    ========================= */
+
+    for(let day=1; day<=daysInMonth; day++){
+
+        const date =
+            `${year}-${String(monthNumber).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+
+
+        const dateObject =
+            new Date(
+                year,
+                monthNumber - 1,
+                day
+            );
+
+
+        const dayName =
+            dateObject.toLocaleDateString(
+                "en-IN",
+                {
+                    weekday:"short"
+                }
+            );
+
+
+        /* =========================
+           ATTENDANCE
+        ========================= */
+
+        const attendanceRecord =
+            attendance.find(
+                a =>
+                a.employeeId === employeeId &&
+                a.date === date
+            );
+
+
+        let status = "-";
+        let inTime = "";
+        let outTime = "";
+        let remarks = "";
+
+
+        if(attendanceRecord){
+
+            status =
+                attendanceRecord.status ||
+                "Absent";
+
+            inTime =
+                attendanceRecord.inTime ||
+                "";
+
+            outTime =
+                attendanceRecord.outTime ||
+                "";
+
+            remarks =
+                attendanceRecord.remarks ||
+                "";
+
+
+            if(status === "Present")
+                present++;
+
+
+            if(status === "Absent")
+                absent++;
+
+
+            if(status === "Leave")
+                leave++;
+
+
+            totalMarked++;
+
+        }
+
+
+        /* =========================
+           WORK DETAILS
+        ========================= */
+
+        let workDetails = "";
+
+
+        try{
+
+            const workDoc =
+                await db
+                .collection("dailyWorkDetails")
+                .doc(date)
+                .get();
+
+
+            if(workDoc.exists){
+
+                const data =
+                    workDoc.data();
+
+                workDetails =
+                    data.details || "";
+
+            }
+
+        }
+        catch(error){
+
+            console.error(
+                "Work details load error:",
+                error
+            );
+
+        }
+
+
+        /* =========================
+           TABLE ROW
+        ========================= */
+
+        table.innerHTML += `
+
+            <tr>
+
+                <td>
+                    ${day}
+                </td>
+
+
+                <td>
+                    ${date}
+                </td>
+
+
+                <td>
+                    ${dayName}
+                </td>
+
+
+                <td>
+
+                    ${
+                        status === "Present"
+
+                        ? `<span class="badge badge-present">
+                            Present
+                           </span>`
+
+                        : status === "Absent"
+
+                        ? `<span class="badge badge-absent">
+                            Absent
+                           </span>`
+
+                        : status === "Leave"
+
+                        ? `<span class="badge badge-leave">
+                            Leave
+                           </span>`
+
+                        : "-"
+                    }
+
+                </td>
+
+
+                <td>
+                    ${inTime || "-"}
+                </td>
+
+
+                <td>
+                    ${outTime || "-"}
+                </td>
+
+
+                <td>
+                    ${calculateHours(
+                        inTime,
+                        outTime
+                    )}
+                </td>
+
+
+                <td style="
+                    text-align:left;
+                    min-width:250px;
+                    white-space:normal;
+                ">
+
+                    ${
+                        workDetails
+                        ? workDetails
+                        : "-"
+                    }
+
+                </td>
+
+
+                <td>
+                    ${remarks || "-"}
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    /* =========================
+       SUMMARY
+    ========================= */
+
+    document.getElementById(
+        "staffReportPresent"
+    ).innerText =
+        present;
+
+
+    document.getElementById(
+        "staffReportAbsent"
+    ).innerText =
+        absent;
+
+
+    document.getElementById(
+        "staffReportLeave"
+    ).innerText =
+        leave;
+
+
+    document.getElementById(
+        "staffReportTotal"
+    ).innerText =
+        totalMarked;
+
+
+}
+
+  
+
+  function downloadStaffMonthlyExcel(){
+
+    const table =
+        document.getElementById("staffMonthlyReportTable");
+
+    if(!table || table.rows.length === 0){
+
+        alert("আগে View Report চাপুন");
+
+        return;
+    }
+
+    const rows = [];
+
+    // Header
+    rows.push([
+        "SL",
+        "Date",
+        "Day",
+        "Status",
+        "In Time",
+        "Out Time",
+        "Working Hours",
+        "Work Details",
+        "Remarks"
+    ]);
+
+    // Table-এর বর্তমানে দেখা data
+    Array.from(table.rows).forEach(row => {
+
+        const cells =
+            Array.from(row.cells);
+
+        const rowData =
+            cells.map(cell => {
+
+                return cell.innerText
+                    .replace(/\n/g, " ")
+                    .trim();
+
+            });
+
+        // Empty message row বাদ
+        if(rowData.length === 9){
+
+            rows.push(rowData);
+
+        }
+
+    });
+
+    if(rows.length <= 1){
+
+        alert("Download করার মতো কোনো report data নেই");
+
+        return;
+    }
+
+    // CSV তৈরি
+    const csv =
+        rows.map(row =>
+
+            row.map(value => {
+
+                return `"${String(value)
+                    .replace(/"/g, '""')}"`;
+
+            }).join(",")
+
+        ).join("\n");
+
+    // UTF-8 BOM — Excel-এ Bengali text ঠিক রাখার জন্য
+    const blob =
+        new Blob(
+            ["\uFEFF" + csv],
+            {
+                type:
+                "text/csv;charset=utf-8;"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    const month =
+        document.getElementById(
+            "staffReportMonth"
+        ).value || "Report";
+
+    const employeeSelect =
+        document.getElementById(
+            "staffReportEmployee"
+        );
+
+    const employeeName =
+        employeeSelect.options[
+            employeeSelect.selectedIndex
+        ]?.text || "Staff";
+
+    link.download =
+        `Staff_Monthly_Report_${employeeName}_${month}.csv`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+}
+
+  
 </script>
 
 </body>
