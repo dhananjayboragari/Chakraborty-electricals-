@@ -1585,6 +1585,13 @@ Save Invoice
   <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 
+    
+
+    import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
     import {
   getFirestore,
   collection,
@@ -1610,6 +1617,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
     window.db = db;
+
+    const auth = getAuth(app);
+
+window.auth = auth;
+
+window.authReady = new Promise((resolve, reject) => {
+  onAuthStateChanged(auth, (user) => {
+
+    if (user) {
+      console.log("Firebase Auth Ready:", user.email);
+      resolve(user);
+
+    } else {
+      console.log("No Firebase user logged in");
+      reject(new Error("USER_NOT_LOGGED_IN"));
+    }
+
+  });
+});
+    
 window.getDocs = getDocs;
     window.getDoc = getDoc;
 window.query = query;
@@ -1680,6 +1707,8 @@ const collection = window.collection;
 const doc = window.doc;
 const setDoc = window.setDoc;
     const updateDoc = window.updateDoc;
+
+    const authReady = window.authReady;
 
 // ---------- Auto Total ----------
 
@@ -1945,6 +1974,7 @@ saveInvoice();
 
 
     async function saveInvoice() {
+      await authReady;
       if (editMode) {
 
   const data = {
@@ -2365,6 +2395,7 @@ newInvoiceBtn.style.display = "inline-block";
 });
 
     async function loadNextInvoiceNo() {
+      await authReady;
       if (editMode) {
   return;
 }
@@ -2574,6 +2605,7 @@ document.getElementById("searchInvoiceNo").addEventListener("keydown", function(
 
 });
     document.getElementById("searchBtn").onclick = async () => {
+      await authReady;
 
   const type = document.getElementById("searchType").value;
   let value;  if(type==="invoiceNo"){    const fy = document.getElementById("searchFY").value;   const no = document.getElementById("searchInvoiceNo").value.trim();    if(!fy || !no){     showAlert("Select Financial Year and Enter Invoice Number");     return;   }    value = fy + "/" + no.padStart(2,"0");  
@@ -2780,6 +2812,7 @@ Edit
 
 };
     document.getElementById("excelDownloadBtn").onclick = async () => {
+      await authReady;
       
 
   const snapshot = await getDocs(collection(db, "Invoices"));
@@ -2858,6 +2891,7 @@ Edit
 
 };
     document.getElementById("pdfDownloadBtn").onclick = async () => {
+      await authReady;
 
   const { jsPDF } = window.jspdf;
   const docPDF = new jsPDF("l", "mm", "a4");
