@@ -1,0 +1,4042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Attendance Management System</title>
+
+<style>
+
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+body{
+    background:#f3f6fb;
+    color:#202124;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+
+    background:linear-gradient(
+        180deg,
+        #09203f,
+        #123c69,
+        #0b5278
+    );
+
+    color:white;
+    padding:20px 14px;
+
+    z-index:1000;
+
+    box-shadow:4px 0 15px rgba(0,0,0,.15);
+
+    transition:.3s;
+}
+
+
+/* Logo */
+
+.logo{
+    text-align:center;
+    padding:10px 5px 25px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+    margin-bottom:18px;
+}
+
+.logo-icon{
+    width:55px;
+    height:55px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    background:white;
+    color:#123c69;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:28px;
+    font-weight:bold;
+
+    box-shadow:0 0 15px rgba(255,255,255,.25);
+}
+
+.logo h2{
+    font-size:18px;
+    margin-top:10px;
+}
+
+.logo p{
+    font-size:11px;
+    opacity:.7;
+}
+
+
+/* Sidebar menu */
+
+.menu-title{
+    font-size:11px;
+    opacity:.55;
+    margin:18px 10px 8px;
+    text-transform:uppercase;
+}
+
+.menu-item{
+    display:flex;
+    align-items:center;
+    gap:13px;
+
+    padding:12px 14px;
+    margin:5px 0;
+
+    border-radius:9px;
+
+    color:white;
+    text-decoration:none;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.menu-item:hover{
+    background:rgba(255,255,255,.12);
+    transform:translateX(3px);
+}
+
+.menu-item.active{
+    background:linear-gradient(
+        90deg,
+        rgba(255,255,255,.22),
+        rgba(255,255,255,.08)
+    );
+
+    box-shadow:
+    inset 3px 0 white,
+    0 4px 10px rgba(0,0,0,.1);
+}
+
+.menu-icon{
+    width:25px;
+    text-align:center;
+    font-size:18px;
+}
+
+.menu-text{
+    font-size:14px;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+    margin-left:250px;
+    min-height:100vh;
+
+    transition:.3s;
+}
+
+
+/* =========================
+   TOP HEADER
+========================= */
+
+.topbar{
+    height:70px;
+
+    background:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 25px;
+
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+
+    position:sticky;
+    top:0;
+
+    z-index:900;
+}
+
+.page-title{
+    font-size:21px;
+    font-weight:600;
+}
+
+.page-subtitle{
+    font-size:12px;
+    color:#777;
+    margin-top:2px;
+}
+
+.profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+
+  .avatar{
+    width:40px;
+    height:40px;
+
+    border-radius:50%;
+
+    background:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+
+    border:2px solid #1769aa;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.avatar img{
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+ 
+
+
+/* Mobile button */
+
+.menu-toggle{
+    display:none;
+
+    border:0;
+    background:#123c69;
+    color:white;
+
+    width:40px;
+    height:40px;
+
+    border-radius:8px;
+
+    font-size:20px;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.content{
+    padding:25px;
+}
+
+
+/* Sections */
+
+.section{
+    display:none;
+    animation:fadeIn .25s ease;
+}
+
+.section.active{
+    display:block;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome{
+    background:
+    linear-gradient(
+        135deg,
+        #123c69,
+        #1677b8
+    );
+
+    color:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    margin-bottom:25px;
+
+    box-shadow:0 8px 20px rgba(18,60,105,.2);
+}
+
+.welcome h1{
+    font-size:25px;
+}
+
+.welcome p{
+    margin-top:7px;
+    opacity:.85;
+}
+
+
+/* =========================
+   DASHBOARD CARDS
+========================= */
+
+.dashboard-grid{
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:18px;
+}
+
+.module-card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    min-height:170px;
+
+    cursor:pointer;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 5px 18px rgba(0,0,0,.08);
+
+    transition:.3s;
+}
+
+.module-card:hover{
+
+    transform:
+    translateY(-5px);
+
+    box-shadow:
+    0 12px 28px rgba(0,0,0,.13);
+}
+
+.module-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:100px;
+    height:100px;
+
+    border-radius:50%;
+
+    right:-35px;
+    bottom:-35px;
+
+    background:rgba(18,60,105,.06);
+}
+
+.card-icon{
+
+    width:55px;
+    height:55px;
+
+    border-radius:13px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:27px;
+
+    background:#eaf3fb;
+
+    color:#123c69;
+
+    margin-bottom:18px;
+}
+
+.module-card h3{
+    font-size:17px;
+}
+
+.module-card p{
+    font-size:12px;
+    color:#777;
+    margin-top:6px;
+}
+
+.open-text{
+    position:absolute;
+
+    right:20px;
+    bottom:20px;
+
+    font-size:12px;
+
+    color:#1677b8;
+
+    font-weight:bold;
+}
+
+
+/* =========================
+   STAT CARDS
+========================= */
+
+.stats{
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:15px;
+
+    margin-bottom:22px;
+}
+
+.stat-card{
+    background:white;
+
+    border-radius:13px;
+
+    padding:18px;
+
+    box-shadow:
+    0 4px 15px rgba(0,0,0,.07);
+}
+
+.stat-card h4{
+    font-size:12px;
+    color:#777;
+}
+
+.stat-card strong{
+    display:block;
+
+    font-size:28px;
+
+    margin-top:7px;
+}
+
+.blue{
+    color:#1769aa;
+}
+
+.green{
+    color:#16874b;
+}
+
+.red{
+    color:#d93025;
+}
+
+.orange{
+    color:#e69b00;
+}
+
+
+/* =========================
+   PANEL
+========================= */
+
+.panel{
+    background:white;
+
+    border-radius:14px;
+
+    padding:22px;
+
+    box-shadow:
+    0 4px 15px rgba(0,0,0,.07);
+
+    margin-bottom:20px;
+}
+
+.panel-header{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+}
+
+.panel-title{
+    font-size:18px;
+    font-weight:600;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:16px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.form-group label{
+    font-size:13px;
+    font-weight:600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+    border:1px solid #d8dde5;
+
+    border-radius:8px;
+
+    padding:11px;
+
+    outline:none;
+
+    font-size:14px;
+
+    background:white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+
+    border-color:#1677b8;
+
+    box-shadow:
+    0 0 0 3px rgba(22,119,184,.08);
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.btn{
+
+    border:0;
+
+    padding:11px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    color:white;
+
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.btn-primary{
+    background:#1769aa;
+}
+
+.btn-success{
+    background:#16874b;
+}
+
+.btn-danger{
+    background:#d93025;
+}
+
+.btn-warning{
+    background:#e69b00;
+}
+
+.btn-secondary{
+    background:#68717d;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:850px;
+}
+
+th{
+
+    background:#123c69;
+
+    color:white;
+
+    padding:12px 9px;
+
+    font-size:12px;
+
+    text-align:center;
+}
+
+td{
+
+    padding:10px 8px;
+
+    border-bottom:1px solid #e5e5e5;
+
+    font-size:13px;
+
+    text-align:center;
+}
+
+td input,
+td select{
+
+    border:1px solid #d5d9df;
+
+    border-radius:6px;
+
+    padding:7px;
+
+    width:100%;
+}
+
+.badge{
+
+    padding:5px 9px;
+
+    border-radius:20px;
+
+    font-size:11px;
+
+    font-weight:bold;
+}
+
+.badge-present{
+    background:#e4f6eb;
+    color:#16874b;
+}
+
+.badge-absent{
+    background:#fde9e7;
+    color:#d93025;
+}
+
+.badge-leave{
+    background:#fff3d9;
+    color:#b87800;
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.search{
+
+    padding:10px 12px;
+
+    border:1px solid #d5d9df;
+
+    border-radius:8px;
+
+    outline:none;
+
+    min-width:220px;
+}
+
+
+/* =========================
+   DOWNLOAD CARDS
+========================= */
+
+.download-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:18px;
+}
+
+.download-card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:14px;
+
+    text-align:center;
+
+    box-shadow:
+    0 4px 15px rgba(0,0,0,.07);
+}
+
+.download-card .icon{
+    font-size:40px;
+    margin-bottom:12px;
+}
+
+.download-card h3{
+    margin-bottom:7px;
+}
+
+.download-card p{
+    color:#777;
+    font-size:12px;
+    margin-bottom:18px;
+}
+
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+    padding:40px;
+    text-align:center;
+    color:#888;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:1000px){
+
+    .dashboard-grid{
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .stats{
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .download-grid{
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+}
+
+
+@media(max-width:700px){
+
+    .sidebar{
+        left:-250px;
+    }
+
+    .sidebar.open{
+        left:0;
+    }
+
+    .main{
+        margin-left:0;
+    }
+
+    .menu-toggle{
+        display:block;
+    }
+
+    .topbar{
+        padding:0 15px;
+    }
+
+    .content{
+        padding:15px;
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .stats{
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .download-grid{
+        grid-template-columns:1fr;
+    }
+
+    .page-title{
+        font-size:17px;
+    }
+
+    .profile span{
+        display:none;
+    }
+
+}
+
+
+/* Overlay */
+
+.overlay{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.4);
+
+    z-index:999;
+}
+
+.overlay.show{
+    display:block;
+}
+
+</style>
+  <!-- =========================
+     FIREBASE
+========================= -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+
+    authDomain: "chakraborty-ele-login.firebaseapp.com",
+
+    projectId: "chakraborty-ele-login",
+
+    storageBucket: "chakraborty-ele-login.firebasestorage.app",
+
+    messagingSenderId: "414542805581",
+
+    appId: "1:414542805581:web:cfd13593767abbb51cba04"
+
+};
+
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+
+// Firestore Database
+const db = firebase.firestore();
+
+</script>
+  
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<div class="sidebar" id="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            📋
+        </div>
+
+        <h2>Attendance System</h2>
+
+        <p>Management Portal</p>
+
+    </div>
+
+
+    <div class="menu-title">
+        Main Menu
+    </div>
+
+
+    <div class="menu-item active"
+         onclick="showSection('home',this)">
+
+        <span class="menu-icon">🏠</span>
+        <span class="menu-text">Dashboard</span>
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="showSection('employee',this)">
+
+        <span class="menu-icon">👤</span>
+        <span class="menu-text">New Employee</span>
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="showSection('daily',this)">
+
+        <span class="menu-icon">📋</span>
+        <span class="menu-text">Daily Attendance</span>
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="showSection('edit',this)">
+
+        <span class="menu-icon">✏️</span>
+        <span class="menu-text">Edit Attendance</span>
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="showSection('attendanceDashboard',this)">
+
+        <span class="menu-icon">📊</span>
+        <span class="menu-text">Attendance Dashboard</span>
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="showSection('downloads',this)">
+
+        <span class="menu-icon">📥</span>
+        <span class="menu-text">Downloads</span>
+
+    </div>
+
+  <div class="menu-item"
+     onclick="showSection('monthlyReport',this)">
+
+    <span class="menu-icon">📅</span>
+    <span class="menu-text">Monthly Report</span>
+
+</div>
+
+
+    <div class="menu-title">
+        Other
+    </div>
+
+
+   
+
+
+    <div class="menu-item"
+         onclick="alert('Settings coming soon')">
+
+        <span class="menu-icon">⚙️</span>
+        <span class="menu-text">Settings</span>
+
+    </div>
+
+</div>
+
+
+<div class="overlay"
+     id="overlay"
+     onclick="closeSidebar()">
+</div>
+
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="main">
+
+
+    <!-- TOP BAR -->
+
+    <div class="topbar">
+
+        <div style="display:flex;align-items:center;gap:12px;">
+
+            <button
+                class="menu-toggle"
+                onclick="toggleSidebar()">
+
+                ☰
+
+            </button>
+
+
+            <div>
+
+                <div class="page-title"
+                     id="pageTitle">
+
+                    Attendance Dashboard
+
+                </div>
+
+                <div class="page-subtitle"
+                     id="pageSubtitle">
+
+                    Employee attendance management system
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="profile">
+
+    <div class="avatar">
+        <img
+            src="https://i.ibb.co/fzFPjDVD/31092eed48aa.png"
+            alt="Logo">
+    </div>
+
+    <span>
+        Chakraborty Electricals
+    </span>
+
+</div>
+
+    </div>
+
+
+
+    <!-- CONTENT -->
+
+    <div class="content">
+
+
+        <!-- =====================
+             HOME
+        ====================== -->
+
+        <section
+            id="home"
+            class="section active">
+
+
+            <div class="welcome">
+
+                <h1>
+                    Welcome to Attendance Management System
+                </h1>
+
+                <p>
+                    Manage employees, attendance,
+                    reports and invoices from one place.
+                </p>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat-card">
+
+                    <h4>
+                        Total Employees
+                    </h4>
+
+                    <strong
+                        class="blue"
+                        id="homeTotal">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h4>
+                        Present Today
+                    </h4>
+
+                    <strong
+                        class="green"
+                        id="homePresent">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h4>
+                        Absent Today
+                    </h4>
+
+                    <strong
+                        class="red"
+                        id="homeAbsent">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h4>
+                        Leave Today
+                    </h4>
+
+                    <strong
+                        class="orange"
+                        id="homeLeave">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="dashboard-grid">
+
+
+                <div class="module-card"
+                     onclick="openModule('employee')">
+
+                    <div class="card-icon">
+                        👤
+                    </div>
+
+                    <h3>
+                        New Employee
+                    </h3>
+
+                    <p>
+                        Add new employee information
+                    </p>
+
+                    <span class="open-text">
+                        Open →
+                    </span>
+
+                </div>
+
+
+                <div class="module-card"
+                     onclick="openModule('daily')">
+
+                    <div class="card-icon">
+                        📋
+                    </div>
+
+                    <h3>
+                        Daily Attendance
+                    </h3>
+
+                    <p>
+                        Mark today's employee attendance
+                    </p>
+
+                    <span class="open-text">
+                        Open →
+                    </span>
+
+                </div>
+
+
+                <div class="module-card"
+                     onclick="openModule('edit')">
+
+                    <div class="card-icon">
+                        ✏️
+                    </div>
+
+                    <h3>
+                        Edit Attendance
+                    </h3>
+
+                    <p>
+                        Search and edit previous attendance
+                    </p>
+
+                    <span class="open-text">
+                        Open →
+                    </span>
+
+                </div>
+
+
+                <div class="module-card"
+                     onclick="openModule('attendanceDashboard')">
+
+                    <div class="card-icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        Attendance Dashboard
+                    </h3>
+
+                    <p>
+                        View attendance statistics
+                    </p>
+
+                    <span class="open-text">
+                        Open →
+                    </span>
+
+                </div>
+
+
+                <div class="module-card"
+                     onclick="openModule('downloads')">
+
+                    <div class="card-icon">
+                        📥
+                    </div>
+
+                    <h3>
+                        Downloads
+                    </h3>
+
+                    <p>
+                        Download attendance reports
+                    </p>
+
+                    <span class="open-text">
+                        Open →
+                    </span>
+
+                </div>
+
+
+      <div class="module-card"
+     onclick="openModule('monthlyReport')">
+
+    <div class="card-icon">
+        📅
+    </div>
+
+    <h3>
+        Monthly Report
+    </h3>
+
+    <p>
+        View employee monthly attendance
+    </p>
+
+    <span class="open-text">
+        Open →
+    </span>
+
+</div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             NEW EMPLOYEE
+        ====================== -->
+
+        <section
+            id="employee"
+            class="section">
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        👤 Add New Employee
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>
+                            Employee ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="empId"
+                            placeholder="Enter Employee ID">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Employee Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="empName"
+                            placeholder="Enter Employee Name">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Mobile Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="empMobile"
+                            placeholder="Enter Mobile Number">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Designation
+                        </label>
+
+                        <input
+                            type="text"
+                            id="empDesignation"
+                            placeholder="Electrician / Supervisor etc.">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Joining Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="empJoining">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Status
+                        </label>
+
+                        <select id="empStatus">
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label>
+                            Address
+                        </label>
+
+                        <textarea
+                            id="empAddress"
+                            rows="3"
+                            placeholder="Employee Address"></textarea>
+
+                    </div>
+
+
+                    <div class="full">
+
+                        <button
+                            class="btn btn-primary"
+                            onclick="addEmployee()">
+
+                            + Save Employee
+
+                        </button>
+
+                        <button
+                            class="btn btn-secondary"
+                            onclick="clearEmployeeForm()">
+
+                            Clear
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Employee List
+                    </div>
+
+                    <input
+                        class="search"
+                        id="employeeSearch"
+                        placeholder="🔍 Search employee..."
+                        oninput="renderEmployees()">
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>SL</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Mobile</th>
+                                <th>Designation</th>
+                                <th>Joining Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody
+                            id="employeeTable">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             DAILY ATTENDANCE
+        ====================== -->
+
+        <section
+            id="daily"
+            class="section">
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-title">
+                            📋 Daily Attendance
+                        </div>
+
+                        <div
+                            style="font-size:12px;color:#777;margin-top:4px">
+
+                            Mark attendance for selected date
+
+                        </div>
+
+                    </div>
+
+
+                    <input
+                        type="date"
+                        class="search"
+                        id="dailyDate"
+                        onchange="renderDailyAttendance()">
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>SL</th>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Status</th>
+                                <th>In Time</th>
+                                <th>Out Time</th>
+                                <th>Working Hours</th>
+                                <th>Remarks</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody
+                            id="dailyTable">
+
+                        </tbody>
+
+                    </table>
+
+                  <!-- =========================
+     DAILY WORK DETAILS
+========================= -->
+
+<div class="panel" style="margin-top:20px;">
+
+    <div class="panel-header">
+
+        <div>
+
+            <div class="panel-title">
+                📝 এই তারিখে কাজের বিবরণ
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>
+            Work Details / কাজের বিবরণ
+        </label>
+
+        <textarea
+            id="dailyWorkDetails"
+            rows="6"
+            placeholder="আজ সবাই মিলে কী কী কাজ করা হয়েছে লিখুন...">
+        </textarea>
+
+    </div>
+
+
+    <div style="margin-top:15px;">
+
+        <button
+            class="btn btn-success"
+            onclick="saveDailyWorkDetails()">
+
+            💾 Save / Update Work Details
+
+        </button>
+
+        <span
+            id="workSaveStatus"
+            style="
+            margin-left:10px;
+            font-size:12px;
+            color:#16874b;
+            ">
+
+        </span>
+
+    </div>
+
+</div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             EDIT ATTENDANCE
+        ====================== -->
+
+        <section
+            id="edit"
+            class="section">
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        ✏️ Edit Attendance
+                    </div>
+
+
+                    <input
+                        type="date"
+                        class="search"
+                        id="editDate"
+                        onchange="renderEditAttendance()">
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>SL</th>
+                                <th>Employee</th>
+                                <th>Status</th>
+                                <th>In</th>
+                                <th>Out</th>
+                                <th>Hours</th>
+                                <th>Remarks</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody
+                            id="editTable">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+              <!-- EDIT ATTENDANCE WORK DETAILS -->
+
+<div class="panel" style="margin-top:20px;">
+
+    <div class="panel-header">
+
+        <div>
+
+            <div class="panel-title">
+                📝 কাজের বিবরণ
+            </div>
+
+            <div style="font-size:12px;color:#777;margin-top:4px;">
+                নির্বাচিত তারিখে সবাই মিলে যে কাজ করা হয়েছিল
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+            Work Details / কাজের বিবরণ
+        </label>
+
+        <textarea
+            id="editWorkDetails"
+            rows="6"
+            placeholder="এই তারিখে কী কী কাজ করা হয়েছিল লিখুন...">
+        </textarea>
+
+    </div>
+
+    <div style="margin-top:15px;">
+
+        <button
+            class="btn btn-success"
+            onclick="updateEditWorkDetails()">
+
+            💾 Save / Update Work Details
+
+        </button>
+
+        <span
+            id="editWorkSaveStatus"
+            style="
+            margin-left:10px;
+            font-size:12px;
+            color:#16874b;
+            ">
+        </span>
+
+    </div>
+
+</div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             ATTENDANCE DASHBOARD
+        ====================== -->
+
+        <section
+            id="attendanceDashboard"
+            class="section">
+
+
+            <div class="stats">
+
+                <div class="stat-card">
+
+                    <h4>Total Employees</h4>
+
+                    <strong
+                        class="blue"
+                        id="dashTotal">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h4>Present</h4>
+
+                    <strong
+                        class="green"
+                        id="dashPresent">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h4>Absent</h4>
+
+                    <strong
+                        class="red"
+                        id="dashAbsent">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h4>Leave</h4>
+
+                    <strong
+                        class="orange"
+                        id="dashLeave">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        📊 Attendance Overview
+                    </div>
+
+                    <input
+                        type="date"
+                        class="search"
+                        id="dashDate"
+                        onchange="updateDashboard()">
+
+                </div>
+
+
+                <div
+                    id="dashboardMessage"
+                    style="
+                    text-align:center;
+                    padding:60px;
+                    color:#777;
+                    ">
+
+                    Attendance statistics will appear here.
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================
+             DOWNLOADS
+        ====================== -->
+
+        <section
+            id="downloads"
+            class="section">
+
+
+            <div class="panel">
+
+                <div class="panel-title">
+                    📥 Download Reports
+                </div>
+
+                <p style="color:#777;font-size:13px;margin-top:5px">
+                    Select a date and download attendance data.
+                </p>
+
+            </div>
+
+
+            <div class="download-grid">
+
+
+                <div class="download-card">
+
+                    <div class="icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        Excel / CSV
+                    </h3>
+
+                    <p>
+                        Download daily attendance
+                    </p>
+
+                    <input
+                        type="date"
+                        id="downloadDate"
+                        class="search"
+                        style="width:100%;margin-bottom:10px">
+
+                    <button
+                        class="btn btn-success"
+                        onclick="downloadCSV()">
+
+                        Download
+
+                    </button>
+
+                </div>
+
+
+                <div class="download-card">
+
+                    <div class="icon">
+                        📄
+                    </div>
+
+                    <h3>
+                        PDF Report
+                    </h3>
+
+                    <p>
+                        PDF report module
+                    </p>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="alert('PDF module next step-e add kora jabe')">
+
+                        Generate PDF
+
+                    </button>
+
+                </div>
+
+
+                <div class="download-card">
+
+                    <div class="icon">
+                        📅
+                    </div>
+
+                    <h3>
+                        Monthly Report
+                    </h3>
+
+                    <p>
+                        Monthly attendance summary
+                    </p>
+
+                    <button
+    class="btn btn-primary"
+    onclick="openModule('monthlyReport')">
+
+    View Report
+
+</button>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+      <!-- =====================
+     MONTHLY REPORT
+===================== -->
+
+<section
+    id="monthlyReport"
+    class="section">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <div class="panel-title">
+                    📅 Monthly Attendance Report
+                </div>
+
+                <div style="font-size:12px;color:#777;margin-top:4px">
+
+                    Select month to view employee attendance summary
+
+                </div>
+
+            </div>
+
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                <input
+                    type="month"
+                    id="monthlyReportMonth"
+                    class="search"
+                    onchange="generateMonthlyReport()">
+
+
+                <button
+                    class="btn btn-success"
+                    onclick="downloadMonthlyCSV()">
+
+                    📊 Excel / CSV
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <h4>
+                    Total Employees
+                </h4>
+
+                <strong
+                    class="blue"
+                    id="monthlyTotalEmployees">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h4>
+                    Total Present
+                </h4>
+
+                <strong
+                    class="green"
+                    id="monthlyTotalPresent">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h4>
+                    Total Absent
+                </h4>
+
+                <strong
+                    class="red"
+                    id="monthlyTotalAbsent">
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h4>
+                    Total Leave
+                </h4>
+
+                <strong
+                    class="orange"
+                    id="monthlyTotalLeave">
+
+                    0
+
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- EMPLOYEE MONTHLY TABLE -->
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>SL</th>
+
+                        <th>Employee ID</th>
+
+                        <th>Employee Name</th>
+
+                        <th>Present</th>
+
+                        <th>Absent</th>
+
+                        <th>Leave</th>
+
+                        <th>Total Marked Days</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="monthlyReportTable">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+        <!-- =====================
+             INVOICE
+        ====================== -->
+
+        <section
+            id="invoice"
+            class="section">
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* =========================
+   DATA
+========================= */
+
+
+  let employees = [];
+let attendance = [];
+
+
+/* =========================
+   DATE
+========================= */
+
+const today =
+new Date().toISOString().split("T")[0];
+
+
+document.getElementById("dailyDate").value=today;
+
+document.getElementById("editDate").value=today;
+
+document.getElementById("dashDate").value=today;
+
+document.getElementById("downloadDate").value=today;
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+const titles={
+
+    home:[
+        "Attendance Dashboard",
+        "Employee attendance management system"
+    ],
+
+    employee:[
+        "New Employee",
+        "Add and manage employee information"
+    ],
+
+    daily:[
+        "Daily Attendance",
+        "Mark today's attendance"
+    ],
+
+    edit:[
+        "Edit Attendance",
+        "Modify previous attendance records"
+    ],
+
+    attendanceDashboard:[
+        "Attendance Dashboard",
+        "Attendance statistics and overview"
+    ],
+
+    downloads:[
+        "Downloads",
+        "Download attendance reports"
+    ],
+
+  monthlyReport:[
+        "Monthly Attendance Report",
+        "Employee monthly attendance summary"
+    ],
+
+    invoice:[
+        "Invoice Management",
+        "Invoice management module"
+    ]
+
+};
+
+
+function showSection(id,element){
+
+    document
+    .querySelectorAll(".section")
+    .forEach(s=>{
+        s.classList.remove("active");
+    });
+
+
+    document
+    .getElementById(id)
+    .classList.add("active");
+
+
+    document
+    .querySelectorAll(".menu-item")
+    .forEach(m=>{
+        m.classList.remove("active");
+    });
+
+
+    if(element)
+        element.classList.add("active");
+
+
+    document.getElementById("pageTitle")
+    .innerText=titles[id][0];
+
+    document.getElementById("pageSubtitle")
+    .innerText=titles[id][1];
+
+
+    if(id==="employee")
+        renderEmployees();
+
+    if(id==="daily")
+        renderDailyAttendance();
+
+    if(id==="edit")
+        renderEditAttendance();
+
+    if(id==="attendanceDashboard")
+        updateDashboard();
+  
+  if(id==="monthlyReport")
+    generateMonthlyReport();
+
+    updateHomeStats();
+
+    closeSidebar();
+}
+
+
+function openModule(id){
+
+    let item =
+    [...document.querySelectorAll(".menu-item")]
+    .find(x=>
+        x.getAttribute("onclick") &&
+        x.getAttribute("onclick").includes("'"+id+"'")
+    );
+
+
+    showSection(id,item);
+}
+
+
+/* =========================
+   SIDEBAR MOBILE
+========================= */
+
+function toggleSidebar(){
+
+    document
+    .getElementById("sidebar")
+    .classList.toggle("open");
+
+    document
+    .getElementById("overlay")
+    .classList.toggle("show");
+
+}
+
+
+function closeSidebar(){
+
+    document
+    .getElementById("sidebar")
+    .classList.remove("open");
+
+    document
+    .getElementById("overlay")
+    .classList.remove("show");
+
+}
+
+
+/* =========================
+   EMPLOYEE
+========================= */
+
+async function addEmployee(){
+
+    let id =
+    document.getElementById("empId").value.trim();
+
+    let name =
+    document.getElementById("empName").value.trim();
+
+    let mobile =
+    document.getElementById("empMobile").value.trim();
+
+    let designation =
+    document.getElementById("empDesignation").value.trim();
+
+    let joining =
+    document.getElementById("empJoining").value;
+
+    let status =
+    document.getElementById("empStatus").value;
+
+    let address =
+    document.getElementById("empAddress").value.trim();
+
+
+    if(!id || !name){
+
+        alert("Employee ID এবং Name দিন");
+
+        return;
+    }
+
+
+    if(
+        employees.some(
+            e=>e.id.toLowerCase()===id.toLowerCase()
+        )
+    ){
+
+        alert("এই Employee ID already exists");
+
+        return;
+    }
+
+
+
+    try{
+
+    await db
+        .collection("employees")
+        .doc(id)
+        .set({
+
+            id: id,
+            name: name,
+            mobile: mobile,
+            designation: designation,
+            joining: joining,
+            status: status,
+            address: address,
+
+            createdAt:
+                firebase.firestore.FieldValue.serverTimestamp()
+
+        });
+
+
+    employees.push({
+
+        id,
+        name,
+        mobile,
+        designation,
+        joining,
+        status,
+        address
+
+    });
+
+
+    clearEmployeeForm();
+
+    renderEmployees();
+
+    updateHomeStats();
+
+
+    alert(
+        "Employee successfully added to Firebase"
+    );
+
+
+}
+catch(error){
+
+    console.error(error);
+
+    alert(
+        "Employee save করতে সমস্যা হয়েছে!\n\n" +
+        error.message
+    );
+
+}
+
+
+}
+
+
+function clearEmployeeForm(){
+
+    document.getElementById("empId").value="";
+    document.getElementById("empName").value="";
+    document.getElementById("empMobile").value="";
+    document.getElementById("empDesignation").value="";
+    document.getElementById("empJoining").value="";
+    document.getElementById("empStatus").value="Active";
+    document.getElementById("empAddress").value="";
+
+}
+
+
+function renderEmployees(){
+
+    let search =
+    document.getElementById("employeeSearch")
+    .value.toLowerCase();
+
+
+    let data =
+    employees.filter(e=>
+        e.name.toLowerCase().includes(search) ||
+        e.id.toLowerCase().includes(search)
+    );
+
+
+    let body =
+    document.getElementById("employeeTable");
+
+    body.innerHTML="";
+
+
+    if(data.length===0){
+
+        body.innerHTML=`
+        <tr>
+        <td colspan="8" class="empty">
+        No employees found
+        </td>
+        </tr>`;
+
+        return;
+    }
+
+
+    data.forEach((e,i)=>{
+
+        body.innerHTML+=`
+
+        <tr>
+
+        <td>${i+1}</td>
+
+        <td><b>${e.id}</b></td>
+
+        <td>${e.name}</td>
+
+        <td>${e.mobile||"-"}</td>
+
+        <td>${e.designation||"-"}</td>
+
+        <td>${e.joining||"-"}</td>
+
+        <td>
+
+        <span class="badge ${
+            e.status==="Active"
+            ?"badge-present"
+            :"badge-absent"
+        }">
+
+        ${e.status}
+
+        </span>
+
+        </td>
+
+        <td>
+
+        <button
+class="btn ${e.status==="Active" ? "btn-warning" : "btn-success"}"
+style="padding:7px 10px"
+onclick="toggleEmployeeStatus('${e.id}')">
+
+${e.status==="Active" ? "Deactivate" : "Activate"}
+
+</button>
+
+<button
+class="btn btn-danger"
+style="padding:7px 10px;margin-left:5px"
+onclick="deleteEmployee('${e.id}')">
+
+Delete
+
+</button>
+
+        </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+  async function toggleEmployeeStatus(id){
+
+    const employee =
+        employees.find(e => e.id === id);
+
+    if(!employee)
+        return;
+
+    const newStatus =
+        employee.status === "Active"
+        ? "Inactive"
+        : "Active";
+
+
+    try{
+
+        await db
+            .collection("employees")
+            .doc(id)
+            .update({
+
+                status: newStatus
+
+            });
+
+
+        employee.status = newStatus;
+
+
+        renderEmployees();
+
+        renderDailyAttendance();
+
+        updateHomeStats();
+
+        updateDashboard();
+
+
+        alert(
+            `Employee status changed to ${newStatus}`
+        );
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "Status change করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+  async function deleteEmployee(id){
+
+    if(!confirm("Employee delete করবেন?"))
+        return;
+
+
+    try{
+
+        // Delete employee
+        await db
+            .collection("employees")
+            .doc(id)
+            .delete();
+
+
+        // Find employee attendance
+        const records =
+            attendance.filter(
+                a=>a.employeeId === id
+            );
+
+
+        // Delete attendance records
+        for(const record of records){
+
+            const docId =
+                record.employeeId +
+                "_" +
+                record.date;
+
+
+            await db
+                .collection("attendance")
+                .doc(docId)
+                .delete();
+
+        }
+
+
+        // Update local arrays
+        employees =
+            employees.filter(
+                e=>e.id!==id
+            );
+
+
+        attendance =
+            attendance.filter(
+                a=>a.employeeId!==id
+            );
+
+
+        renderEmployees();
+
+        renderDailyAttendance();
+
+        updateHomeStats();
+
+        updateDashboard();
+
+
+        alert("Employee successfully deleted");
+
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "Delete করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   DAILY ATTENDANCE
+========================= */
+
+  /* =========================
+   DAILY WORK DETAILS
+========================= */
+
+async function saveDailyWorkDetails(){
+
+    const date =
+        document.getElementById("dailyDate").value;
+
+    const details =
+        document.getElementById("dailyWorkDetails").value.trim();
+
+
+    if(!date){
+
+        alert("আগে Date select করুন");
+
+        return;
+    }
+
+
+    if(!details){
+
+        alert("আজকের কাজের বিবরণ লিখুন");
+
+        return;
+    }
+
+
+    try{
+
+        await db
+            .collection("dailyWorkDetails")
+            .doc(date)
+            .set({
+
+                date: date,
+
+                details: details,
+
+                updatedAt:
+                    firebase.firestore.FieldValue.serverTimestamp()
+
+            });
+
+
+        document.getElementById("workSaveStatus")
+            .innerText =
+            "✓ Successfully Saved";
+
+
+        alert(
+            "আজকের কাজের বিবরণ সফলভাবে Save হয়েছে"
+        );
+
+
+    }
+    catch(error){
+
+        console.error(
+            "Work Details Save Error:",
+            error
+        );
+
+
+        alert(
+            "Work Details save করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   LOAD DAILY WORK DETAILS
+========================= */
+
+async function loadDailyWorkDetails(){
+
+    const date =
+        document.getElementById("dailyDate").value;
+
+
+    const textarea =
+        document.getElementById("dailyWorkDetails");
+
+    const status =
+        document.getElementById("workSaveStatus");
+
+
+    if(!date)
+        return;
+
+
+    textarea.value = "";
+
+    status.innerText = "";
+
+
+    try{
+
+        const doc =
+            await db
+            .collection("dailyWorkDetails")
+            .doc(date)
+            .get();
+
+
+        if(doc.exists){
+
+            const data = doc.data();
+
+            textarea.value =
+                data.details || "";
+
+            status.innerText =
+                "✓ Saved data loaded";
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "Work Details Load Error:",
+            error
+        );
+
+    }
+
+}
+
+function getAttendance(employee,date){
+
+    return attendance.find(
+        a=>
+        a.employeeId===employee.id &&
+        a.date===date
+    );
+
+}
+
+
+function renderDailyAttendance(){
+
+  loadDailyWorkDetails();
+
+    let date =
+    document.getElementById("dailyDate").value;
+
+
+    let body =
+    document.getElementById("dailyTable");
+
+    body.innerHTML="";
+
+
+    let activeEmployees =
+    employees.filter(
+        e=>e.status==="Active"
+    );
+
+
+    if(activeEmployees.length===0){
+
+        body.innerHTML=`
+        <tr>
+        <td colspan="8" class="empty">
+        আগে Employee add করুন
+        </td>
+        </tr>`;
+
+        return;
+    }
+
+
+    activeEmployees.forEach((e,i)=>{
+
+        let a =
+        getAttendance(e,date);
+
+
+        let status =
+        a ? a.status : "Absent";
+
+        let inTime =
+        a ? a.inTime : "";
+
+        let outTime =
+        a ? a.outTime : "";
+
+        let remarks =
+        a ? a.remarks : "";
+
+
+        body.innerHTML+=`
+
+        <tr>
+
+        <td>${i+1}</td>
+
+        <td>${e.id}</td>
+
+        <td>
+        <b>${e.name}</b>
+        </td>
+
+
+        <td>
+
+        <select
+        onchange="saveAttendance(
+            '${e.id}',
+            '${date}',
+            'status',
+            this.value
+        )">
+
+        <option
+        value="Present"
+        ${status==="Present"?"selected":""}>
+        Present
+        </option>
+
+        <option
+        value="Absent"
+        ${status==="Absent"?"selected":""}>
+        Absent
+        </option>
+
+        <option
+        value="Leave"
+        ${status==="Leave"?"selected":""}>
+        Leave
+        </option>
+
+        </select>
+
+        </td>
+
+
+        <td>
+
+        <input
+        type="time"
+        value="${inTime}"
+        onchange="saveAttendance(
+            '${e.id}',
+            '${date}',
+            'inTime',
+            this.value
+        )">
+
+        </td>
+
+
+        <td>
+
+        <input
+        type="time"
+        value="${outTime}"
+        onchange="saveAttendance(
+            '${e.id}',
+            '${date}',
+            'outTime',
+            this.value
+        )">
+
+        </td>
+
+
+        <td>
+
+        <b>
+        ${calculateHours(inTime,outTime)}
+        </b>
+
+        </td>
+
+
+        <td>
+
+        <input
+        type="text"
+        value="${remarks}"
+        placeholder="Remarks"
+        onchange="saveAttendance(
+            '${e.id}',
+            '${date}',
+            'remarks',
+            this.value
+        )">
+
+        </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+
+  async function saveAttendance(
+    employeeId,
+    date,
+    field,
+    value
+){
+
+    try{
+
+        let item =
+            attendance.find(
+                a =>
+                a.employeeId === employeeId &&
+                a.date === date
+            );
+
+
+        // New attendance record
+        if(!item){
+
+            item = {
+
+                employeeId: employeeId,
+
+                date: date,
+
+                status: "Absent",
+
+                inTime: "",
+
+                outTime: "",
+
+                remarks: ""
+
+            };
+
+
+            attendance.push(item);
+
+        }
+
+
+        // Update field
+        item[field] = value;
+
+
+        // Firestore document ID
+        const docId =
+            employeeId + "_" + date;
+
+
+        // Save to Firebase
+        await db
+            .collection("attendance")
+            .doc(docId)
+            .set(item);
+
+
+        console.log(
+            "Attendance saved:",
+            docId
+        );
+
+
+        // Refresh UI
+        renderDailyAttendance();
+
+        renderEditAttendance();
+
+        updateHomeStats();
+
+        updateDashboard();
+
+
+    }
+    catch(error){
+
+        console.error(
+            "Attendance Save Error:",
+            error
+        );
+
+        alert(
+            "Attendance save করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+  
+/* =========================
+   EDIT ATTENDANCE
+========================= */
+
+function renderEditAttendance(){
+
+    let date =
+    document.getElementById("editDate").value;
+
+      loadEditWorkDetails();
+
+
+    let body =
+    document.getElementById("editTable");
+
+    body.innerHTML="";
+
+
+    let records =
+    attendance.filter(
+        a=>a.date===date
+    );
+
+
+    if(records.length===0){
+
+        body.innerHTML=`
+        <tr>
+        <td colspan="7" class="empty">
+        এই তারিখে কোনো attendance record নেই
+        </td>
+        </tr>`;
+
+        return;
+    }
+
+
+    records.forEach((a,i)=>{
+
+        let employee =
+        employees.find(
+            e=>e.id===a.employeeId
+        );
+
+
+        body.innerHTML+=`
+
+        <tr>
+
+        <td>${i+1}</td>
+
+        <td>
+        ${employee ? employee.name : a.employeeId}
+        </td>
+
+
+        <td>
+
+        <select
+        onchange="saveAttendance(
+        '${a.employeeId}',
+        '${a.date}',
+        'status',
+        this.value
+        )">
+
+        <option
+        ${a.status==="Present"?"selected":""}>
+        Present
+        </option>
+
+        <option
+        ${a.status==="Absent"?"selected":""}>
+        Absent
+        </option>
+
+        <option
+        ${a.status==="Leave"?"selected":""}>
+        Leave
+        </option>
+
+        </select>
+
+        </td>
+
+
+        <td>
+
+        <input
+        type="time"
+        value="${a.inTime}"
+        onchange="saveAttendance(
+        '${a.employeeId}',
+        '${a.date}',
+        'inTime',
+        this.value
+        )">
+
+        </td>
+
+
+        <td>
+
+        <input
+        type="time"
+        value="${a.outTime}"
+        onchange="saveAttendance(
+        '${a.employeeId}',
+        '${a.date}',
+        'outTime',
+        this.value
+        )">
+
+        </td>
+
+
+        <td>
+
+        ${calculateHours(
+            a.inTime,
+            a.outTime
+        )}
+
+        </td>
+
+
+        <td>
+
+        <input
+        type="text"
+        value="${a.remarks}"
+        onchange="saveAttendance(
+        '${a.employeeId}',
+        '${a.date}',
+        'remarks',
+        this.value
+        )">
+
+        </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+  /* =========================
+   EDIT WORK DETAILS
+========================= */
+
+async function loadEditWorkDetails(){
+
+    const date =
+        document.getElementById("editDate").value;
+
+    const textarea =
+        document.getElementById("editWorkDetails");
+
+    const status =
+        document.getElementById("editWorkSaveStatus");
+
+    if(!textarea || !date)
+        return;
+
+    textarea.value = "";
+    status.innerText = "";
+
+    try{
+
+        const doc =
+            await db
+            .collection("dailyWorkDetails")
+            .doc(date)
+            .get();
+
+        if(doc.exists){
+
+            const data = doc.data();
+
+            textarea.value =
+                data.details || "";
+
+            status.innerText =
+                "✓ Saved data loaded";
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "Edit Work Details Load Error:",
+            error
+        );
+
+    }
+
+}
+
+
+async function updateEditWorkDetails(){
+
+    const date =
+        document.getElementById("editDate").value;
+
+    const details =
+        document.getElementById("editWorkDetails")
+        .value.trim();
+
+    if(!date){
+
+        alert("আগে Date select করুন");
+
+        return;
+    }
+
+    if(!details){
+
+        alert("কাজের বিবরণ লিখুন");
+
+        return;
+    }
+
+    try{
+
+        await db
+            .collection("dailyWorkDetails")
+            .doc(date)
+            .set({
+
+                date: date,
+
+                details: details,
+
+                updatedAt:
+                    firebase.firestore.FieldValue.serverTimestamp()
+
+            });
+
+        document.getElementById(
+            "editWorkSaveStatus"
+        ).innerText =
+            "✓ Successfully Updated";
+
+        alert(
+            "Work Details সফলভাবে Update হয়েছে"
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "Edit Work Details Update Error:",
+            error
+        );
+
+        alert(
+            "Work Details update করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+/* =========================
+   HOURS
+========================= */
+
+function calculateHours(
+    start,
+    end
+){
+
+    if(!start || !end)
+        return "-";
+
+
+    let s =
+    new Date("2000-01-01 "+start);
+
+    let e =
+    new Date("2000-01-01 "+end);
+
+
+    let diff =
+    e-s;
+
+
+    if(diff<0)
+        diff += 24*60*60*1000;
+
+
+    let hours =
+    Math.floor(
+        diff/3600000
+    );
+
+
+    let minutes =
+    Math.floor(
+        (diff%3600000)/60000
+    );
+
+
+    return `${hours}h ${minutes}m`;
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function updateDashboard(){
+
+    let date =
+    document.getElementById("dashDate").value;
+
+
+    let records =
+    attendance.filter(
+        a=>a.date===date
+    );
+
+
+    document.getElementById("dashTotal")
+    .innerText=employees.length;
+
+
+    document.getElementById("dashPresent")
+    .innerText=
+    records.filter(
+        a=>a.status==="Present"
+    ).length;
+
+
+    document.getElementById("dashAbsent")
+    .innerText=
+    records.filter(
+        a=>a.status==="Absent"
+    ).length;
+
+
+    document.getElementById("dashLeave")
+    .innerText=
+    records.filter(
+        a=>a.status==="Leave"
+    ).length;
+
+
+    document.getElementById(
+        "dashboardMessage"
+    ).innerHTML=
+
+    `
+    <div style="font-size:40px">
+        📊
+    </div>
+
+    <div style="margin-top:10px">
+        ${date} এর Attendance Summary
+    </div>
+    `;
+
+}
+
+
+/* =========================
+   HOME STATS
+========================= */
+
+function updateHomeStats(){
+
+    let records =
+    attendance.filter(
+        a=>a.date===today
+    );
+
+
+    document.getElementById("homeTotal")
+    .innerText=employees.length;
+
+
+    document.getElementById("homePresent")
+    .innerText=
+    records.filter(
+        a=>a.status==="Present"
+    ).length;
+
+
+    document.getElementById("homeAbsent")
+    .innerText=
+    records.filter(
+        a=>a.status==="Absent"
+    ).length;
+
+
+    document.getElementById("homeLeave")
+    .innerText=
+    records.filter(
+        a=>a.status==="Leave"
+    ).length;
+
+}
+
+
+/* =========================
+   CSV DOWNLOAD
+========================= */
+
+function downloadCSV(){
+
+    let date =
+    document.getElementById(
+        "downloadDate"
+    ).value;
+
+
+    let records =
+    attendance.filter(
+        a=>a.date===date
+    );
+
+
+    if(records.length===0){
+
+        alert("এই তারিখে attendance নেই");
+
+        return;
+    }
+
+
+    let csv =
+    "SL,Date,Employee ID,Employee Name,Status,In Time,Out Time,Working Hours,Remarks\n";
+
+
+    records.forEach((a,i)=>{
+
+        let employee =
+        employees.find(
+            e=>e.id===a.employeeId
+        );
+
+
+        csv +=
+        `${i+1},${a.date},${a.employeeId},${employee ? employee.name : ""},${a.status},${a.inTime},${a.outTime},${calculateHours(a.inTime,a.outTime)},"${a.remarks}"\n`;
+
+    });
+
+
+    let blob =
+    new Blob(
+        [csv],
+        {
+            type:"text/csv;charset=utf-8;"
+        }
+    );
+
+
+    let url =
+    URL.createObjectURL(blob);
+
+
+    let link =
+    document.createElement("a");
+
+
+    link.href=url;
+
+    link.download=
+    `Attendance_${date}.csv`;
+
+
+    link.click();
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+
+  /* =========================
+   MONTHLY REPORT
+========================= */
+
+function generateMonthlyReport(){
+
+    let month =
+        document.getElementById(
+            "monthlyReportMonth"
+        ).value;
+
+
+    let table =
+        document.getElementById(
+            "monthlyReportTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    if(!month){
+
+        table.innerHTML = `
+        <tr>
+            <td colspan="7" class="empty">
+                Please select a month
+            </td>
+        </tr>
+        `;
+
+        return;
+    }
+
+
+    let totalPresent = 0;
+    let totalAbsent = 0;
+    let totalLeave = 0;
+
+
+    employees.forEach((employee,index)=>{
+
+        let records =
+            attendance.filter(a =>
+
+                a.employeeId === employee.id &&
+
+                a.date.startsWith(month)
+
+            );
+
+
+        let present =
+            records.filter(
+                a => a.status === "Present"
+            ).length;
+
+
+        let absent =
+            records.filter(
+                a => a.status === "Absent"
+            ).length;
+
+
+        let leave =
+            records.filter(
+                a => a.status === "Leave"
+            ).length;
+
+
+        let total =
+            present + absent + leave;
+
+
+        totalPresent += present;
+        totalAbsent += absent;
+        totalLeave += leave;
+
+
+        table.innerHTML += `
+
+        <tr>
+
+            <td>
+                ${index + 1}
+            </td>
+
+
+            <td>
+                <b>${employee.id}</b>
+            </td>
+
+
+            <td>
+                ${employee.name}
+            </td>
+
+
+            <td>
+
+                <span class="badge badge-present">
+
+                    ${present}
+
+                </span>
+
+            </td>
+
+
+            <td>
+
+                <span class="badge badge-absent">
+
+                    ${absent}
+
+                </span>
+
+            </td>
+
+
+            <td>
+
+                <span class="badge badge-leave">
+
+                    ${leave}
+
+                </span>
+
+            </td>
+
+
+            <td>
+
+                <b>${total}</b>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+
+    document.getElementById(
+        "monthlyTotalEmployees"
+    ).innerText = employees.length;
+
+
+    document.getElementById(
+        "monthlyTotalPresent"
+    ).innerText = totalPresent;
+
+
+    document.getElementById(
+        "monthlyTotalAbsent"
+    ).innerText = totalAbsent;
+
+
+    document.getElementById(
+        "monthlyTotalLeave"
+    ).innerText = totalLeave;
+
+
+    if(employees.length === 0){
+
+        table.innerHTML = `
+        <tr>
+            <td colspan="7" class="empty">
+
+                আগে Employee add করুন
+
+            </td>
+        </tr>
+        `;
+
+    }
+
+}
+
+  /* =========================
+   MONTHLY CSV DOWNLOAD
+========================= */
+
+function downloadMonthlyCSV(){
+
+    let month =
+        document.getElementById(
+            "monthlyReportMonth"
+        ).value;
+
+
+    if(!month){
+
+        alert("আগে একটি Month select করুন");
+
+        return;
+    }
+
+
+    let csv =
+        "SL,Employee ID,Employee Name,Present,Absent,Leave,Total Marked Days\n";
+
+
+    employees.forEach((employee,index)=>{
+
+        let records =
+            attendance.filter(a =>
+
+                a.employeeId === employee.id &&
+
+                a.date.startsWith(month)
+
+            );
+
+
+        let present =
+            records.filter(
+                a => a.status === "Present"
+            ).length;
+
+
+        let absent =
+            records.filter(
+                a => a.status === "Absent"
+            ).length;
+
+
+        let leave =
+            records.filter(
+                a => a.status === "Leave"
+            ).length;
+
+
+        let total =
+            present + absent + leave;
+
+
+        csv +=
+            `${index + 1},` +
+            `${employee.id},` +
+            `"${employee.name}",` +
+            `${present},` +
+            `${absent},` +
+            `${leave},` +
+            `${total}\n`;
+
+    });
+
+
+    let blob =
+        new Blob(
+            [csv],
+            {
+                type:"text/csv;charset=utf-8;"
+            }
+        );
+
+
+    let url =
+        URL.createObjectURL(blob);
+
+
+    let link =
+        document.createElement("a");
+
+
+    link.href = url;
+
+
+    link.download =
+        `Monthly_Attendance_${month}.csv`;
+
+
+    document.body.appendChild(link);
+
+
+    link.click();
+
+
+    document.body.removeChild(link);
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+/* =========================
+   SAVE DATA
+========================= */
+
+  async function saveData(){
+
+    try{
+
+        // Save Employees
+        for(const employee of employees){
+
+            await db
+                .collection("employees")
+                .doc(employee.id)
+                .set(employee);
+
+        }
+
+
+        // Save Attendance
+        for(const record of attendance){
+
+            const docId =
+                record.employeeId + "_" + record.date;
+
+            await db
+                .collection("attendance")
+                .doc(docId)
+                .set(record);
+
+        }
+
+        console.log("Database saved successfully");
+
+    }
+    catch(error){
+
+        console.error("Firebase Save Error:", error);
+
+        alert(
+            "Database save করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+
+
+  async function loadData(){
+
+    try{
+
+        console.log("Loading Firebase data...");
+
+
+        // =========================
+        // LOAD EMPLOYEES
+        // =========================
+
+        const employeeSnapshot =
+            await db
+            .collection("employees")
+            .get();
+
+
+        employees = [];
+
+
+        employeeSnapshot.forEach(doc=>{
+
+            employees.push({
+                id: doc.id,
+                ...doc.data()
+            });
+
+        });
+
+
+        // =========================
+        // LOAD ATTENDANCE
+        // =========================
+
+        const attendanceSnapshot =
+            await db
+            .collection("attendance")
+            .get();
+
+
+        attendance = [];
+
+
+        attendanceSnapshot.forEach(doc=>{
+
+            attendance.push({
+                ...doc.data()
+            });
+
+        });
+
+
+        console.log(
+            "Employees:",
+            employees.length
+        );
+
+        console.log(
+            "Attendance:",
+            attendance.length
+        );
+
+
+        // =========================
+        // REFRESH PAGE
+        // =========================
+
+        renderEmployees();
+
+        renderDailyAttendance();
+
+        renderEditAttendance();
+
+        updateDashboard();
+
+        updateHomeStats();
+
+
+    }
+    catch(error){
+
+        console.error(
+            "Firebase Load Error:",
+            error
+        );
+
+        alert(
+            "Firebase Database থেকে data load করা যাচ্ছে না!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+  
+
+
+/* =========================
+   INITIAL
+========================= */
+
+  const monthlyMonth =
+    document.getElementById("monthlyReportMonth");
+
+if(monthlyMonth){
+    monthlyMonth.value = today.substring(0,7);
+}
+
+  loadData();
+
+</script>
+
+</body>
+</html>
