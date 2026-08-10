@@ -871,6 +871,238 @@ td select{
 }
 
 </style>
+
+  <style>
+/* =========================
+   BEAUTIFUL ALERT POPUP
+========================= */
+
+.custom-alert-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:99999;
+    opacity:0;
+    visibility:hidden;
+    transition:.25s ease;
+}
+
+.custom-alert-overlay.show{
+    opacity:1;
+    visibility:visible;
+}
+
+.custom-alert-box{
+    width:min(420px,90%);
+    background:#fff;
+    border-radius:22px;
+    padding:28px 25px 24px;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.30);
+    transform:scale(.85) translateY(20px);
+    transition:.3s ease;
+}
+
+.custom-alert-overlay.show .custom-alert-box{
+    transform:scale(1) translateY(0);
+}
+
+.custom-alert-icon{
+    width:72px;
+    height:72px;
+    margin:0 auto 15px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    font-weight:bold;
+}
+
+.custom-alert-title{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#1f2937;
+}
+
+.custom-alert-message{
+    font-size:15px;
+    line-height:1.6;
+    color:#6b7280;
+    white-space:pre-line;
+    margin-bottom:22px;
+}
+
+.custom-alert-buttons{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+}
+
+.custom-alert-btn{
+    border:0;
+    border-radius:10px;
+    padding:11px 24px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.custom-alert-btn:hover{
+    transform:translateY(-2px);
+}
+
+.custom-alert-ok{
+    background:#2563eb;
+    color:white;
+}
+
+.custom-alert-cancel{
+    background:#e5e7eb;
+    color:#374151;
+}
+
+.custom-alert-delete{
+    background:#dc2626;
+    color:white;
+}
+
+/* SUCCESS */
+.alert-success .custom-alert-icon{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+/* ERROR */
+.alert-error .custom-alert-icon{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+/* WARNING */
+.alert-warning .custom-alert-icon{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+/* INFO */
+.alert-info .custom-alert-icon{
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+/* MOBILE */
+@media(max-width:500px){
+    .custom-alert-box{
+        width:calc(100% - 35px);
+        padding:24px 18px 20px;
+    }
+
+    .custom-alert-title{
+        font-size:20px;
+    }
+
+    .custom-alert-message{
+        font-size:14px;
+    }
+
+    .custom-alert-btn{
+        flex:1;
+        padding:11px 15px;
+    }
+}
+
+
+
+    /* =========================
+   ATTENDANCE SAVE TOAST
+========================= */
+
+.attendance-toast{
+    position:fixed;
+    top:80px;
+    right:20px;
+    z-index:100000;
+    
+    min-width:280px;
+    max-width:360px;
+    
+    background:#ffffff;
+    color:#1f2937;
+    
+    padding:14px 18px;
+    border-radius:12px;
+    
+    box-shadow:0 10px 35px rgba(0,0,0,.20);
+    
+    display:flex;
+    align-items:center;
+    gap:12px;
+    
+    transform:translateX(120%);
+    opacity:0;
+    
+    transition:
+        transform .35s ease,
+        opacity .35s ease;
+}
+
+.attendance-toast.show{
+    transform:translateX(0);
+    opacity:1;
+}
+
+.attendance-toast-icon{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    
+    background:#dcfce7;
+    color:#16a34a;
+    
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    
+    font-size:21px;
+    font-weight:bold;
+    
+    flex-shrink:0;
+}
+
+.attendance-toast-title{
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:2px;
+}
+
+.attendance-toast-text{
+    font-size:13px;
+    color:#6b7280;
+}
+
+@media(max-width:600px){
+
+    .attendance-toast{
+        top:70px;
+        left:15px;
+        right:15px;
+        max-width:none;
+        min-width:0;
+    }
+
+}
+
+    
+</style>
+  
   <!-- =========================
      FIREBASE
 ========================= -->
@@ -2452,8 +2684,241 @@ const db = firebase.firestore();
 </div>
 
 
+  <!-- =========================
+     BEAUTIFUL ALERT POPUP
+========================= -->
+
+<div id="customAlertOverlay" class="custom-alert-overlay">
+
+    <div id="customAlertBox" class="custom-alert-box">
+
+        <div id="customAlertIcon" class="custom-alert-icon">
+            ✓
+        </div>
+
+        <div id="customAlertTitle" class="custom-alert-title">
+            Success
+        </div>
+
+        <div id="customAlertMessage" class="custom-alert-message">
+        </div>
+
+        <div id="customAlertButtons" class="custom-alert-buttons">
+
+            <button
+                id="customAlertCancel"
+                class="custom-alert-btn custom-alert-cancel"
+                style="display:none;">
+                Cancel
+            </button>
+
+            <button
+                id="customAlertOK"
+                class="custom-alert-btn custom-alert-ok">
+                OK
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+  <!-- ATTENDANCE SAVE TOAST -->
+
+<div id="attendanceToast" class="attendance-toast">
+
+    <div class="attendance-toast-icon">
+        ✓
+    </div>
+
+    <div>
+        <div class="attendance-toast-title">
+            Attendance Saved
+        </div>
+
+        <div
+            id="attendanceToastText"
+            class="attendance-toast-text">
+            Saved successfully
+        </div>
+    </div>
+
+</div>
 
 <script>
+
+  /* =========================
+   BEAUTIFUL ALERT FUNCTIONS
+========================= */
+
+function showAlert(message, type="info", title="Information"){
+
+    const overlay =
+        document.getElementById("customAlertOverlay");
+
+    const box =
+        document.getElementById("customAlertBox");
+
+    const icon =
+        document.getElementById("customAlertIcon");
+
+    const titleBox =
+        document.getElementById("customAlertTitle");
+
+    const messageBox =
+        document.getElementById("customAlertMessage");
+
+    const okBtn =
+        document.getElementById("customAlertOK");
+
+    const cancelBtn =
+        document.getElementById("customAlertCancel");
+
+    box.className =
+        "custom-alert-box alert-" + type;
+
+    titleBox.innerText = title;
+    messageBox.innerText = message;
+
+    cancelBtn.style.display = "none";
+
+    if(type === "success"){
+        icon.innerText = "✓";
+    }
+    else if(type === "error"){
+        icon.innerText = "×";
+    }
+    else if(type === "warning"){
+        icon.innerText = "!";
+    }
+    else{
+        icon.innerText = "i";
+    }
+
+    okBtn.innerText = "OK";
+    okBtn.className =
+        "custom-alert-btn custom-alert-ok";
+
+    overlay.classList.add("show");
+
+    okBtn.onclick = function(){
+        overlay.classList.remove("show");
+    };
+}
+
+
+
+  // =====================================
+// CONVERT ALL NORMAL ALERTS TO POPUP
+// =====================================
+window.alert = function(message){
+
+    let type = "info";
+    let title = "Information";
+
+    const text = String(message).toLowerCase();
+
+    if(
+        text.includes("success") ||
+        text.includes("successfully") ||
+        text.includes("সফলভাবে") ||
+        text.includes("saved") ||
+        text.includes("updated") ||
+        text.includes("added") ||
+        text.includes("deleted")
+    ){
+        type = "success";
+        title = "Success";
+    }
+
+    else if(
+        text.includes("সমস্যা") ||
+        text.includes("error") ||
+        text.includes("failed") ||
+        text.includes("cannot") ||
+        text.includes("যায়নি")
+    ){
+        type = "error";
+        title = "Error";
+    }
+
+    else if(
+        text.includes("আগে") ||
+        text.includes("required") ||
+        text.includes("already exists") ||
+        text.includes("পাওয়া যায়নি")
+    ){
+        type = "warning";
+        title = "Warning";
+    }
+
+    showAlert(message, type, title);
+};
+
+/* =========================
+   CONFIRM POPUP
+========================= */
+
+function showConfirm(
+    message,
+    onConfirm,
+    title="Confirm Action"
+){
+
+    const overlay =
+        document.getElementById("customAlertOverlay");
+
+    const box =
+        document.getElementById("customAlertBox");
+
+    const icon =
+        document.getElementById("customAlertIcon");
+
+    const titleBox =
+        document.getElementById("customAlertTitle");
+
+    const messageBox =
+        document.getElementById("customAlertMessage");
+
+    const okBtn =
+        document.getElementById("customAlertOK");
+
+    const cancelBtn =
+        document.getElementById("customAlertCancel");
+
+    box.className =
+        "custom-alert-box alert-warning";
+
+    icon.innerText = "!";
+    titleBox.innerText = title;
+    messageBox.innerText = message;
+
+    cancelBtn.style.display = "inline-block";
+
+    okBtn.innerText = "Delete";
+    okBtn.className =
+        "custom-alert-btn custom-alert-delete";
+
+    overlay.classList.add("show");
+
+    cancelBtn.onclick = function(){
+
+        overlay.classList.remove("show");
+
+    };
+
+    okBtn.onclick = function(){
+
+        overlay.classList.remove("show");
+
+        if(typeof onConfirm === "function"){
+            onConfirm();
+        }
+
+    };
+}
 
 /* =========================
    DATA
@@ -2712,12 +3177,17 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
     let address =
     document.getElementById("empAddress").value.trim();
 
+  if(!name){
 
-    if(!name){
+    showAlert(
+        "Employee Name দিন",
+        "warning",
+        "Required Information"
+    );
 
-    alert("Employee Name দিন");
     return;
-  }
+
+}
 
 
     if(
@@ -2726,7 +3196,7 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
         )
     ){
 
-        alert("এই Employee ID already exists");
+        showAlert(     "এই Employee ID already exists",     "warning",     "Duplicate Employee ID" );
 
         return;
     }
@@ -2773,10 +3243,11 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
 
     updateHomeStats();
 
-
-    alert(
-        "Employee successfully added to Firebase"
-    );
+      showAlert(
+    "Employee added successfully",
+    "success",
+    "Employee Added"
+);
 
 
 }
@@ -2784,10 +3255,12 @@ catch(error){
 
     console.error(error);
 
-    alert(
-        "Employee save করতে সমস্যা হয়েছে!\n\n" +
-        error.message
-    );
+    showAlert(
+    "Employee save করতে সমস্যা হয়েছে!\n\n" +
+    error.message,
+    "error",
+    "Save Failed"
+);
 
 }
 
@@ -2922,7 +3395,7 @@ Delete
 
         await db
             .collection("employees")
-            .doc(id)
+            .doc(id.replace(/\//g, "_"))
             .update({
 
                 status: newStatus
@@ -2942,19 +3415,23 @@ Delete
         updateDashboard();
 
 
-        alert(
-            `Employee status changed to ${newStatus}`
-        );
+        showAlert(
+    `Employee status changed to ${newStatus}`,
+    "success",
+    "Status Updated"
+);
 
     }
     catch(error){
 
         console.error(error);
 
-        alert(
-            "Status change করতে সমস্যা হয়েছে!\n\n" +
-            error.message
-        );
+        showAlert(
+    "Status change করতে সমস্যা হয়েছে!\n\n" +
+    error.message,
+    "error",
+    "Status Change Failed"
+);
 
     }
 
@@ -2962,79 +3439,74 @@ Delete
 
   async function deleteEmployee(id){
 
-    if(!confirm("Employee delete করবেন?"))
-        return;
+    showConfirm(
+        "এই Employee এবং তার সব Attendance record permanently delete হবে। আপনি কি নিশ্চিত?",
+        async function(){
 
+            try{
 
-    try{
+                await db
+                    .collection("employees")
+                    .doc(id.replace(/\//g, "_"))
+                    .delete();
 
-        // Delete employee
-        await db
-            .collection("employees")
-            .doc(id)
-            .delete();
+                const records =
+                    attendance.filter(
+                        a => a.employeeId === id
+                    );
 
+                for(const record of records){
 
-        // Find employee attendance
-        const records =
-            attendance.filter(
-                a=>a.employeeId === id
-            );
+                    const docId =
+                        record.employeeId.replace(/\//g, "_")
+                        + "_" +
+                        record.date;
 
+                    await db
+                        .collection("attendance")
+                        .doc(docId)
+                        .delete();
 
-        // Delete attendance records
-        for(const record of records){
+                }
 
-            const docId =
-                record.employeeId +
-                "_" +
-                record.date;
+                employees =
+                    employees.filter(
+                        e => e.id !== id
+                    );
 
+                attendance =
+                    attendance.filter(
+                        a => a.employeeId !== id
+                    );
 
-            await db
-                .collection("attendance")
-                .doc(docId)
-                .delete();
+                renderEmployees();
+                renderDailyAttendance();
+                updateHomeStats();
+                updateDashboard();
 
-        }
+                showAlert(
+                    "Employee successfully deleted",
+                    "success",
+                    "Employee Deleted"
+                );
 
+            }
+            catch(error){
 
-        // Update local arrays
-        employees =
-            employees.filter(
-                e=>e.id!==id
-            );
+                console.error(error);
 
+                showAlert(
+                    "Delete করতে সমস্যা হয়েছে!\n\n" +
+                    error.message,
+                    "error",
+                    "Delete Failed"
+                );
 
-        attendance =
-            attendance.filter(
-                a=>a.employeeId!==id
-            );
+            }
 
-
-        renderEmployees();
-
-        renderDailyAttendance();
-
-        updateHomeStats();
-
-        updateDashboard();
-
-
-        alert("Employee successfully deleted");
-
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        alert(
-            "Delete করতে সমস্যা হয়েছে!\n\n" +
-            error.message
-        );
-
-    }
+        },
+        "Delete Employee"
+    );
 
 }
 
@@ -3058,18 +3530,26 @@ async function saveDailyWorkDetails(){
 
     if(!date){
 
-        alert("আগে Date select করুন");
+    showAlert(
+        "আগে Date select করুন",
+        "warning",
+        "Date Required"
+    );
 
-        return;
-    }
+    return;
+}
 
 
     if(!details){
 
-        alert("আজকের কাজের বিবরণ লিখুন");
+    showAlert(
+        "আজকের কাজের বিবরণ লিখুন",
+        "warning",
+        "Work Details Required"
+    );
 
-        return;
-    }
+    return;
+}
 
 
     try{
@@ -3094,9 +3574,11 @@ async function saveDailyWorkDetails(){
             "✓ Successfully Saved";
 
 
-        alert(
-            "আজকের কাজের বিবরণ সফলভাবে Save হয়েছে"
-        );
+        showAlert(
+    "আজকের কাজের বিবরণ সফলভাবে Save হয়েছে",
+    "success",
+    "Work Details Saved"
+);
 
 
     }
@@ -3108,10 +3590,12 @@ async function saveDailyWorkDetails(){
         );
 
 
-        alert(
-            "Work Details save করতে সমস্যা হয়েছে!\n\n" +
-            error.message
-        );
+        showAlert(
+    "Work Details save করতে সমস্যা হয়েছে!\n\n" +
+    error.message,
+    "error",
+    "Save Failed"
+);
 
     }
 
@@ -3349,6 +3833,37 @@ function renderDailyAttendance(){
 }
 
 
+  /* =========================
+   ATTENDANCE SAVE TOAST
+========================= */
+
+let attendanceToastTimer;
+
+function showAttendanceSaved(status){
+
+    const toast =
+        document.getElementById("attendanceToast");
+
+    const text =
+        document.getElementById("attendanceToastText");
+
+    if(!toast || !text) return;
+
+    text.innerText =
+        status + " — Saved successfully";
+
+    toast.classList.add("show");
+
+    clearTimeout(attendanceToastTimer);
+
+    attendanceToastTimer =
+        setTimeout(function(){
+
+            toast.classList.remove("show");
+
+        }, 2500);
+}
+  
 
   async function saveAttendance(
     employeeId,
@@ -3398,7 +3913,7 @@ function renderDailyAttendance(){
 
         // Firestore document ID
         const docId =
-            employeeId + "_" + date;
+        employeeId.replace(/\//g, "_") + "_" + date;
 
 
         // Save to Firebase
@@ -3412,6 +3927,8 @@ function renderDailyAttendance(){
             "Attendance saved:",
             docId
         );
+
+  showAttendanceSaved(value);
 
 
         // Refresh UI
@@ -3432,10 +3949,13 @@ function renderDailyAttendance(){
             error
         );
 
-        alert(
-            "Attendance save করতে সমস্যা হয়েছে!\n\n" +
-            error.message
-        );
+
+      showAlert(
+    "Attendance save করতে সমস্যা হয়েছে!\n\n" +
+    error.message,
+    "error",
+    "Attendance Save Failed"
+);
 
     }
 
@@ -4243,7 +4763,7 @@ function downloadMonthlyCSV(){
 
     if(!month){
 
-        alert("আগে একটি Month select করুন");
+        showAlert(     "আগে একটি Month select করুন",     "warning",     "Month Required" );
 
         return;
     }
@@ -4359,7 +4879,7 @@ function downloadMonthlyCSV(){
         for(const record of attendance){
 
             const docId =
-                record.employeeId + "_" + record.date;
+                record.employeeId.replace(/\//g, "_") + "_" + record.date;
 
             await db
                 .collection("attendance")
@@ -4375,10 +4895,12 @@ function downloadMonthlyCSV(){
 
         console.error("Firebase Save Error:", error);
 
-        alert(
-            "Database save করতে সমস্যা হয়েছে!\n\n" +
-            error.message
-        );
+        showAlert(
+    "Database save করতে সমস্যা হয়েছে!\n\n" +
+    error.message,
+    "error",
+    "Database Save Failed"
+);
 
     }
 
@@ -4473,10 +4995,12 @@ function downloadMonthlyCSV(){
             error
         );
 
-        alert(
-            "Firebase Database থেকে data load করা যাচ্ছে না!\n\n" +
-            error.message
-        );
+        showAlert(
+    "Firebase Database থেকে data load করা যাচ্ছে না!\n\n" +
+    error.message,
+    "error",
+    "Database Load Failed"
+);
 
     }
 
@@ -4939,7 +5463,7 @@ function loadStaffReportEmployees(){
 
     if(!table || table.rows.length === 0){
 
-        alert("আগে View Report চাপুন");
+        showAlert(     "আগে View Report চাপুন",     "info",     "Report Required" );
 
         return;
     }
