@@ -238,6 +238,11 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+    import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
   authDomain: "chakraborty-ele-login.firebaseapp.com",
@@ -249,6 +254,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+    const auth = getAuth(app);
 
 let originalData = [];
 let chartInstance = null;
@@ -651,7 +657,26 @@ theme:"grid"
 
 }
 
-loadInvoices();
+
+    onAuthStateChanged(auth, (user) => {
+
+  if (user) {
+
+    // User login করা আছে
+    console.log("Logged in:", user.email);
+
+    loadInvoices();
+
+  } else {
+
+    // User login করা নেই
+    console.log("Not logged in. Redirecting...");
+
+    window.location.href = "index.html";
+
+  }
+
+});
   
 
 document.getElementById("fyFilter").addEventListener("change", applyFilters);
