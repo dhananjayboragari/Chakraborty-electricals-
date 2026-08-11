@@ -2432,6 +2432,7 @@ auth.onAuthStateChanged(function(user){
                         <th>Leave</th>
 
                         <th>Total Marked Days</th>
+<th>Remarks</th>
 
                     </tr>
 
@@ -4665,6 +4666,18 @@ function generateMonthlyReport(){
         let total =
             present + absent + leave;
 
+let remarksList = records
+    .filter(a => a.remarks && a.remarks.trim())
+    .map(a => {
+        let dateParts = a.date.split("-");
+        let formattedDate =
+            dateParts[2] + "-" +
+            dateParts[1] + "-" +
+            dateParts[0];
+
+        return `${formattedDate} — ${a.remarks.trim()}`;
+    });
+
 
         totalPresent += present;
         totalAbsent += absent;
@@ -4728,6 +4741,17 @@ function generateMonthlyReport(){
                 <b>${total}</b>
 
             </td>
+<td style="
+    text-align:left;
+    white-space:normal;
+    min-width:300px;
+">
+    ${
+        remarksList.length
+        ? remarksList.join("<br>")
+        : "-"
+    }
+</td>
 
         </tr>
 
