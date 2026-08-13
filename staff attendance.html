@@ -3326,16 +3326,15 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
     let address =
     document.getElementById("empAddress").value.trim();
 
-  if(!name){
+  if(!name || !mobile || !designation || !joining || !address){
 
     showAlert(
-        "Employee Name দিন",
+        "সব তথ্য পূরণ করুন",
         "warning",
         "Required Information"
     );
 
     return;
-
 }
 
 
@@ -3554,14 +3553,14 @@ Delete
 
         employee.status = newStatus;
 
+renderEmployees();
+renderDailyAttendance();
+updateHomeStats();
+updateDashboard();
 
-        renderEmployees();
-
-        renderDailyAttendance();
-
-        updateHomeStats();
-
-        updateDashboard();
+generateMonthlyReport();
+generateDayWiseMonthlyAttendance();
+loadStaffReportEmployees();
 
 
         showAlert(
@@ -4754,11 +4753,14 @@ function generateMonthlyReport(){
 
 
     let totalPresent = 0;
-    let totalAbsent = 0;
-    let totalLeave = 0;
+let totalAbsent = 0;
+let totalLeave = 0;
 
+let activeEmployees = employees.filter(
+    e => e.status === "Active"
+);
 
-    employees.forEach((employee,index)=>{
+activeEmployees.forEach((employee,index)=>{
 
         let records =
             attendance.filter(a =>
@@ -4886,8 +4888,8 @@ let remarksList = records
 
 
     document.getElementById(
-        "monthlyTotalEmployees"
-    ).innerText = employees.length;
+    "monthlyTotalEmployees"
+).innerText = activeEmployees.length;
 
 
     document.getElementById(
@@ -5926,12 +5928,15 @@ function generateDayWiseMonthlyAttendance(){
     ================================= */
 
     let grandPresent = 0;
-    let grandAbsent = 0;
-    let grandLeave = 0;
+let grandAbsent = 0;
+let grandLeave = 0;
 
+let activeEmployees = employees.filter(
+    e => e.status === "Active"
+);
 
-    employees.forEach(
-        (employee,index)=>{
+activeEmployees.forEach(
+    (employee,index)=>{
 
 
         let present = 0;
