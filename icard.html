@@ -12,6 +12,7 @@ body{
     min-height:100vh;
     background:#e9e9e9;
     display:flex;
+  flex-direction:column;
     align-items:center;
     justify-content:center;
     padding:25px;
@@ -289,27 +290,29 @@ body{
 @media(max-width:950px){
     body{
         justify-content:flex-start;
-        align-items:flex-start;
+        align-items:center;
         overflow:auto;
     }
 
     .card{
-        flex:none;
-        transform:scale(.78);
-        transform-origin:top left;
-        margin-right:-198px;
-        margin-bottom:-132px;
+    flex:none;
+    transform:scale(.78);
+    transform-origin:top center;
+    margin:0 auto;
     }
 }
 
 @media(max-width:650px){
-    body{padding:15px}
+    body{
+        padding:15px;
+    }
 
     .card{
         transform:scale(.55);
-        margin-right:-405px;
-        margin-bottom:-270px;
+        transform-origin:top center;
+        margin:0 auto;
     }
+}
 }
 
 /* =========================================================
@@ -486,6 +489,13 @@ const db = firebase.firestore();
         accept="image/*"
     >
 
+  <!-- Date of Birth -->
+<label for="dobDate">Date of Birth</label>
+
+<input
+    type="date"
+    id="dobDate"
+>
 
     <!-- Date of Issue -->
     <label for="issueDate">Date of Issue</label>
@@ -894,12 +904,7 @@ document
                 employee.mobile || "-";
 
 
-            /* DOB */
-
-            document
-                .getElementById("cardDOB")
-                .innerText =
-                employee.dob || "-";
+            
 
         }
     );
@@ -949,6 +954,25 @@ document
 /* =====================================
    DATE OF ISSUE
 ===================================== */
+    /* =====================================
+   DATE OF BIRTH
+===================================== */
+
+document
+    .getElementById("dobDate")
+    .addEventListener(
+        "change",
+        function(){
+
+            document
+                .getElementById("cardDOB")
+                .innerText =
+                formatCardDate(
+                    this.value
+                );
+
+        }
+    );
 
 document
     .getElementById("issueDate")
