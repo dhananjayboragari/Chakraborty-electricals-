@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chakraborty Electricals - I Card</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    min-height:100vh;
+    background:#e9e9e9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.card{
+    position:relative;
+    width:900px;
+    height:600px;
+    overflow:hidden;
+    background:#1e1e68;
+    border:8px solid #d8d8c7;
+    border-radius:16px;
+    box-shadow:0 12px 30px rgba(0,0,0,.28);
+}
+
+.inner-border{
+    position:absolute;
+    inset:0px;
+    border:3px solid #17175e;
+    border-radius:5px;
+    z-index:20;
+    pointer-events:none;
+}
+
+/* =========================================================
+   SECTION 1 - BLUE BACKGROUND
+   ========================================================= */
+.blue{
+    position:absolute;
+    inset:0;
+    background:#20206b;
+}
+
+/* =========================================================
+   SECTION 2 - MAIN CREAM BODY
+   This is the large curved shape seen in the original card.
+   ========================================================= */
+.cream{
+    position:absolute;
+    left:-25px;
+    bottom:-20px;
+    width:950px;
+    height:390px;
+    background:#f3f3e8;
+    border-radius:50% 50% 0 0 / 35% 35% 0 0;
+    transform:rotate(-3deg);
+    z-index:2;
+}
+
+/* white body extension to bottom */
+.cream-bottom{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:255px;
+    background:#f3f3e8;
+    z-index:2;
+}
+
+/* =========================================================
+   SECTION 3 - DOUBLE CURVED NAVY LINE
+   ========================================================= */
+.curve{
+    position:absolute;
+    left:-30px;
+    top:240px;
+    width:960px;
+    height:300px;
+    border-top:4px solid #17175e;
+    border-radius:50%;
+    transform:rotate(-3deg);
+    z-index:5;
+}
+
+.curve.second{
+    top:245px;
+    border-top:3px solid #17175e;
+    z-index:5;
+}
+
+/* =========================================================
+   SECTION 4 - COMPANY HEADER
+   ========================================================= */
+.header{
+    position:absolute;
+    top:25px;
+    left:45px;
+    width:810px;
+    text-align:center;
+    color:#fff;
+    z-index:10;
+}
+
+.company-name{
+    font-size:35px;
+    font-weight:900;
+    letter-spacing:.7px;
+    line-height:1.05;
+}
+
+.address{
+    margin-top:8px;
+    font-size:22px;
+    line-height:1.2;
+}
+
+.sub{
+    margin-top:8px;
+    font-size:21px;
+    line-height:1.25;
+}
+
+.wb-logo-text{
+    position:absolute;
+    right:25px;
+    bottom:-4px;
+    font-weight:900;
+    font-size:18px;
+    font-style:italic;
+    opacity:.9;
+}
+
+/* =========================================================
+   SECTION 5 - PHOTO
+   ========================================================= */
+.photo{
+    position:absolute;
+    left:45px;
+    top:180px;
+    width:205px;
+    height:205px;
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid #17175e;
+    background:#2bc7ab;
+    z-index:12;
+}
+
+.photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+}
+
+
+/* =========================================================
+   SECTION 6 - WATERMARK
+   ========================================================= */
+.watermark{
+    position:absolute;
+    left:330px;
+    top:365px;
+    z-index:4;
+    color:rgba(105,105,175,.17);
+    font-size:72px;
+    font-weight:900;
+    letter-spacing:1px;
+    transform:skewX(-8deg);
+}
+
+/* =========================================================
+   SECTION 7 - LEFT EMPLOYEE DETAILS
+   ========================================================= */
+.left-details{
+    position:absolute;
+    left:35px;
+    top:415px;
+    width:475px;
+    z-index:10;
+    color:#17175e;
+    font-size:21px;
+    line-height:1.35;
+}
+
+.row{
+    display:flex;
+    margin-bottom:2px;
+}
+
+.label{
+    width:190px;
+    font-weight:500;
+}
+
+.value{
+    font-weight:800;
+}
+
+/* =========================================================
+   SECTION 8 - RIGHT EMPLOYEE DETAILS
+   ========================================================= */
+.right-details{
+    position:absolute;
+    left:480px;
+    top:330px;
+    width:350px;
+    z-index:10;
+    color:#17175e;
+    font-size:20px;
+    line-height:1.38;
+}
+
+.rrow{
+    display:flex;
+}
+
+.rlabel{
+    width:205px;
+}
+
+.rvalue{
+    font-weight:500;
+    white-space:nowrap;
+}
+
+/* =========================================================
+   SECTION 9 - RED VALIDITY STRIP
+   ========================================================= */
+.validity{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:610px;
+    height:52px;
+    background:#b93a36;
+    color:#fff;
+    z-index:15;
+    display:flex;
+    align-items:center;
+    padding-left:18px;
+    font-size:16px;
+}
+
+/* =========================================================
+   SECTION 10 - SIGNATURE
+   ========================================================= */
+.signature{
+    position:absolute;
+    right:28px;
+    bottom:18px;
+    width:245px;
+    z-index:16;
+    text-align:center;
+    color:#171717;
+}
+
+.sign-name{
+    font-family:"Brush Script MT","Segoe Script",cursive;
+    font-size:28px;
+    transform:rotate(-3deg);
+    margin-bottom:3px;
+}
+
+.sign-line{
+    width:225px;
+    height:1px;
+    background:#222;
+    margin:auto;
+}
+
+.sign-title{
+    margin-top:7px;
+    font-size:18px;
+    font-style:italic;
+    font-weight:700;
+}
+
+/* =========================================================
+   SECTION 11 - MOBILE PREVIEW
+   ========================================================= */
+@media(max-width:950px){
+    body{
+        justify-content:flex-start;
+        align-items:flex-start;
+        overflow:auto;
+    }
+
+    .card{
+        flex:none;
+        transform:scale(.78);
+        transform-origin:top left;
+        margin-right:-198px;
+        margin-bottom:-132px;
+    }
+}
+
+@media(max-width:650px){
+    body{padding:15px}
+
+    .card{
+        transform:scale(.55);
+        margin-right:-405px;
+        margin-bottom:-270px;
+    }
+}
+
+/* =========================================================
+   SECTION 12 - PRINT
+   ========================================================= */
+@media print{
+    body{background:#fff;padding:0}
+
+    .card{
+        box-shadow:none;
+        transform:none !important;
+    }
+}
+
+
+  .employee-selector{
+    width:min(500px,95%);
+    margin:0 auto 20px;
+    background:#fff;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+
+.employee-selector label{
+    display:block;
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#17175e;
+}
+
+.employee-selector select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #d5d9df;
+    border-radius:9px;
+    background:#fff;
+    font-size:15px;
+    outline:none;
+}
+
+.employee-selector select:focus{
+    border-color:#1769aa;
+    box-shadow:0 0 0 3px rgba(23,105,170,.10);
+                               }
+
+
+  /* ==============================
+   EMPLOYEE I-CARD CONTROLS
+   ============================== */
+
+.employee-controls{
+    width: min(500px, 94%);
+    margin: 20px auto;
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: #ffffff;
+    border-radius: 15px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.12);
+}
+
+.employee-controls h3{
+    margin: 0 0 18px;
+
+    text-align: center;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    color: #17175e;
+}
+
+.employee-controls label{
+    display: block;
+
+    margin: 12px 0 6px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #333;
+}
+
+.employee-controls select,
+.employee-controls input[type="date"],
+.employee-controls input[type="file"]{
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px;
+
+    border: 1px solid #d5d9df;
+
+    border-radius: 8px;
+
+    background: #fff;
+
+    font-size: 14px;
+}
+
+.employee-controls select:focus,
+.employee-controls input:focus{
+
+    outline: none;
+
+    border-color: #1769aa;
+}
+
+  #signaturePreview{
+    max-width: 190px;
+    max-height: 55px;
+
+    object-fit: contain;
+
+    display: block;
+    margin: 0 auto;
+}
+  
+</style>
+
+  
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+    authDomain: "chakraborty-ele-login.firebaseapp.com",
+    projectId: "chakraborty-ele-login",
+    storageBucket: "chakraborty-ele-login.firebasestorage.app",
+    messagingSenderId: "414542805581",
+    appId: "1:414542805581:web:cfd13593767abbb51cba04"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+
+const db = firebase.firestore();
+</script>
+</head>
+
+<body>
+
+  <!-- ==============================
+     EMPLOYEE I-CARD CONTROLS
+     ============================== -->
+
+<div class="employee-controls">
+
+    <h3>Employee I-Card Details</h3>
+
+    <!-- Employee Dropdown -->
+    <label for="employeeSelect">Select Employee</label>
+
+    <select id="employeeSelect">
+        <option value="">-- Select Employee --</option>
+    </select>
+
+
+    <!-- Employee Photo -->
+    <label for="employeePhoto">Employee Photo</label>
+
+    <input
+        type="file"
+        id="employeePhoto"
+        accept="image/*"
+    >
+
+
+    <!-- Date of Issue -->
+    <label for="issueDate">Date of Issue</label>
+
+    <input
+        type="date"
+        id="issueDate"
+    >
+
+
+    <!-- Value Up To Date -->
+    <label for="validUpToDate">Value Up To Date</label>
+
+    <input
+        type="date"
+        id="validUpToDate"
+    >
+
+
+    <!-- Authorized Signature -->
+    <label for="signatureUpload">Authorized Signature</label>
+
+    <input
+        type="file"
+        id="signatureUpload"
+        accept="image/*"
+    >
+
+</div>
+
+
+
+<div class="card">
+
+    <!-- =====================================================
+         SECTION A - BACKGROUND
+         ===================================================== -->
+    <div class="blue"></div>
+    <div class="cream"></div>
+    <div class="cream-bottom"></div>
+
+    <!-- =====================================================
+         SECTION B - DOUBLE CURVE
+         ===================================================== -->
+    <div class="curve"></div>
+    <div class="curve second"></div>
+
+    <!-- =====================================================
+         SECTION C - COMPANY HEADER
+         ===================================================== -->
+    <div class="header">
+        <div class="company-name">M/S. CHAKRABORTY ELECTRICALS</div>
+        <div class="address">Bairatiguri, Dhupguri, Jalpaiguri</div>
+        <div class="sub">
+            Principal Employee W.B.S.E.D.C.L<br>
+            A Govt. Of W.B. Enterprise
+        </div>
+        <div class="wb-logo-text">WBSEDCL</div>
+    </div>
+
+    <!-- =====================================================
+         SECTION D - EMPLOYEE PHOTO
+         ===================================================== -->
+    
+
+    <div class="photo">
+      <img
+    id="employeePhotoPreview"
+    src="........"
+    alt="Employee Photo">
+    </div>
+
+    <!-- =====================================================
+         SECTION E - WATERMARK
+         ===================================================== -->
+    <div class="watermark">WBSEDCL</div>
+
+    <!-- =====================================================
+         SECTION F - LEFT DETAILS
+         ===================================================== -->
+    <div class="left-details">
+        <div class="row">
+            <div class="label"><b>Name</b> -</div>
+            <div class="value" id="cardName">-</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Employee Id-</div>
+            <div class="value" id="cardEmployeeId">-</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Designation-</div>
+            <div class="value" id="cardDesignation">-</div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         SECTION G - RIGHT DETAILS
+         ===================================================== -->
+    <div class="right-details">
+        <div class="rrow">
+            <div class="rlabel">Mob. No-</div>
+            <div class="rvalue" id="cardMobile">-</div>
+        </div>
+
+        <div class="rrow">
+            <div class="rlabel">DOB-</div>
+            <div class="rvalue" id="cardDOB">-</div>
+        </div>
+
+        <div class="rrow">
+    <div class="rlabel">Date of Issue-</div>
+    <div class="rvalue" id="cardIssueDate">-</div>
+        </div>
+
+        <div class="rrow">
+    <div class="rlabel">Value Up to Date-</div>
+    <div class="rvalue" id="cardValidUpTo">-</div>
+</div>
+    </div>
+
+    <!-- =====================================================
+         SECTION H - VALIDITY
+         ===================================================== -->
+    <div class="validity">
+        This card is valid only duty hour's and place
+    </div>
+
+    <!-- =====================================================
+         SECTION I - SIGNATURE
+         ===================================================== -->
+    <div class="signature">
+        <div class="sign-name">     <img         id="signaturePreview"         src=""         alt="Authorized Signature"> </div>
+        <div class="sign-line"></div>
+        <div class="sign-title">Authorised Signature</div>
+    </div>
+
+    <!-- Outer border -->
+    <div class="inner-border"></div>
+
+</div>
+
+
+  <script>
+
+let employees = [];
+
+async function loadEmployees(){
+
+    const select =
+        document.getElementById("employeeSelect");
+
+    try{
+
+        const snapshot =
+            await db
+                .collection("employees")
+                .get();
+
+        employees = [];
+
+        snapshot.forEach(doc => {
+
+            const data = doc.data();
+
+            employees.push({
+                id: data.id || doc.id,
+                ...data
+            });
+
+        });
+
+        // Clear dropdown
+        select.innerHTML = `
+            <option value="">
+                -- Select Employee --
+            </option>
+        `;
+
+        // Active employees only
+        employees
+            .filter(employee => employee.status === "Active")
+            .forEach(employee => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = employee.id;
+
+                option.textContent =
+                    employee.name +
+                    " (" +
+                    employee.id +
+                    ")";
+
+                select.appendChild(option);
+
+            });
+
+    }
+    catch(error){
+
+        console.error(
+            "Employee Load Error:",
+            error
+        );
+
+        alert(
+            "Employee data load করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+    function selectEmployee(){
+
+    const employeeId =
+        document.getElementById("employeeSelect").value;
+
+    if(!employeeId){
+        return;
+    }
+
+    const employee =
+        employees.find(
+            e => e.id === employeeId
+        );
+
+    if(!employee){
+        return;
+    }
+
+    // Name
+    document.getElementById("cardName")
+        .innerText =
+        employee.name || "-";
+
+    // Employee ID
+    document.getElementById("cardEmployeeId")
+        .innerText =
+        employee.id || "-";
+
+    // Designation
+    document.getElementById("cardDesignation")
+        .innerText =
+        employee.designation || "-";
+
+    // Mobile
+    document.getElementById("cardMobile")
+        .innerText =
+        employee.mobile || "-";
+
+    // DOB
+    document.getElementById("cardDOB")
+        .innerText =
+        employee.dob || "-";
+
+}
+
+
+
+
+
+/* =====================================
+   LOAD EMPLOYEES FROM FIRESTORE
+===================================== */
+
+async function loadEmployees(){
+
+    const select =
+        document.getElementById("employeeSelect");
+
+    try{
+
+        const snapshot =
+            await db
+                .collection("employees")
+                .get();
+
+        employees = [];
+
+        snapshot.forEach(doc => {
+
+            const data = doc.data();
+
+            employees.push({
+                id: data.id || doc.id,
+                ...data
+            });
+
+        });
+
+
+        /* Clear dropdown */
+
+        select.innerHTML = `
+            <option value="">
+                -- Select Employee --
+            </option>
+        `;
+
+
+        /* Show Active Employees */
+
+        employees
+            .filter(employee =>
+                employee.status === "Active"
+            )
+            .forEach(employee => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value =
+                    employee.id;
+
+                option.textContent =
+                    employee.name +
+                    " (" +
+                    employee.id +
+                    ")";
+
+                select.appendChild(option);
+
+            });
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Employee Load Error:",
+            error
+        );
+
+        alert(
+            "Employee data load করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =====================================
+   EMPLOYEE SELECT
+===================================== */
+
+document
+    .getElementById("employeeSelect")
+    .addEventListener(
+        "change",
+        function(){
+
+            const employeeId =
+                this.value;
+
+            if(!employeeId){
+                return;
+            }
+
+
+            const employee =
+                employees.find(
+                    e => e.id === employeeId
+                );
+
+            if(!employee){
+                return;
+            }
+
+
+            /* Name */
+
+            document
+                .getElementById("cardName")
+                .innerText =
+                employee.name || "-";
+
+
+            /* Employee ID */
+
+            document
+                .getElementById("cardEmployeeId")
+                .innerText =
+                employee.id || "-";
+
+
+            /* Designation */
+
+            document
+                .getElementById("cardDesignation")
+                .innerText =
+                employee.designation || "-";
+
+
+            /* Mobile */
+
+            document
+                .getElementById("cardMobile")
+                .innerText =
+                employee.mobile || "-";
+
+
+            /* DOB */
+
+            document
+                .getElementById("cardDOB")
+                .innerText =
+                employee.dob || "-";
+
+        }
+    );
+
+
+/* =====================================
+   EMPLOYEE PHOTO UPLOAD
+===================================== */
+
+document
+    .getElementById("employeePhoto")
+    .addEventListener(
+        "change",
+        function(){
+
+            const file =
+                this.files[0];
+
+            if(!file){
+                return;
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(event){
+
+                    document
+                        .getElementById(
+                            "employeePhotoPreview"
+                        )
+                        .src =
+                        event.target.result;
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* =====================================
+   DATE OF ISSUE
+===================================== */
+
+document
+    .getElementById("issueDate")
+    .addEventListener(
+        "change",
+        function(){
+
+            document
+                .getElementById(
+                    "cardIssueDate"
+                )
+                .innerText =
+                formatCardDate(
+                    this.value
+                );
+
+        }
+    );
+
+
+/* =====================================
+   VALUE UP TO DATE
+===================================== */
+
+document
+    .getElementById("validUpToDate")
+    .addEventListener(
+        "change",
+        function(){
+
+            document
+                .getElementById(
+                    "cardValidUpTo"
+                )
+                .innerText =
+                formatCardDate(
+                    this.value
+                );
+
+        }
+    );
+
+
+/* =====================================
+   SIGNATURE UPLOAD
+===================================== */
+
+document
+    .getElementById("signatureUpload")
+    .addEventListener(
+        "change",
+        function(){
+
+            const file =
+                this.files[0];
+
+            if(!file){
+                return;
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(event){
+
+                    document
+                        .getElementById(
+                            "signaturePreview"
+                        )
+                        .src =
+                        event.target.result;
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* =====================================
+   DATE FORMAT
+===================================== */
+
+function formatCardDate(date){
+
+    if(!date){
+        return "-";
+    }
+
+    const parts =
+        date.split("-");
+
+    return (
+        parts[2] +
+        "/" +
+        parts[1] +
+        "/" +
+        parts[0]
+    );
+
+}
+
+
+/* =====================================
+   START
+===================================== */
+
+
+    auth.onAuthStateChanged(function(user){
+
+    if(user){
+
+        console.log("User logged in:", user.email);
+
+        loadEmployees();
+
+    }else{
+
+        console.log("User is not logged in");
+
+        const select =
+            document.getElementById("employeeSelect");
+
+        if(select){
+
+            select.innerHTML = `
+                <option value="">
+                    Please login first
+                </option>
+            `;
+
+        }
+
+    }
+
+});
+
+</script>
+
+
+
+</body>
+</html>
