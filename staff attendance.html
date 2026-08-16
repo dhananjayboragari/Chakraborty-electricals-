@@ -1144,6 +1144,8 @@ const db = firebase.firestore();
 // FIREBASE AUTHENTICATION
 // =========================
 
+
+
 const auth = firebase.auth();
 
 auth.onAuthStateChanged(function(user){
@@ -1156,6 +1158,8 @@ auth.onAuthStateChanged(function(user){
     }
 
     console.log("Logged in:", user.email);
+
+
 
   loadData();
 
@@ -3491,10 +3495,27 @@ const photoURL =
     "Employee Added"
 );
 
+}
+catch(error){
+
+    console.error(
+        "Employee Add Error:",
+        error
+    );
+
+    showAlert(
+        "Employee add করতে সমস্যা হয়েছে!\n\n" +
+        error.message,
+        "error",
+        "Add Employee Failed"
+    );
 
 }
 
-  async function updateEmployee(id){
+}
+
+
+async function updateEmployee(id){
 
     const employee =
         employees.find(e => e.id === id);
@@ -3660,22 +3681,8 @@ const photoURL =
 
 }
 
-  
-catch(error){
-
-    console.error(error);
-
-    showAlert(
-    "Employee save করতে সমস্যা হয়েছে!\n\n" +
-    error.message,
-    "error",
-    "Save Failed"
-);
-
-}
 
 
-}
 
 
 function clearEmployeeForm(){
