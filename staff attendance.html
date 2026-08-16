@@ -3261,10 +3261,16 @@ function showSection(id,element){
 
     if(id==="employee")
         renderEmployees();
+
+  
   if(id==="employee"){
     renderEmployees();
-    document.getElementById("empId").value = generateEmployeeId();
-}
+
+    if(!editingEmployeeId){
+        document.getElementById("empId").value =
+            generateEmployeeId();
+    }
+  }
 
     if(id==="daily")
         renderDailyAttendance();
@@ -3405,21 +3411,22 @@ function closeSidebar(){
   
   async function addEmployee(){
 
+    // =========================
     // EDIT MODE
+    // =========================
     if(editingEmployeeId){
         await updateEmployee(editingEmployeeId);
         return;
     }
 
-    id = generateEmployeeId();
-    
-    let id = "";
+    // =========================
+    // GENERATE EMPLOYEE ID
+    // =========================
+    const id = generateEmployeeId();
 
-  
-
-    
-
-
+    // =========================
+    // GET FORM DATA
+    // =========================
     const name =
         document.getElementById("empName").value.trim();
 
@@ -3432,30 +3439,21 @@ function closeSidebar(){
     const joining =
         document.getElementById("empJoining").value;
 
-    const photoFile =
-    document.getElementById("empPhoto").files[0];
+    const dob =
+        document.getElementById("empDOB").value;
 
-let photoURL =
-    employee.photoURL || "";
-
-if(photoFile){
-
-    photoURL =
-        await uploadEmployeePhotoToImgBB(photoFile);
-  }
-  
     const status =
         document.getElementById("empStatus").value;
 
     const address =
         document.getElementById("empAddress").value.trim();
 
-    const dob =
-        document.getElementById("empDOB").value;
+    const photoFile =
+        document.getElementById("empPhoto").files[0];
 
-    document.getElementById("empPhoto").files[0];
-
-    // Required fields
+    // =========================
+    // REQUIRED FIELD CHECK
+    // =========================
     if(
         !name ||
         !mobile ||
@@ -3464,7 +3462,6 @@ if(photoFile){
         !dob ||
         !address
     ){
-
         showAlert(
             "সব তথ্য পূরণ করুন",
             "warning",
@@ -3474,14 +3471,15 @@ if(photoFile){
         return;
     }
 
-
-    // Duplicate Employee ID check
+    // =========================
+    // DUPLICATE ID CHECK
+    // =========================
     if(
         employees.some(
-            e => e.id.toLowerCase() === id.toLowerCase()
+            e => e.id &&
+            e.id.toLowerCase() === id.toLowerCase()
         )
     ){
-
         showAlert(
             "এই Employee ID already exists",
             "warning",
@@ -3491,14 +3489,24 @@ if(photoFile){
         return;
     }
 
-
     try{
 
-  // Photo → ImgBB Upload
-    const photoURL =
-        await uploadEmployeePhotoToImgBB(photoFile);
+        // =========================
+        // PHOTO UPLOAD
+        // =========================
+        let photoURL = "";
 
-        // Firebase Firestore-এ Employee save
+        if(photoFile){
+
+            photoURL =
+                await uploadEmployeePhotoToImgBB(
+                    photoFile
+                );
+        }
+
+        // =========================
+        // SAVE TO FIRESTORE
+        // =========================
         await db
             .collection("employees")
             .doc(id.replace(/\//g, "_"))
@@ -3510,7 +3518,7 @@ if(photoFile){
                 designation: designation,
                 joining: joining,
                 dob: dob,
-              photoURL: photoURL,
+                photoURL: photoURL,
                 status: status,
                 address: address,
 
@@ -3520,8 +3528,9 @@ if(photoFile){
 
             });
 
-
-        // Local employee data
+        // =========================
+        // LOCAL DATA UPDATE
+        // =========================
         employees.push({
 
             id: id,
@@ -3530,20 +3539,35 @@ if(photoFile){
             designation: designation,
             joining: joining,
             dob: dob,
-          photoURL: photoURL,
+            photoURL: photoURL,
             status: status,
             address: address
 
         });
 
+        // =========================
+        // RESET FORM
+        // =========================
+        editingEmployeeId = null;
 
         clearEmployeeForm();
 
+        // নতুন ID আবার দেখাবে
+        document.getElementById("empId").value =
+            generateEmployeeId();
+
+        // =========================
+        // REFRESH
+        // =========================
         renderEmployees();
-
         updateHomeStats();
+        renderDailyAttendance();
+        updateDashboard();
+        loadStaffReportEmployees();
 
-
+        // =========================
+        // SUCCESS
+        // =========================
         showAlert(
             "Employee added successfully",
             "success",
@@ -3569,6 +3593,11 @@ if(photoFile){
 
 
 
+
+
+
+
+  
 
   async function updateEmployee(id){
 
@@ -3734,6 +3763,7 @@ function clearEmployeeForm(){
     document.getElementById("empAddress").value="";
   document.getElementById("empDOB").value="";
 
+  editingEmployeeId = null;
 
 }
 
