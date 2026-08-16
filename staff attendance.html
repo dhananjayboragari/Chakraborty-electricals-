@@ -3335,163 +3335,168 @@ function closeSidebar(){
 
     // EDIT MODE
     if(editingEmployeeId){
-
         await updateEmployee(editingEmployeeId);
-
         return;
     }
 
     let id = "";
 
+    const prefix = "501520/";
+    let maxNumber = 0;
 
-  
-  const prefix = "501520/";
+    employees.forEach(e => {
 
-let maxNumber = 0;
+        if(!e.id) return;
 
-employees.forEach(e => {
+        let parts = e.id.split("/");
 
-    if(!e.id) return;
+        if(parts[0] === "501520" && parts[1]){
 
-    let parts = e.id.split("/");
+            let num = parseInt(parts[1], 10);
 
-    if(parts[0] === "501520" && parts[1]){
-
-        let num = parseInt(parts[1], 10);
-
-        if(!isNaN(num) && num > maxNumber){
-            maxNumber = num;
+            if(!isNaN(num) && num > maxNumber){
+                maxNumber = num;
+            }
         }
-    }
-});
+    });
 
-id = prefix + String(maxNumber + 1).padStart(2, "0");
-
-    let name =
-    document.getElementById("empName").value.trim();
-
-    let mobile =
-    document.getElementById("empMobile").value.trim();
-
-    let designation =
-    document.getElementById("empDesignation").value.trim();
-
-    let joining =
-    document.getElementById("empJoining").value;
-
-    let status =
-    document.getElementById("empStatus").value;
-
-    let address =
-    document.getElementById("empAddress").value.trim();
-  let dob =
-document.getElementById("empDOB").value;
+    id =
+        prefix +
+        String(maxNumber + 1).padStart(2, "0");
 
 
-  if(
-    !name ||
-    !mobile ||
-    !designation ||
-    !joining ||
-    !dob ||
+    const name =
+        document.getElementById("empName").value.trim();
 
-    !address
-){
+    const mobile =
+        document.getElementById("empMobile").value.trim();
 
-    showAlert(
-        "সব তথ্য পূরণ করুন",
-        "warning",
-        "Required Information"
-    );
+    const designation =
+        document.getElementById("empDesignation").value.trim();
 
-    return;
-}
+    const joining =
+        document.getElementById("empJoining").value;
+
+    const status =
+        document.getElementById("empStatus").value;
+
+    const address =
+        document.getElementById("empAddress").value.trim();
+
+    const dob =
+        document.getElementById("empDOB").value;
 
 
+    // Required fields
     if(
-        employees.some(
-            e=>e.id.toLowerCase()===id.toLowerCase()
-        )
+        !name ||
+        !mobile ||
+        !designation ||
+        !joining ||
+        !dob ||
+        !address
     ){
 
-        showAlert(     "এই Employee ID already exists",     "warning",     "Duplicate Employee ID" );
+        showAlert(
+            "সব তথ্য পূরণ করুন",
+            "warning",
+            "Required Information"
+        );
 
         return;
     }
 
 
+    // Duplicate Employee ID check
+    if(
+        employees.some(
+            e => e.id.toLowerCase() === id.toLowerCase()
+        )
+    ){
+
+        showAlert(
+            "এই Employee ID already exists",
+            "warning",
+            "Duplicate Employee ID"
+        );
+
+        return;
+    }
+
 
     try{
 
-    await db
-        .collection("employees")
-        .doc(id.replace(/\//g, "_"))
-        .set({
-    id: id,
-    name: name,
-    mobile: mobile,
-    designation: designation,
-    joining: joining,
+        // Firebase Firestore-এ Employee save
+        await db
+            .collection("employees")
+            .doc(id.replace(/\//g, "_"))
+            .set({
 
-    dob: dob,
-    
+                id: id,
+                name: name,
+                mobile: mobile,
+                designation: designation,
+                joining: joining,
+                dob: dob,
+                status: status,
+                address: address,
 
-    status: status,
-    address: address,
+                createdAt:
+                    firebase.firestore.FieldValue
+                    .serverTimestamp()
 
-    createdAt:
-        firebase.firestore.FieldValue.serverTimestamp()
-});
-
-
-    employees.push({
-
-        id,
-        name,
-        mobile,
-        designation,
-        joining,
-      dob,
-    photoURL,
-        status,
-        address
-
-    });
+            });
 
 
-    clearEmployeeForm();
+        // Local employee data
+        employees.push({
 
-    renderEmployees();
+            id: id,
+            name: name,
+            mobile: mobile,
+            designation: designation,
+            joining: joining,
+            dob: dob,
+            status: status,
+            address: address
 
-    updateHomeStats();
+        });
 
-      showAlert(
-    "Employee added successfully",
-    "success",
-    "Employee Added"
-);
 
+        clearEmployeeForm();
+
+        renderEmployees();
+
+        updateHomeStats();
+
+
+        showAlert(
+            "Employee added successfully",
+            "success",
+            "Employee Added"
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "Employee Add Error:",
+            error
+        );
+
+        showAlert(
+            "Employee add করতে সমস্যা হয়েছে!\n\n" +
+            error.message,
+            "error",
+            "Add Employee Failed"
+        );
+    }
 }
-catch(error){
-
-    console.error(
-        "Employee Add Error:",
-        error
-    );
-
-    showAlert(
-        "Employee add করতে সমস্যা হয়েছে!\n\n" +
-        error.message,
-        "error",
-        "Add Employee Failed"
-    );
-
-}
-
-}
 
 
-async function updateEmployee(id){
+
+
+  async function updateEmployee(id){
 
     const employee =
         employees.find(e => e.id === id);
@@ -3548,7 +3553,6 @@ async function updateEmployee(id){
 
     try{
 
-
         // Firebase update
         await db
             .collection("employees")
@@ -3559,10 +3563,7 @@ async function updateEmployee(id){
                 mobile: mobile,
                 designation: designation,
                 joining: joining,
-
                 dob: dob,
-                
-
                 status: status,
                 address: address,
 
@@ -3578,10 +3579,7 @@ async function updateEmployee(id){
         employee.mobile = mobile;
         employee.designation = designation;
         employee.joining = joining;
-
         employee.dob = dob;
-        employee.photoURL = photoURL;
-
         employee.status = status;
         employee.address = address;
 
@@ -3597,7 +3595,6 @@ async function updateEmployee(id){
         // Employee list refresh
         renderEmployees();
 
-
         updateHomeStats();
 
 
@@ -3607,7 +3604,6 @@ async function updateEmployee(id){
             "Employee Updated"
         );
 
-
     }
     catch(error){
 
@@ -3616,17 +3612,18 @@ async function updateEmployee(id){
             error
         );
 
-
         showAlert(
             "Employee update করতে সমস্যা হয়েছে!\n\n" +
             error.message,
             "error",
             "Update Failed"
         );
-
     }
-
 }
+
+
+
+  
 
 
 
