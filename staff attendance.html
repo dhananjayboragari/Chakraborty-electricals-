@@ -3335,29 +3335,34 @@ function closeSidebar(){
    EMPLOYEE
 ========================= */
 
-  function generateEmployeeId(){
 
-    const prefix = "501520/";
+  function generateEmployeeId(){
 
     let maxNumber = 0;
 
-    employees.forEach(e => {
+    employees.forEach(employee => {
 
-        if(!e.id) return;
+        if(!employee.id) return;
 
-        let parts = e.id.split("/");
+        const parts = employee.id.split("/");
 
-        if(parts[0] === "501520" && parts[1]){
+        if(parts.length !== 2) return;
 
-            let num = parseInt(parts[1], 10);
+        if(parts[0] !== "501520") return;
 
-            if(!isNaN(num) && num > maxNumber){
-                maxNumber = num;
-            }
+        const number =
+            parseInt(parts[1], 10);
+
+        if(
+            !isNaN(number) &&
+            number > maxNumber
+        ){
+            maxNumber = number;
         }
     });
 
-    return prefix + String(maxNumber + 1).padStart(2, "0");
+    return "501520/" +
+        String(maxNumber + 1).padStart(2, "0");
 }
   
 
@@ -3406,30 +3411,13 @@ function closeSidebar(){
         return;
     }
 
+    id = generateEmployeeId();
+    
     let id = "";
 
-    const prefix = "501520/";
-    let maxNumber = 0;
+  
 
-    employees.forEach(e => {
-
-        if(!e.id) return;
-
-        let parts = e.id.split("/");
-
-        if(parts[0] === "501520" && parts[1]){
-
-            let num = parseInt(parts[1], 10);
-
-            if(!isNaN(num) && num > maxNumber){
-                maxNumber = num;
-            }
-        }
-    });
-
-    id =
-        prefix +
-        String(maxNumber + 1).padStart(2, "0");
+    
 
 
     const name =
@@ -3542,6 +3530,7 @@ if(photoFile){
             designation: designation,
             joining: joining,
             dob: dob,
+          photoURL: photoURL,
             status: status,
             address: address
 
@@ -3616,6 +3605,9 @@ if(photoFile){
     const address =
         document.getElementById("empAddress").value.trim();
 
+    const photoFile =
+        document.getElementById("empPhoto").files[0];
+
 
     if(
         !name ||
@@ -3638,10 +3630,25 @@ if(photoFile){
 
     try{
 
-        // Firebase update
+        // পুরনো Photo URL রাখা হবে
+        let photoURL =
+            employee.photoURL || "";
+
+
+        // নতুন Photo দিলে ImgBB-তে upload হবে
+        if(photoFile){
+
+            photoURL =
+                await uploadEmployeePhotoToImgBB(
+                    photoFile
+                );
+        }
+
+
+        // Firestore Update
         await db
             .collection("employees")
-            .doc(id.replace(/\//g,"_"))
+            .doc(id.replace(/\//g, "_"))
             .update({
 
                 name: name,
@@ -3649,7 +3656,9 @@ if(photoFile){
                 designation: designation,
                 joining: joining,
                 dob: dob,
-              photoURL: photoURL,
+
+                photoURL: photoURL,
+
                 status: status,
                 address: address,
 
@@ -3660,25 +3669,21 @@ if(photoFile){
             });
 
 
-        // Local employee data update
+        // Local data update
         employee.name = name;
         employee.mobile = mobile;
         employee.designation = designation;
         employee.joining = joining;
         employee.dob = dob;
+        employee.photoURL = photoURL;
         employee.status = status;
         employee.address = address;
 
 
-        // Edit mode বন্ধ
         editingEmployeeId = null;
 
-
-        // Form clear
         clearEmployeeForm();
 
-
-        // Employee list refresh
         renderEmployees();
 
         updateHomeStats();
