@@ -1109,6 +1109,7 @@ td select{
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
@@ -1137,6 +1138,7 @@ firebase.initializeApp(firebaseConfig);
 
 // Firestore Database
 const db = firebase.firestore();
+  const storage = firebase.storage();
 
   // =========================
 // FIREBASE AUTHENTICATION
@@ -1207,6 +1209,14 @@ auth.onAuthStateChanged(function(user){
         <span class="menu-text">New Employee</span>
 
     </div>
+
+  <div class="menu-item"
+     onclick="window.location.href='icard.html'">
+
+    <span class="menu-icon">🪪</span>
+    <span class="menu-text">I-Card</span>
+
+</div>
 
 
     <div class="menu-item"
@@ -1679,14 +1689,33 @@ auth.onAuthStateChanged(function(user){
 
                     <div class="form-group">
 
-                        <label>
-                            Designation
-                        </label>
+    <label>
+        Designation
+    </label>
 
-                        <input
-                            type="text"
-                            id="empDesignation"
-                            placeholder="Electrician / Supervisor etc.">
+    <select id="empDesignation">
+
+        <option value="">
+            Select Designation
+        </option>
+
+        <option value="Skilled">
+            Skilled
+        </option>
+
+        <option value="Unskilled">
+            Unskilled
+        </option>
+
+        <option value="Supervisor">
+            Supervisor
+        </option>
+
+        <option value="Extra Labour">
+            Extra Labour
+        </option>
+
+    </select>
 
                     </div>
 
@@ -1702,6 +1731,32 @@ auth.onAuthStateChanged(function(user){
                             id="empJoining">
 
                     </div>
+
+                  <div class="form-group">
+
+    <label>
+        Date of Birth
+    </label>
+
+    <input
+        type="date"
+        id="empDOB">
+
+</div>
+
+
+<div class="form-group">
+
+    <label>
+        Employee Photo
+    </label>
+
+    <input
+        type="file"
+        id="empPhoto"
+        accept="image/*">
+
+</div>
 
 
                     <div class="form-group">
@@ -1794,6 +1849,8 @@ auth.onAuthStateChanged(function(user){
                                 <th>Name</th>
                                 <th>Mobile</th>
                                 <th>Designation</th>
+                              <th>Date of Birth</th>
+<th>Photo</th>
                                 <th>Joining Date</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -3076,6 +3133,7 @@ function showConfirm(
 
   let employees = [];
 let attendance = [];
+  let editingEmployeeId = null;
 
 
 /* =========================
@@ -3283,9 +3341,20 @@ function closeSidebar(){
 }
   
 
-async function addEmployee(){
+  async function addEmployee(){
+
+    // EDIT MODE
+    if(editingEmployeeId){
+
+        await updateEmployee(editingEmployeeId);
+
+        return;
+    }
 
     let id = "";
+
+
+  
   const prefix = "501520/";
 
 let maxNumber = 0;
@@ -3325,8 +3394,21 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
 
     let address =
     document.getElementById("empAddress").value.trim();
+  let dob =
+document.getElementById("empDOB").value;
 
-  if(!name || !mobile || !designation || !joining || !address){
+let photoFile =
+document.getElementById("empPhoto").files[0];
+
+  if(
+    !name ||
+    !mobile ||
+    !designation ||
+    !joining ||
+    !dob ||
+    !photoFile ||
+    !address
+){
 
     showAlert(
         "সব তথ্য পূরণ করুন",
@@ -3352,24 +3434,34 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
 
 
     try{
+      const photoRef = storage
+    .ref()
+    .child("employees/" + id.replace(/\//g, "_") + "_" + photoFile.name);
+
+await photoRef.put(photoFile);
+
+const photoURL =
+    await photoRef.getDownloadURL();
 
     await db
         .collection("employees")
         .doc(id.replace(/\//g, "_"))
         .set({
+    id: id,
+    name: name,
+    mobile: mobile,
+    designation: designation,
+    joining: joining,
 
-            id: id,
-            name: name,
-            mobile: mobile,
-            designation: designation,
-            joining: joining,
-            status: status,
-            address: address,
+    dob: dob,
+    photoURL: photoURL,
 
-            createdAt:
-                firebase.firestore.FieldValue.serverTimestamp()
+    status: status,
+    address: address,
 
-        });
+    createdAt:
+        firebase.firestore.FieldValue.serverTimestamp()
+});
 
 
     employees.push({
@@ -3379,6 +3471,8 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
         mobile,
         designation,
         joining,
+      dob,
+    photoURL,
         status,
         address
 
@@ -3399,6 +3493,174 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
 
 
 }
+
+  async function updateEmployee(id){
+
+    const employee =
+        employees.find(e => e.id === id);
+
+    if(!employee){
+        showAlert(
+            "Employee পাওয়া যায়নি",
+            "error",
+            "Update Failed"
+        );
+        return;
+    }
+
+    const name =
+        document.getElementById("empName").value.trim();
+
+    const mobile =
+        document.getElementById("empMobile").value.trim();
+
+    const designation =
+        document.getElementById("empDesignation").value.trim();
+
+    const joining =
+        document.getElementById("empJoining").value;
+
+    const dob =
+        document.getElementById("empDOB").value;
+
+    const status =
+        document.getElementById("empStatus").value;
+
+    const address =
+        document.getElementById("empAddress").value.trim();
+
+    const photoFile =
+        document.getElementById("empPhoto").files[0];
+
+
+    if(
+        !name ||
+        !mobile ||
+        !designation ||
+        !joining ||
+        !dob ||
+        !address
+    ){
+
+        showAlert(
+            "সব তথ্য পূরণ করুন",
+            "warning",
+            "Required Information"
+        );
+
+        return;
+    }
+
+
+    try{
+
+        let photoURL =
+            employee.photoURL || "";
+
+
+        // নতুন Photo দিলে upload হবে
+        if(photoFile){
+
+            const photoRef =
+                storage
+                .ref()
+                .child(
+                    "employees/" +
+                    id.replace(/\//g,"_") +
+                    "_" +
+                    photoFile.name
+                );
+
+
+            await photoRef.put(photoFile);
+
+
+            photoURL =
+                await photoRef.getDownloadURL();
+
+        }
+
+
+        // Firebase update
+        await db
+            .collection("employees")
+            .doc(id.replace(/\//g,"_"))
+            .update({
+
+                name: name,
+                mobile: mobile,
+                designation: designation,
+                joining: joining,
+
+                dob: dob,
+                photoURL: photoURL,
+
+                status: status,
+                address: address,
+
+                updatedAt:
+                    firebase.firestore.FieldValue
+                    .serverTimestamp()
+
+            });
+
+
+        // Local employee data update
+        employee.name = name;
+        employee.mobile = mobile;
+        employee.designation = designation;
+        employee.joining = joining;
+
+        employee.dob = dob;
+        employee.photoURL = photoURL;
+
+        employee.status = status;
+        employee.address = address;
+
+
+        // Edit mode বন্ধ
+        editingEmployeeId = null;
+
+
+        // Form clear
+        clearEmployeeForm();
+
+
+        // Employee list refresh
+        renderEmployees();
+
+
+        updateHomeStats();
+
+
+        showAlert(
+            "Employee successfully updated",
+            "success",
+            "Employee Updated"
+        );
+
+
+    }
+    catch(error){
+
+        console.error(
+            "Employee Update Error:",
+            error
+        );
+
+
+        showAlert(
+            "Employee update করতে সমস্যা হয়েছে!\n\n" +
+            error.message,
+            "error",
+            "Update Failed"
+        );
+
+    }
+
+}
+
+  
 catch(error){
 
     console.error(error);
@@ -3425,6 +3687,8 @@ function clearEmployeeForm(){
     document.getElementById("empJoining").value="";
     document.getElementById("empStatus").value="Active";
     document.getElementById("empAddress").value="";
+  document.getElementById("empDOB").value="";
+document.getElementById("empPhoto").value="";
 
 }
 
@@ -3477,6 +3741,25 @@ function renderEmployees(){
         <td>${e.mobile||"-"}</td>
 
         <td>${e.designation||"-"}</td>
+        <td>${e.dob||"-"}</td>
+        <td>
+    ${
+        e.photoURL
+        ?
+        `<img
+            src="${e.photoURL}"
+            style="
+                width:45px;
+                height:45px;
+                object-fit:cover;
+                border-radius:50%;
+            "
+        >`
+        :
+        "-"
+    }
+</td>
+
 
         <td>${e.joining||"-"}</td>
 
@@ -3505,6 +3788,15 @@ ${e.status==="Active" ? "Deactivate" : "Activate"}
 
 </button>
 
+  <button
+    class="btn btn-primary"
+    style="padding:7px 10px;margin-left:5px"
+    onclick="editEmployee('${e.id}')">
+
+    Edit
+
+</button>
+
 <button
 class="btn btn-danger"
 style="padding:7px 10px;margin-left:5px"
@@ -3524,6 +3816,59 @@ Delete
 
 }
 
+
+  function editEmployee(id){
+
+    const employee = employees.find(
+        e => e.id === id
+    );
+
+    if(!employee){
+        showAlert(
+            "Employee পাওয়া যায়নি",
+            "error",
+            "Employee Not Found"
+        );
+        return;
+    }
+
+    // Employee ID
+    document.getElementById("empId").value =
+        employee.id || "";
+
+    // Employee Name
+    document.getElementById("empName").value =
+        employee.name || "";
+
+    // Mobile
+    document.getElementById("empMobile").value =
+        employee.mobile || "";
+
+    // Designation
+    document.getElementById("empDesignation").value =
+        employee.designation || "";
+
+    // Joining Date
+    document.getElementById("empJoining").value =
+        employee.joining || "";
+
+    // Date of Birth
+    document.getElementById("empDOB").value =
+        employee.dob || "";
+
+    // Status
+    document.getElementById("empStatus").value =
+        employee.status || "Active";
+
+    // Address
+    document.getElementById("empAddress").value =
+        employee.address || "";
+
+    // Open Employee section
+    editingEmployeeId = employee.id;
+    showSection("employee");
+
+}
 
   async function toggleEmployeeStatus(id){
 
@@ -3844,7 +4189,7 @@ function renderDailyAttendance(){
 
         body.innerHTML=`
         <tr>
-        <td colspan="8" class="empty">
+        <td colspan="10" class="empty">
         আগে Employee add করুন
         </td>
         </tr>`;
