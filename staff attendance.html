@@ -1749,20 +1749,6 @@ auth.onAuthStateChanged(function(user){
 </div>
 
 
-<div class="form-group">
-
-    <label>
-        Employee Photo
-    </label>
-
-    <input
-        type="file"
-        id="empPhoto"
-        accept="image/*">
-
-</div>
-
-
                     <div class="form-group">
 
                         <label>
@@ -3401,8 +3387,6 @@ id = prefix + String(maxNumber + 1).padStart(2, "0");
   let dob =
 document.getElementById("empDOB").value;
 
-let photoFile =
-document.getElementById("empPhoto").files[0];
 
   if(
     !name ||
@@ -3410,7 +3394,7 @@ document.getElementById("empPhoto").files[0];
     !designation ||
     !joining ||
     !dob ||
-    !photoFile ||
+
     !address
 ){
 
@@ -3438,14 +3422,6 @@ document.getElementById("empPhoto").files[0];
 
 
     try{
-      const photoRef = storage
-    .ref()
-    .child("employees/" + id.replace(/\//g, "_") + "_" + photoFile.name);
-
-await photoRef.put(photoFile);
-
-const photoURL =
-    await photoRef.getDownloadURL();
 
     await db
         .collection("employees")
@@ -3458,7 +3434,7 @@ const photoURL =
     joining: joining,
 
     dob: dob,
-    photoURL: photoURL,
+    
 
     status: status,
     address: address,
@@ -3550,9 +3526,6 @@ async function updateEmployee(id){
     const address =
         document.getElementById("empAddress").value.trim();
 
-    const photoFile =
-        document.getElementById("empPhoto").files[0];
-
 
     if(
         !name ||
@@ -3575,32 +3548,6 @@ async function updateEmployee(id){
 
     try{
 
-        let photoURL =
-            employee.photoURL || "";
-
-
-        // নতুন Photo দিলে upload হবে
-        if(photoFile){
-
-            const photoRef =
-                storage
-                .ref()
-                .child(
-                    "employees/" +
-                    id.replace(/\//g,"_") +
-                    "_" +
-                    photoFile.name
-                );
-
-
-            await photoRef.put(photoFile);
-
-
-            photoURL =
-                await photoRef.getDownloadURL();
-
-        }
-
 
         // Firebase update
         await db
@@ -3614,7 +3561,7 @@ async function updateEmployee(id){
                 joining: joining,
 
                 dob: dob,
-                photoURL: photoURL,
+                
 
                 status: status,
                 address: address,
@@ -3695,7 +3642,7 @@ function clearEmployeeForm(){
     document.getElementById("empStatus").value="Active";
     document.getElementById("empAddress").value="";
   document.getElementById("empDOB").value="";
-document.getElementById("empPhoto").value="";
+
 
 }
 
