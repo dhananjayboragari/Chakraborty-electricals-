@@ -832,8 +832,11 @@ async function loadEmployees(){
 
 checkboxList.innerHTML = "";
 
-employees
-    .filter(employee => employee.status === "Active")
+
+      employees
+    .filter(employee =>
+        String(employee.status || "").toLowerCase() === "active"
+    )
     .forEach(employee => {
 
         const item = document.createElement("label");
