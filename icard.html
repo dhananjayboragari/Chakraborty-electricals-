@@ -130,12 +130,17 @@ body{
 
 .wb-logo-text{
     position:absolute;
-    right:25px;
-    bottom:-4px;
-    font-weight:900;
-    font-size:18px;
-    font-style:italic;
-    opacity:.9;
+    right:18px;
+    bottom:-28px;
+    width:180px;
+    z-index:12;
+}
+
+.wb-logo-text img{
+    width:100%;
+    height:auto;
+    display:block;
+    object-fit:contain;
 }
 
 /* =========================================================
@@ -481,21 +486,18 @@ const db = firebase.firestore();
 
 
     <!-- Employee Photo -->
-    <label for="employeePhoto">Employee Photo</label>
-
-    <input
-        type="file"
-        id="employeePhoto"
-        accept="image/*"
-    >
-
-  <!-- Date of Birth -->
-<label for="dobDate">Date of Birth</label>
+    <!-- Employee Photo -->
+<label>Current Employee Photo</label>
 
 <input
-    type="date"
-    id="dobDate"
+    type="file"
+    id="employeePhoto"
+    accept="image/*"
 >
+
+<small style="display:block;margin-top:5px;color:#777;">
+    Database photo automatically loads. Upload here only if you want a new current photo.
+</small>
 
     <!-- Date of Issue -->
     <label for="issueDate">Date of Issue</label>
@@ -553,7 +555,7 @@ const db = firebase.firestore();
             Principal Employee W.B.S.E.D.C.L<br>
             A Govt. Of W.B. Enterprise
         </div>
-        <div class="wb-logo-text">WBSEDCL</div>
+        <div class="wb-logo-text">     <img         src="https://i.ibb.co/xqVkyH8f/file-0000000072c48208ab7f4584d0821fa0.png"         alt="WBSEDCL Logo"     > </div>
     </div>
 
     <!-- =====================================================
@@ -903,6 +905,27 @@ document
                 .innerText =
                 employee.mobile || "-";
 
+          /* DOB from Database */
+
+
+          document
+    .getElementById("cardDOB")
+    .innerText =
+    employee.dob
+        ? formatCardDate(employee.dob)
+        : "-";
+
+
+/* Employee Photo from Database */
+
+const photoPreview =
+    document.getElementById("employeePhotoPreview");
+
+if(employee.photo){
+    photoPreview.src = employee.photo;
+}else{
+    photoPreview.src = "";
+}
 
             
 
@@ -958,21 +981,6 @@ document
    DATE OF BIRTH
 ===================================== */
 
-document
-    .getElementById("dobDate")
-    .addEventListener(
-        "change",
-        function(){
-
-            document
-                .getElementById("cardDOB")
-                .innerText =
-                formatCardDate(
-                    this.value
-                );
-
-        }
-    );
 
 document
     .getElementById("issueDate")
