@@ -441,6 +441,123 @@ body{
     display: block;
     margin: 0 auto;
 }
+
+  /* ==============================
+   AUTO A4 PDF / PRINT LAYOUT
+   ============================== */
+
+.a4-page{
+    width:210mm;
+    min-height:297mm;
+    padding:8mm;
+    box-sizing:border-box;
+
+    display:flex;
+    flex-wrap:wrap;
+    align-content:flex-start;
+    justify-content:center;
+
+    gap:6mm;
+
+    background:#fff;
+
+    page-break-after:always;
+}
+
+.pdf-card{
+    width:92mm;
+    height:61.33mm;
+
+    flex:0 0 auto;
+
+    position:relative;
+    overflow:hidden;
+
+    background:#1e1e68;
+
+    page-break-inside:avoid;
+}
+
+/* Keep original 3:2 ratio */
+.pdf-card *{
+    box-sizing:border-box;
+}
+
+@media print{
+
+    @page{
+        size:A4 portrait;
+        margin:0;
+    }
+
+    body{
+        margin:0;
+        padding:0;
+        background:#fff;
+    }
+
+    #pdfContainer{
+        display:block !important;
+    }
+
+    .a4-page{
+        page-break-after:always;
+    }
+
+}
+
+  /* ==============================
+   PDF / PRINT BUTTON UI
+   ============================== */
+
+.bulk-buttons{
+    display:flex;
+    gap:12px;
+    margin-top:18px;
+}
+
+.bulk-buttons button{
+    flex:1;
+    border:none;
+    border-radius:10px;
+    padding:13px 15px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .2s ease;
+    box-shadow:0 5px 15px rgba(0,0,0,.12);
+}
+
+#downloadPDFBtn{
+    background:#17175e;
+    color:#fff;
+}
+
+#printPDFBtn{
+    background:#b93a36;
+    color:#fff;
+}
+
+.bulk-buttons button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.18);
+}
+
+.bulk-buttons button:active{
+    transform:scale(.97);
+}
+
+@media(max-width:500px){
+
+    .bulk-buttons{
+        flex-direction:column;
+    }
+
+    .bulk-buttons button{
+        width:100%;
+    }
+
+}
   
 </style>
 
@@ -448,6 +565,8 @@ body{
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -529,6 +648,37 @@ const db = firebase.firestore();
 </div>
 
 
+  <!-- ==============================
+     BULK PDF / PRINT CONTROLS
+     ============================== -->
+
+<div class="bulk-controls">
+
+    <h3>Multiple Employee I-Card</h3>
+
+    <label>Select Cards Per A4</label>
+
+    <select id="cardsPerA4">
+    <option value="auto">Auto A4</option>
+    </select>
+
+    <label>Select Employees</label>
+
+    <div id="employeeCheckboxList" class="employee-checkbox-list">
+        Loading employees...
+    </div>
+
+    <div class="bulk-buttons">
+        <button type="button" id="downloadPDFBtn">
+            📄 Download PDF
+        </button>
+
+        <button type="button" id="printPDFBtn">
+            🖨️ Print
+        </button>
+    </div>
+
+</div>
 
 <div class="card">
 
@@ -677,6 +827,38 @@ async function loadEmployees(){
                 -- Select Employee --
             </option>
         `;
+      const checkboxList =
+    document.getElementById("employeeCheckboxList");
+
+checkboxList.innerHTML = "";
+
+employees
+    .filter(employee => employee.status === "Active")
+    .forEach(employee => {
+
+        const item = document.createElement("label");
+
+        item.style.display = "flex";
+        item.style.alignItems = "center";
+        item.style.gap = "10px";
+        item.style.padding = "8px 5px";
+        item.style.cursor = "pointer";
+
+        item.innerHTML = `
+            <input
+                type="checkbox"
+                class="employee-pdf-checkbox"
+                value="${employee.id}"
+            >
+
+            <span>
+                ${employee.name || "-"}
+                (${employee.id || "-"})
+            </span>
+        `;
+
+        checkboxList.appendChild(item);
+    });
 
         // Active employees only
         employees
@@ -1123,7 +1305,183 @@ function formatCardDate(date){
 
 });
 
+    function getSelectedEmployees(){
+
+    const checked =
+        document.querySelectorAll(
+            ".employee-pdf-checkbox:checked"
+        );
+
+    const selectedIds = [];
+
+    checked.forEach(function(checkbox){
+
+        selectedIds.push(checkbox.value);
+
+    });
+
+    return employees.filter(function(employee){
+
+        return selectedIds.includes(employee.id);
+
+    });
+
+}
+
+
+    function buildA4Pages(){
+
+    const selectedEmployees = getSelectedEmployees();
+
+    if(selectedEmployees.length === 0){
+
+        alert("PDF / Print করার জন্য অন্তত একজন Employee select করুন।");
+
+        return false;
+    }
+
+    const container =
+        document.getElementById("pdfContainer");
+
+    container.innerHTML = "";
+
+    let page = null;
+
+    selectedEmployees.forEach(function(employee, index){
+
+        /*
+         * প্রতি A4 page-এ automatic card placement
+         */
+        if(index % 4 === 0){
+
+            page = document.createElement("div");
+
+            page.className = "a4-page";
+
+            container.appendChild(page);
+        }
+
+        const card =
+            createPDFCard(employee);
+
+        page.appendChild(card);
+
+    });
+
+    return true;
+}
+
+    
+
+    function createPDFCard(employee){
+
+    const originalCard =
+        document.querySelector(".card");
+
+    const card =
+        originalCard.cloneNode(true);
+
+    card.classList.add("pdf-card");
+
+    // Employee Name
+    card.querySelector("#cardName").innerText =
+        employee.name || "-";
+
+    // Employee ID
+    card.querySelector("#cardEmployeeId").innerText =
+        employee.id || "-";
+
+    // Designation
+    card.querySelector("#cardDesignation").innerText =
+        employee.designation || "-";
+
+    // Mobile
+    card.querySelector("#cardMobile").innerText =
+        employee.mobile || "-";
+
+    // DOB
+    card.querySelector("#cardDOB").innerText =
+        employee.dob
+            ? formatCardDate(employee.dob)
+            : "-";
+
+    // Database Photo
+    const photo =
+        card.querySelector("#employeePhotoPreview");
+
+    if(employee.photoURL){
+        photo.src = employee.photoURL;
+    }else{
+        photo.src = "";
+    }
+
+    return card;
+}
+
+    document.getElementById("downloadPDFBtn")
+    .addEventListener("click", async function(){
+
+        const ready = buildA4Pages();
+
+        if(!ready){
+            return;
+        }
+
+        const container =
+            document.getElementById("pdfContainer");
+
+        container.style.display = "block";
+
+        const { jsPDF } = window.jspdf;
+
+        const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
+        });
+
+        const pages =
+            container.querySelectorAll(".a4-page");
+
+        for(let i = 0; i < pages.length; i++){
+
+            if(i > 0){
+                pdf.addPage();
+            }
+
+            const canvas =
+                await html2canvas(pages[i], {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: "#ffffff"
+                });
+
+            const imgData =
+                canvas.toDataURL("image/jpeg", 1.0);
+
+            pdf.addImage(
+                imgData,
+                "JPEG",
+                0,
+                0,
+                210,
+                297
+            );
+        }
+
+        pdf.save("Employee-I-Cards.pdf");
+
+        container.style.display = "none";
+
+    });
+    
 </script>
+
+  <!-- ==============================
+     AUTO A4 PDF / PRINT AREA
+     ============================== -->
+
+<div id="pdfContainer" style="display:none;"></div>
 
 
 
