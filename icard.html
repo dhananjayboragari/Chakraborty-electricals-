@@ -451,13 +451,13 @@ body{
 .a4-page{
     width:210mm;
     height:297mm;
-    padding:8mm;
+    padding:8mm 7mm;
 
     box-sizing:border-box;
 
     display:grid;
     grid-template-columns:92mm 92mm;
-    grid-template-rows:61.33mm 61.33mm;
+grid-template-rows:61.33mm 61.33mm 61.33mm 61.33mm;
 
     column-gap:6mm;
     row-gap:6mm;
@@ -469,6 +469,15 @@ body{
 
     page-break-after:always;
     overflow:hidden;
+  }
+  .pdf-card-wrapper{
+    width:92mm;
+    height:61.33mm;
+
+    overflow:hidden;
+    position:relative;
+
+    flex:none;
   }
 
 .pdf-card{
@@ -484,10 +493,6 @@ body{
 
     transform:scale(0.3864);
     transform-origin:top left;
-
-    margin-right:-552px;
-    margin-bottom:-368px;
-
     page-break-inside:avoid;
   }
 
@@ -611,6 +616,33 @@ body{
     margin:0 !important;
 }
 
+  .top-left-logo{
+    position:absolute;
+    top:16px;
+    left:18px;
+    width:85px;
+    height:80px;
+
+    background:rgba(255,255,255,.96);
+border-radius:10px;
+padding:5px;
+border:2px solid rgba(23,23,94,.25);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    z-index:30;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+
+.top-left-logo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+}
   
 </style>
 
@@ -751,6 +783,12 @@ const db = firebase.firestore();
     <!-- =====================================================
          SECTION C - COMPANY HEADER
          ===================================================== -->
+  <div class="top-left-logo">
+    <img
+        src="https://i.ibb.co/CkSk2z9/file-00000000f9a071fabf74e40b4725537a.png"
+        alt="Company Logo">
+</div>
+  
     <div class="header">
         <div class="company-name">M/S. CHAKRABORTY ELECTRICALS</div>
         <div class="address">Bairatiguri, Dhupguri, Jalpaiguri</div>
@@ -1334,10 +1372,15 @@ function formatCardDate(date){
     container.appendChild(page);
     }
 
-        const card =
-            createPDFCard(employee);
+        const card = createPDFCard(employee);
 
-        page.appendChild(card);
+const wrapper = document.createElement("div");
+
+wrapper.className = "pdf-card-wrapper";
+
+wrapper.appendChild(card);
+
+page.appendChild(wrapper);
 
     });
 
@@ -1453,6 +1496,7 @@ function formatCardDate(date){
     
     document.getElementById("downloadPDFBtn")
     .addEventListener("click", async function(){
+      
 
         const ready = buildA4Pages();
 
@@ -1521,6 +1565,32 @@ container.style.background = "#ffffff";
         container.style.display = "none";
 
     });
+
+    document.getElementById("printPDFBtn")
+    .addEventListener("click", function(){
+
+    const ready = buildA4Pages();
+
+    if(!ready){
+        return;
+    }
+
+    const container =
+        document.getElementById("pdfContainer");
+
+    container.style.display = "block";
+
+    setTimeout(function(){
+
+        window.print();
+
+        setTimeout(function(){
+            container.style.display = "none";
+        }, 1000);
+
+    }, 300);
+
+});
     
 </script>
 
