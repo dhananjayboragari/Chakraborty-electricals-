@@ -131,7 +131,7 @@ body{
 .wb-logo-text{
     position:absolute;
     right:18px;
-    bottom:-28px;
+    bottom:-30px;
     width:180px;
     z-index:12;
 }
@@ -921,13 +921,13 @@ document
 const photoPreview =
     document.getElementById("employeePhotoPreview");
 
-if(employee.photo){
-    photoPreview.src = employee.photo;
+if(employee.photoURL){
+    photoPreview.src = employee.photoURL;
 }else{
     photoPreview.src = "";
-}
+    }
 
-            
+       document.getElementById("employeePhoto").value = "";     
 
         }
     );
