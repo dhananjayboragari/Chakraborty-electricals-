@@ -448,25 +448,30 @@ body{
 
 .a4-page{
     width:210mm;
-    min-height:297mm;
+    height:297mm;
     padding:8mm;
+
     box-sizing:border-box;
 
-    display:flex;
-    flex-wrap:wrap;
-    align-content:flex-start;
-    justify-content:center;
+    display:grid;
+    grid-template-columns:92mm 92mm;
+    grid-template-rows:61.33mm 61.33mm;
 
-    gap:6mm;
+    column-gap:6mm;
+    row-gap:6mm;
+
+    align-content:start;
+    justify-content:center;
 
     background:#fff;
 
     page-break-after:always;
-}
+    overflow:hidden;
+  }
 
 .pdf-card{
-    width:92mm;
-    height:61.33mm;
+    width:900px;
+    height:600px;
 
     flex:0 0 auto;
 
@@ -475,8 +480,14 @@ body{
 
     background:#1e1e68;
 
+    transform:scale(0.3864);
+    transform-origin:top left;
+
+    margin-right:-552px;
+    margin-bottom:-368px;
+
     page-break-inside:avoid;
-}
+  }
 
 /* Keep original 3:2 ratio */
 .pdf-card *{
@@ -1343,41 +1354,101 @@ function formatCardDate(date){
 
     card.classList.add("pdf-card");
 
-    // Employee Name
+    // =========================
+    // EMPLOYEE DETAILS
+    // =========================
+
     card.querySelector("#cardName").innerText =
         employee.name || "-";
 
-    // Employee ID
     card.querySelector("#cardEmployeeId").innerText =
         employee.id || "-";
 
-    // Designation
     card.querySelector("#cardDesignation").innerText =
         employee.designation || "-";
 
-    // Mobile
     card.querySelector("#cardMobile").innerText =
         employee.mobile || "-";
 
-    // DOB
     card.querySelector("#cardDOB").innerText =
         employee.dob
             ? formatCardDate(employee.dob)
             : "-";
 
-    // Database Photo
+
+    // =========================
+    // EMPLOYEE PHOTO
+    // =========================
+
     const photo =
         card.querySelector("#employeePhotoPreview");
 
     if(employee.photoURL){
+
         photo.src = employee.photoURL;
+
     }else{
+
         photo.src = "";
+
     }
+
+
+    // =========================
+    // DATE OF ISSUE
+    // =========================
+
+    const issueDate =
+        document.getElementById("issueDate").value;
+
+    card.querySelector("#cardIssueDate").innerText =
+        issueDate
+            ? formatCardDate(issueDate)
+            : "-";
+
+
+    // =========================
+    // VALUE UP TO DATE
+    // =========================
+
+    const validUpToDate =
+        document.getElementById("validUpToDate").value;
+
+    card.querySelector("#cardValidUpTo").innerText =
+        validUpToDate
+            ? formatCardDate(validUpToDate)
+            : "-";
+
+
+    // =========================
+    // AUTHORIZED SIGNATURE
+    // =========================
+
+    const signature =
+        document.getElementById("signaturePreview");
+
+    const pdfSignature =
+        card.querySelector("#signaturePreview");
+
+    if(signature && signature.src){
+
+        pdfSignature.src =
+            signature.src;
+
+    }else{
+
+        pdfSignature.src = "";
+
+    }
+
 
     return card;
 }
 
+
+
+
+    
     document.getElementById("downloadPDFBtn")
     .addEventListener("click", async function(){
 
@@ -1388,9 +1459,14 @@ function formatCardDate(date){
         }
 
         const container =
-            document.getElementById("pdfContainer");
+    document.getElementById("pdfContainer");
 
-        container.style.display = "block";
+container.style.display = "block";
+container.style.position = "absolute";
+container.style.left = "0";
+container.style.top = "0";
+container.style.width = "210mm";
+container.style.background = "#ffffff";
 
         const { jsPDF } = window.jspdf;
 
@@ -1409,24 +1485,33 @@ function formatCardDate(date){
                 pdf.addPage();
             }
 
+
+    
             const canvas =
-                await html2canvas(pages[i], {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: "#ffffff"
-                });
+    await html2canvas(pages[i], {
+        scale: 3,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: "#ffffff",
+        logging: false
+    });
 
             const imgData =
-                canvas.toDataURL("image/jpeg", 1.0);
+    canvas.toDataURL("image/png");
 
             pdf.addImage(
-                imgData,
-                "JPEG",
-                0,
-                0,
-                210,
-                297
-            );
+    imgData,
+    "PNG",
+    0,
+    0,
+    210,
+    297
+);
+          pdf.setProperties({
+    title: "Employee I-Cards",
+    subject: "Employee I-Card",
+    author: "M/S. Chakraborty Electricals"
+});
         }
 
         pdf.save("Employee-I-Cards.pdf");
