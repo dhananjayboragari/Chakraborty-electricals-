@@ -164,7 +164,9 @@ body{
     height:100%;
     object-fit:cover;
     object-position:center;
-}
+    border-radius:50%;
+    display:block;
+  }
 
 
 /* =========================================================
@@ -1323,14 +1325,14 @@ function formatCardDate(date){
         /*
          * প্রতি A4 page-এ automatic card placement
          */
-        if(index % 4 === 0){
+        if(!page || page.children.length >= 8){
 
-            page = document.createElement("div");
+    page = document.createElement("div");
 
-            page.className = "a4-page";
+    page.className = "a4-page";
 
-            container.appendChild(page);
-        }
+    container.appendChild(page);
+    }
 
         const card =
             createPDFCard(employee);
