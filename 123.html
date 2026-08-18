@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chakraborty Electricals - I Card</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    min-height:100vh;
+    background:#e9e9e9;
+    display:flex;
+  flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.card{
+    position:relative;
+    width:900px;
+    height:600px;
+    overflow:hidden;
+    background:#1e1e68;
+    border:8px solid #d8d8c7;
+    border-radius:16px;
+    box-shadow:0 12px 30px rgba(0,0,0,.28);
+}
+
+.inner-border{
+    position:absolute;
+    inset:0px;
+    border:3px solid #17175e;
+    border-radius:5px;
+    z-index:20;
+    pointer-events:none;
+}
+
+/* =========================================================
+   SECTION 1 - BLUE BACKGROUND
+   ========================================================= */
+.blue{
+    position:absolute;
+    inset:0;
+    background:#20206b;
+}
+
+/* =========================================================
+   SECTION 2 - MAIN CREAM BODY
+   This is the large curved shape seen in the original card.
+   ========================================================= */
+.cream{
+    position:absolute;
+    left:-25px;
+    bottom:-20px;
+    width:950px;
+    height:390px;
+    background:#f3f3e8;
+    border-radius:50% 50% 0 0 / 35% 35% 0 0;
+    transform:rotate(-3deg);
+    z-index:2;
+}
+
+/* white body extension to bottom */
+.cream-bottom{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:255px;
+    background:#f3f3e8;
+    z-index:2;
+}
+
+/* =========================================================
+   SECTION 3 - DOUBLE CURVED NAVY LINE
+   ========================================================= */
+.curve{
+    position:absolute;
+    left:-30px;
+    top:240px;
+    width:960px;
+    height:300px;
+    border-top:4px solid #17175e;
+    border-radius:50%;
+    transform:rotate(-3deg);
+    z-index:5;
+}
+
+.curve.second{
+    top:245px;
+    border-top:3px solid #17175e;
+    z-index:5;
+}
+
+/* =========================================================
+   SECTION 4 - COMPANY HEADER
+   ========================================================= */
+.header{
+    position:absolute;
+    top:25px;
+    left:45px;
+    width:810px;
+    text-align:center;
+    color:#fff;
+    z-index:10;
+}
+
+.company-name{
+    font-size:35px;
+    font-weight:900;
+    letter-spacing:.7px;
+    line-height:1.05;
+  padding-left:40px;
+}
+
+.address{
+    margin-top:8px;
+    font-size:22px;
+    line-height:1.2;
+}
+
+.sub{
+    margin-top:8px;
+    font-size:21px;
+    line-height:1.25;
+}
+
+.wb-logo-text{
+    position:absolute;
+    right:18px;
+    bottom:-30px;
+    width:180px;
+    z-index:12;
+}
+
+.wb-logo-text img{
+    width:100%;
+    height:auto;
+    display:block;
+    object-fit:contain;
+}
+
+/* =========================================================
+   SECTION 5 - PHOTO
+   ========================================================= */
+.photo{
+    position:absolute;
+    left:45px;
+    top:180px;
+    width:205px;
+    height:205px;
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid #17175e;
+    background:#2bc7ab;
+    z-index:12;
+}
+
+.photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    border-radius:50%;
+    display:block;
+  }
+
+
+/* =========================================================
+   SECTION 6 - WATERMARK
+   ========================================================= */
+.watermark{
+    position:absolute;
+    left:330px;
+    top:365px;
+    z-index:4;
+    color:rgba(105,105,175,.17);
+    font-size:72px;
+    font-weight:900;
+    letter-spacing:1px;
+    transform:skewX(-8deg);
+}
+
+/* =========================================================
+   SECTION 7 - LEFT EMPLOYEE DETAILS
+   ========================================================= */
+.left-details{
+    position:absolute;
+    left:35px;
+    top:415px;
+    width:475px;
+    z-index:10;
+    color:#17175e;
+    font-size:21px;
+    line-height:1.35;
+}
+
+.row{
+    display:flex;
+    margin-bottom:2px;
+}
+
+.label{
+    width:190px;
+    font-weight:500;
+}
+
+.value{
+    font-weight:800;
+}
+
+/* =========================================================
+   SECTION 8 - RIGHT EMPLOYEE DETAILS
+   ========================================================= */
+.right-details{
+    position:absolute;
+    left:480px;
+    top:330px;
+    width:350px;
+    z-index:10;
+    color:#17175e;
+    font-size:20px;
+    line-height:1.38;
+}
+
+.rrow{
+    display:flex;
+}
+
+.rlabel{
+    width:205px;
+}
+
+.rvalue{
+    font-weight:500;
+    white-space:nowrap;
+}
+
+/* =========================================================
+   SECTION 9 - RED VALIDITY STRIP
+   ========================================================= */
+.validity{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:610px;
+    height:52px;
+    background:#b93a36;
+    color:#fff;
+    z-index:15;
+    display:flex;
+    align-items:center;
+    padding-left:18px;
+    font-size:16px;
+}
+
+/* =========================================================
+   SECTION 10 - SIGNATURE
+   ========================================================= */
+.signature{
+    position:absolute;
+    right:28px;
+    bottom:18px;
+    width:245px;
+    z-index:16;
+    text-align:center;
+    color:#171717;
+}
+
+.sign-name{
+    font-family:"Brush Script MT","Segoe Script",cursive;
+    font-size:28px;
+    transform:rotate(-3deg);
+    margin-bottom:3px;
+}
+
+.sign-line{
+    width:225px;
+    height:1px;
+    background:#222;
+    margin:auto;
+}
+
+.sign-title{
+    margin-top:7px;
+    font-size:18px;
+    font-style:italic;
+    font-weight:700;
+}
+
+/* =========================================================
+   SECTION 11 - MOBILE PREVIEW
+   ========================================================= */
+@media(max-width:950px){
+    body{
+        justify-content:flex-start;
+        align-items:center;
+        overflow:auto;
+    }
+
+    .card{
+    flex:none;
+    transform:scale(.78);
+    transform-origin:top center;
+    margin:0 auto;
+    }
+}
+
+@media(max-width:650px){
+    body{
+        padding:15px;
+    }
+
+    .card{
+        transform:scale(.55);
+        transform-origin:top center;
+        margin:0 auto;
+    }
+}
+}
+
+/* =========================================================
+   SECTION 12 - PRINT
+   ========================================================= */
+@media print{
+    body{background:#fff;padding:0}
+
+    .card{
+        box-shadow:none;
+        transform:none !important;
+    }
+}
+
+
+  .employee-selector{
+    width:min(500px,95%);
+    margin:0 auto 20px;
+    background:#fff;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+
+.employee-selector label{
+    display:block;
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#17175e;
+}
+
+.employee-selector select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #d5d9df;
+    border-radius:9px;
+    background:#fff;
+    font-size:15px;
+    outline:none;
+}
+
+.employee-selector select:focus{
+    border-color:#1769aa;
+    box-shadow:0 0 0 3px rgba(23,105,170,.10);
+                               }
+
+
+  /* ==============================
+   EMPLOYEE I-CARD CONTROLS
+   ============================== */
+
+.employee-controls{
+    width: min(500px, 94%);
+    margin: 20px auto;
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: #ffffff;
+    border-radius: 15px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.12);
+}
+
+.employee-controls h3{
+    margin: 0 0 18px;
+
+    text-align: center;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    color: #17175e;
+}
+
+.employee-controls label{
+    display: block;
+
+    margin: 12px 0 6px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #333;
+}
+
+.employee-controls select,
+.employee-controls input[type="date"],
+.employee-controls input[type="file"]{
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px;
+
+    border: 1px solid #d5d9df;
+
+    border-radius: 8px;
+
+    background: #fff;
+
+    font-size: 14px;
+}
+
+.employee-controls select:focus,
+.employee-controls input:focus{
+
+    outline: none;
+
+    border-color: #1769aa;
+}
+
+  #signaturePreview{
+    max-width: 290px;
+    max-height: 55px;
+
+    object-fit: contain;
+
+    display: block;
+    margin: 0 auto;
+}
+
+  /* =========================================================
+   A4 PDF + PRINT LAYOUT
+   CARD SIZE = 8.5cm × 5.4cm
+   ========================================================= */
+
+.a4-page{
+    width:210mm;
+    height:297mm;
+
+    padding:8mm;
+
+    box-sizing:border-box;
+
+    display:grid;
+
+    grid-template-columns:85mm 85mm;
+
+    grid-auto-rows:54mm;
+
+    column-gap:10mm;
+    row-gap:5mm;
+
+    align-content:start;
+    justify-content:start;
+
+    background:#fff;
+
+    overflow:hidden;
+
+    page-break-after:always;
+    break-after:page;
+}
+
+.a4-page:last-child{
+    page-break-after:auto;
+    break-after:auto;
+}
+
+
+/* CARD WRAPPER */
+
+.pdf-card-wrapper{
+    width:85mm;
+    height:54mm;
+
+    overflow:hidden;
+
+    position:relative;
+
+    flex:none;
+}
+
+
+/* CARD */
+
+.pdf-card{
+    width:900px;
+    height:600px;
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    overflow:hidden;
+
+    transform:scale(
+        0.35695,
+        0.34
+    );
+
+    transform-origin:top left;
+
+    box-sizing:border-box;
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print{
+
+    @page{
+        size:A4 portrait;
+        margin:0;
+    }
+
+    html,
+    body{
+        width:210mm;
+        min-width:210mm;
+        height:auto;
+
+        margin:0 !important;
+        padding:0 !important;
+
+        background:#fff !important;
+    }
+
+    .employee-controls,
+    .bulk-controls,
+    body > .card{
+        display:none !important;
+    }
+
+    #pdfContainer{
+        display:block !important;
+
+        position:static !important;
+
+        width:210mm !important;
+
+        margin:0 !important;
+        padding:0 !important;
+
+        background:#fff !important;
+    }
+
+    .a4-page{
+        width:210mm !important;
+        height:297mm !important;
+
+        padding:8mm !important;
+
+        display:grid !important;
+
+        grid-template-columns:85mm 85mm !important;
+
+        grid-auto-rows:54mm !important;
+
+        column-gap:10mm !important;
+        row-gap:5mm !important;
+
+        align-content:start !important;
+        justify-content:start !important;
+
+        overflow:hidden !important;
+
+        page-break-after:always !important;
+        break-after:page !important;
+    }
+
+    .a4-page:last-child{
+        page-break-after:auto !important;
+        break-after:auto !important;
+    }
+
+    .pdf-card-wrapper{
+        width:85mm !important;
+        height:54mm !important;
+
+        overflow:hidden !important;
+
+        position:relative !important;
+    }
+
+    .pdf-card{
+        width:900px !important;
+        height:600px !important;
+
+        transform:scale(
+            0.35695,
+            0.34
+        ) !important;
+
+        transform-origin:top left !important;
+    }
+
+    *{
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+    }
+}
+
+  /* ==============================
+   PDF / PRINT BUTTON UI
+   ============================== */
+
+.bulk-buttons{
+    display:flex;
+    gap:12px;
+    margin-top:18px;
+}
+
+.bulk-buttons button{
+    flex:1;
+    border:none;
+    border-radius:10px;
+    padding:13px 15px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .2s ease;
+    box-shadow:0 5px 15px rgba(0,0,0,.12);
+}
+
+#downloadPDFBtn{
+    background:#17175e;
+    color:#fff;
+}
+
+#printPDFBtn{
+    background:#b93a36;
+    color:#fff;
+}
+
+.bulk-buttons button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.18);
+}
+
+.bulk-buttons button:active{
+    transform:scale(.97);
+}
+
+@media(max-width:500px){
+
+    .bulk-buttons{
+        flex-direction:column;
+    }
+
+    .bulk-buttons button{
+        width:100%;
+    }
+
+}
+
+  .bulk-controls{
+    width:min(500px,94%);
+    margin:20px auto;
+    padding:20px;
+    box-sizing:border-box;
+    background:#fff;
+    border-radius:15px;
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+
+.bulk-controls h3{
+    margin:0 0 18px;
+    text-align:center;
+    font-size:20px;
+    font-weight:700;
+    color:#17175e;
+}
+
+.bulk-controls label{
+    display:block;
+    margin:12px 0 6px;
+    font-size:14px;
+    font-weight:600;
+    color:#333;
+}
+
+.employee-checkbox-list{
+    max-height:250px;
+    overflow-y:auto;
+    border:1px solid #d5d9df;
+    border-radius:9px;
+    padding:8px;
+    background:#fafafa;
+}
+
+.employee-checkbox-list label{
+    margin:0 !important;
+}
+
+  .top-left-logo{
+    position:absolute;
+    top:16px;
+    left:18px;
+    width:85px;
+    height:80px;
+
+    background:rgba(255,255,255,.96);
+border-radius:10px;
+padding:5px;
+border:2px solid rgba(23,23,94,.25);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    z-index:30;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+
+.top-left-logo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+}
+  
+</style>
+
+  
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+    authDomain: "chakraborty-ele-login.firebaseapp.com",
+    projectId: "chakraborty-ele-login",
+    storageBucket: "chakraborty-ele-login.firebasestorage.app",
+    messagingSenderId: "414542805581",
+    appId: "1:414542805581:web:cfd13593767abbb51cba04"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+
+const db = firebase.firestore();
+</script>
+</head>
+
+<body>
+
+  <!-- ==============================
+     EMPLOYEE I-CARD CONTROLS
+     ============================== -->
+
+<div class="employee-controls">
+
+    <h3>Employee I-Card Details</h3>
+
+    <!-- Employee Dropdown -->
+    <label for="employeeSelect">Select Employee</label>
+
+    <select id="employeeSelect">
+        <option value="">-- Select Employee --</option>
+    </select>
+
+
+    <!-- Employee Photo -->
+    <!-- Employee Photo -->
+<label>Current Employee Photo</label>
+
+<input
+    type="file"
+    id="employeePhoto"
+    accept="image/*"
+>
+
+<small style="display:block;margin-top:5px;color:#777;">
+    Database photo automatically loads. Upload here only if you want a new current photo.
+</small>
+
+    <!-- Date of Issue -->
+    <label for="issueDate">Date of Issue</label>
+
+    <input
+        type="date"
+        id="issueDate"
+    >
+
+
+    <!-- Value Up To Date -->
+    <label for="validUpToDate">Value Up To Date</label>
+
+    <input
+        type="date"
+        id="validUpToDate"
+    >
+
+
+    <!-- Authorized Signature -->
+    <label for="signatureUpload">Authorized Signature</label>
+
+    <input
+        type="file"
+        id="signatureUpload"
+        accept="image/*"
+    >
+
+</div>
+
+
+  <!-- ==============================
+     BULK PDF / PRINT CONTROLS
+     ============================== -->
+
+<div class="bulk-controls">
+
+    <h3>Multiple Employee I-Card</h3>
+
+    <label>Select Cards Per A4</label>
+
+    <select id="cardsPerA4">
+    <option value="auto">Auto A4</option>
+    </select>
+
+    <label>Select Employees</label>
+
+    <div id="employeeCheckboxList" class="employee-checkbox-list">
+        Loading employees...
+    </div>
+
+    <div class="bulk-buttons">
+        <button type="button" id="downloadPDFBtn">
+            📄 Download PDF
+        </button>
+
+        <button type="button" id="printPDFBtn">
+            🖨️ Print
+        </button>
+    </div>
+
+</div>
+
+<div class="card">
+
+    <!-- =====================================================
+         SECTION A - BACKGROUND
+         ===================================================== -->
+    <div class="blue"></div>
+    <div class="cream"></div>
+    <div class="cream-bottom"></div>
+
+    <!-- =====================================================
+         SECTION B - DOUBLE CURVE
+         ===================================================== -->
+    <div class="curve"></div>
+    <div class="curve second"></div>
+
+    <!-- =====================================================
+         SECTION C - COMPANY HEADER
+         ===================================================== -->
+  <div class="top-left-logo">
+    <img
+        src="https://i.ibb.co/CkSk2z9/file-00000000f9a071fabf74e40b4725537a.png"
+        alt="Company Logo">
+</div>
+  
+    <div class="header">
+        <div class="company-name">M/S. CHAKRABORTY ELECTRICALS</div>
+        <div class="address">Bairatiguri, Dhupguri, Jalpaiguri</div>
+        <div class="sub">
+            Principal Employee W.B.S.E.D.C.L<br>
+            A Govt. Of W.B. Enterprise
+        </div>
+        <div class="wb-logo-text">     <img         src="https://i.ibb.co/xqVkyH8f/file-0000000072c48208ab7f4584d0821fa0.png"         alt="WBSEDCL Logo"     > </div>
+    </div>
+
+    <!-- =====================================================
+         SECTION D - EMPLOYEE PHOTO
+         ===================================================== -->
+    
+
+    <div class="photo">
+      <img
+    id="employeePhotoPreview"
+    src="........"
+    alt="Employee Photo">
+    </div>
+
+    <!-- =====================================================
+         SECTION E - WATERMARK
+         ===================================================== -->
+    <div class="watermark">WBSEDCL</div>
+
+    <!-- =====================================================
+         SECTION F - LEFT DETAILS
+         ===================================================== -->
+    <div class="left-details">
+        <div class="row">
+            <div class="label"><b>Name</b> -</div>
+            <div class="value" id="cardName">-</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Employee Id-</div>
+            <div class="value" id="cardEmployeeId">-</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Designation-</div>
+            <div class="value" id="cardDesignation">-</div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         SECTION G - RIGHT DETAILS
+         ===================================================== -->
+    <div class="right-details">
+        <div class="rrow">
+            <div class="rlabel">Mob. No-</div>
+            <div class="rvalue" id="cardMobile">-</div>
+        </div>
+
+        <div class="rrow">
+            <div class="rlabel">DOB-</div>
+            <div class="rvalue" id="cardDOB">-</div>
+        </div>
+
+        <div class="rrow">
+    <div class="rlabel">Date of Issue-</div>
+    <div class="rvalue" id="cardIssueDate">-</div>
+        </div>
+
+        <div class="rrow">
+    <div class="rlabel">Value Up to Date-</div>
+    <div class="rvalue" id="cardValidUpTo">-</div>
+</div>
+    </div>
+
+    <!-- =====================================================
+         SECTION H - VALIDITY
+         ===================================================== -->
+    <div class="validity">
+        This card is valid only duty hour's and place
+    </div>
+
+    <!-- =====================================================
+         SECTION I - SIGNATURE
+         ===================================================== -->
+    <div class="signature">
+        <div class="sign-name">     <img         id="signaturePreview"         src=""         alt="Authorized Signature"> </div>
+        <div class="sign-line"></div>
+        <div class="sign-title">Authorised Signature</div>
+    </div>
+
+    <!-- Outer border -->
+    <div class="inner-border"></div>
+
+</div>
+
+
+  <script>
+
+let employees = [];
+
+async function loadEmployees(){
+
+    const select =
+        document.getElementById("employeeSelect");
+
+    try{
+
+        const snapshot =
+            await db
+                .collection("employees")
+                .get();
+
+        employees = [];
+
+        snapshot.forEach(doc => {
+
+            const data = doc.data();
+
+            employees.push({
+                id: data.id || doc.id,
+                ...data
+            });
+
+        });
+
+        // Clear dropdown
+        select.innerHTML = `
+            <option value="">
+                -- Select Employee --
+            </option>
+        `;
+      const checkboxList =
+    document.getElementById("employeeCheckboxList");
+
+checkboxList.innerHTML = "";
+
+
+      employees
+    .filter(employee =>
+        String(employee.status || "").toLowerCase() === "active"
+    )
+    .forEach(employee => {
+
+        const item = document.createElement("label");
+
+        item.style.display = "flex";
+        item.style.alignItems = "center";
+        item.style.gap = "10px";
+        item.style.padding = "8px 5px";
+        item.style.cursor = "pointer";
+
+        item.innerHTML = `
+            <input
+                type="checkbox"
+                class="employee-pdf-checkbox"
+                value="${employee.id}"
+            >
+
+            <span>
+                ${employee.name || "-"}
+                (${employee.id || "-"})
+            </span>
+        `;
+
+        checkboxList.appendChild(item);
+    });
+
+        // Active employees only
+        employees
+            .filter(employee => employee.status === "Active")
+            .forEach(employee => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = employee.id;
+
+                option.textContent =
+                    employee.name +
+                    " (" +
+                    employee.id +
+                    ")";
+
+                select.appendChild(option);
+
+            });
+
+    }
+    catch(error){
+
+        console.error(
+            "Employee Load Error:",
+            error
+        );
+
+        alert(
+            "Employee data load করতে সমস্যা হয়েছে!\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+    function selectEmployee(){
+
+    const employeeId =
+        document.getElementById("employeeSelect").value;
+
+    if(!employeeId){
+        return;
+    }
+
+    const employee =
+        employees.find(
+            e => e.id === employeeId
+        );
+
+    if(!employee){
+        return;
+    }
+
+    // Name
+    document.getElementById("cardName")
+        .innerText =
+        employee.name || "-";
+
+    // Employee ID
+    document.getElementById("cardEmployeeId")
+        .innerText =
+        employee.id || "-";
+
+    // Designation
+    document.getElementById("cardDesignation")
+        .innerText =
+        employee.designation || "-";
+
+    // Mobile
+    document.getElementById("cardMobile")
+        .innerText =
+        employee.mobile || "-";
+
+    // DOB
+    document.getElementById("cardDOB")
+        .innerText =
+        employee.dob || "-";
+
+}
+
+
+
+
+/* =====================================
+   EMPLOYEE SELECT
+===================================== */
+
+document
+    .getElementById("employeeSelect")
+    .addEventListener(
+        "change",
+        function(){
+
+            const employeeId =
+                this.value;
+
+            if(!employeeId){
+                return;
+            }
+
+
+            const employee =
+                employees.find(
+                    e => e.id === employeeId
+                );
+
+            if(!employee){
+                return;
+            }
+
+
+            /* Name */
+
+            document
+                .getElementById("cardName")
+                .innerText =
+                employee.name || "-";
+
+
+            /* Employee ID */
+
+            document
+                .getElementById("cardEmployeeId")
+                .innerText =
+                employee.id || "-";
+
+
+            /* Designation */
+
+            document
+                .getElementById("cardDesignation")
+                .innerText =
+                employee.designation || "-";
+
+
+            /* Mobile */
+
+            document
+                .getElementById("cardMobile")
+                .innerText =
+                employee.mobile || "-";
+
+          /* DOB from Database */
+
+
+          document
+    .getElementById("cardDOB")
+    .innerText =
+    employee.dob
+        ? formatCardDate(employee.dob)
+        : "-";
+
+
+/* Employee Photo from Database */
+
+const photoPreview =
+    document.getElementById("employeePhotoPreview");
+
+if(employee.photoURL){
+    photoPreview.src = employee.photoURL;
+}else{
+    photoPreview.src = "";
+    }
+
+       document.getElementById("employeePhoto").value = "";     
+
+        }
+    );
+
+
+/* =====================================
+   EMPLOYEE PHOTO UPLOAD
+===================================== */
+
+document
+    .getElementById("employeePhoto")
+    .addEventListener(
+        "change",
+        function(){
+
+            const file =
+                this.files[0];
+
+            if(!file){
+                return;
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(event){
+
+                    document
+                        .getElementById(
+                            "employeePhotoPreview"
+                        )
+                        .src =
+                        event.target.result;
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* =====================================
+   DATE OF ISSUE
+===================================== */
+    /* =====================================
+   DATE OF BIRTH
+===================================== */
+
+
+document
+    .getElementById("issueDate")
+    .addEventListener(
+        "change",
+        function(){
+
+            document
+                .getElementById(
+                    "cardIssueDate"
+                )
+                .innerText =
+                formatCardDate(
+                    this.value
+                );
+
+        }
+    );
+
+
+/* =====================================
+   VALUE UP TO DATE
+===================================== */
+
+document
+    .getElementById("validUpToDate")
+    .addEventListener(
+        "change",
+        function(){
+
+            document
+                .getElementById(
+                    "cardValidUpTo"
+                )
+                .innerText =
+                formatCardDate(
+                    this.value
+                );
+
+        }
+    );
+
+
+/* =====================================
+   SIGNATURE UPLOAD
+===================================== */
+
+document
+    .getElementById("signatureUpload")
+    .addEventListener(
+        "change",
+        function(){
+
+            const file =
+                this.files[0];
+
+            if(!file){
+                return;
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(event){
+
+                    document
+                        .getElementById(
+                            "signaturePreview"
+                        )
+                        .src =
+                        event.target.result;
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* =====================================
+   DATE FORMAT
+===================================== */
+
+function formatCardDate(date){
+
+    if(!date){
+        return "-";
+    }
+
+    const parts =
+        date.split("-");
+
+    return (
+        parts[2] +
+        "/" +
+        parts[1] +
+        "/" +
+        parts[0]
+    );
+
+}
+
+
+/* =====================================
+   START
+===================================== */
+
+
+    auth.onAuthStateChanged(function(user){
+
+    if(user){
+
+        console.log("User logged in:", user.email);
+
+        loadEmployees();
+
+    }else{
+
+        console.log("User is not logged in");
+
+        const select =
+            document.getElementById("employeeSelect");
+
+        if(select){
+
+            select.innerHTML = `
+                <option value="">
+                    Please login first
+                </option>
+            `;
+
+        }
+
+    }
+
+});
+
+    function getSelectedEmployees(){
+
+    const checked =
+        document.querySelectorAll(
+            ".employee-pdf-checkbox:checked"
+        );
+
+    const selectedIds = [];
+
+    checked.forEach(function(checkbox){
+
+        selectedIds.push(checkbox.value);
+
+    });
+
+    return employees.filter(function(employee){
+
+        return selectedIds.includes(employee.id);
+
+    });
+
+}
+
+
+    function buildA4Pages(){
+
+    const selectedEmployees = getSelectedEmployees();
+
+    if(selectedEmployees.length === 0){
+
+        alert(
+            "PDF / Print করার জন্য অন্তত একজন Employee select করুন।"
+        );
+
+        return false;
+    }
+
+    const container =
+        document.getElementById("pdfContainer");
+
+    container.innerHTML = "";
+
+    let page = null;
+
+    selectedEmployees.forEach(function(employee){
+
+        /*
+         * 2 columns × 5 rows
+         * = 10 cards per A4
+         */
+
+        if(!page || page.children.length >= 10){
+
+            page = document.createElement("div");
+
+            page.className = "a4-page";
+
+            container.appendChild(page);
+        }
+
+        const card =
+            createPDFCard(employee);
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.className =
+            "pdf-card-wrapper";
+
+        wrapper.appendChild(card);
+
+        page.appendChild(wrapper);
+
+    });
+
+    return true;
+    }
+
+    
+
+    function createPDFCard(employee){
+
+    const originalCard =
+        document.querySelector(".card");
+
+    const card =
+        originalCard.cloneNode(true);
+
+    card.classList.add("pdf-card");
+
+
+    /* EMPLOYEE NAME */
+
+    card.querySelector("#cardName").innerText =
+        employee.name || "-";
+
+
+    /* EMPLOYEE ID */
+
+    card.querySelector("#cardEmployeeId").innerText =
+        employee.id || "-";
+
+
+    /* DESIGNATION */
+
+    card.querySelector("#cardDesignation").innerText =
+        employee.designation || "-";
+
+
+    /* MOBILE */
+
+    card.querySelector("#cardMobile").innerText =
+        employee.mobile || "-";
+
+
+    /* DOB */
+
+    card.querySelector("#cardDOB").innerText =
+        employee.dob
+            ? formatCardDate(employee.dob)
+            : "-";
+
+
+    /* EMPLOYEE PHOTO */
+
+    const photo =
+        card.querySelector("#employeePhotoPreview");
+
+    if(employee.photoURL){
+
+        photo.src =
+            employee.photoURL;
+
+    }else{
+
+        photo.src = "";
+
+    }
+
+
+    /* DATE OF ISSUE */
+
+    const issueDate =
+        document.getElementById("issueDate").value;
+
+    card.querySelector("#cardIssueDate").innerText =
+        issueDate
+            ? formatCardDate(issueDate)
+            : "-";
+
+
+    /* VALUE UP TO DATE */
+
+    const validUpToDate =
+        document.getElementById("validUpToDate").value;
+
+    card.querySelector("#cardValidUpTo").innerText =
+        validUpToDate
+            ? formatCardDate(validUpToDate)
+            : "-";
+
+
+    /* SIGNATURE */
+
+    const signature =
+        document.getElementById("signaturePreview");
+
+    const pdfSignature =
+        card.querySelector("#signaturePreview");
+
+    if(
+        signature &&
+        signature.src &&
+        signature.src !== window.location.href
+    ){
+
+        pdfSignature.src =
+            signature.src;
+
+    }else{
+
+        pdfSignature.src = "";
+
+    }
+
+
+    return card;
+}
+
+
+
+
+
+    document
+.getElementById("downloadPDFBtn")
+.addEventListener(
+    "click",
+    async function(){
+
+        const ready =
+            buildA4Pages();
+
+        if(!ready){
+            return;
+        }
+
+        const container =
+            document.getElementById(
+                "pdfContainer"
+            );
+
+        container.style.display =
+            "block";
+
+        container.style.position =
+            "absolute";
+
+        container.style.left =
+            "0";
+
+        container.style.top =
+            "0";
+
+        container.style.width =
+            "210mm";
+
+        container.style.background =
+            "#ffffff";
+
+
+        const { jsPDF } =
+            window.jspdf;
+
+
+        const pdf =
+            new jsPDF({
+
+                orientation:"portrait",
+
+                unit:"mm",
+
+                format:"a4",
+
+                compress:true
+
+            });
+
+
+        const pages =
+            container.querySelectorAll(
+                ".a4-page"
+            );
+
+
+        for(
+            let i = 0;
+            i < pages.length;
+            i++
+        ){
+
+            if(i > 0){
+                pdf.addPage();
+            }
+
+
+            const canvas =
+                await html2canvas(
+                    pages[i],
+                    {
+                        scale:3,
+
+                        useCORS:true,
+
+                        allowTaint:false,
+
+                        backgroundColor:"#ffffff",
+
+                        logging:false
+                    }
+                );
+
+
+            const imgData =
+                canvas.toDataURL(
+                    "image/png"
+                );
+
+
+            pdf.addImage(
+                imgData,
+                "PNG",
+                0,
+                0,
+                210,
+                297
+            );
+        }
+
+
+        pdf.setProperties({
+
+            title:"Employee I-Cards",
+
+            subject:"Employee I-Card",
+
+            author:
+                "M/S. Chakraborty Electricals"
+
+        });
+
+
+        pdf.save(
+            "Employee-I-Cards.pdf"
+        );
+
+
+        container.style.display =
+            "none";
+
+    }
+);
+
+    
+
+    document
+.getElementById("printPDFBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        const ready =
+            buildA4Pages();
+
+        if(!ready){
+            return;
+        }
+
+        const container =
+            document.getElementById(
+                "pdfContainer"
+            );
+
+        container.style.display =
+            "block";
+
+        container.style.position =
+            "static";
+
+        container.style.width =
+            "210mm";
+
+        container.style.background =
+            "#ffffff";
+
+
+        /*
+         * Download PDF-এর একই A4 layout
+         */
+
+        setTimeout(
+            function(){
+
+                window.print();
+
+            },
+            500
+        );
+
+    }
+);
+    
+</script>
+
+  <!-- ==============================
+     AUTO A4 PDF / PRINT AREA
+     ============================== -->
+
+<div id="pdfContainer" style="display:none;"></div>
+
+
+
+</body>
+</html>
