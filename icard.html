@@ -1698,22 +1698,29 @@ function formatCardDate(date){
 
                     for(let k = 0; k < images.length; k++){
 
-                        const img = images[k];
+    const img = images[k];
 
-                        if(
-                            img.complete &&
-                            img.naturalWidth > 0
-                        ){
-                            continue;
-                        }
+    if(img.complete && img.naturalWidth > 0){
+        continue;
+    }
 
-                        await new Promise(function(resolve){
+    await new Promise(function(resolve){
 
-                            img.onload = resolve;
-                            img.onerror = resolve;
+        let done = false;
 
-                        });
-                    }
+        function finish(){
+            if(done) return;
+            done = true;
+            resolve();
+        }
+
+        img.onload = finish;
+        img.onerror = finish;
+
+        setTimeout(finish, 5000);
+
+    });
+    }
 
                     /* Remove transform temporarily */
 
@@ -1726,7 +1733,7 @@ function formatCardDate(date){
                         await html2canvas(
                             card,
                             {
-                                scale: 3,
+                                scale: 2,
 
                                 useCORS: true,
 
@@ -1740,9 +1747,9 @@ function formatCardDate(date){
 
                                 height: 600,
 
-                                windowWidth: 1000,
+                                windowWidth: 900,
 
-                                windowHeight: 700,
+                                windowHeight: 600,
                               scrollX:0,
 
             scrollY:0
