@@ -453,7 +453,7 @@ body{
     width:210mm;
     height:297mm;
 
-    padding:7mm 17mm;
+    padding:5mm 7mm;
 
     box-sizing:border-box;
 
@@ -487,7 +487,6 @@ body{
     overflow:hidden;
     position:relative;
     flex:none;
-    page-break-inside:avoid;
 }
 
 .pdf-card{
@@ -495,16 +494,19 @@ body{
     height:600px;
 
     flex:0 0 auto;
+
     position:relative;
     overflow:hidden;
 
     background:#1e1e68;
 
-    transform:scaleX(0.09555556) scaleY(0.09);
+    /* 85.60mm / 900px */
+    transform:scaleX(0.361417) scaleY(0.340157);
+
     transform-origin:top left;
 
     page-break-inside:avoid;
-  }
+}
 
 /* Keep original 3:2 ratio */
 .pdf-card *{
@@ -567,7 +569,7 @@ body{
     .pdf-card{
         width:900px !important;
         height:600px !important;
-        transform:scaleX(0.09555556) scaleY(0.09) !important;
+        transform:scaleX(0.361417) scaleY(0.340157) !important;
         transform-origin:top left !important;
     }
 
