@@ -1630,235 +1630,196 @@ function formatCardDate(date){
 
 
 
-
     document
 .getElementById("downloadPDFBtn")
 .addEventListener(
     "click",
     async function(){
 
-        const ready =
-            buildA4Pages();
+        const ready = buildA4Pages();
 
         if(!ready){
             return;
         }
 
         const container =
-            document.getElementById(
-                "pdfContainer"
-            );
+            document.getElementById("pdfContainer");
 
-        container.style.display =
-            "block";
+        container.style.display = "block";
+        container.style.position = "absolute";
+        container.style.left = "0";
+        container.style.top = "0";
+        container.style.width = "210mm";
+        container.style.background = "#ffffff";
 
-        container.style.position =
-            "absolute";
+        try{
 
-        container.style.left =
-            "0";
+            const { jsPDF } = window.jspdf;
 
-        container.style.top =
-            "0";
+            const pdf =
+                new jsPDF({
+                    orientation: "portrait",
+                    unit: "mm",
+                    format: "a4",
+                    compress: true
+                });
 
-        container.style.width =
-            "210mm";
+            const pages =
+                container.querySelectorAll(".a4-page");
 
-        container.style.background =
-            "#ffffff";
+            for(let i = 0; i < pages.length; i++){
 
+                if(i > 0){
+                    pdf.addPage();
+                }
 
-        const { jsPDF } =
-            window.jspdf;
+                const page = pages[i];
 
+                const wrappers =
+                    page.querySelectorAll(
+                        ".pdf-card-wrapper"
+                    );
 
-        const pdf =
-            new jsPDF({
+                for(let j = 0; j < wrappers.length; j++){
 
-                orientation:"portrait",
+                    const wrapper = wrappers[j];
 
-                unit:"mm",
+                    const card =
+                        wrapper.querySelector(".pdf-card");
 
-                format:"a4",
+                    if(!card){
+                        continue;
+                    }
 
-                compress:true
+                    /* Wait for images */
 
+                    const images =
+                        card.querySelectorAll("img");
+
+                    for(let k = 0; k < images.length; k++){
+
+                        const img = images[k];
+
+                        if(
+                            img.complete &&
+                            img.naturalWidth > 0
+                        ){
+                            continue;
+                        }
+
+                        await new Promise(function(resolve){
+
+                            img.onload = resolve;
+                            img.onerror = resolve;
+
+                        });
+                    }
+
+                    /* Remove transform temporarily */
+
+                    const oldTransform =
+                        card.style.transform;
+
+                    card.style.transform = "none";
+
+                    const canvas =
+                        await html2canvas(
+                            card,
+                            {
+                                scale: 3,
+
+                                useCORS: true,
+
+                                allowTaint: false,
+
+                                backgroundColor: "#ffffff",
+
+                                logging: false,
+
+                                width: 900,
+
+                                height: 600,
+
+                                windowWidth: 900,
+
+                                windowHeight: 600
+                            }
+                        );
+
+                    card.style.transform =
+                        oldTransform;
+
+                    const imgData =
+                        canvas.toDataURL(
+                            "image/jpeg",
+                            0.95
+                        );
+
+                    /* A4 position */
+
+                    const pageRect =
+                        page.getBoundingClientRect();
+
+                    const wrapperRect =
+                        wrapper.getBoundingClientRect();
+
+                    const x =
+                        (wrapperRect.left -
+                         pageRect.left)
+                        / pageRect.width
+                        * 210;
+
+                    const y =
+                        (wrapperRect.top -
+                         pageRect.top)
+                        / pageRect.height
+                        * 297;
+
+                    pdf.addImage(
+                        imgData,
+                        "JPEG",
+                        x,
+                        y,
+                        85,
+                        54
+                    );
+                }
+            }
+
+            pdf.setProperties({
+                title: "Employee I-Cards",
+                subject: "Employee I-Card",
+                author: "M/S. Chakraborty Electricals"
             });
 
+            /* IMPORTANT */
 
-        const pages =
-            container.querySelectorAll(
-                ".a4-page"
-            );
+            pdf.save("Employee-I-Cards.pdf");
 
-
-        for(
-    let i = 0;
-    i < pages.length;
-    i++
-){
-
-    if(i > 0){
-        pdf.addPage();
-    }
-
-    const page =
-        pages[i];
-
-    const wrappers =
-        page.querySelectorAll(
-            ".pdf-card-wrapper"
-        );
-
-    for(
-        let j = 0;
-        j < wrappers.length;
-        j++
-    ){
-
-        const wrapper =
-            wrappers[j];
-
-        const card =
-            wrapper.querySelector(
-                ".pdf-card"
-            );
-
-        if(!card){
-            continue;
         }
-      /* Wait for all images to load */
+        catch(error){
 
-const images =
-    card.querySelectorAll("img");
-
-for(
-    let k = 0;
-    k < images.length;
-    k++
-){
-
-    const img = images[k];
-
-    if(
-        img.complete &&
-        img.naturalWidth > 0
-    ){
-        continue;
-    }
-
-    await new Promise(function(resolve){
-
-        img.onload = resolve;
-        img.onerror = resolve;
-
-    });
-    }
-
-        /* Original card rendering */
-
-        const oldTransform =
-            card.style.transform;
-
-        card.style.transform =
-            "none";
-
-        /* Render full 900 × 600 card */
-
-        const canvas =
-            await html2canvas(
-                card,
-                {
-                    scale:5,
-
-                    useCORS:true,
-
-                    allowTaint:false,
-
-                    backgroundColor:null,
-
-                    logging:false,
-
-                    width:900,
-
-                    height:600,
-
-                    windowWidth:900,
-
-                    windowHeight:600
-                }
+            console.error(
+                "PDF Download Error:",
+                error
             );
 
-        /* Restore original transform */
-
-        card.style.transform =
-            oldTransform;
-
-        const imgData =
-            canvas.toDataURL(
-                "image/png"
+            alert(
+                "PDF download করতে সমস্যা হয়েছে!\n\n" +
+                error.message
             );
 
-        /*
-         * Find card position inside A4
-         */
+        }
+        finally{
 
-        const pageRect =
-            page.getBoundingClientRect();
+            container.style.display = "none";
 
-        const wrapperRect =
-            wrapper.getBoundingClientRect();
-
-        const x =
-            (wrapperRect.left -
-             pageRect.left)
-            / pageRect.width
-            * 210;
-
-        const y =
-            (wrapperRect.top -
-             pageRect.top)
-            / pageRect.height
-            * 297;
-
-        /*
-         * Card size = 85mm × 54mm
-         */
-
-        pdf.addImage(
-            imgData,
-            "PNG",
-            x,
-            y,
-            85,
-            54
-        );
-    }
-}
-
-
-        pdf.setProperties({
-
-            title:"Employee I-Cards",
-
-            subject:"Employee I-Card",
-
-            author:
-                "M/S. Chakraborty Electricals"
-
-        });
-
-
-        pdf.save(
-            "Employee-I-Cards.pdf"
-        );
-
-
-        container.style.display =
-            "none";
+        }
 
     }
 );
+
+    
 
     
 
