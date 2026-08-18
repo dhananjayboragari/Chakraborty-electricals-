@@ -101,7 +101,7 @@ body{
    ========================================================= */
 .header{
     position:absolute;
-    top:25px;
+    top:55px;
     left:45px;
     width:810px;
     text-align:center;
@@ -110,9 +110,9 @@ body{
 }
 
 .company-name{
-    font-size:35px;
+    font-size:36px;
     font-weight:900;
-    letter-spacing:.7px;
+    letter-spacing:.5px;
     line-height:1.05;
   padding-left:40px;
 }
@@ -131,10 +131,12 @@ body{
 
 .wb-logo-text{
     position:absolute;
-    right:18px;
+    right:0px;
     bottom:-30px;
     width:180px;
     z-index:12;
+  transform:translateX(40px);
+  
 }
 
 .wb-logo-text img{
@@ -191,26 +193,27 @@ body{
 .left-details{
     position:absolute;
     left:35px;
-    top:415px;
+    top:400px;
     width:475px;
     z-index:10;
     color:#17175e;
-    font-size:21px;
-    line-height:1.35;
+    font-size:24px;
+    line-height:1.4;
+  font-weight:700;
 }
 
 .row{
     display:flex;
-    margin-bottom:2px;
+    margin-bottom:3px;
 }
 
 .label{
     width:190px;
-    font-weight:500;
+    font-weight:700;
 }
 
 .value{
-    font-weight:800;
+    font-weight:900;
 }
 
 /* =========================================================
@@ -219,12 +222,13 @@ body{
 .right-details{
     position:absolute;
     left:480px;
-    top:330px;
-    width:350px;
+    top:300px;
+    width:400px;
     z-index:10;
     color:#17175e;
-    font-size:20px;
-    line-height:1.38;
+    font-size:24px;
+    line-height:1.45;
+  font-weight:700;
 }
 
 .rrow{
@@ -232,11 +236,13 @@ body{
 }
 
 .rlabel{
-    width:205px;
+    width:220px;
+  font-weight:700;
+  white-space:nowrap;
 }
 
 .rvalue{
-    font-weight:500;
+    font-weight:900;
     white-space:nowrap;
 }
 
@@ -263,9 +269,9 @@ body{
    ========================================================= */
 .signature{
     position:absolute;
-    right:28px;
+    right:25px;
     bottom:18px;
-    width:245px;
+    width:260px;
     z-index:16;
     text-align:center;
     color:#171717;
@@ -277,20 +283,28 @@ body{
     transform:rotate(-3deg);
     margin-bottom:3px;
 }
+  .sign-name img{
+    display:block;
+    width:235px;
+    height:52px;
+    object-fit:contain;
+    object-position:center;
+  }
 
 .sign-line{
     width:225px;
-    height:1px;
+    height:2px;
     background:#222;
     margin:auto;
 }
 
 .sign-title{
-    margin-top:7px;
+    margin-top:6px;
     font-size:18px;
     font-style:italic;
-    font-weight:700;
+    font-weight:800;
 }
+  
 
 /* =========================================================
    SECTION 11 - MOBILE PREVIEW
@@ -436,14 +450,15 @@ body{
 }
 
   #signaturePreview{
-    max-width: 290px;
-    max-height: 55px;
-
-    object-fit: contain;
-
-    display: block;
-    margin: 0 auto;
-}
+    width:235px;
+    height:52px;
+    max-width:none;
+    max-height:none;
+    object-fit:contain;
+    object-position:center;
+    display:block;
+    margin:0 auto;
+  }
 
   /* =========================================================
    A4 PDF + PRINT LAYOUT
@@ -725,7 +740,7 @@ body{
 
   .top-left-logo{
     position:absolute;
-    top:16px;
+    top:30px;
     left:18px;
     width:85px;
     height:80px;
@@ -1678,56 +1693,148 @@ function formatCardDate(date){
 
 
         for(
-            let i = 0;
-            i < pages.length;
-            i++
-        ){
+    let i = 0;
+    i < pages.length;
+    i++
+){
 
-            if(i > 0){
-                pdf.addPage();
-            }
+    if(i > 0){
+        pdf.addPage();
+    }
 
+    const page =
+        pages[i];
 
-            const canvas =
-    await html2canvas(
-        pages[i],
-        {
-            scale:3,
+    const wrappers =
+        page.querySelectorAll(
+            ".pdf-card-wrapper"
+        );
 
-            useCORS:true,
+    for(
+        let j = 0;
+        j < wrappers.length;
+        j++
+    ){
 
-            allowTaint:false,
+        const wrapper =
+            wrappers[j];
 
-            backgroundColor:"#ffffff",
-
-            logging:false,
-
-            width: pages[i].offsetWidth,
-
-            height: pages[i].offsetHeight,
-
-            windowWidth: pages[i].offsetWidth,
-
-            windowHeight: pages[i].offsetHeight
-        }
-    );
-
-
-            const imgData =
-                canvas.toDataURL(
-                    "image/png"
-                );
-
-
-            pdf.addImage(
-                imgData,
-                "PNG",
-                0,
-                0,
-                210,
-                297
+        const card =
+            wrapper.querySelector(
+                ".pdf-card"
             );
+
+        if(!card){
+            continue;
         }
+      /* Wait for all images to load */
+
+const images =
+    card.querySelectorAll("img");
+
+for(
+    let k = 0;
+    k < images.length;
+    k++
+){
+
+    const img = images[k];
+
+    if(
+        img.complete &&
+        img.naturalWidth > 0
+    ){
+        continue;
+    }
+
+    await new Promise(function(resolve){
+
+        img.onload = resolve;
+        img.onerror = resolve;
+
+    });
+    }
+
+        /* Original card rendering */
+
+        const oldTransform =
+            card.style.transform;
+
+        card.style.transform =
+            "none";
+
+        /* Render full 900 × 600 card */
+
+        const canvas =
+            await html2canvas(
+                card,
+                {
+                    scale:5,
+
+                    useCORS:true,
+
+                    allowTaint:false,
+
+                    backgroundColor:null,
+
+                    logging:false,
+
+                    width:900,
+
+                    height:600,
+
+                    windowWidth:900,
+
+                    windowHeight:600
+                }
+            );
+
+        /* Restore original transform */
+
+        card.style.transform =
+            oldTransform;
+
+        const imgData =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+        /*
+         * Find card position inside A4
+         */
+
+        const pageRect =
+            page.getBoundingClientRect();
+
+        const wrapperRect =
+            wrapper.getBoundingClientRect();
+
+        const x =
+            (wrapperRect.left -
+             pageRect.left)
+            / pageRect.width
+            * 210;
+
+        const y =
+            (wrapperRect.top -
+             pageRect.top)
+            / pageRect.height
+            * 297;
+
+        /*
+         * Card size = 85mm × 54mm
+         */
+
+        pdf.addImage(
+            imgData,
+            "PNG",
+            x,
+            y,
+            85,
+            54
+        );
+    }
+}
 
 
         pdf.setProperties({
