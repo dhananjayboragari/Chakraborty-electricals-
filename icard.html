@@ -450,22 +450,28 @@ body{
    CARD SIZE = 8.5cm × 5.4cm
    ========================================================= */
 
-.a4-page{
+
+  .a4-page{
     width:210mm;
     height:297mm;
 
-    padding:8mm;
-
     box-sizing:border-box;
+
+    padding:8mm 15mm 3mm 15mm;
 
     display:grid;
 
     grid-template-columns:85mm 85mm;
 
-    grid-auto-rows:54mm;
+    grid-template-rows:
+        54mm
+        54mm
+        54mm
+        54mm
+        54mm;
 
     column-gap:10mm;
-    row-gap:5mm;
+    row-gap:4mm;
 
     align-content:start;
     justify-content:start;
@@ -482,6 +488,7 @@ body{
     page-break-after:auto;
     break-after:auto;
 }
+  
 
 
 /* CARD WRAPPER */
@@ -519,6 +526,7 @@ body{
     transform-origin:top left;
 
     box-sizing:border-box;
+  box-shadow:none;
 }
 
 
@@ -565,27 +573,32 @@ body{
     }
 
     .a4-page{
-        width:210mm !important;
-        height:297mm !important;
+    width:210mm !important;
+    height:297mm !important;
 
-        padding:8mm !important;
+    padding:8mm 15mm 3mm 15mm !important;
 
-        display:grid !important;
+    display:grid !important;
 
-        grid-template-columns:85mm 85mm !important;
+    grid-template-columns:85mm 85mm !important;
 
-        grid-auto-rows:54mm !important;
+    grid-template-rows:
+        54mm
+        54mm
+        54mm
+        54mm
+        54mm !important;
 
-        column-gap:10mm !important;
-        row-gap:5mm !important;
+    column-gap:10mm !important;
+    row-gap:4mm !important;
 
-        align-content:start !important;
-        justify-content:start !important;
+    align-content:start !important;
+    justify-content:start !important;
 
-        overflow:hidden !important;
+    overflow:hidden !important;
 
-        page-break-after:always !important;
-        break-after:page !important;
+    page-break-after:always !important;
+    break-after:page !important;
     }
 
     .a4-page:last-child{
@@ -603,15 +616,14 @@ body{
     }
 
     .pdf-card{
-        width:900px !important;
-        height:600px !important;
+    width:900px !important;
+    height:600px !important;
 
-        transform:scale(
-            0.3777777778,
-            0.34
-        ) !important;
+    transform:
+        scaleX(0.3777777778)
+        scaleY(0.34) !important;
 
-        transform-origin:top left !important;
+    transform-origin:top left !important;
     }
 
     *{
@@ -1678,20 +1690,28 @@ function formatCardDate(date){
 
 
             const canvas =
-                await html2canvas(
-                    pages[i],
-                    {
-                        scale:3,
+    await html2canvas(
+        pages[i],
+        {
+            scale:3,
 
-                        useCORS:true,
+            useCORS:true,
 
-                        allowTaint:false,
+            allowTaint:false,
 
-                        backgroundColor:"#ffffff",
+            backgroundColor:"#ffffff",
 
-                        logging:false
-                    }
-                );
+            logging:false,
+
+            width: pages[i].offsetWidth,
+
+            height: pages[i].offsetHeight,
+
+            windowWidth: pages[i].offsetWidth,
+
+            windowHeight: pages[i].offsetHeight
+        }
+    );
 
 
             const imgData =
