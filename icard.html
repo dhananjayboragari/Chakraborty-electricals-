@@ -456,8 +456,10 @@ body{
     box-sizing:border-box;
 
     display:grid;
-    grid-template-columns:92mm 92mm;
-grid-template-rows:61.33mm 61.33mm 61.33mm 61.33mm;
+
+    /* VISA / ATM CARD SIZE */
+    grid-template-columns:85.60mm 85.60mm;
+    grid-template-rows:53.98mm 53.98mm 53.98mm 53.98mm 53.98mm;
 
     column-gap:6mm;
     row-gap:6mm;
@@ -470,15 +472,15 @@ grid-template-rows:61.33mm 61.33mm 61.33mm 61.33mm;
     page-break-after:always;
     overflow:hidden;
   }
+  
   .pdf-card-wrapper{
-    width:92mm;
-    height:61.33mm;
+    width:85.60mm;
+    height:53.98mm;
 
     overflow:hidden;
     position:relative;
-
     flex:none;
-  }
+}
 
 .pdf-card{
     width:900px;
@@ -491,10 +493,13 @@ grid-template-rows:61.33mm 61.33mm 61.33mm 61.33mm;
 
     background:#1e1e68;
 
-    transform:scale(0.3864);
+    /* 85.60mm / 900px */
+    transform:scale(0.3563);
+
     transform-origin:top left;
+
     page-break-inside:avoid;
-  }
+}
 
 /* Keep original 3:2 ratio */
 .pdf-card *{
@@ -548,8 +553,8 @@ grid-template-rows:61.33mm 61.33mm 61.33mm 61.33mm;
     }
 
     .pdf-card-wrapper{
-        width:92mm !important;
-        height:61.33mm !important;
+        width:85.60mm !important;
+        height:53.98mm !important;
         overflow:hidden !important;
         position:relative !important;
     }
@@ -557,7 +562,7 @@ grid-template-rows:61.33mm 61.33mm 61.33mm 61.33mm;
     .pdf-card{
         width:900px !important;
         height:600px !important;
-        transform:scale(0.3864) !important;
+        transform:scale(0.3563) !important;
         transform-origin:top left !important;
     }
 
@@ -1407,7 +1412,7 @@ function formatCardDate(date){
         /*
          * প্রতি A4 page-এ automatic card placement
          */
-        if(!page || page.children.length >= 8){
+        if(!page || page.children.length >= 10){
 
     page = document.createElement("div");
 
