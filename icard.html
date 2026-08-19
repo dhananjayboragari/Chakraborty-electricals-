@@ -1691,73 +1691,122 @@ function formatCardDate(date){
                         continue;
                     }
 
-                    /* Wait for images */
+                    /* =====================================
+                       WAIT FOR ALL CARD IMAGES
+                       ===================================== */
 
                     const images =
                         card.querySelectorAll("img");
 
                     for(let k = 0; k < images.length; k++){
 
-    const img = images[k];
+                        const img = images[k];
 
-    if(img.complete && img.naturalWidth > 0){
-        continue;
-    }
+                        if(
+                            img.complete &&
+                            img.naturalWidth > 0
+                        ){
+                            continue;
+                        }
 
-    await new Promise(function(resolve){
+                        await new Promise(function(resolve){
 
-        let done = false;
+                            let finished = false;
 
-        function finish(){
-            if(done) return;
-            done = true;
-            resolve();
-        }
+                            function finish(){
+                                if(finished) return;
 
-        img.onload = finish;
-        img.onerror = finish;
+                                finished = true;
+                                resolve();
+                            }
 
-        setTimeout(finish, 5000);
+                            img.onload = finish;
+                            img.onerror = finish;
 
-    });
-    }
+                            setTimeout(
+                                finish,
+                                5000
+                            );
 
-                    /* Remove transform temporarily */
+                        });
+                    }
+
+
+                    /* =====================================
+                       IMPORTANT PDF RENDER FIX
+
+                       Capture the ORIGINAL 900 × 600
+                       card without PDF transform.
+                       ===================================== */
 
                     const oldTransform =
                         card.style.transform;
 
+                    const oldOverflow =
+                        card.style.overflow;
+
+                    const oldWidth =
+                        card.style.width;
+
+                    const oldHeight =
+                        card.style.height;
+
                     card.style.transform = "none";
+                    card.style.overflow = "hidden";
+                    card.style.width = "900px";
+                    card.style.height = "600px";
+
+
+                    /* =====================================
+                       CREATE CANVAS
+                       ===================================== */
 
                     const canvas =
                         await html2canvas(
                             card,
                             {
-                                scale: 1,
+                                scale: 1.5,
 
                                 useCORS: true,
-
                                 allowTaint: false,
 
-                                backgroundColor: "#ffffff",
+                                backgroundColor:
+                                    "#ffffff",
 
                                 logging: false,
 
                                 width: 900,
-
                                 height: 600,
 
                                 windowWidth: 900,
-
                                 windowHeight: 600,
-                              scrollX:0,
 
-            scrollY:0
+                                scrollX: 0,
+                                scrollY: 0
                             }
                         );
 
+
+                    /* =====================================
+                       RESTORE ORIGINAL CARD
+                       ===================================== */
+
                     card.style.transform =
                         oldTransform;
+
+                    card.style.overflow =
+                        oldOverflow;
+
+                    card.style.width =
+                        oldWidth;
+
+                    card.style.height =
+                        oldHeight;
+
+
+                    /* =====================================
+                       CONVERT CANVAS TO IMAGE
+                       ===================================== */
 
                     const imgData =
                         canvas.toDataURL(
@@ -1765,7 +1814,10 @@ function formatCardDate(date){
                             0.95
                         );
 
-                    /* A4 position */
+
+                    /* =====================================
+                       EXACT A4 CARD POSITION
+                       ===================================== */
 
                     const pageRect =
                         page.getBoundingClientRect();
@@ -1773,17 +1825,32 @@ function formatCardDate(date){
                     const wrapperRect =
                         wrapper.getBoundingClientRect();
 
+
                     const x =
-                        (wrapperRect.left -
-                         pageRect.left)
-                        / pageRect.width
-                        * 210;
+                        (
+                            wrapperRect.left -
+                            pageRect.left
+                        )
+                        /
+                        pageRect.width
+                        *
+                        210;
+
 
                     const y =
-                        (wrapperRect.top -
-                         pageRect.top)
-                        / pageRect.height
-                        * 297;
+                        (
+                            wrapperRect.top -
+                            pageRect.top
+                        )
+                        /
+                        pageRect.height
+                        *
+                        297;
+
+
+                    /* =====================================
+                       PUT CARD INTO PDF
+                       ===================================== */
 
                     pdf.addImage(
                         imgData,
@@ -1793,18 +1860,26 @@ function formatCardDate(date){
                         85,
                         54
                     );
+
                 }
             }
 
+
             pdf.setProperties({
-                title: "Employee I-Cards",
-                subject: "Employee I-Card",
-                author: "M/S. Chakraborty Electricals"
+                title:
+                    "Employee I-Cards",
+
+                subject:
+                    "Employee I-Card",
+
+                author:
+                    "M/S. Chakraborty Electricals"
             });
 
-            /* IMPORTANT */
 
-            pdf.save("Employee-I-Cards.pdf");
+            pdf.save(
+                "Employee-I-Cards.pdf"
+            );
 
         }
         catch(error){
@@ -1822,12 +1897,17 @@ function formatCardDate(date){
         }
         finally{
 
-            container.style.display = "none";
+            container.style.display =
+                "none";
 
         }
 
     }
 );
+
+
+
+    
 
     
 
