@@ -76,41 +76,6 @@ body{
 }
 
 
-  /* =========================================================
-   EXACT FULL-WIDTH CURVE
-   LEFT EDGE → RIGHT EDGE
-   ========================================================= */
-
-.card-curves{
-    position:absolute;
-
-    left:0;
-    top:225px;
-
-    width:100%;
-    height:180px;
-
-    display:block;
-
-    overflow:visible;
-
-    z-index:5;
-
-    pointer-events:none;
-}
-
-.card-curves .curve-line{
-    fill:none;
-
-    stroke:#17175e;
-    stroke-width:4;
-
-    vector-effect:non-scaling-stroke;
-}
-
-.card-curves .curve-line-2{
-    stroke-width:3;
-}
 
 /* =========================================================
    SECTION 4 - COMPANY HEADER
@@ -955,20 +920,7 @@ const db = firebase.firestore();
     <div class="cream"></div>
     <div class="cream-bottom"></div>
 
-    <!-- =====================================================
-         SECTION B - DOUBLE CURVE
-         ===================================================== -->
-    <svg class="card-curves"
-     viewBox="0 0 900 180"
-     preserveAspectRatio="none">
 
-    <path class="curve-line"
-          d="M 0 115 Q 450 0 900 115" />
-
-    <path class="curve-line curve-line-2"
-          d="M 0 121 Q 450 6 900 121" />
-
-    </svg>
 
     <!-- =====================================================
          SECTION C - COMPANY HEADER
