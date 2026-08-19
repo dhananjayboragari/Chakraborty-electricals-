@@ -543,6 +543,15 @@ body{
   box-shadow:none;
 }
 
+  /* PDF ONLY - keep full curve visible */
+.pdf-card .curve{
+    overflow:visible !important;
+}
+
+.pdf-card .curve.second{
+    overflow:visible !important;
+}
+
 
 /* =========================================================
    PRINT
@@ -766,20 +775,7 @@ border:2px solid rgba(23,23,94,.25);
     display:block;
 }
 
-  /* =========================================
-   PDF ONLY - FIX CURVED NAVY LINES
-   Preview card will NOT change
-   ========================================= */
 
-.pdf-card .curve{
-    left:-70px;
-    width:1040px;
-}
-
-.pdf-card .curve.second{
-    left:-70px;
-    width:1040px;
-}
   
 </style>
 
@@ -1777,29 +1773,33 @@ function formatCardDate(date){
                        ===================================== */
 
                     const canvas =
-                        await html2canvas(
-                            card,
-                            {
-                                scale: 1.5,
+    await html2canvas(
+        card,
+        {
+            scale: 2,
 
-                                useCORS: true,
-                                allowTaint: false,
+            useCORS: true,
+            allowTaint: false,
 
-                                backgroundColor:
-                                    "#ffffff",
+            backgroundColor: "#ffffff",
 
-                                logging: false,
+            logging: false,
 
-                                width: 900,
-                                height: 600,
+            x: 0,
+            y: 0,
 
-                                windowWidth: 900,
-                                windowHeight: 600,
+            width: 900,
+            height: 600,
 
-                                scrollX: 0,
-                                scrollY: 0
-                            }
-                        );
+            windowWidth: 900,
+            windowHeight: 600,
+
+            scrollX: 0,
+            scrollY: 0,
+
+            foreignObjectRendering: false
+        }
+    );
 
 
                     /* =====================================
