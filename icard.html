@@ -1750,29 +1750,43 @@ function formatCardDate(date){
                        card without PDF transform.
                        ===================================== */
 
-                    const oldTransform =
-                        card.style.transform;
+                  /* =========================================
+   PDF CAPTURE FIX
+   Temporarily remove card from the
+   85mm × 54mm wrapper so nothing gets clipped
+   ========================================= */
 
-                    const oldOverflow =
-                        card.style.overflow;
+const oldParent = card.parentElement;
+const oldNextSibling = card.nextSibling;
 
-                    const oldWidth =
-                        card.style.width;
+const oldTransform =
+    card.style.transform;
 
-                    const oldHeight =
-                        card.style.height;
+const oldPosition =
+    card.style.position;
 
-                    card.style.transform = "none";
-                    card.style.overflow = "hidden";
-                    card.style.width = "900px";
-                    card.style.height = "600px";
+const oldLeft =
+    card.style.left;
+
+const oldTop =
+    card.style.top;
+
+const oldZIndex =
+    card.style.zIndex;
 
 
-                    /* =====================================
-                       CREATE CANVAS
-                       ===================================== */
+/* Move card outside the clipping wrapper */
+document.body.appendChild(card);
 
-                    const canvas =
+card.style.position = "fixed";
+card.style.left = "-10000px";
+card.style.top = "0";
+card.style.zIndex = "-1";
+
+card.style.transform = "none";
+
+
+const canvas =
     await html2canvas(
         card,
         {
@@ -1785,9 +1799,6 @@ function formatCardDate(date){
 
             logging: false,
 
-            x: 0,
-            y: 0,
-
             width: 900,
             height: 600,
 
@@ -1795,11 +1806,37 @@ function formatCardDate(date){
             windowHeight: 600,
 
             scrollX: 0,
-            scrollY: 0,
-
-            foreignObjectRendering: false
+            scrollY: 0
         }
     );
+
+
+/* Restore card */
+card.style.transform =
+    oldTransform;
+
+card.style.position =
+    oldPosition;
+
+card.style.left =
+    oldLeft;
+
+card.style.top =
+    oldTop;
+
+card.style.zIndex =
+    oldZIndex;
+
+
+/* Put card back into its original wrapper */
+if(oldNextSibling){
+    oldParent.insertBefore(
+        card,
+        oldNextSibling
+    );
+}else{
+    oldParent.appendChild(card);
+}
 
 
                     /* =====================================
