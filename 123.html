@@ -78,22 +78,41 @@ body{
 /* =========================================================
    SECTION 3 - DOUBLE CURVED NAVY LINE
    ========================================================= */
-.curve{
+
+  .curve{
     position:absolute;
-    left:-30px;
-    top:240px;
-    width:960px;
+    left:-10px;
+    top:238px;
+    width:920px;
     height:300px;
+
     border-top:4px solid #17175e;
     border-radius:50%;
+
     transform:rotate(-3deg);
+    transform-origin:center center;
+
     z-index:5;
+
+    pointer-events:none;
 }
 
 .curve.second{
-    top:245px;
+    position:absolute;
+    left:-10px;
+    top:244px;
+    width:920px;
+    height:300px;
+
     border-top:3px solid #17175e;
+    border-radius:50%;
+
+    transform:rotate(-3deg);
+    transform-origin:center center;
+
     z-index:5;
+
+    pointer-events:none;
 }
 
 /* =========================================================
@@ -110,11 +129,12 @@ body{
 }
 
 .company-name{
-    font-size:36px;
+    font-size:40px;
     font-weight:900;
-    letter-spacing:.5px;
+    letter-spacing:.6px;
     line-height:1.05;
-  padding-left:40px;
+    padding-left:40px;
+    white-space:nowrap;
 }
 
 .address{
@@ -1831,7 +1851,7 @@ async function captureCard(employee){
             await html2canvas(
                 card,
                 {
-                    scale:2,
+                    scale:4,
 
                     width:900,
                     height:600,
@@ -1855,9 +1875,8 @@ async function captureCard(employee){
 
 
         return canvas.toDataURL(
-            "image/jpeg",
-            0.95
-        );
+    "image/png"
+);
 
     }
     finally{
@@ -2042,24 +2061,175 @@ async function buildA4Pages(){
 }
 
 
+
+    /* =====================================
+   GENERATE SAME PDF FOR DOWNLOAD + PRINT
+===================================== */
+
+async function generateEmployeePDF(){
+
+    const container =
+        await buildA4Pages();
+
+    if(!container){
+        return null;
+    }
+
+    const pages =
+        container.querySelectorAll(".a4-page");
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+    const pdf =
+        new jsPDF({
+
+            orientation:"portrait",
+
+            unit:"mm",
+
+            format:"a4",
+
+            compress:true
+
+        });
+
+
+    for(
+        let i = 0;
+        i < pages.length;
+        i++
+    ){
+
+        if(i > 0){
+
+            pdf.addPage();
+
+        }
+
+
+        const page =
+            pages[i];
+
+
+        const cards =
+            page.querySelectorAll(
+                ".pdf-card-wrapper"
+            );
+
+
+        cards.forEach(
+            function(wrapper,index){
+
+                const image =
+                    wrapper.querySelector(
+                        "img"
+                    );
+
+
+                const column =
+                    index % 2;
+
+
+                const row =
+                    Math.floor(
+                        index / 2
+                    );
+
+
+                const x =
+                    15 +
+                    column * 95;
+
+
+                const y =
+                    8 +
+                    row * 58;
+
+
+                pdf.addImage(
+
+                    image.src,
+
+                    "PNG",
+
+                    x,
+
+                    y,
+
+                    85,
+
+                    54,
+
+                    undefined,
+
+                    "FAST"
+
+                );
+
+            }
+        );
+
+    }
+
+
+    pdf.setProperties({
+
+        title:
+            "Employee I-Cards",
+
+        subject:
+            "Employee I-Card",
+
+        author:
+            "M/S. Chakraborty Electricals"
+
+    });
+
+
+    return pdf;
+
+}
+
+
+/* =====================================
+   CLEAN PDF CONTAINER
+===================================== */
+
+function cleanPDFContainer(){
+
+    const container =
+        document.getElementById(
+            "pdfContainer"
+        );
+
+    if(container){
+
+        container.innerHTML = "";
+
+        container.style.display =
+            "none";
+
+    }
+
+}
+
+
 /* =====================================
    DOWNLOAD PDF
 ===================================== */
 
 document
-.getElementById(
-    "downloadPDFBtn"
-)
+.getElementById("downloadPDFBtn")
 .addEventListener(
     "click",
     async function(){
 
-        const button =
-            this;
+        const button = this;
 
 
-        button.disabled =
-            true;
+        button.disabled = true;
 
         button.innerText =
             "⏳ Creating PDF...";
@@ -2067,136 +2237,15 @@ document
 
         try{
 
-            const container =
-                await buildA4Pages();
+            const pdf =
+                await generateEmployeePDF();
 
 
-            if(!container){
+            if(!pdf){
 
                 return;
 
             }
-
-
-            const pages =
-                container.querySelectorAll(
-                    ".a4-page"
-                );
-
-
-            const {
-                jsPDF
-            } =
-                window.jspdf;
-
-
-            const pdf =
-                new jsPDF({
-
-                    orientation:
-                        "portrait",
-
-                    unit:
-                        "mm",
-
-                    format:
-                        "a4",
-
-                    compress:
-                        true
-
-                });
-
-
-            for(
-                let i = 0;
-                i < pages.length;
-                i++
-            ){
-
-                if(i > 0){
-
-                    pdf.addPage();
-
-                }
-
-
-                const page =
-                    pages[i];
-
-
-                const cards =
-                    page.querySelectorAll(
-                        ".pdf-card-wrapper"
-                    );
-
-
-                cards.forEach(
-                    function(wrapper,index){
-
-                        const image =
-                            wrapper.querySelector(
-                                "img"
-                            );
-
-
-                        const column =
-                            index % 2;
-
-                        const row =
-                            Math.floor(
-                                index / 2
-                            );
-
-
-                        const x =
-                            15 +
-                            column * 95;
-
-
-                        const y =
-                            8 +
-                            row * 58;
-
-
-                        pdf.addImage(
-
-                            image.src,
-
-                            "JPEG",
-
-                            x,
-
-                            y,
-
-                            85,
-
-                            54,
-
-                            undefined,
-
-                            "FAST"
-
-                        );
-
-                    }
-                );
-
-            }
-
-
-            pdf.setProperties({
-
-                title:
-                    "Employee I-Cards",
-
-                subject:
-                    "Employee I-Card",
-
-                author:
-                    "M/S. Chakraborty Electricals"
-
-            });
 
 
             pdf.save(
@@ -2221,17 +2270,7 @@ document
         }
         finally{
 
-            const container =
-                document.getElementById(
-                    "pdfContainer"
-                );
-
-
-            container.innerHTML =
-                "";
-
-            container.style.display =
-                "none";
+            cleanPDFContainer();
 
 
             button.disabled =
@@ -2248,34 +2287,31 @@ document
 
 /* =====================================
    PRINT
+   SAME PDF AS DOWNLOAD
 ===================================== */
 
 document
-.getElementById(
-    "printPDFBtn"
-)
+.getElementById("printPDFBtn")
 .addEventListener(
     "click",
     async function(){
 
-        const button =
-            this;
+        const button = this;
 
 
-        button.disabled =
-            true;
+        button.disabled = true;
 
         button.innerText =
-            "⏳ Preparing Print...";
+            "⏳ Preparing PDF...";
 
 
         try{
 
-            const container =
-                await buildA4Pages();
+            const pdf =
+                await generateEmployeePDF();
 
 
-            if(!container){
+            if(!pdf){
 
                 return;
 
@@ -2283,56 +2319,76 @@ document
 
 
             /*
-             * Same exact A4 layout
-             * as downloaded PDF.
+             * Convert the SAME generated PDF
+             * into a Blob.
              */
 
-            container.style.display =
-                "block";
+            const pdfBlob =
+                pdf.output("blob");
 
 
-            container.style.position =
-                "static";
+            const pdfURL =
+                URL.createObjectURL(
+                    pdfBlob
+                );
 
 
-            container.style.width =
-                "210mm";
+            /*
+             * Open the exact same PDF
+             * in a new browser tab.
+             */
+
+            const printWindow =
+                window.open(
+                    pdfURL,
+                    "_blank"
+                );
 
 
-            container.style.background =
-                "#ffffff";
+            if(!printWindow){
+
+                alert(
+                    "PDF খুলতে browser popup allow করতে হবে।"
+                );
+
+            }
 
 
-            await new Promise(
-                function(resolve){
+            /*
+             * Keep URL alive for the PDF viewer.
+             */
 
-                    setTimeout(
-                        resolve,
-                        300
+            setTimeout(
+                function(){
+
+                    URL.revokeObjectURL(
+                        pdfURL
                     );
 
-                }
+                },
+                60000
             );
 
-
-            window.print();
 
         }
         catch(error){
 
             console.error(
-                "Print Error:",
+                "Print PDF Error:",
                 error
             );
 
 
             alert(
-                "Print তৈরি করতে সমস্যা হয়েছে!\n\n" +
+                "Print PDF তৈরি করতে সমস্যা হয়েছে!\n\n" +
                 error.message
             );
 
         }
         finally{
+
+            cleanPDFContainer();
+
 
             button.disabled =
                 false;
@@ -2345,29 +2401,6 @@ document
     }
 );
 
-
-/* =====================================
-   AFTER PRINT
-===================================== */
-
-window.addEventListener(
-    "afterprint",
-    function(){
-
-        const container =
-            document.getElementById(
-                "pdfContainer"
-            );
-
-
-        container.innerHTML =
-            "";
-
-        container.style.display =
-            "none";
-
-    }
-);
     
 </script>
 
