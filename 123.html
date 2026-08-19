@@ -101,7 +101,7 @@ body{
    ========================================================= */
 .header{
     position:absolute;
-    top:25px;
+    top:55px;
     left:45px;
     width:810px;
     text-align:center;
@@ -110,9 +110,9 @@ body{
 }
 
 .company-name{
-    font-size:35px;
+    font-size:36px;
     font-weight:900;
-    letter-spacing:.7px;
+    letter-spacing:.5px;
     line-height:1.05;
   padding-left:40px;
 }
@@ -131,10 +131,12 @@ body{
 
 .wb-logo-text{
     position:absolute;
-    right:18px;
+    right:0px;
     bottom:-30px;
     width:180px;
     z-index:12;
+  transform:translateX(40px);
+  
 }
 
 .wb-logo-text img{
@@ -191,26 +193,27 @@ body{
 .left-details{
     position:absolute;
     left:35px;
-    top:415px;
+    top:400px;
     width:475px;
     z-index:10;
     color:#17175e;
-    font-size:21px;
-    line-height:1.35;
+    font-size:24px;
+    line-height:1.4;
+  font-weight:700;
 }
 
 .row{
     display:flex;
-    margin-bottom:2px;
+    margin-bottom:3px;
 }
 
 .label{
     width:190px;
-    font-weight:500;
+    font-weight:700;
 }
 
 .value{
-    font-weight:800;
+    font-weight:900;
 }
 
 /* =========================================================
@@ -219,12 +222,13 @@ body{
 .right-details{
     position:absolute;
     left:480px;
-    top:330px;
-    width:350px;
+    top:300px;
+    width:400px;
     z-index:10;
     color:#17175e;
-    font-size:20px;
-    line-height:1.38;
+    font-size:24px;
+    line-height:1.45;
+  font-weight:700;
 }
 
 .rrow{
@@ -232,11 +236,13 @@ body{
 }
 
 .rlabel{
-    width:205px;
+    width:220px;
+  font-weight:700;
+  white-space:nowrap;
 }
 
 .rvalue{
-    font-weight:500;
+    font-weight:900;
     white-space:nowrap;
 }
 
@@ -263,9 +269,9 @@ body{
    ========================================================= */
 .signature{
     position:absolute;
-    right:28px;
+    right:25px;
     bottom:18px;
-    width:245px;
+    width:260px;
     z-index:16;
     text-align:center;
     color:#171717;
@@ -277,20 +283,28 @@ body{
     transform:rotate(-3deg);
     margin-bottom:3px;
 }
+  .sign-name img{
+    display:block;
+    width:235px;
+    height:52px;
+    object-fit:contain;
+    object-position:center;
+  }
 
 .sign-line{
     width:225px;
-    height:1px;
+    height:2px;
     background:#222;
     margin:auto;
 }
 
 .sign-title{
-    margin-top:7px;
+    margin-top:6px;
     font-size:18px;
     font-style:italic;
-    font-weight:700;
+    font-weight:800;
 }
+  
 
 /* =========================================================
    SECTION 11 - MOBILE PREVIEW
@@ -321,7 +335,7 @@ body{
         margin:0 auto;
     }
 }
-}
+
 
 /* =========================================================
    SECTION 12 - PRINT
@@ -436,34 +450,61 @@ body{
 }
 
   #signaturePreview{
-    max-width: 290px;
-    max-height: 55px;
+    width:235px;
+    height:52px;
+    max-width:none;
+    max-height:none;
+    object-fit:contain;
+    object-position:center;
+    display:block;
+    margin:0 auto;
+  }
 
-    object-fit: contain;
 
-    display: block;
-    margin: 0 auto;
-}
+
+
+
 
   /* =========================================================
    A4 PDF + PRINT LAYOUT
-   PHYSICAL CARD = EXACTLY 85mm × 54mm
+   EXACT CARD SIZE = 85mm × 54mm
+   2 COLUMNS × 5 ROWS = 10 CARDS
    ========================================================= */
+
+#a4PrintArea{
+    width:210mm;
+    min-height:297mm;
+    background:#fff;
+}
 
 .a4-page{
     width:210mm;
     height:297mm;
-    padding:8.5mm 10mm;
+
     box-sizing:border-box;
+
+    padding:8mm 15mm 3mm 15mm;
+
     display:grid;
+
     grid-template-columns:85mm 85mm;
-    grid-auto-rows:54mm;
-    column-gap:20mm;
-    row-gap:2.5mm;
+    grid-template-rows:
+        54mm
+        54mm
+        54mm
+        54mm
+        54mm;
+
+    column-gap:10mm;
+    row-gap:4mm;
+
     align-content:start;
     justify-content:start;
+
     background:#fff;
+
     overflow:hidden;
+
     page-break-after:always;
     break-after:page;
 }
@@ -473,51 +514,90 @@ body{
     break-after:auto;
 }
 
+
+/* ==========================================
+   A4 CARD WRAPPER
+   EXACT 85mm × 54mm
+   ========================================== */
+
 .pdf-card-wrapper{
     width:85mm;
     height:54mm;
-    overflow:hidden;
+
     position:relative;
+
+    overflow:hidden;
+
     flex:none;
+
+    margin:0;
+    padding:0;
 }
 
-/* Used only for rendering the original 900×600 design to canvas. */
-.pdf-render-stage{
-    position:fixed;
-    left:-10000px;
-    top:0;
+
+/* ==========================================
+   PDF CARD
+   ORIGINAL DESIGN = 900 × 600
+   SCALE EXACTLY TO 85mm × 54mm
+   ========================================== */
+
+.pdf-card{
     width:900px;
     height:600px;
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
     overflow:hidden;
-    background:#fff;
-    z-index:-1;
+
+    transform:
+        scaleX(0.35695)
+        scaleY(0.34000);
+
+    transform-origin:top left;
+
+    box-sizing:border-box;
+
+    box-shadow:none !important;
+
+    border-radius:16px;
 }
 
-.pdf-render-card{
-    width:900px !important;
-    height:600px !important;
-    position:relative !important;
-    left:0 !important;
-    top:0 !important;
-    margin:0 !important;
-    transform:none !important;
-    transform-origin:top left !important;
-    box-shadow:none !important;
+
+/* Make sure curves are never clipped */
+
+.pdf-card .curve,
+.pdf-card .curve.second{
+    overflow:visible !important;
 }
+
+
+/* ==========================================
+   PRINT
+   ========================================== */
 
 @media print{
+
     @page{
         size:A4 portrait;
         margin:0;
     }
 
-    html,body{
-        width:210mm;
-        min-width:210mm;
-        height:auto;
+    html,
+    body{
+        width:210mm !important;
+        min-width:210mm !important;
+
         margin:0 !important;
         padding:0 !important;
+
         background:#fff !important;
+    }
+
+    body{
+        display:block !important;
     }
 
     .employee-controls,
@@ -528,25 +608,39 @@ body{
 
     #pdfContainer{
         display:block !important;
-        position:static !important;
+
         width:210mm !important;
         margin:0 !important;
         padding:0 !important;
+
         background:#fff !important;
     }
 
     .a4-page{
         width:210mm !important;
         height:297mm !important;
-        padding:8.5mm 10mm !important;
+
+        padding:8mm 15mm 3mm 15mm !important;
+
         display:grid !important;
+
         grid-template-columns:85mm 85mm !important;
-        grid-auto-rows:54mm !important;
-        column-gap:20mm !important;
-        row-gap:2.5mm !important;
+
+        grid-template-rows:
+            54mm
+            54mm
+            54mm
+            54mm
+            54mm !important;
+
+        column-gap:10mm !important;
+        row-gap:4mm !important;
+
         align-content:start !important;
         justify-content:start !important;
+
         overflow:hidden !important;
+
         page-break-after:always !important;
         break-after:page !important;
     }
@@ -559,19 +653,27 @@ body{
     .pdf-card-wrapper{
         width:85mm !important;
         height:54mm !important;
+
         overflow:hidden !important;
+
         position:relative !important;
     }
 
-    /* Print uses the original 900×600 card scaled to exactly 85×54mm. */
     .pdf-card{
         width:900px !important;
         height:600px !important;
+
         position:absolute !important;
+
         left:0 !important;
         top:0 !important;
-        transform:scale(0.35695,0.34016) !important;
+
+        transform:
+            scaleX(0.35695)
+            scaleY(0.34000) !important;
+
         transform-origin:top left !important;
+
         box-shadow:none !important;
     }
 
@@ -580,6 +682,9 @@ body{
         print-color-adjust:exact !important;
     }
 }
+
+
+  
 
   /* ==============================
    PDF / PRINT BUTTON UI
@@ -675,7 +780,7 @@ body{
 
   .top-left-logo{
     position:absolute;
-    top:16px;
+    top:30px;
     left:18px;
     width:85px;
     height:80px;
@@ -700,6 +805,8 @@ border:2px solid rgba(23,23,94,.25);
     object-fit:contain;
     display:block;
 }
+
+
   
 </style>
 
@@ -1397,253 +1504,870 @@ function formatCardDate(date){
 }
 
 
-    function getSelectedEmployeesForOutput(){
+    /* =========================================================
+   A4 PDF / PRINT SYSTEM
+   EXACT 85mm × 54mm CARD
+   10 CARDS PER A4
+   ========================================================= */
 
-    const selectedEmployees = getSelectedEmployees();
 
-    if(selectedEmployees.length === 0){
-        alert("PDF / Print করার জন্য অন্তত একজন Employee select করুন।");
-        return null;
-    }
+/* =====================================
+   GET SELECTED EMPLOYEES
+===================================== */
 
-    return selectedEmployees;
+function getSelectedEmployees(){
+
+    const checked =
+        document.querySelectorAll(
+            ".employee-pdf-checkbox:checked"
+        );
+
+    const selectedIds = [];
+
+    checked.forEach(function(checkbox){
+
+        selectedIds.push(
+            checkbox.value
+        );
+
+    });
+
+    return employees.filter(function(employee){
+
+        return selectedIds.includes(
+            employee.id
+        );
+
+    });
+
 }
 
+
+/* =====================================
+   CREATE PDF CARD
+===================================== */
 
 function createPDFCard(employee){
 
-    const originalCard = document.querySelector(".card");
-    const card = originalCard.cloneNode(true);
+    const originalCard =
+        document.querySelector(".card");
+
+    const card =
+        originalCard.cloneNode(true);
 
     card.classList.add("pdf-card");
 
-    card.querySelector("#cardName").innerText = employee.name || "-";
-    card.querySelector("#cardEmployeeId").innerText = employee.id || "-";
-    card.querySelector("#cardDesignation").innerText = employee.designation || "-";
-    card.querySelector("#cardMobile").innerText = employee.mobile || "-";
-    card.querySelector("#cardDOB").innerText = employee.dob ? formatCardDate(employee.dob) : "-";
 
-    const photo = card.querySelector("#employeePhotoPreview");
+    /* NAME */
+
+    card.querySelector("#cardName")
+        .innerText =
+        employee.name || "-";
+
+
+    /* EMPLOYEE ID */
+
+    card.querySelector("#cardEmployeeId")
+        .innerText =
+        employee.id || "-";
+
+
+    /* DESIGNATION */
+
+    card.querySelector("#cardDesignation")
+        .innerText =
+        employee.designation || "-";
+
+
+    /* MOBILE */
+
+    card.querySelector("#cardMobile")
+        .innerText =
+        employee.mobile || "-";
+
+
+    /* DOB */
+
+    card.querySelector("#cardDOB")
+        .innerText =
+        employee.dob
+            ? formatCardDate(employee.dob)
+            : "-";
+
+
+    /* PHOTO */
+
+    const photo =
+        card.querySelector(
+            "#employeePhotoPreview"
+        );
+
     if(employee.photoURL){
-        photo.src = employee.photoURL;
+
+        photo.src =
+            employee.photoURL;
+
+        photo.crossOrigin =
+            "anonymous";
+
     }else{
+
         photo.src = "";
+
     }
 
-    const issueDate = document.getElementById("issueDate").value;
-    card.querySelector("#cardIssueDate").innerText = issueDate ? formatCardDate(issueDate) : "-";
 
-    const validUpToDate = document.getElementById("validUpToDate").value;
-    card.querySelector("#cardValidUpTo").innerText = validUpToDate ? formatCardDate(validUpToDate) : "-";
+    /* ISSUE DATE */
 
-    const signature = document.getElementById("signaturePreview");
-    const pdfSignature = card.querySelector("#signaturePreview");
+    const issueDate =
+        document.getElementById(
+            "issueDate"
+        ).value;
 
-    if(signature && signature.src && signature.src !== window.location.href){
-        pdfSignature.src = signature.src;
+    card.querySelector(
+        "#cardIssueDate"
+    ).innerText =
+        issueDate
+            ? formatCardDate(issueDate)
+            : "-";
+
+
+    /* VALID UP TO */
+
+    const validUpToDate =
+        document.getElementById(
+            "validUpToDate"
+        ).value;
+
+    card.querySelector(
+        "#cardValidUpTo"
+    ).innerText =
+        validUpToDate
+            ? formatCardDate(
+                validUpToDate
+            )
+            : "-";
+
+
+    /* SIGNATURE */
+
+    const originalSignature =
+        document.getElementById(
+            "signaturePreview"
+        );
+
+    const pdfSignature =
+        card.querySelector(
+            "#signaturePreview"
+        );
+
+    if(
+        originalSignature &&
+        originalSignature.src &&
+        originalSignature.src !==
+            window.location.href
+    ){
+
+        pdfSignature.src =
+            originalSignature.src;
+
+        pdfSignature.crossOrigin =
+            "anonymous";
+
     }else{
-        pdfSignature.removeAttribute("src");
+
+        pdfSignature.src = "";
+
     }
+
+
+    /* ALL IMAGES */
+
+    card.querySelectorAll(
+        "img"
+    ).forEach(function(img){
+
+        img.crossOrigin =
+            "anonymous";
+
+    });
+
 
     return card;
+
 }
 
 
-function waitForImages(root){
+/* =====================================
+   WAIT FOR IMAGES
+===================================== */
 
-    const images = Array.from(root.querySelectorAll("img"));
+function waitForImages(container){
 
-    return Promise.all(images.map(function(img){
+    const images =
+        container.querySelectorAll(
+            "img"
+        );
 
-        if(!img.src){
-            return Promise.resolve();
+    const promises = [];
+
+
+    images.forEach(function(img){
+
+        if(
+            img.complete &&
+            img.naturalWidth > 0
+        ){
+
+            return;
+
         }
 
-        img.crossOrigin = "anonymous";
 
-        if(img.complete){
-            if(img.naturalWidth > 0){
-                return Promise.resolve();
-            }
-        }
+        promises.push(
+            new Promise(function(resolve){
 
-        return new Promise(function(resolve){
-            img.onload = resolve;
-            img.onerror = resolve;
-        });
-    }));
+                let done = false;
+
+
+                function finish(){
+
+                    if(done){
+                        return;
+                    }
+
+                    done = true;
+
+                    resolve();
+
+                }
+
+
+                img.onload =
+                    finish;
+
+                img.onerror =
+                    finish;
+
+
+                setTimeout(
+                    finish,
+                    5000
+                );
+
+            })
+        );
+
+    });
+
+
+    return Promise.all(
+        promises
+    );
+
 }
 
 
-async function renderEmployeeCardCanvas(employee){
+/* =====================================
+   CAPTURE ONE CARD
+===================================== */
 
-    const stage = document.getElementById("pdfRenderStage");
-    stage.innerHTML = "";
+async function captureCard(employee){
 
-    const card = createPDFCard(employee);
-    card.classList.remove("pdf-card");
-    card.classList.add("pdf-render-card");
-
-    stage.appendChild(card);
-
-    await waitForImages(card);
-
-    /* Give the browser one paint cycle before canvas capture. */
-    await new Promise(function(resolve){
-        requestAnimationFrame(function(){
-            requestAnimationFrame(resolve);
-        });
-    });
-
-    const canvas = await html2canvas(card, {
-        width:900,
-        height:600,
-        scale:2,
-        useCORS:true,
-        allowTaint:false,
-        backgroundColor:"#1e1e68",
-        logging:false,
-        imageTimeout:15000
-    });
-
-    stage.innerHTML = "";
-
-    return canvas;
-}
+    const card =
+        createPDFCard(
+            employee
+        );
 
 
-function createPrintPages(selectedEmployees){
+    /* Hidden capture area */
 
-    const container = document.getElementById("pdfContainer");
-    container.innerHTML = "";
+    card.style.position =
+        "fixed";
 
-    let page = null;
+    card.style.left =
+        "-10000px";
 
-    selectedEmployees.forEach(function(employee, index){
+    card.style.top =
+        "0";
 
-        if(!page || page.children.length >= 10){
-            page = document.createElement("div");
-            page.className = "a4-page";
-            container.appendChild(page);
-        }
+    card.style.transform =
+        "none";
 
-        const wrapper = document.createElement("div");
-        wrapper.className = "pdf-card-wrapper";
-
-        const card = createPDFCard(employee);
-        wrapper.appendChild(card);
-        page.appendChild(wrapper);
-    });
-
-    return container;
-}
+    card.style.zIndex =
+        "-9999";
 
 
-/* ==============================
-   DOWNLOAD PDF
-   ============================== */
+    document.body.appendChild(
+        card
+    );
 
-document.getElementById("downloadPDFBtn")
-.addEventListener("click", async function(){
-
-    const selectedEmployees = getSelectedEmployeesForOutput();
-
-    if(!selectedEmployees){
-        return;
-    }
-
-    const { jsPDF } = window.jspdf;
-
-    const pdf = new jsPDF({
-        orientation:"portrait",
-        unit:"mm",
-        format:"a4",
-        compress:true
-    });
-
-    /* Exact A4 coordinates. Card is ALWAYS 85mm × 54mm. */
-    const left = 10;
-    const top = 8.5;
-    const cardW = 85;
-    const cardH = 54;
-    const colGap = 20;
-    const rowGap = 2.5;
 
     try{
 
-        for(let i = 0; i < selectedEmployees.length; i++){
+        await waitForImages(
+            card
+        );
 
-            if(i > 0 && i % 10 === 0){
-                pdf.addPage();
+
+        /*
+         * Small delay gives browser
+         * time to paint external images.
+         */
+
+        await new Promise(
+            function(resolve){
+
+                setTimeout(
+                    resolve,
+                    100
+                );
+
             }
+        );
 
-            const canvas = await renderEmployeeCardCanvas(selectedEmployees[i]);
-            const imgData = canvas.toDataURL("image/png");
 
-            const position = i % 10;
-            const col = position % 2;
-            const row = Math.floor(position / 2);
+        const canvas =
+            await html2canvas(
+                card,
+                {
+                    scale:2,
 
-            const x = left + col * (cardW + colGap);
-            const y = top + row * (cardH + rowGap);
+                    width:900,
+                    height:600,
 
-            pdf.addImage(
-                imgData,
-                "PNG",
-                x,
-                y,
-                cardW,
-                cardH,
-                undefined,
-                "FAST"
+                    windowWidth:900,
+                    windowHeight:600,
+
+                    backgroundColor:
+                        "#ffffff",
+
+                    useCORS:true,
+
+                    allowTaint:false,
+
+                    logging:false,
+
+                    scrollX:0,
+                    scrollY:0
+                }
             );
+
+
+        return canvas.toDataURL(
+            "image/jpeg",
+            0.95
+        );
+
+    }
+    finally{
+
+        card.remove();
+
+    }
+
+}
+
+
+/* =====================================
+   BUILD A4 PAGES
+===================================== */
+
+async function buildA4Pages(){
+
+    const selectedEmployees =
+        getSelectedEmployees();
+
+
+    if(
+        selectedEmployees.length === 0
+    ){
+
+        alert(
+            "PDF / Print করার জন্য অন্তত একজন Employee select করুন।"
+        );
+
+        return null;
+
+    }
+
+
+    const container =
+        document.getElementById(
+            "pdfContainer"
+        );
+
+
+    container.innerHTML = "";
+
+
+    container.style.display =
+        "block";
+
+
+    const pageImages = [];
+
+
+    /* ==================================
+       CAPTURE ALL EMPLOYEE CARDS
+    ================================== */
+
+    for(
+        let i = 0;
+        i < selectedEmployees.length;
+        i++
+    ){
+
+        const employee =
+            selectedEmployees[i];
+
+
+        try{
+
+            const image =
+                await captureCard(
+                    employee
+                );
+
+
+            pageImages.push({
+                employee:employee,
+                image:image
+            });
+
+        }
+        catch(error){
+
+            console.error(
+                "Card capture error:",
+                error
+            );
+
+            alert(
+                "Employee card তৈরি করতে সমস্যা হয়েছে:\n" +
+                (employee.name || employee.id)
+            );
+
+            return null;
+
         }
 
-        pdf.setProperties({
-            title:"Employee I-Cards",
-            subject:"Employee I-Card",
-            author:"M/S. Chakraborty Electricals"
-        });
-
-        pdf.save("Employee-I-Cards.pdf");
-
-    }catch(error){
-
-        console.error("PDF generation error:", error);
-        alert("PDF তৈরি করতে সমস্যা হয়েছে।\n\n" + error.message);
-
-    }finally{
-        document.getElementById("pdfRenderStage").innerHTML = "";
-    }
-});
-
-
-/* ==============================
-   PRINT — SAME CARD SIZE/LAYOUT
-   ============================== */
-
-document.getElementById("printPDFBtn")
-.addEventListener("click", function(){
-
-    const selectedEmployees = getSelectedEmployeesForOutput();
-
-    if(!selectedEmployees){
-        return;
     }
 
-    const container = createPrintPages(selectedEmployees);
 
-    container.style.display = "block";
-    container.style.position = "absolute";
-    container.style.left = "0";
-    container.style.top = "0";
-    container.style.width = "210mm";
-    container.style.background = "#ffffff";
+    /* ==================================
+       CREATE A4 PAGES
+       10 CARDS PER PAGE
+    ================================== */
 
-    setTimeout(function(){
-        window.print();
-    }, 300);
-});
+    let page = null;
+
+
+    pageImages.forEach(
+        function(item,index){
+
+            if(
+                !page ||
+                page.children.length >= 10
+            ){
+
+                page =
+                    document.createElement(
+                        "div"
+                    );
+
+                page.className =
+                    "a4-page";
+
+                container.appendChild(
+                    page
+                );
+
+            }
+
+
+            const wrapper =
+                document.createElement(
+                    "div"
+                );
+
+            wrapper.className =
+                "pdf-card-wrapper";
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                item.image;
+
+
+            image.style.width =
+                "85mm";
+
+            image.style.height =
+                "54mm";
+
+            image.style.display =
+                "block";
+
+            image.style.margin =
+                "0";
+
+            image.style.padding =
+                "0";
+
+            image.style.objectFit =
+                "fill";
+
+
+            wrapper.appendChild(
+                image
+            );
+
+
+            page.appendChild(
+                wrapper
+            );
+
+        }
+    );
+
+
+    return container;
+
+}
+
+
+/* =====================================
+   DOWNLOAD PDF
+===================================== */
+
+document
+.getElementById(
+    "downloadPDFBtn"
+)
+.addEventListener(
+    "click",
+    async function(){
+
+        const button =
+            this;
+
+
+        button.disabled =
+            true;
+
+        button.innerText =
+            "⏳ Creating PDF...";
+
+
+        try{
+
+            const container =
+                await buildA4Pages();
+
+
+            if(!container){
+
+                return;
+
+            }
+
+
+            const pages =
+                container.querySelectorAll(
+                    ".a4-page"
+                );
+
+
+            const {
+                jsPDF
+            } =
+                window.jspdf;
+
+
+            const pdf =
+                new jsPDF({
+
+                    orientation:
+                        "portrait",
+
+                    unit:
+                        "mm",
+
+                    format:
+                        "a4",
+
+                    compress:
+                        true
+
+                });
+
+
+            for(
+                let i = 0;
+                i < pages.length;
+                i++
+            ){
+
+                if(i > 0){
+
+                    pdf.addPage();
+
+                }
+
+
+                const page =
+                    pages[i];
+
+
+                const cards =
+                    page.querySelectorAll(
+                        ".pdf-card-wrapper"
+                    );
+
+
+                cards.forEach(
+                    function(wrapper,index){
+
+                        const image =
+                            wrapper.querySelector(
+                                "img"
+                            );
+
+
+                        const column =
+                            index % 2;
+
+                        const row =
+                            Math.floor(
+                                index / 2
+                            );
+
+
+                        const x =
+                            15 +
+                            column * 95;
+
+
+                        const y =
+                            8 +
+                            row * 58;
+
+
+                        pdf.addImage(
+
+                            image.src,
+
+                            "JPEG",
+
+                            x,
+
+                            y,
+
+                            85,
+
+                            54,
+
+                            undefined,
+
+                            "FAST"
+
+                        );
+
+                    }
+                );
+
+            }
+
+
+            pdf.setProperties({
+
+                title:
+                    "Employee I-Cards",
+
+                subject:
+                    "Employee I-Card",
+
+                author:
+                    "M/S. Chakraborty Electricals"
+
+            });
+
+
+            pdf.save(
+                "Employee-I-Cards.pdf"
+            );
+
+
+        }
+        catch(error){
+
+            console.error(
+                "PDF Download Error:",
+                error
+            );
+
+
+            alert(
+                "PDF download করতে সমস্যা হয়েছে!\n\n" +
+                error.message
+            );
+
+        }
+        finally{
+
+            const container =
+                document.getElementById(
+                    "pdfContainer"
+                );
+
+
+            container.innerHTML =
+                "";
+
+            container.style.display =
+                "none";
+
+
+            button.disabled =
+                false;
+
+            button.innerText =
+                "📄 Download PDF";
+
+        }
+
+    }
+);
+
+
+/* =====================================
+   PRINT
+===================================== */
+
+document
+.getElementById(
+    "printPDFBtn"
+)
+.addEventListener(
+    "click",
+    async function(){
+
+        const button =
+            this;
+
+
+        button.disabled =
+            true;
+
+        button.innerText =
+            "⏳ Preparing Print...";
+
+
+        try{
+
+            const container =
+                await buildA4Pages();
+
+
+            if(!container){
+
+                return;
+
+            }
+
+
+            /*
+             * Same exact A4 layout
+             * as downloaded PDF.
+             */
+
+            container.style.display =
+                "block";
+
+
+            container.style.position =
+                "static";
+
+
+            container.style.width =
+                "210mm";
+
+
+            container.style.background =
+                "#ffffff";
+
+
+            await new Promise(
+                function(resolve){
+
+                    setTimeout(
+                        resolve,
+                        300
+                    );
+
+                }
+            );
+
+
+            window.print();
+
+        }
+        catch(error){
+
+            console.error(
+                "Print Error:",
+                error
+            );
+
+
+            alert(
+                "Print তৈরি করতে সমস্যা হয়েছে!\n\n" +
+                error.message
+            );
+
+        }
+        finally{
+
+            button.disabled =
+                false;
+
+            button.innerText =
+                "🖨️ Print";
+
+        }
+
+    }
+);
+
+
+/* =====================================
+   AFTER PRINT
+===================================== */
+
+window.addEventListener(
+    "afterprint",
+    function(){
+
+        const container =
+            document.getElementById(
+                "pdfContainer"
+            );
+
+
+        container.innerHTML =
+            "";
+
+        container.style.display =
+            "none";
+
+    }
+);
     
 </script>
 
@@ -1652,7 +2376,6 @@ document.getElementById("printPDFBtn")
      ============================== -->
 
 <div id="pdfContainer" style="display:none;"></div>
-<div id="pdfRenderStage" class="pdf-render-stage" aria-hidden="true"></div>
 
 
 
