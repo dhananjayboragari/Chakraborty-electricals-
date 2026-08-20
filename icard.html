@@ -63,26 +63,95 @@ body{
    ========================================================= */
 .cream{
     position:absolute;
+
     left:-25px;
     bottom:-20px;
+
     width:950px;
     height:390px;
-    background:#f3f3e8;
-    border-radius:50% 50% 0 0 / 35% 35% 0 0;
+
+    background-color:#f3f3e8;
+
+    background-image:
+        linear-gradient(
+            135deg,
+            rgba(184,150,70,.055) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(184,150,70,.055) 50%,
+            rgba(184,150,70,.055) 75%,
+            transparent 75%
+        );
+
+    background-size:34px 34px;
+
+    border-radius:
+        50% 50% 0 0 /
+        35% 35% 0 0;
+
     transform:rotate(-3deg);
+
     z-index:2;
-}
+  }
 
 /* white body extension to bottom */
 .cream-bottom{
     position:absolute;
+
     left:0;
     bottom:0;
+
     width:100%;
     height:255px;
-    background:#f3f3e8;
+
+    background-color:#f3f3e8;
+
+    background-image:
+        linear-gradient(
+            135deg,
+            rgba(184,150,70,.035) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(184,150,70,.035) 50%,
+            rgba(184,150,70,.035) 75%,
+            transparent 75%
+        );
+
+    background-size:34px 34px;
+
     z-index:2;
-}
+                 }
+  .cream-bottom::before{
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+        linear-gradient(
+            45deg,
+            transparent 46%,
+            rgba(184,150,70,.045) 47%,
+            rgba(184,150,70,.045) 53%,
+            transparent 54%
+        ),
+        linear-gradient(
+            -45deg,
+            transparent 46%,
+            rgba(184,150,70,.045) 47%,
+            rgba(184,150,70,.045) 53%,
+            transparent 54%
+        );
+
+    background-size:24px 24px;
+
+    opacity:.65;
+
+    pointer-events:none;
+
+    z-index:0;
+  }
 
 .cream-line{
     position:absolute;
@@ -235,20 +304,54 @@ box-shadow:
    ========================================================= */
 .left-details{
     position:absolute;
-    left:35px;
-    top:400px;
+
+    left:30px;
+    top:395px;
+
     width:475px;
+
     z-index:10;
+
     color:#17175e;
+
     font-size:24px;
+
     line-height:1.4;
-  font-weight:700;
-}
+
+    font-weight:700;
+
+    padding:10px 14px 8px 12px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.62),
+            rgba(255,255,255,.20)
+        );
+
+    border-left:4px solid #b89646;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 4px 12px rgba(23,23,94,.08);
+  }
 
 .row{
     display:flex;
-    margin-bottom:3px;
-}
+
+    margin-bottom:4px;
+
+    padding-bottom:2px;
+
+    border-bottom:
+        1px solid rgba(184,150,70,.18);
+  }
+
+  .row:last-child{
+    border-bottom:none;
+  }
+  
   .row::before{
     content:"◆";
 
@@ -275,19 +378,53 @@ box-shadow:
    ========================================================= */
 .right-details{
     position:absolute;
-    left:480px;
-    top:300px;
+
+    left:475px;
+    top:290px;
+
     width:400px;
+
     z-index:10;
+
     color:#17175e;
+
     font-size:24px;
+
     line-height:1.45;
-  font-weight:700;
-}
+
+    font-weight:700;
+
+    padding:10px 12px 10px 14px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.22),
+            rgba(255,255,255,.58)
+        );
+
+    border-right:4px solid #b89646;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 4px 12px rgba(23,23,94,.08);
+  }
 
 .rrow{
     display:flex;
-}
+
+    padding-bottom:3px;
+    margin-bottom:4px;
+
+    border-bottom:
+        1px solid rgba(184,150,70,.18);
+  }
+  
+  .rrow:last-child{
+    border-bottom:none;
+  }
+  
   .rrow::before{
     content:"◆";
 
@@ -298,6 +435,8 @@ box-shadow:
     margin-right:8px;
 
     margin-top:8px;
+    text-shadow:
+        0 0 4px rgba(184,150,70,.45);
   }
 
 .rlabel{
@@ -316,27 +455,72 @@ box-shadow:
    ========================================================= */
 .validity{
     position:absolute;
+
     left:0;
     bottom:0;
+
     width:610px;
     height:52px;
 
-    background:#b93a36;
+    background:
+        linear-gradient(
+            90deg,
+            #9f302d 0%,
+            #b93a36 45%,
+            #c44742 100%
+        );
+
     color:#fff;
 
     z-index:15;
 
     display:flex;
+
     align-items:center;
 
     padding-left:25px;
 
     font-size:16px;
+
     font-weight:700;
-    letter-spacing:.2px;
+
+    letter-spacing:.3px;
 
     border-top:3px solid #d8c27a;
+
+    box-shadow:
+        0 -3px 10px rgba(23,23,94,.15);
+
+    overflow:hidden;
+  }
+
+  .validity::before{
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        repeating-linear-gradient(
+            -45deg,
+            transparent 0px,
+            transparent 8px,
+            rgba(255,255,255,.055) 8px,
+            rgba(255,255,255,.055) 10px
+        );
+
+    pointer-events:none;
+                 }
+
+  .validity{
+    isolation:isolate;
 }
+
+.validity{
+    text-shadow:
+        0 1px 2px rgba(0,0,0,.25);
+  }
 
 /* =========================================================
    SECTION 10 - SIGNATURE
