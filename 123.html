@@ -1752,6 +1752,318 @@ body{
 }
 
 
+  /* =========================================
+   COMPACT I-CARD PREVIEW
+   ========================================= */
+
+@media(min-width:701px){
+
+    .preview-card-area{
+        min-height:250px !important;
+        height:250px !important;
+        padding:5px;
+    }
+
+    .icard-preview-panel{
+        padding:15px;
+    }
+}
+
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    .preview-card-area{
+        min-height:250px !important;
+        height:250px !important;
+        padding:3px;
+    }
+
+}
+
+
+/* SMALL MOBILE */
+
+@media(max-width:420px){
+
+    .preview-card-area{
+        min-height:230px !important;
+        height:230px !important;
+    }
+
+  }
+
+  /* SAME HEIGHT */
+
+@media(min-width:701px){
+
+    .preview-card-area{
+        min-height:350px !important;
+        height:350px !important;
+        padding:5px;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        overflow:visible !important;
+    }
+
+    .icard-preview-panel{
+        padding:15px;
+        overflow:visible !important;
+    }
+
+    .preview-card-area .card{
+        transform:scale(.40) !important;
+        transform-origin:center center !important;
+        margin:0 !important;
+    }
+  }
+
+@media(max-width:700px){
+
+    /* Employee Details */
+    .top-icard-layout .employee-controls{
+        width:100%;
+        height:auto !important;
+        box-sizing:border-box;
+    }
+
+    /* I-Card Preview */
+    .top-icard-layout .icard-preview-panel{
+        width:100%;
+        height:350px !important;
+        box-sizing:border-box;
+        overflow:visible !important;
+    }
+
+    /* Card-এর জন্য জায়গা */
+    .preview-card-area{
+        height:300px !important;
+        min-height:300px !important;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        overflow:visible !important;
+    }
+
+    /* Card পুরোটা দেখাবে */
+    .preview-card-area .card{
+        transform:scale(.43) !important;
+        transform-origin:center center !important;
+        margin:0 !important;
+    }
+      }
+
+
+          /* =========================================
+   MAIN PAGE HEADER
+   ========================================= */
+
+.main-page-header{
+    width:94%;
+    margin:18px auto 14px;
+
+    min-height:78px;
+    padding:14px 20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #071b3a 0%,
+            #0d3b78 50%,
+            #071b3a 100%
+        );
+
+    border:1px solid rgba(255,255,255,.25);
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.18);
+
+    position:relative;
+    overflow:hidden;
+}
+
+
+/* Decorative shine */
+.main-page-header::after{
+    content:"";
+
+    position:absolute;
+    left:5%;
+    right:5%;
+    bottom:6px;
+
+    height:2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #f5d77a,
+            #fff7d0,
+            #f5d77a,
+            transparent
+        );
+
+    opacity:.85;
+}
+
+
+/* Left symbol */
+.header-logo{
+    width:46px;
+    height:46px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    color:#f5d77a;
+    font-size:27px;
+    font-weight:900;
+
+    border:1px solid rgba(245,215,122,.7);
+
+    background:rgba(255,255,255,.08);
+
+    box-shadow:
+        0 0 12px rgba(245,215,122,.25);
+}
+
+
+/* Center text */
+.header-text{
+    flex:1;
+    text-align:center;
+    padding:0 15px;
+}
+
+.header-text h1{
+    margin:0;
+
+    color:#ffffff;
+
+    font-size:23px;
+    font-weight:900;
+
+    letter-spacing:1px;
+}
+
+.header-text p{
+    margin:5px 0 0;
+
+    color:#f5d77a;
+
+    font-size:12px;
+    font-weight:800;
+
+    letter-spacing:2px;
+}
+
+
+/* Right badge */
+.header-badge{
+    padding:9px 13px;
+
+    border-radius:10px;
+
+    color:#ffffff;
+
+    font-size:11px;
+    font-weight:800;
+
+    background:rgba(255,255,255,.10);
+
+    border:1px solid rgba(255,255,255,.22);
+
+    white-space:nowrap;
+}
+
+
+/* =========================================
+   MOBILE HEADER
+   ========================================= */
+
+@media(max-width:700px){
+
+    .main-page-header{
+        width:94%;
+        min-height:auto;
+
+        padding:12px 12px;
+
+        border-radius:15px;
+    }
+
+    .header-logo{
+        width:38px;
+        height:38px;
+
+        font-size:22px;
+    }
+
+    .header-text{
+        padding:0 8px;
+    }
+
+    .header-text h1{
+        font-size:14px;
+        letter-spacing:.5px;
+    }
+
+    .header-text p{
+        font-size:8px;
+        letter-spacing:1px;
+        margin-top:3px;
+    }
+
+    .header-badge{
+        padding:7px 8px;
+        font-size:8px;
+    }
+
+}
+
+
+@media(max-width:420px){
+
+    .main-page-header{
+        padding:10px;
+    }
+
+    .header-logo{
+        display:none;
+    }
+
+    .header-text h1{
+        font-size:13px;
+    }
+
+    .header-text p{
+        font-size:7px;
+    }
+
+    .header-badge{
+        font-size:7px;
+        padding:6px;
+    }
+
+  }
+  
 </style>
 
   
@@ -1776,10 +2088,36 @@ firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
 const db = firebase.firestore();
+
+  const IMGBB_API_KEY = "a5d421a5cbe17ebcfd2e0b90915c2501";
 </script>
 </head>
 
 <body>
+
+  <!-- ==============================
+     MAIN PAGE HEADER
+     ============================== -->
+
+<div class="main-page-header">
+
+    <div class="header-logo">
+        ✦
+    </div>
+
+    <div class="header-text">
+        <h1>M/S. CHAKRABORTY ELECTRICALS</h1>
+        <p>EMPLOYEE I-CARD MANAGEMENT</p>
+    </div>
+
+    <div class="header-badge">
+        🪪 ID CARD PORTAL
+    </div>
+
+</div>
+
+
+  
 
   <!-- ==============================
    TOP I-CARD AREA
@@ -1813,6 +2151,14 @@ const db = firebase.firestore();
     accept="image/*"
 >
 
+  <button
+    type="button"
+    id="uploadEmployeePhotoBtn"
+    style="display:none;margin-top:10px;"
+>
+    ⬆ Upload Photo
+</button>
+
 <small style="display:block;margin-top:5px;color:#777;">
     Database photo automatically loads. Upload here only if you want a new current photo.
 </small>
@@ -1835,14 +2181,30 @@ const db = firebase.firestore();
     >
 
 
-    <!-- Authorized Signature -->
-    <label for="signatureUpload">Authorized Signature</label>
+    <label for="authorizedSignatureSelect">
+    Authorized Signature
+</label>
+
+<select id="authorizedSignatureSelect">
+    <option value="">-- Select Authorized Person --</option>
+    <option value="dhananjay">Dhananjay Roy</option>
+    <option value="soven">Soven Chakraborty</option>
+    <option value="new">New Authorized</option>
+</select>
+
+<div id="newSignatureUploadBox" style="display:none; margin-top:10px;">
+
+    <label for="signatureUpload">
+        Upload Signature Image
+    </label>
 
     <input
         type="file"
         id="signatureUpload"
         accept="image/*"
     >
+
+</div>
 
 </div>
 
@@ -2257,42 +2619,122 @@ if(employee.photoURL){
    EMPLOYEE PHOTO UPLOAD
 ===================================== */
 
-document
-    .getElementById("employeePhoto")
-    .addEventListener(
-        "change",
-        function(){
+let selectedEmployeePhotoFile = null;
 
-            const file =
-                this.files[0];
+const employeePhotoInput =
+    document.getElementById("employeePhoto");
 
-            if(!file){
-                return;
-            }
+const uploadEmployeePhotoBtn =
+    document.getElementById("uploadEmployeePhotoBtn");
+
+const employeePhotoPreview =
+    document.getElementById("employeePhotoPreview");
 
 
-            const reader =
-                new FileReader();
+employeePhotoInput.addEventListener(
+    "change",
+    function(){
+
+        const file = this.files[0];
+
+        if(!file){
+
+            selectedEmployeePhotoFile = null;
+
+            uploadEmployeePhotoBtn.style.display =
+                "none";
+
+            return;
+        }
 
 
-            reader.onload =
-                function(event){
-
-                    document
-                        .getElementById(
-                            "employeePhotoPreview"
-                        )
-                        .src =
-                        event.target.result;
-
-                };
+        selectedEmployeePhotoFile = file;
 
 
-            reader.readAsDataURL(file);
+        /* Immediately show preview */
+
+        const reader =
+            new FileReader();
+
+        reader.onload =
+            function(event){
+
+                employeePhotoPreview.src =
+                    event.target.result;
+
+            };
+
+        reader.readAsDataURL(file);
+
+
+        /* Show Upload button */
+
+        uploadEmployeePhotoBtn.style.display =
+            "block";
+
+    }
+);
+
+    /* =====================================
+   AUTHORIZED SIGNATURE SELECT
+===================================== */
+
+const authorizedSignatureSelect =
+    document.getElementById("authorizedSignatureSelect");
+
+const newSignatureUploadBox =
+    document.getElementById("newSignatureUploadBox");
+
+const signaturePreview =
+    document.getElementById("signaturePreview");
+
+const authorizedSignatures = {
+
+    dhananjay:
+        "https://i.ibb.co/mCZNyxd3/dhananjay.png",
+
+    soven:
+        "https://i.ibb.co/mCZNyxd3/soven.png"
+
+};
+
+authorizedSignatureSelect.addEventListener(
+    "change",
+    function(){
+
+        const selected = this.value;
+
+        if(selected === "new"){
+
+            newSignatureUploadBox.style.display =
+                "block";
+
+            return;
+        }
+
+        newSignatureUploadBox.style.display =
+            "none";
+
+        if(selected === "dhananjay"){
+
+            signaturePreview.src =
+                authorizedSignatures.dhananjay;
 
         }
-    );
+        else if(selected === "soven"){
 
+            signaturePreview.src =
+                authorizedSignatures.soven;
+
+        }
+        else{
+
+            signaturePreview.src = "";
+
+        }
+
+    }
+);
 
 /* =====================================
    DATE OF ISSUE
@@ -2383,6 +2825,144 @@ document
 
         }
     );
+
+
+
+    /* =====================================
+   IMGBB PHOTO UPLOAD
+===================================== */
+
+async function uploadEmployeePhotoToImgBB(file){
+
+    if(!file){
+        return "";
+    }
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "key",
+        IMGBB_API_KEY
+    );
+
+    formData.append(
+        "image",
+        file
+    );
+
+    const response =
+        await fetch(
+            "https://api.imgbb.com/1/upload",
+            {
+                method:"POST",
+                body:formData
+            }
+        );
+
+    const data =
+        await response.json();
+
+    if(
+        !data.success ||
+        !data.data ||
+        !data.data.url
+    ){
+
+        throw new Error(
+            "ImgBB upload failed"
+        );
+
+    }
+
+    return data.data.url;
+    }
+
+    uploadEmployeePhotoBtn.addEventListener(
+    "click",
+    async function(){
+
+        if(!selectedEmployeePhotoFile){
+            return;
+        }
+
+        const employeeId =
+            document.getElementById(
+                "employeeSelect"
+            ).value;
+
+        if(!employeeId){
+
+            alert(
+                "Please select an employee first."
+            );
+
+            return;
+        }
+
+
+        try{
+
+            uploadEmployeePhotoBtn.disabled =
+                true;
+
+            uploadEmployeePhotoBtn.innerText =
+                "Uploading...";
+
+
+            /* Upload to ImgBB */
+
+            const photoURL =
+                await uploadEmployeePhotoToImgBB(
+                    selectedEmployeePhotoFile
+                );
+
+
+            /* Save URL to Firestore */
+
+            await db
+                .collection("employees")
+                .doc(employeeId)
+                .update({
+
+                    photoURL: photoURL
+
+                });
+
+
+            /* Keep preview updated */
+
+            employeePhotoPreview.src =
+                photoURL;
+
+
+            alert(
+                "Employee photo uploaded successfully."
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Photo upload error:",
+                error
+            );
+
+            alert(
+                "Photo upload failed."
+            );
+
+        }
+
+
+        uploadEmployeePhotoBtn.disabled =
+            false;
+
+        uploadEmployeePhotoBtn.innerText =
+            "⬆ Upload Photo";
+
+    }
+);
 
 
 /* =====================================
