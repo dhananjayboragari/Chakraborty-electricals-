@@ -1137,7 +1137,36 @@ border:2px solid rgba(23,23,94,.25);
     display:block;
 }
 
+/* =========================================================
+   KEEP NORMAL LOOK IN PDF / PRINT
+   ========================================================= */
 
+.pdf-card .left-details{
+    background-color:transparent !important;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.88) 0%,
+            rgba(255,255,255,.55) 30%,
+            rgba(255,255,255,.25) 65%,
+            rgba(255,255,255,.10) 100%
+        ) !important;
+}
+
+.pdf-card .right-details{
+    background-color:transparent !important;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.05) 0%,
+            rgba(255,255,255,.10) 25%,
+            rgba(255,255,255,.25) 50%,
+            rgba(255,255,255,.45) 75%,
+            rgba(255,255,255,.68) 100%
+        ) !important;
+  }
   
 </style>
 
