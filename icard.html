@@ -2171,14 +2171,30 @@ const db = firebase.firestore();
     >
 
 
-    <!-- Authorized Signature -->
-    <label for="signatureUpload">Authorized Signature</label>
+    <label for="authorizedSignatureSelect">
+    Authorized Signature
+</label>
+
+<select id="authorizedSignatureSelect">
+    <option value="">-- Select Authorized Person --</option>
+    <option value="dhananjay">Dhananjay Roy</option>
+    <option value="soven">Soven Chakraborty</option>
+    <option value="new">New Authorized</option>
+</select>
+
+<div id="newSignatureUploadBox" style="display:none; margin-top:10px;">
+
+    <label for="signatureUpload">
+        Upload Signature Image
+    </label>
 
     <input
         type="file"
         id="signatureUpload"
         accept="image/*"
     >
+
+</div>
 
 </div>
 
@@ -2629,6 +2645,66 @@ document
         }
     );
 
+    /* =====================================
+   AUTHORIZED SIGNATURE SELECT
+===================================== */
+
+const authorizedSignatureSelect =
+    document.getElementById("authorizedSignatureSelect");
+
+const newSignatureUploadBox =
+    document.getElementById("newSignatureUploadBox");
+
+const signaturePreview =
+    document.getElementById("signaturePreview");
+
+const authorizedSignatures = {
+
+    dhananjay:
+        "https://i.ibb.co/mCZNyxd3/dhananjay.png",
+
+    soven:
+        "https://i.ibb.co/mCZNyxd3/soven.png"
+
+};
+
+authorizedSignatureSelect.addEventListener(
+    "change",
+    function(){
+
+        const selected = this.value;
+
+        if(selected === "new"){
+
+            newSignatureUploadBox.style.display =
+                "block";
+
+            return;
+        }
+
+        newSignatureUploadBox.style.display =
+            "none";
+
+        if(selected === "dhananjay"){
+
+            signaturePreview.src =
+                authorizedSignatures.dhananjay;
+
+        }
+        else if(selected === "soven"){
+
+            signaturePreview.src =
+                authorizedSignatures.soven;
+
+        }
+        else{
+
+            signaturePreview.src = "";
+
+        }
+
+    }
+);
 
 /* =====================================
    DATE OF ISSUE
