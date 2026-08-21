@@ -46,6 +46,15 @@ body{
     position:absolute;
     inset:0;
     background:#20206b;
+
+    background-image:
+        linear-gradient(45deg, rgba(255,255,255,.055) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,.055) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255,255,255,.055) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,.055) 75%);
+
+    background-size:32px 32px;
+    background-position:0 0, 0 16px, 16px -16px, -16px 0;
 }
 
 /* =========================================================
@@ -54,67 +63,178 @@ body{
    ========================================================= */
 .cream{
     position:absolute;
+
     left:-25px;
     bottom:-20px;
+
     width:950px;
     height:390px;
-    background:#f3f3e8;
-    border-radius:50% 50% 0 0 / 35% 35% 0 0;
+
+    background-color:#f3f3e8;
+
+    background-image:
+        linear-gradient(
+            135deg,
+            rgba(184,150,70,.055) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(184,150,70,.055) 50%,
+            rgba(184,150,70,.055) 75%,
+            transparent 75%
+        );
+
+    background-size:34px 34px;
+
+    border-radius:
+        50% 50% 0 0 /
+        35% 35% 0 0;
+
     transform:rotate(-3deg);
+
     z-index:2;
-}
+  }
 
 /* white body extension to bottom */
 .cream-bottom{
     position:absolute;
+
     left:0;
     bottom:0;
+
     width:100%;
     height:255px;
-    background:#f3f3e8;
+
+    background-color:#f3f3e8;
+
+    background-image:
+        linear-gradient(
+            135deg,
+            rgba(184,150,70,.035) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(184,150,70,.035) 50%,
+            rgba(184,150,70,.035) 75%,
+            transparent 75%
+        );
+
+    background-size:34px 34px;
+
     z-index:2;
+                 }
+  .cream-bottom::before{
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+        linear-gradient(
+            45deg,
+            transparent 46%,
+            rgba(184,150,70,.045) 47%,
+            rgba(184,150,70,.045) 53%,
+            transparent 54%
+        ),
+        linear-gradient(
+            -45deg,
+            transparent 46%,
+            rgba(184,150,70,.045) 47%,
+            rgba(184,150,70,.045) 53%,
+            transparent 54%
+        );
+
+    background-size:24px 24px;
+
+    opacity:.65;
+
+    pointer-events:none;
+
+    z-index:0;
+  }
+
+.cream-line{
+    position:absolute;
+    left:-30px;
+    bottom:355px;
+    width:960px;
+    height:390px;
+
+    border-radius:50% 50% 0 0 / 35% 35% 0 0;
+
+    border-top:3px solid rgba(184,150,70,.85);
+
+    transform:rotate(-3deg);
+
+    z-index:5;
+    pointer-events:none;
 }
-
-
 
 /* =========================================================
    SECTION 4 - COMPANY HEADER
    ========================================================= */
 .header{
     position:absolute;
-    top:55px;
-    left:45px;
-    width:810px;
+    top:50px;
+    left:110px;
+    width:750px;
     text-align:center;
     color:#fff;
     z-index:10;
 }
 
 .company-name{
-    font-size:40px;
+    font-size:36px;
     font-weight:900;
     letter-spacing:.6px;
     line-height:1.05;
-    padding-left:40px;
+    padding-left:0px;
     white-space:nowrap;
 }
+  .company-name::after{
+    content:"";
+    display:block;
+
+    width:340px;
+    height:4px;
+
+    margin:10px auto 0;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #fffbe8 0%,
+            #fff3b0 8%,
+            #d8c27a 18%,
+            rgba(216,194,122,.65) 38%,
+            rgba(216,194,122,.25) 65%,
+            transparent 100%
+        );
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 4px rgba(255,240,170,.9),
+        0 0 10px rgba(216,194,122,.65),
+        0 0 20px rgba(216,194,122,.35);
+  }
 
 .address{
     margin-top:8px;
-    font-size:22px;
+    font-size:24px;
     line-height:1.2;
 }
 
 .sub{
     margin-top:8px;
-    font-size:21px;
+    font-size:22px;
     line-height:1.25;
 }
 
 .wb-logo-text{
     position:absolute;
     right:0px;
-    bottom:-30px;
+    bottom:-20px;
     width:180px;
     z-index:12;
   transform:translateX(40px);
@@ -134,12 +254,15 @@ body{
 .photo{
     position:absolute;
     left:45px;
-    top:180px;
+    top:160px;
     width:205px;
     height:205px;
     border-radius:50%;
     overflow:hidden;
-    border:3px solid #17175e;
+    border:2px solid #17175e;
+box-shadow:
+    0 0 0 4px #f3f3e8,
+    0 0 0 7px rgba(184,150,70,.85);
     background:#2bc7ab;
     z-index:12;
 }
@@ -151,6 +274,7 @@ body{
     object-position:center;
     border-radius:50%;
     display:block;
+  
   }
 
 
@@ -159,35 +283,88 @@ body{
    ========================================================= */
 .watermark{
     position:absolute;
-    left:330px;
+    left:300px;
     top:365px;
     z-index:4;
-    color:rgba(105,105,175,.17);
+
+    color:rgba(32,32,107,.10);
+
     font-size:72px;
     font-weight:900;
-    letter-spacing:1px;
-    transform:skewX(-8deg);
-}
+    letter-spacing:3px;
 
+    transform:rotate(-12deg) skewX(-8deg);
+
+    white-space:nowrap;
+
+    pointer-events:none;
+  }
 /* =========================================================
    SECTION 7 - LEFT EMPLOYEE DETAILS
    ========================================================= */
 .left-details{
     position:absolute;
-    left:35px;
-    top:400px;
+
+    left:30px;
+    top:380px;
+
     width:475px;
+
     z-index:10;
+
     color:#17175e;
+
     font-size:24px;
+
     line-height:1.4;
-  font-weight:700;
-}
+
+    font-weight:700;
+
+    padding:10px 14px 8px 12px;
+
+    background:
+    linear-gradient(
+        90deg,
+        rgba(255,255,255,.88) 0%,
+        rgba(255,255,255,.55) 30%,
+        rgba(255,255,255,.25) 65%,
+        rgba(255,255,255,.10) 100%
+    );
+
+    border-left:4px solid #b89646;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 3px 10px rgba(23,23,94,.14);
+  }
 
 .row{
     display:flex;
-    margin-bottom:3px;
-}
+
+    margin-bottom:4px;
+
+    padding-bottom:2px;
+
+    border-bottom:
+        1px solid rgba(184,150,70,.18);
+  }
+
+  .row:last-child{
+    border-bottom:none;
+  }
+  
+  .row::before{
+    content:"◆";
+
+    color:#b89646;
+
+    font-size:18px;
+
+    margin-right:8px;
+
+    margin-top:7px;
+  }
 
 .label{
     width:190px;
@@ -203,19 +380,69 @@ body{
    ========================================================= */
 .right-details{
     position:absolute;
-    left:480px;
-    top:300px;
+
+    left:475px;
+    top:290px;
+
     width:400px;
+
     z-index:10;
+
     color:#17175e;
+
     font-size:24px;
+
     line-height:1.45;
-  font-weight:700;
-}
+
+    font-weight:700;
+
+    padding:10px 12px 10px 14px;
+
+    background:
+    linear-gradient(
+        90deg,
+        rgba(255,255,255,.05) 0%,
+        rgba(255,255,255,.10) 25%,
+        rgba(255,255,255,.25) 50%,
+        rgba(255,255,255,.45) 75%,
+        rgba(255,255,255,.68) 100%
+    );
+
+    border-right:4px solid #b89646;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 3px 10px rgba(23,23,94,.14);
+  }
 
 .rrow{
     display:flex;
-}
+
+    padding-bottom:3px;
+    margin-bottom:4px;
+
+    border-bottom:
+        1px solid rgba(184,150,70,.18);
+  }
+  
+  .rrow:last-child{
+    border-bottom:none;
+  }
+  
+  .rrow::before{
+    content:"◆";
+
+    color:#b89646;
+
+    font-size:18px;
+
+    margin-right:8px;
+
+    margin-top:8px;
+    text-shadow:
+        0 0 4px rgba(184,150,70,.45);
+  }
 
 .rlabel{
     width:220px;
@@ -233,18 +460,109 @@ body{
    ========================================================= */
 .validity{
     position:absolute;
+
     left:0;
     bottom:0;
+
     width:610px;
     height:52px;
-    background:#b93a36;
+
+    background:
+        linear-gradient(
+            90deg,
+            #9f302d 0%,
+            #b93a36 45%,
+            #c44742 100%
+        );
+
     color:#fff;
+
     z-index:15;
+
     display:flex;
+
     align-items:center;
-    padding-left:18px;
+
+    padding-left:25px;
+
     font-size:16px;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+    border-top:3px solid #d8c27a;
+
+    box-shadow:
+        0 -3px 10px rgba(23,23,94,.15);
+
+    overflow:hidden;
+  }
+
+  .validity{
+    position:absolute;
+
+    left:0;
+    bottom:0;
+
+    width:610px;
+    height:52px;
+
+    background:
+        repeating-linear-gradient(
+            -45deg,
+            transparent 0px,
+            transparent 8px,
+            rgba(255,255,255,.055) 8px,
+            rgba(255,255,255,.055) 10px
+        ),
+        linear-gradient(
+            90deg,
+            #9f302d 0%,
+            #b93a36 45%,
+            #c44742 100%
+        );
+
+    color:#fff;
+
+    z-index:15;
+
+    display:flex;
+
+    align-items:center;
+
+    padding-left:25px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+    border-top:3px solid #d8c27a;
+
+    box-shadow:
+        0 -3px 10px rgba(23,23,94,.15);
+
+    overflow:hidden;
+
+    isolation:isolate;
+
+    text-shadow:
+        0 1px 2px rgba(0,0,0,.25);
+  }
+
+    pointer-events:none;
+                 }
+
+  .validity{
+    isolation:isolate;
 }
+
+.validity{
+    text-shadow:
+        0 1px 2px rgba(0,0,0,.25);
+  }
 
 /* =========================================================
    SECTION 10 - SIGNATURE
@@ -258,6 +576,8 @@ body{
     text-align:center;
     color:#171717;
 }
+
+  
 
 .sign-name{
     font-family:"Brush Script MT","Segoe Script",cursive;
@@ -275,10 +595,19 @@ body{
 
 .sign-line{
     width:225px;
-    height:2px;
-    background:#222;
+    height:4px;
     margin:auto;
-}
+
+    background:#d8c27a;
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 3px #d8c27a,
+        0 0 7px rgba(216,194,122,.75);
+
+    display:block;
+  }
 
 .sign-title{
     margin-top:6px;
@@ -781,6 +1110,26 @@ border:2px solid rgba(23,23,94,.25);
     box-shadow:0 4px 12px rgba(0,0,0,.18);
 }
 
+  .card::after{
+    content:"";
+    position:absolute;
+
+    top:22px;
+    right:25px;
+
+    width:22px;
+    height:22px;
+
+    background:rgba(243,243,232,.18);
+
+    transform:rotate(45deg);
+
+    border:2px solid rgba(243,243,232,.35);
+
+    z-index:25;
+    pointer-events:none;
+  }
+  
 .top-left-logo img{
     width:100%;
     height:100%;
@@ -788,8 +1137,613 @@ border:2px solid rgba(23,23,94,.25);
     display:block;
 }
 
+/* =========================================================
+   KEEP NORMAL LOOK IN PDF / PRINT
+   ========================================================= */
 
+.pdf-card .left-details{
+    background-color:transparent !important;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.88) 0%,
+            rgba(255,255,255,.55) 30%,
+            rgba(255,255,255,.25) 65%,
+            rgba(255,255,255,.10) 100%
+        ) !important;
+}
+
+.pdf-card .right-details{
+    background-color:transparent !important;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.05) 0%,
+            rgba(255,255,255,.10) 25%,
+            rgba(255,255,255,.25) 50%,
+            rgba(255,255,255,.45) 75%,
+            rgba(255,255,255,.68) 100%
+        ) !important;
+  }
   
+
+
+/* =====================================================
+   NEW I-CARD PAGE LAYOUT
+   LEFT = DETAILS
+   RIGHT = PREVIEW
+   BOTTOM = MULTIPLE EMPLOYEE I-CARD
+   ===================================================== */
+
+.top-icard-layout{
+    width:min(1400px,96%);
+    margin:20px auto;
+    display:grid;
+    grid-template-columns:420px minmax(0,1fr);
+    gap:24px;
+    align-items:start;
+}
+
+
+/* ==========================
+   LEFT - EMPLOYEE DETAILS
+   ========================== */
+
+.top-icard-layout .employee-controls{
+    width:100%;
+    margin:0;
+    box-sizing:border-box;
+}
+
+
+/* ==========================
+   RIGHT - I CARD PREVIEW
+   ========================== */
+
+.icard-preview-panel{
+    min-width:0;
+    background:#fff;
+    border-radius:18px;
+    padding:20px;
+    box-sizing:border-box;
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.10);
+
+    border:1px solid #e8ebf0;
+}
+
+
+.preview-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+    padding-bottom:14px;
+    border-bottom:1px solid #e9edf2;
+}
+
+.preview-title > span{
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:#17175e;
+    color:#fff;
+
+    font-size:20px;
+}
+
+.preview-title strong{
+    display:block;
+    color:#17175e;
+    font-size:19px;
+}
+
+.preview-title small{
+    display:block;
+    margin-top:3px;
+    color:#777;
+    font-size:12px;
+}
+
+
+/* ==========================
+   CARD PREVIEW AREA
+   ========================== */
+
+.preview-card-area{
+    min-height:380px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7f9fc,
+            #eef2f7
+        );
+
+    border-radius:14px;
+
+    padding:25px;
+
+    box-sizing:border-box;
+}
+
+
+/*
+   IMPORTANT:
+   Existing card design stays unchanged.
+   Only screen preview is scaled.
+*/
+
+.preview-card-area .card{
+    flex:none;
+
+    transform:scale(.72);
+    transform-origin:center center;
+
+    margin:0;
+}
+
+
+/* ==========================
+   MULTIPLE EMPLOYEE SECTION
+   ========================== */
+
+.bulk-controls{
+    width:min(1400px,96%);
+    margin:0 auto 25px;
+
+    box-sizing:border-box;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.10);
+
+    border:1px solid #e8ebf0;
+}
+
+.bulk-controls h3{
+    text-align:left;
+    margin-top:0;
+}
+
+
+/* ==========================
+   DESKTOP LARGE SCREEN
+   ========================== */
+
+@media(min-width:1200px){
+
+    .top-icard-layout{
+        grid-template-columns:420px 1fr;
+    }
+
+    .preview-card-area{
+        min-height:380px;
+    }
+
+    .preview-card-area .card{
+        transform:scale(.50);
+    }
+}
+
+
+/* ==========================
+   TABLET
+   ========================== */
+
+@media(max-width:900px){
+
+    .top-icard-layout{
+        grid-template-columns:1fr;
+        gap:18px;
+    }
+
+    .top-icard-layout .employee-controls{
+        width:100%;
+    }
+
+    .icard-preview-panel{
+        width:100%;
+    }
+
+    .preview-card-area{
+        min-height:380px;
+    }
+}
+
+
+/* ==========================
+   MOBILE
+   ========================== */
+
+@media(max-width:600px){
+
+    .top-icard-layout,
+    .bulk-controls{
+        width:94%;
+    }
+
+    .top-icard-layout{
+        margin-top:12px;
+        gap:14px;
+    }
+
+    .employee-controls,
+    .bulk-controls,
+    .icard-preview-panel{
+        padding:15px;
+        border-radius:15px;
+    }
+
+    .employee-controls h3{
+        font-size:18px;
+    }
+
+    .preview-title strong{
+        font-size:17px;
+    }
+
+    .preview-card-area{
+        min-height:310px;
+        padding:8px;
+    }
+
+    .preview-card-area .card{
+        transform:scale(.50);
+    }
+
+    .bulk-controls h3{
+        font-size:18px;
+    }
+
+    .bulk-buttons{
+        flex-direction:column;
+    }
+
+    .bulk-buttons button{
+        width:100%;
+    }
+}
+
+
+/* =====================================================
+   FINAL CLEAN UI - DESKTOP + MOBILE
+   ===================================================== */
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:0;
+}
+
+
+/* ===============================
+   MAIN TOP AREA
+   =============================== */
+
+.top-icard-layout{
+    width:94%;
+    max-width:1250px;
+    margin:16px auto;
+
+    display:grid;
+    grid-template-columns:340px minmax(0,1fr);
+
+    gap:18px;
+    align-items:start;
+}
+
+
+/* ===============================
+   EMPLOYEE DETAILS
+   =============================== */
+
+.top-icard-layout .employee-controls{
+    width:100%;
+    margin:0;
+    padding:16px;
+
+    border-radius:14px;
+}
+
+.top-icard-layout .employee-controls h3{
+    font-size:18px;
+    margin:0 0 14px;
+}
+
+.top-icard-layout .employee-controls label{
+    font-size:13px;
+    margin-top:10px;
+}
+
+.top-icard-layout .employee-controls input,
+.top-icard-layout .employee-controls select{
+    min-height:38px;
+    font-size:13px;
+    padding:8px 10px;
+}
+
+.top-icard-layout .employee-controls small{
+    font-size:11px !important;
+    line-height:1.35;
+}
+
+
+/* ===============================
+   I-CARD PREVIEW PANEL
+   =============================== */
+
+.icard-preview-panel{
+    width:100%;
+    padding:15px;
+
+    border-radius:14px;
+}
+
+.preview-title{
+    margin-bottom:10px;
+    padding-bottom:10px;
+
+    gap:9px;
+}
+
+.preview-title > span{
+    width:36px;
+    height:36px;
+
+    border-radius:9px;
+    font-size:17px;
+}
+
+.preview-title strong{
+    font-size:17px;
+}
+
+.preview-title small{
+    font-size:10px;
+}
+
+
+/* ===============================
+   PREVIEW CARD AREA
+   =============================== */
+
+.preview-card-area{
+    min-height:350px;
+
+    padding:5px;
+
+    border-radius:10px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+}
+
+
+/* Card screen size */
+
+.preview-card-area .card{
+    transform:scale(.50);
+    transform-origin:center center;
+
+    margin:0;
+}
+
+
+/* ===============================
+   MULTIPLE EMPLOYEE SECTION
+   =============================== */
+
+.bulk-controls{
+    width:94%;
+    max-width:1250px;
+
+    margin:0 auto 18px;
+
+    padding:16px;
+
+    border-radius:14px;
+}
+
+.bulk-controls h3{
+    font-size:18px;
+    margin:0 0 12px;
+}
+
+
+/* ===============================
+   BULK EMPLOYEE LIST
+   =============================== */
+
+.employee-checkbox-list{
+    max-height:240px;
+    overflow-y:auto;
+
+    padding:8px;
+
+    border-radius:10px;
+}
+
+
+/* ===============================
+   BUTTONS
+   =============================== */
+
+.bulk-buttons{
+    gap:10px;
+    margin-top:12px;
+}
+
+.bulk-buttons button{
+    min-height:40px;
+
+    padding:8px 16px;
+
+    font-size:13px;
+    border-radius:9px;
+}
+
+
+/* ===============================
+   LARGE DESKTOP
+   =============================== */
+
+@media(min-width:1200px){
+
+    .top-icard-layout{
+        grid-template-columns:340px minmax(0,1fr);
+        max-width:1250px;
+    }
+
+    .preview-card-area{
+        min-height:350px;
+    }
+
+    .preview-card-area .card{
+        transform:scale(.62);
+    }
+}
+
+
+/* ===============================
+   LAPTOP / TABLET
+   =============================== */
+
+@media(max-width:1000px){
+
+    .top-icard-layout{
+        width:95%;
+        grid-template-columns:320px minmax(0,1fr);
+        gap:14px;
+    }
+
+    .preview-card-area{
+        min-height:330px;
+    }
+
+    .preview-card-area .card{
+        transform:scale(.57);
+    }
+}
+
+
+/* ===============================
+   MOBILE
+   =============================== */
+
+@media(max-width:700px){
+
+    .top-icard-layout{
+        width:94%;
+        margin:10px auto;
+
+        display:flex;
+        flex-direction:column;
+
+        gap:12px;
+    }
+
+
+    .top-icard-layout .employee-controls,
+    .icard-preview-panel{
+        width:100%;
+    }
+
+
+    .top-icard-layout .employee-controls{
+        padding:14px;
+    }
+
+
+    .icard-preview-panel{
+        padding:12px;
+    }
+
+
+    .preview-card-area{
+        min-height:300px;
+        padding:3px;
+    }
+
+
+    .preview-card-area .card{
+        transform:scale(.48);
+    }
+
+
+    .bulk-controls{
+        width:94%;
+        padding:14px;
+    }
+
+
+    .bulk-buttons{
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+    }
+
+
+    .bulk-buttons button{
+        width:100%;
+    }
+}
+
+
+/* ===============================
+   SMALL MOBILE
+   =============================== */
+
+@media(max-width:420px){
+
+    .top-icard-layout{
+        width:96%;
+    }
+
+    .bulk-controls{
+        width:96%;
+    }
+
+    .preview-card-area{
+        min-height:280px;
+    }
+
+    .preview-card-area .card{
+        transform:scale(.43);
+    }
+
+    .preview-title strong{
+        font-size:16px;
+    }
+}
+
+
 </style>
 
   
@@ -820,8 +1774,14 @@ const db = firebase.firestore();
 <body>
 
   <!-- ==============================
-     EMPLOYEE I-CARD CONTROLS
-     ============================== -->
+   TOP I-CARD AREA
+   ============================== -->
+
+<div class="top-icard-layout">
+
+<!-- ==============================
+   EMPLOYEE I-CARD CONTROLS
+   ============================== -->
 
 <div class="employee-controls">
 
@@ -878,39 +1838,21 @@ const db = firebase.firestore();
 
 </div>
 
+<!-- ==============================
+   I-CARD PREVIEW
+   ============================== -->
 
-  <!-- ==============================
-     BULK PDF / PRINT CONTROLS
-     ============================== -->
+<div class="icard-preview-panel">
 
-<div class="bulk-controls">
-
-    <h3>Multiple Employee I-Card</h3>
-
-    <label>Select Cards Per A4</label>
-
-    <select id="cardsPerA4">
-    <option value="auto">Auto A4</option>
-    </select>
-
-    <label>Select Employees</label>
-
-    <div id="employeeCheckboxList" class="employee-checkbox-list">
-        Loading employees...
+    <div class="preview-title">
+        <span>🪪</span>
+        <div>
+            <strong>I-Card Preview</strong>
+            <small>Live Employee Card Preview</small>
+        </div>
     </div>
 
-    <div class="bulk-buttons">
-        <button type="button" id="downloadPDFBtn">
-            📄 Download PDF
-        </button>
-
-        <button type="button" id="printPDFBtn">
-            🖨️ Print
-        </button>
-    </div>
-
-</div>
-
+    <div class="preview-card-area">
 <div class="card">
 
     <!-- =====================================================
@@ -919,6 +1861,7 @@ const db = firebase.firestore();
     <div class="blue"></div>
     <div class="cream"></div>
     <div class="cream-bottom"></div>
+  <div class="cream-line"></div>
 
 
 
@@ -1021,6 +1964,40 @@ const db = firebase.firestore();
 
     <!-- Outer border -->
     <div class="inner-border"></div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="bulk-controls">
+
+    <h3>Multiple Employee I-Card</h3>
+
+    <label>Select Cards Per A4</label>
+
+    <select id="cardsPerA4">
+    <option value="auto">Auto A4</option>
+    </select>
+
+    <label>Select Employees</label>
+
+    <div id="employeeCheckboxList" class="employee-checkbox-list">
+        Loading employees...
+    </div>
+
+    <div class="bulk-buttons">
+        <button type="button" id="downloadPDFBtn">
+            📄 Download PDF
+        </button>
+
+        <button type="button" id="printPDFBtn">
+            🖨️ Print
+        </button>
+    </div>
+
+</div>
+
 
 </div>
 
