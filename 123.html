@@ -2878,6 +2878,69 @@ async function uploadEmployeePhotoToImgBB(file){
     return data.data.url;
     }
 
+
+    uploadEmployeePhotoBtn.addEventListener(
+    "click",
+    async function(){
+
+        if(!selectedEmployeePhotoFile){
+            return;
+        }
+
+        const employeeId =
+            document.getElementById("employeeSelect").value;
+
+        if(!employeeId){
+            alert("Please select an employee first.");
+            return;
+        }
+
+        try{
+
+            uploadEmployeePhotoBtn.disabled = true;
+
+            uploadEmployeePhotoBtn.innerText =
+                "Uploading...";
+
+            const photoURL =
+                await uploadEmployeePhotoToImgBB(
+                    selectedEmployeePhotoFile
+                );
+
+            await db
+                .collection("employees")
+                .doc(employeeId.replace(/\//g, "_"))
+                .update({
+                    photoURL: photoURL
+                });
+
+            employeePhotoPreview.src = photoURL;
+
+            alert(
+                "Employee photo uploaded successfully."
+            );
+
+        }catch(error){
+
+            console.error(
+                "Photo upload error:",
+                error
+            );
+
+            alert(
+                "Photo upload failed: " + error.message
+            );
+
+        }
+
+        uploadEmployeePhotoBtn.disabled = false;
+
+        uploadEmployeePhotoBtn.innerText =
+            "⬆ Upload Photo";
+
+    }
+);
+
     uploadEmployeePhotoBtn.addEventListener(
     "click",
     async function(){
