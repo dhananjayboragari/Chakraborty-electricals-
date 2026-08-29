@@ -6246,50 +6246,33 @@ function showMonthlyView(view){
 }
 
 
-/* =====================================================
-   GENERATE DAY-WISE MONTHLY ATTENDANCE
-===================================================== */
 
+  
 async function generateDayWiseMonthlyAttendance(){
 
     const monthInput =
-        document.getElementById(
-            "monthlyReportMonth"
-        );
+        document.getElementById("monthlyReportMonth");
 
     const month =
         monthInput ? monthInput.value : "";
 
-
     const head =
-        document.getElementById(
-            "monthlyDayWiseHead"
-        );
+        document.getElementById("monthlyDayWiseHead");
 
     const body =
-        document.getElementById(
-            "monthlyDayWiseBody"
-        );
+        document.getElementById("monthlyDayWiseBody");
 
-
-    if(!head || !body)
-        return;
-
+    if(!head || !body) return;
 
     head.innerHTML = "";
     body.innerHTML = "";
-
 
     if(!month){
 
         body.innerHTML = `
             <tr>
-                <td
-                    colspan="10"
-                    class="empty">
-
+                <td colspan="10" class="empty">
                     Please select a month first
-
                 </td>
             </tr>
         `;
@@ -6297,9 +6280,8 @@ async function generateDayWiseMonthlyAttendance(){
         return;
     }
 
-
     /* ================================
-       DAYS IN SELECTED MONTH
+       DAYS IN MONTH
     ================================= */
 
     const year =
@@ -6308,50 +6290,12 @@ async function generateDayWiseMonthlyAttendance(){
     const monthNumber =
         Number(month.split("-")[1]);
 
-
     const daysInMonth =
         new Date(
             year,
             monthNumber,
             0
         ).getDate();
-
-
-  
-  let workDetailsMap = {};
-
-for(let day = 1; day <= daysInMonth; day++){
-
-    const date =
-        `${month}-${String(day).padStart(2,"0")}`;
-
-    try{
-
-        const doc =
-            await db
-                .collection("dailyWorkDetails")
-                .doc(date)
-                .get();
-
-        if(doc.exists){
-
-            const data = doc.data();
-
-            workDetailsMap[date] =
-                data.details || "";
-
-        }
-
-    }catch(error){
-
-        console.error(
-            "Work Details Error:",
-            date,
-            error
-        );
-
-    }
-  }
 
 
     /* ================================
@@ -6363,13 +6307,10 @@ for(let day = 1; day <= daysInMonth; day++){
         <tr>
 
             <th>SL</th>
-
             <th>Employee ID</th>
-
             <th>Employee Name</th>
 
     `;
-
 
     for(
         let day = 1;
@@ -6378,68 +6319,273 @@ for(let day = 1; day <= daysInMonth; day++){
     ){
 
         headerHTML += `
-            <th>${String(day).padStart(2,"0")}</th>
+            <th>
+                ${String(day).padStart(2,"0")}
+            </th>
         `;
 
     }
 
-
     headerHTML += `
 
             <th>Present</th>
-
             <th>Absent</th>
-
             <th>Leave</th>
-
             <th>Total</th>
 
         </tr>
 
     `;
 
+    head.innerHTML = headerHTML;
 
-    head.innerHTML =
-        headerHTML;
+
+    /* ================================
+       ACTIVE EMPLOYEES
+    ================================= */
+
+    const activeEmployees =
+        employees.filter(
+            e => e.status === "Active"
+        );
+
+
+    /* ================================
+       WORK DETAILS MAP
+    ================================= */
+
+    const workDetailsMap = {};
+
+    for(
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ){
+
+        const date =
+            `${month}-${String(day).padStart(2,"0")}`;
+
+        try{
+
+            const workDoc =
+                await db
+                    .collection("dailyWorkDetails")
+                    .doc(date)
+                    .get();
+
+            if(workDoc.exists){
+
+                const data =
+                    workDoc.data();
+
+                workDetailsMap[date] =
+                    data.details || "";
+
+            }
+            else{
+
+                workDetailsMap[date] = "";
+
+            }
+
+        }
+        catch(error){
+
+            console.error(
+                "Work Details Error:",
+                date,
+                error
+            );
+
+            workDetailsMap[date] = "";
+
+        }
+
+    }
 
 
     /* ================================
        EMPLOYEE ROWS
     ================================= */
 
-    let grandPresent = 0;
-let grandAbsent = 0;
-let grandLeave = 0;
+    activeEmployees.forEach(
+        (employee,index) => {
 
-let activeEmployees = employees.filter(
-    e => e.status === "Active"
-);
+            let present = 0;
+            let absent = 0;
+            let leave = 0;
 
-activeEmployees.forEach(
-    (employee,index)=>{
+            let rowHTML = `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        <b>
+                            ${employee.id}
+                        </b>
+                    </td>
+
+                    <td>
+                        ${employee.name}
+                    </td>
+
+            `;
 
 
-        let present = 0;
-        let absent = 0;
-        let leave = 0;
+            for(
+                let day = 1;
+                day <= daysInMonth;
+                day++
+            ){
+
+                const date =
+                    `${month}-${String(day).padStart(2,"0")}`;
+
+                const record =
+                    attendance.find(
+                        a =>
+                            a.employeeId === employee.id &&
+                            a.date === date
+                    );
 
 
-        let rowHTML = `
+                let status =
+                    record
+                    ? record.status
+                    : "";
+
+                let displayStatus = "-";
+
+                let badgeClass = "";
+
+
+                if(status === "Present"){
+
+                    displayStatus = "P";
+
+                    badgeClass =
+                        "badge badge-present";
+
+                    present++;
+
+                }
+
+                else if(status === "Absent"){
+
+                    displayStatus = "A";
+
+                    badgeClass =
+                        "badge badge-absent";
+
+                    absent++;
+
+                }
+
+                else if(status === "Leave"){
+
+                    displayStatus = "L";
+
+                    badgeClass =
+                        "badge badge-leave";
+
+                    leave++;
+
+                }
+
+
+                rowHTML += `
+
+                    <td
+                        style="
+                            text-align:center;
+                            min-width:42px;
+                        ">
+
+                        ${
+                            displayStatus === "-"
+                            ?
+                            "-"
+                            :
+                            `<span class="${badgeClass}">
+                                ${displayStatus}
+                             </span>`
+                        }
+
+                    </td>
+
+                `;
+
+            }
+
+
+            const total =
+                present +
+                absent +
+                leave;
+
+
+            rowHTML += `
+
+                    <td>
+                        <span class="badge badge-present">
+                            ${present}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge badge-absent">
+                            ${absent}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge badge-leave">
+                            ${leave}
+                        </span>
+                    </td>
+
+                    <td>
+                        <b>${total}</b>
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            body.innerHTML += rowHTML;
+
+        }
+    );
+
+
+    /* ================================
+       ONE WORK DETAILS ROW
+       AFTER ALL STAFF
+    ================================= */
+
+    if(activeEmployees.length > 0){
+
+        let workRowHTML = `
 
             <tr>
 
-                <td>
-                    ${index + 1}
-                </td>
+                <td
+                    colspan="3"
+                    style="
+                        text-align:right;
+                        font-weight:700;
+                        background:#f3f6fa;
+                        color:#444;
+                        white-space:nowrap;
+                    ">
 
-                <td>
-                    <b>
-                        ${employee.id}
-                    </b>
-                </td>
+                    Work Details
 
-                <td>
-                    ${employee.name}
                 </td>
 
         `;
@@ -6454,138 +6600,48 @@ activeEmployees.forEach(
             const date =
                 `${month}-${String(day).padStart(2,"0")}`;
 
-
-            const record =
-                attendance.find(
-                    a =>
-                        a.employeeId === employee.id &&
-                        a.date === date
-                );
-
-  
+            const details =
+                workDetailsMap[date] || "";
 
 
-            let status =
-                record
-                ? record.status
-                : "";
+            workRowHTML += `
 
+                <td
+                    style="
+                        text-align:center;
+                        vertical-align:top;
+                        min-width:90px;
+                        max-width:180px;
+                        white-space:normal;
+                        word-break:break-word;
+                        font-size:10px;
+                        line-height:1.3;
+                        background:#f3f6fa;
+                        color:#555;
+                        padding:7px 4px;
+                    ">
 
-            let displayStatus = "-";
+                    ${
+                        details
+                        ?
+                        details
+                        :
+                        "-"
+                    }
 
-            let badgeClass = "";
+                </td>
 
-
-            if(status === "Present"){
-
-                displayStatus = "P";
-
-                badgeClass =
-                    "badge badge-present";
-
-                present++;
-
-            }
-
-            else if(status === "Absent"){
-
-                displayStatus = "A";
-
-                badgeClass =
-                    "badge badge-absent";
-
-                absent++;
-
-            }
-
-            else if(status === "Leave"){
-
-                displayStatus = "L";
-
-                badgeClass =
-                    "badge badge-leave";
-
-                leave++;
-
-            }
-
-
-            rowHTML += `
-
-    <td
-        style="
-            text-align:center;
-            min-width:70px;
-            max-width:180px;
-            white-space:normal;
-        ">
-
-        ${
-            displayStatus === "-"
-            ?
-            "-"
-            :
-            `<span class="${badgeClass}">
-                ${displayStatus}
-             </span>`
-        }
-
-        ${
-            workDetails
-            ?
-            `<div style="
-                margin-top:5px;
-                font-size:10px;
-                line-height:1.3;
-                color:#555;
-                white-space:normal;
-            ">
-                ${workDetails}
-            </div>`
-            :
-            ""
-        }
-
-    </td>
-
-`;
+            `;
 
         }
 
 
-        const total =
-            present +
-            absent +
-            leave;
+        workRowHTML += `
 
-
-        grandPresent += present;
-        grandAbsent += absent;
-        grandLeave += leave;
-
-
-        rowHTML += `
-
-                <td>
-                    <span class="badge badge-present">
-                        ${present}
-                    </span>
-                </td>
-
-                <td>
-                    <span class="badge badge-absent">
-                        ${absent}
-                    </span>
-                </td>
-
-                <td>
-                    <span class="badge badge-leave">
-                        ${leave}
-                    </span>
-                </td>
-
-                <td>
-                    <b>${total}</b>
+                <td colspan="4"
+                    style="
+                        background:#f3f6fa;
+                    ">
                 </td>
 
             </tr>
@@ -6593,73 +6649,16 @@ activeEmployees.forEach(
         `;
 
 
-        body.innerHTML +=
-            rowHTML;
+        body.innerHTML += workRowHTML;
 
-    });
-
-  /* ================================
-   WORK DETAILS ROW
-================================ */
-
-let workDetailsRow = `
-    <tr>
-
-        <td colspan="3"
-            style="
-                text-align:right;
-                font-weight:700;
-                background:#f3f6fa;
-                padding:8px;
-            ">
-            Work Details
-        </td>
-`;
-
-for(let day = 1; day <= daysInMonth; day++){
-
-    const date =
-        `${month}-${String(day).padStart(2,"0")}`;
-
-    const details =
-        workDetailsMap[date] || "";
-
-    workDetailsRow += `
-        <td
-            style="
-                min-width:42px;
-                max-width:180px;
-                text-align:center;
-                vertical-align:top;
-                white-space:normal;
-                font-size:10px;
-                line-height:1.3;
-                background:#f3f6fa;
-                padding:6px 3px;
-            ">
-            ${details || "-"}
-        </td>
-    `;
-}
-
-workDetailsRow += `
-        <td colspan="4"
-            style="
-                background:#f3f6fa;
-            ">
-        </td>
-
-    </tr>
-`;
-
-body.innerHTML += workDetailsRow;
+    }
 
 
     /* ================================
        EMPTY EMPLOYEE CHECK
     ================================= */
 
-    if(employees.length === 0){
+    if(activeEmployees.length === 0){
 
         body.innerHTML = `
 
@@ -6680,6 +6679,9 @@ body.innerHTML += workDetailsRow;
     }
 
 }
+
+
+
 
   function previewEmployeePhoto(event){
 
