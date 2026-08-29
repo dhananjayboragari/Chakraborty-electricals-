@@ -6350,60 +6350,69 @@ async function generateDayWiseMonthlyAttendance(){
         );
 
 
-    /* ================================
+        /* ================================
        WORK DETAILS MAP
+       FAST PARALLEL LOAD
     ================================= */
 
     const workDetailsMap = {};
 
-    for(
-        let day = 1;
-        day <= daysInMonth;
-        day++
-    ){
+    const workPromises = [];
+
+    for(let day = 1; day <= daysInMonth; day++){
 
         const date =
             `${month}-${String(day).padStart(2,"0")}`;
 
-        try{
+        workPromises.push(
+            db
+                .collection("dailyWorkDetails")
+                .doc(date)
+                .get()
+                .then(doc => {
 
-            const workDoc =
-                await db
-                    .collection("dailyWorkDetails")
-                    .doc(date)
-                    .get();
+                    workDetailsMap[date] =
+                        doc.exists
+                        ? (doc.data().details || "")
+                        : "";
 
-            if(workDoc.exists){
+                })
+                .catch(error => {
 
-                const data =
-                    workDoc.data();
+                    console.error(
+                        "Work Details Error:",
+                        date,
+                        error
+                    );
 
-                workDetailsMap[date] =
-                    data.details || "";
+                    workDetailsMap[date] = "";
 
-            }
-            else{
-
-                workDetailsMap[date] = "";
-
-            }
-
-        }
-        catch(error){
-
-            console.error(
-                "Work Details Error:",
-                date,
-                error
-            );
-
-            workDetailsMap[date] = "";
-
-        }
+                })
+        );
 
     }
 
+    await Promise.all(workPromises);
 
+
+  /* ================================
+   FAST ATTENDANCE MAP
+================================= */
+
+const attendanceMap = new Map();
+
+attendance.forEach(record => {
+
+    if(record.date && record.date.startsWith(month)){
+
+        const key =
+            record.employeeId + "_" + record.date;
+
+        attendanceMap.set(key, record);
+    }
+
+});
+  
     /* ================================
        EMPLOYEE ROWS
     ================================= */
@@ -6445,12 +6454,11 @@ async function generateDayWiseMonthlyAttendance(){
                 const date =
                     `${month}-${String(day).padStart(2,"0")}`;
 
-                const record =
-                    attendance.find(
-                        a =>
-                            a.employeeId === employee.id &&
-                            a.date === date
-                    );
+        const key =
+    employee.id + "_" + date;
+
+const record =
+    attendanceMap.get(key);
 
 
                 let status =
@@ -6557,7 +6565,7 @@ async function generateDayWiseMonthlyAttendance(){
             `;
 
 
-            body.innerHTML += rowHTML;
+            body.insertAdjacentHTML("beforeend", rowHTML);
 
         }
     );
