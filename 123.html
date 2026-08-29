@@ -2640,10 +2640,31 @@ auth.onAuthStateChanged(function(user){
             overflow-x:auto;
             width:100%;
         ">
+
       <button
-        type="button"
-        onclick="downloadDayWiseExcel()">
-        📊 Download Excel
+    type="button"
+    onclick="downloadDayWiseExcel()"
+    style="
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:15px 30px;
+        margin-bottom:12px;
+        border:none;
+        border-radius:10px;
+        background:linear-gradient(135deg,#16a34a,#15803d);
+        color:white;
+        font-size:15px;
+        font-weight:600;
+        cursor:pointer;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        transition:all .2s ease;
+    "
+    onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 14px rgba(0,0,0,0.20)'"
+    onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)'"
+>
+    <i class="fa-solid fa-file-excel"></i>
+    Day-wise attendance Download Excel
       </button>
 
         <table
