@@ -6315,44 +6315,45 @@ async function generateDayWiseMonthlyAttendance(){
             monthNumber,
             0
         ).getDate();
+
+
+  
   let workDetailsMap = {};
 
-try {
+for(let day = 1; day <= daysInMonth; day++){
 
-    const workSnapshot =
-        await db
-            .collection("dailyWorkDetails")
-            .where(
-                "date",
-                ">=",
-                month + "-01"
-            )
-            .where(
-                "date",
-                "<=",
-                month + "-" +
-                String(daysInMonth).padStart(2,"0")
-            )
-            .get();
+    const date =
+        `${month}-${String(day).padStart(2,"0")}`;
 
-    workSnapshot.forEach(doc => {
+    try{
 
-        const data = doc.data();
+        const workDoc =
+            await db
+                .collection("dailyWorkDetails")
+                .doc(date)
+                .get();
 
-        workDetailsMap[data.date] =
-            data.details || "";
+        if(workDoc.exists){
 
-    });
+            const data =
+                workDoc.data();
 
-}
-catch(error){
+            workDetailsMap[date] =
+                data.details || "";
 
-    console.error(
-        "Monthly Work Details Load Error:",
-        error
-    );
+        }
 
-}
+    }
+    catch(error){
+
+        console.error(
+            "Work Details Error:",
+            date,
+            error
+        );
+
+    }
+  }
 
 
     /* ================================
@@ -6600,32 +6601,24 @@ activeEmployees.forEach(
     });
 
   /* ================================
-   MONTHLY WORK DETAILS ROW
+   WORK DETAILS ROW
 ================================ */
 
 let workDetailsRow = `
-
     <tr>
 
-        <td
-            colspan="3"
+        <td colspan="3"
             style="
-                font-weight:700;
                 text-align:right;
+                font-weight:700;
                 background:#f3f6fa;
-                color:#444;
                 padding:8px;
             ">
             Work Details
         </td>
-
 `;
 
-for(
-    let day = 1;
-    day <= daysInMonth;
-    day++
-){
+for(let day = 1; day <= daysInMonth; day++){
 
     const date =
         `${month}-${String(day).padStart(2,"0")}`;
@@ -6634,10 +6627,9 @@ for(
         workDetailsMap[date] || "";
 
     workDetailsRow += `
-
         <td
             style="
-                min-width:90px;
+                min-width:42px;
                 max-width:180px;
                 text-align:center;
                 vertical-align:top;
@@ -6645,19 +6637,14 @@ for(
                 font-size:10px;
                 line-height:1.3;
                 background:#f3f6fa;
-                color:#555;
-                padding:7px 4px;
+                padding:6px 3px;
             ">
-
             ${details || "-"}
-
         </td>
-
     `;
 }
 
 workDetailsRow += `
-
         <td colspan="4"
             style="
                 background:#f3f6fa;
@@ -6665,7 +6652,6 @@ workDetailsRow += `
         </td>
 
     </tr>
-
 `;
 
 body.innerHTML += workDetailsRow;
