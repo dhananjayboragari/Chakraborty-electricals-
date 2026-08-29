@@ -1113,6 +1113,8 @@ td select{
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 <script>
 
 const firebaseConfig = {
@@ -2638,6 +2640,11 @@ auth.onAuthStateChanged(function(user){
             overflow-x:auto;
             width:100%;
         ">
+      <button
+        type="button"
+        onclick="downloadDayWiseExcel()">
+        📊 Download Excel
+      </button>
 
         <table
             id="monthlyDayWiseTable"
@@ -2652,6 +2659,7 @@ auth.onAuthStateChanged(function(user){
             </thead>
 
             <tbody
+              
                 id="monthlyDayWiseBody">
 
                 <tr>
@@ -6689,6 +6697,55 @@ const record =
 }
 
 
+
+  function downloadDayWiseExcel(){
+
+    const table =
+        document.getElementById("monthlyDayWiseTable");
+
+    if(!table){
+
+        alert("Day-wise attendance table not found.");
+
+        return;
+    }
+
+    const monthInput =
+        document.getElementById("monthlyReportMonth");
+
+    const month =
+        monthInput ? monthInput.value : "";
+
+    if(!month){
+
+        alert("Please select a month first.");
+
+        return;
+    }
+
+    if(typeof XLSX === "undefined"){
+
+        alert("Excel library is not loaded.");
+
+        return;
+    }
+
+    const workbook =
+        XLSX.utils.table_to_book(
+            table,
+            {
+                sheet: "Day Wise Attendance"
+            }
+        );
+
+    const filename =
+        `Day_Wise_Attendance_${month}.xlsx`;
+
+    XLSX.writeFile(
+        workbook,
+        filename
+    );
+}
 
 
   function previewEmployeePhoto(event){
