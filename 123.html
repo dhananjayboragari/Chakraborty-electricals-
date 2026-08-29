@@ -6796,14 +6796,14 @@ const record =
 }
 
 
-  function downloadDayWisePDF(){
+async function downloadDayWisePDF(){
 
     const { jsPDF } = window.jspdf;
 
-    const table =
+    const originalTable =
         document.getElementById("monthlyDayWiseTable");
 
-    if(!table){
+    if(!originalTable){
         alert("Day-wise attendance table not found.");
         return;
     }
@@ -6818,6 +6818,11 @@ const record =
         alert("Please select a month first.");
         return;
     }
+
+
+    /* =========================
+       MONTH NAME
+    ========================= */
 
     const [year, monthNumber] =
         month.split("-");
@@ -6835,6 +6840,11 @@ const record =
             { month:"long" }
         );
 
+
+    /* =========================
+       PDF
+    ========================= */
+
     const doc =
         new jsPDF({
             orientation:"landscape",
@@ -6842,108 +6852,344 @@ const record =
             format:"a4"
         });
 
+
     /* =========================
-       HEADER
+       HEADER FUNCTION
     ========================= */
 
-    doc.setFont("helvetica","bold");
-    doc.setFontSize(16);
+    function addHeader(){
 
-    doc.text(
-        "M/s Chakraborty Electricals",
-        148,
-        12,
-        { align:"center" }
-    );
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(15);
 
-    doc.setFontSize(10);
+      doc.setFont("helvetica","bold");
+doc.setFontSize(15);
 
-    doc.text(
-        "(Vendor Code-501520)",
-        148,
-        18,
-        { align:"center" }
-    );
+doc.text(
+    "M/s Chakraborty Electricals (Vendor Code-501520)",
+    148,
+    13,
+    { align:"center" }
+);
 
-    doc.setFontSize(13);
+        doc.setFontSize(12);
 
-    doc.text(
-        "STAFF ATTENDANCE SHEET",
-        148,
-        26,
-        { align:"center" }
-    );
+        doc.text(
+            "STAFF ATTENDANCE SHEET",
+            148,
+            24,
+            { align:"center" }
+        );
 
-    doc.setFontSize(10);
+        doc.setFontSize(9);
 
-    doc.text(
-        `Month: ${monthName} ${year}`,
-        148,
-        33,
-        { align:"center" }
-    );
+        doc.text(
+            `Month: ${monthName} ${year}`,
+            148,
+            30,
+            { align:"center" }
+        );
+    }
 
 
     /* =========================
-       TABLE
+       FOOTER FUNCTION
     ========================= */
 
-    doc.autoTable({
+    function addFooter(){
 
-        html:"#monthlyDayWiseTable",
+        const pageWidth =
+            doc.internal.pageSize.getWidth();
 
-        startY:39,
+        const pageHeight =
+            doc.internal.pageSize.getHeight();
 
-        theme:"grid",
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(7);
 
-        styles:{
-            fontSize:6,
-            cellPadding:2,
-            overflow:"linebreak",
-            valign:"middle"
-        },
+        doc.text(
+            "System Generated Report • M/s Chakraborty Electricals",
+            8,
+            pageHeight - 6
+        );
 
-        headStyles:{
-            fontSize:6.5,
-            fontStyle:"bold"
-        },
+        doc.text(
+            `Page ${doc.internal.getNumberOfPages()}`,
+            pageWidth - 8,
+            pageHeight - 6,
+            { align:"right" }
+        );
+    }
 
-        margin:{
-            left:8,
-            right:8,
-            bottom:15
-        },
 
-        repeatHeader:true,
+    /* =========================
+       ATTENDANCE TABLE
+    ========================= */
 
-        didDrawPage:function(data){
+    addHeader();
 
-            const pageWidth =
-                doc.internal.pageSize.getWidth();
 
-            const pageHeight =
-                doc.internal.pageSize.getHeight();
+    /*
+       Clone the original table.
+       Work Details rows will be removed.
+       So attendance remains clean.
+    */
 
-            /* FOOTER */
+    const attendanceTable =
+        originalTable.cloneNode(true);
 
-            doc.setFont("helvetica","normal");
-            doc.setFontSize(7);
 
-            doc.text(
-                "System Generated Report • M/s Chakraborty Electricals",
-                8,
-                pageHeight - 7
-            );
+    const rows =
+        attendanceTable.querySelectorAll("tr");
 
-            doc.text(
-                `Page ${doc.internal.getNumberOfPages()}`,
-                pageWidth - 8,
-                pageHeight - 7,
-                { align:"right" }
-            );
+
+    rows.forEach(row => {
+
+        const text =
+            row.innerText
+                .replace(/\s+/g," ")
+                .trim()
+                .toLowerCase();
+
+        if(
+            text.startsWith("work details") ||
+            text.includes("work details")
+        ){
+
+            row.remove();
+
         }
 
     });
+
+
+    /*
+       Remove any empty row
+    */
+
+    attendanceTable
+        .querySelectorAll("tbody tr")
+        .forEach(row => {
+
+            if(!row.innerText.trim()){
+                row.remove();
+            }
+
+        });
+
+
+    /*
+       Temporary hidden table
+    */
+
+    attendanceTable.style.display = "none";
+
+    document.body.appendChild(attendanceTable);
+
+
+    doc.autoTable({
+
+        html: attendanceTable,
+
+        startY: 35,
+
+        theme: "grid",
+
+        styles:{
+            fontSize: 6,
+            cellPadding: 1.5,
+            overflow: "hidden",
+            valign: "middle"
+        },
+
+        headStyles:{
+            fontSize: 6,
+            fontStyle: "bold"
+        },
+
+        margin:{
+            left: 6,
+            right: 6,
+            top: 35,
+            bottom: 12
+        },
+
+        didDrawPage:function(){
+
+    addHeader();
+    addFooter();
+
+}
+
+    });
+
+
+    /*
+       Remove temporary table
+    */
+
+    document.body.removeChild(
+        attendanceTable
+    );
+
+
+    /* =========================
+       WORK DETAILS
+    ========================= */
+
+    const daysInMonth =
+        new Date(
+            Number(year),
+            Number(monthNumber),
+            0
+        ).getDate();
+
+
+    const workPromises = [];
+
+
+    for(
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ){
+
+        const date =
+            `${month}-${String(day).padStart(2,"0")}`;
+
+
+        workPromises.push(
+
+            db
+                .collection("dailyWorkDetails")
+                .doc(date)
+                .get()
+
+                .then(docSnap => {
+
+                    if(docSnap.exists){
+
+                        const data =
+                            docSnap.data();
+
+                        return {
+                            date: date,
+                            details:
+                                data.details || ""
+                        };
+
+                    }
+
+                    return {
+                        date: date,
+                        details: ""
+                    };
+
+                })
+
+                .catch(() => {
+
+                    return {
+                        date: date,
+                        details: ""
+                    };
+
+                })
+
+        );
+
+    }
+
+
+    const workResults =
+        await Promise.all(workPromises);
+
+
+    const workRows =
+        workResults.filter(
+            item =>
+                item.details &&
+                item.details.trim()
+        );
+
+
+    /* =========================
+       WORK DETAILS PAGE
+    ========================= */
+
+    if(workRows.length > 0){
+
+        doc.addPage();
+
+        addHeader();
+
+
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(11);
+
+        doc.text(
+            "WORK DETAILS",
+            148,
+            38,
+            { align:"center" }
+        );
+
+
+        doc.autoTable({
+
+            startY: 42,
+
+            head:[
+                ["Date","Work Details"]
+            ],
+
+            body:
+                workRows.map(item => [
+                    item.date.substring(8),
+                    item.details
+                ]),
+
+            theme:"grid",
+
+            styles:{
+                fontSize: 8,
+                cellPadding: 3,
+                overflow:"linebreak",
+                valign:"top"
+            },
+
+            headStyles:{
+                fontSize: 8,
+                fontStyle:"bold"
+            },
+
+            columnStyles:{
+                0:{
+                    cellWidth:25,
+                    halign:"center"
+                },
+
+                1:{
+                    cellWidth:230
+                }
+            },
+
+            margin:{
+                left:15,
+                right:15,
+                bottom:12
+            },
+
+            didDrawPage:function(){
+
+                addHeader();
+                addFooter();
+
+            }
+
+        });
+
+    }
 
 
     /* =========================
@@ -6953,8 +7199,10 @@ const record =
     const fileName =
         `Staff_Attendance_Sheet_${month}.pdf`;
 
+
     doc.save(fileName);
-  }
+
+}
 
   
 
