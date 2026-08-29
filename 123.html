@@ -6315,6 +6315,44 @@ function generateDayWiseMonthlyAttendance(){
             monthNumber,
             0
         ).getDate();
+  let workDetailsMap = {};
+
+try {
+
+    const workSnapshot =
+        await db
+            .collection("dailyWorkDetails")
+            .where(
+                "date",
+                ">=",
+                month + "-01"
+            )
+            .where(
+                "date",
+                "<=",
+                month + "-" +
+                String(daysInMonth).padStart(2,"0")
+            )
+            .get();
+
+    workSnapshot.forEach(doc => {
+
+        const data = doc.data();
+
+        workDetailsMap[data.date] =
+            data.details || "";
+
+    });
+
+}
+catch(error){
+
+    console.error(
+        "Monthly Work Details Load Error:",
+        error
+    );
+
+}
 
 
     /* ================================
@@ -6425,6 +6463,8 @@ activeEmployees.forEach(
                         a.date === date
                 );
 
+  const workDetails = workDetailsMap[date] || "";
+
 
             let status =
                 record
@@ -6470,45 +6510,46 @@ activeEmployees.forEach(
 
             }
 
-          const workDetails =
-    record && record.workDetails
-    ? record.workDetails.trim()
-    : "";
 
             rowHTML += `
 
-                <td
-                    style="
-                        text-align:center;
-                        min-width:42px;
-                    ">
-
-                    ${
-                        displayStatus === "-"
-                        ?
-                        "-"
-                        :
-                        `<span class="${badgeClass}">
-                            ${displayStatus}
-                         </span>`
-                    }
-
-  ${
-    workDetails
-    ? `<div style="
-            margin-top:5px;
-            font-size:10px;
-            line-height:1.3;
+    <td
+        style="
+            text-align:center;
+            min-width:70px;
+            max-width:180px;
             white-space:normal;
         ">
-            ${workDetails}
-       </div>`
-    : ""
-}
 
-                </td>
+        ${
+            displayStatus === "-"
+            ?
+            "-"
+            :
+            `<span class="${badgeClass}">
+                ${displayStatus}
+             </span>`
+        }
 
-            `;
+        ${
+            workDetails
+            ?
+            `<div style="
+                margin-top:5px;
+                font-size:10px;
+                line-height:1.3;
+                color:#555;
+                white-space:normal;
+            ">
+                ${workDetails}
+            </div>`
+            :
+            ""
+        }
+
+    </td>
+
+`;
 
         }
 
