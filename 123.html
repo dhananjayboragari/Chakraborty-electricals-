@@ -1115,6 +1115,9 @@ td select{
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 
 const firebaseConfig = {
@@ -2665,6 +2668,30 @@ auth.onAuthStateChanged(function(user){
 >
     <i class="fa-solid fa-file-excel"></i>
     Day-wise attendance Download Excel
+      </button>
+
+      <button
+    type="button"
+    onclick="downloadDayWisePDF()"
+    style="
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:13px 24px;
+        margin-left:8px;
+        margin-bottom:12px;
+        border:none;
+        border-radius:10px;
+        background:linear-gradient(135deg,#dc2626,#b91c1c);
+        color:white;
+        font-size:16px;
+        font-weight:600;
+        cursor:pointer;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    "
+>
+    <i class="fa-solid fa-file-pdf"></i>
+    Download PDF
       </button>
 
         <table
@@ -6768,6 +6795,168 @@ const record =
     );
 }
 
+
+  function downloadDayWisePDF(){
+
+    const { jsPDF } = window.jspdf;
+
+    const table =
+        document.getElementById("monthlyDayWiseTable");
+
+    if(!table){
+        alert("Day-wise attendance table not found.");
+        return;
+    }
+
+    const monthInput =
+        document.getElementById("monthlyReportMonth");
+
+    const month =
+        monthInput ? monthInput.value : "";
+
+    if(!month){
+        alert("Please select a month first.");
+        return;
+    }
+
+    const [year, monthNumber] =
+        month.split("-");
+
+    const dateObj =
+        new Date(
+            Number(year),
+            Number(monthNumber) - 1,
+            1
+        );
+
+    const monthName =
+        dateObj.toLocaleString(
+            "en-IN",
+            { month:"long" }
+        );
+
+    const doc =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(16);
+
+    doc.text(
+        "M/s Chakraborty Electricals",
+        148,
+        12,
+        { align:"center" }
+    );
+
+    doc.setFontSize(10);
+
+    doc.text(
+        "(Vendor Code-501520)",
+        148,
+        18,
+        { align:"center" }
+    );
+
+    doc.setFontSize(13);
+
+    doc.text(
+        "STAFF ATTENDANCE SHEET",
+        148,
+        26,
+        { align:"center" }
+    );
+
+    doc.setFontSize(10);
+
+    doc.text(
+        `Month: ${monthName} ${year}`,
+        148,
+        33,
+        { align:"center" }
+    );
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    doc.autoTable({
+
+        html:"#monthlyDayWiseTable",
+
+        startY:39,
+
+        theme:"grid",
+
+        styles:{
+            fontSize:6,
+            cellPadding:2,
+            overflow:"linebreak",
+            valign:"middle"
+        },
+
+        headStyles:{
+            fontSize:6.5,
+            fontStyle:"bold"
+        },
+
+        margin:{
+            left:8,
+            right:8,
+            bottom:15
+        },
+
+        repeatHeader:true,
+
+        didDrawPage:function(data){
+
+            const pageWidth =
+                doc.internal.pageSize.getWidth();
+
+            const pageHeight =
+                doc.internal.pageSize.getHeight();
+
+            /* FOOTER */
+
+            doc.setFont("helvetica","normal");
+            doc.setFontSize(7);
+
+            doc.text(
+                "System Generated Report • M/s Chakraborty Electricals",
+                8,
+                pageHeight - 7
+            );
+
+            doc.text(
+                `Page ${doc.internal.getNumberOfPages()}`,
+                pageWidth - 8,
+                pageHeight - 7,
+                { align:"right" }
+            );
+        }
+
+    });
+
+
+    /* =========================
+       DOWNLOAD
+    ========================= */
+
+    const fileName =
+        `Staff_Attendance_Sheet_${month}.pdf`;
+
+    doc.save(fileName);
+  }
+
+  
 
   function previewEmployeePhoto(event){
 
