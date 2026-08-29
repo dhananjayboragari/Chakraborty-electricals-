@@ -6327,24 +6327,22 @@ for(let day = 1; day <= daysInMonth; day++){
 
     try{
 
-        const workDoc =
+        const doc =
             await db
                 .collection("dailyWorkDetails")
                 .doc(date)
                 .get();
 
-        if(workDoc.exists){
+        if(doc.exists){
 
-            const data =
-                workDoc.data();
+            const data = doc.data();
 
             workDetailsMap[date] =
                 data.details || "";
 
         }
 
-    }
-    catch(error){
+    }catch(error){
 
         console.error(
             "Work Details Error:",
