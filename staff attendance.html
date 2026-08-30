@@ -1113,6 +1113,11 @@ td select{
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 
 const firebaseConfig = {
@@ -2639,6 +2644,56 @@ auth.onAuthStateChanged(function(user){
             width:100%;
         ">
 
+      <button
+    type="button"
+    onclick="downloadDayWiseExcel()"
+    style="
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:15px 30px;
+        margin-bottom:12px;
+        border:none;
+        border-radius:10px;
+        background:linear-gradient(135deg,#16a34a,#15803d);
+        color:white;
+        font-size:15px;
+        font-weight:600;
+        cursor:pointer;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        transition:all .2s ease;
+    "
+    onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 14px rgba(0,0,0,0.20)'"
+    onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)'"
+>
+    <i class="fa-solid fa-file-excel"></i>
+    Day-wise attendance Download Excel
+      </button>
+
+      <button
+    type="button"
+    onclick="downloadDayWisePDF()"
+    style="
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:13px 24px;
+        margin-left:8px;
+        margin-bottom:12px;
+        border:none;
+        border-radius:10px;
+        background:linear-gradient(135deg,#dc2626,#b91c1c);
+        color:white;
+        font-size:16px;
+        font-weight:600;
+        cursor:pointer;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    "
+>
+    <i class="fa-solid fa-file-pdf"></i>
+    Download PDF
+      </button>
+
         <table
             id="monthlyDayWiseTable"
             style="
@@ -2652,6 +2707,7 @@ auth.onAuthStateChanged(function(user){
             </thead>
 
             <tbody
+              
                 id="monthlyDayWiseBody">
 
                 <tr>
@@ -6246,50 +6302,33 @@ function showMonthlyView(view){
 }
 
 
-/* =====================================================
-   GENERATE DAY-WISE MONTHLY ATTENDANCE
-===================================================== */
 
-function generateDayWiseMonthlyAttendance(){
+  
+async function generateDayWiseMonthlyAttendance(){
 
     const monthInput =
-        document.getElementById(
-            "monthlyReportMonth"
-        );
+        document.getElementById("monthlyReportMonth");
 
     const month =
         monthInput ? monthInput.value : "";
 
-
     const head =
-        document.getElementById(
-            "monthlyDayWiseHead"
-        );
+        document.getElementById("monthlyDayWiseHead");
 
     const body =
-        document.getElementById(
-            "monthlyDayWiseBody"
-        );
+        document.getElementById("monthlyDayWiseBody");
 
-
-    if(!head || !body)
-        return;
-
+    if(!head || !body) return;
 
     head.innerHTML = "";
     body.innerHTML = "";
-
 
     if(!month){
 
         body.innerHTML = `
             <tr>
-                <td
-                    colspan="10"
-                    class="empty">
-
+                <td colspan="10" class="empty">
                     Please select a month first
-
                 </td>
             </tr>
         `;
@@ -6297,9 +6336,8 @@ function generateDayWiseMonthlyAttendance(){
         return;
     }
 
-
     /* ================================
-       DAYS IN SELECTED MONTH
+       DAYS IN MONTH
     ================================= */
 
     const year =
@@ -6307,7 +6345,6 @@ function generateDayWiseMonthlyAttendance(){
 
     const monthNumber =
         Number(month.split("-")[1]);
-
 
     const daysInMonth =
         new Date(
@@ -6326,13 +6363,10 @@ function generateDayWiseMonthlyAttendance(){
         <tr>
 
             <th>SL</th>
-
             <th>Employee ID</th>
-
             <th>Employee Name</th>
 
     `;
-
 
     for(
         let day = 1;
@@ -6341,68 +6375,281 @@ function generateDayWiseMonthlyAttendance(){
     ){
 
         headerHTML += `
-            <th>${String(day).padStart(2,"0")}</th>
+            <th>
+                ${String(day).padStart(2,"0")}
+            </th>
         `;
 
     }
 
-
     headerHTML += `
 
             <th>Present</th>
-
             <th>Absent</th>
-
             <th>Leave</th>
-
             <th>Total</th>
 
         </tr>
 
     `;
 
-
-    head.innerHTML =
-        headerHTML;
+    head.innerHTML = headerHTML;
 
 
+    /* ================================
+       ACTIVE EMPLOYEES
+    ================================= */
+
+    const activeEmployees =
+        employees.filter(
+            e => e.status === "Active"
+        );
+
+
+        /* ================================
+       WORK DETAILS MAP
+       FAST PARALLEL LOAD
+    ================================= */
+
+    const workDetailsMap = {};
+
+    const workPromises = [];
+
+    for(let day = 1; day <= daysInMonth; day++){
+
+        const date =
+            `${month}-${String(day).padStart(2,"0")}`;
+
+        workPromises.push(
+            db
+                .collection("dailyWorkDetails")
+                .doc(date)
+                .get()
+                .then(doc => {
+
+                    workDetailsMap[date] =
+                        doc.exists
+                        ? (doc.data().details || "")
+                        : "";
+
+                })
+                .catch(error => {
+
+                    console.error(
+                        "Work Details Error:",
+                        date,
+                        error
+                    );
+
+                    workDetailsMap[date] = "";
+
+                })
+        );
+
+    }
+
+    await Promise.all(workPromises);
+
+
+  /* ================================
+   FAST ATTENDANCE MAP
+================================= */
+
+const attendanceMap = new Map();
+
+attendance.forEach(record => {
+
+    if(record.date && record.date.startsWith(month)){
+
+        const key =
+            record.employeeId + "_" + record.date;
+
+        attendanceMap.set(key, record);
+    }
+
+});
+  
     /* ================================
        EMPLOYEE ROWS
     ================================= */
 
-    let grandPresent = 0;
-let grandAbsent = 0;
-let grandLeave = 0;
+    activeEmployees.forEach(
+        (employee,index) => {
 
-let activeEmployees = employees.filter(
-    e => e.status === "Active"
-);
+            let present = 0;
+            let absent = 0;
+            let leave = 0;
 
-activeEmployees.forEach(
-    (employee,index)=>{
+            let rowHTML = `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        <b>
+                            ${employee.id}
+                        </b>
+                    </td>
+
+                    <td>
+                        ${employee.name}
+                    </td>
+
+            `;
 
 
-        let present = 0;
-        let absent = 0;
-        let leave = 0;
+            for(
+                let day = 1;
+                day <= daysInMonth;
+                day++
+            ){
+
+                const date =
+                    `${month}-${String(day).padStart(2,"0")}`;
+
+        const key =
+    employee.id + "_" + date;
+
+const record =
+    attendanceMap.get(key);
 
 
-        let rowHTML = `
+                let status =
+                    record
+                    ? record.status
+                    : "";
+
+                let displayStatus = "-";
+
+                let badgeClass = "";
+
+
+                if(status === "Present"){
+
+                    displayStatus = "P";
+
+                    badgeClass =
+                        "badge badge-present";
+
+                    present++;
+
+                }
+
+                else if(status === "Absent"){
+
+                    displayStatus = "A";
+
+                    badgeClass =
+                        "badge badge-absent";
+
+                    absent++;
+
+                }
+
+                else if(status === "Leave"){
+
+                    displayStatus = "L";
+
+                    badgeClass =
+                        "badge badge-leave";
+
+                    leave++;
+
+                }
+
+
+                rowHTML += `
+
+                    <td
+                        style="
+                            text-align:center;
+                            min-width:42px;
+                        ">
+
+                        ${
+                            displayStatus === "-"
+                            ?
+                            "-"
+                            :
+                            `<span class="${badgeClass}">
+                                ${displayStatus}
+                             </span>`
+                        }
+
+                    </td>
+
+                `;
+
+            }
+
+
+            const total =
+                present +
+                absent +
+                leave;
+
+
+            rowHTML += `
+
+                    <td>
+                        <span class="badge badge-present">
+                            ${present}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge badge-absent">
+                            ${absent}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge badge-leave">
+                            ${leave}
+                        </span>
+                    </td>
+
+                    <td>
+                        <b>${total}</b>
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            body.insertAdjacentHTML("beforeend", rowHTML);
+
+        }
+    );
+
+
+    /* ================================
+       ONE WORK DETAILS ROW
+       AFTER ALL STAFF
+    ================================= */
+
+    if(activeEmployees.length > 0){
+
+        let workRowHTML = `
 
             <tr>
 
-                <td>
-                    ${index + 1}
-                </td>
+                <td
+                    colspan="3"
+                    style="
+                        text-align:right;
+                        font-weight:700;
+                        background:#f3f6fa;
+                        color:#444;
+                        white-space:nowrap;
+                    ">
 
-                <td>
-                    <b>
-                        ${employee.id}
-                    </b>
-                </td>
+                    Work Details
 
-                <td>
-                    ${employee.name}
                 </td>
 
         `;
@@ -6417,76 +6664,33 @@ activeEmployees.forEach(
             const date =
                 `${month}-${String(day).padStart(2,"0")}`;
 
-
-            const record =
-                attendance.find(
-                    a =>
-                        a.employeeId === employee.id &&
-                        a.date === date
-                );
+            const details =
+                workDetailsMap[date] || "";
 
 
-            let status =
-                record
-                ? record.status
-                : "";
-
-
-            let displayStatus = "-";
-
-            let badgeClass = "";
-
-
-            if(status === "Present"){
-
-                displayStatus = "P";
-
-                badgeClass =
-                    "badge badge-present";
-
-                present++;
-
-            }
-
-            else if(status === "Absent"){
-
-                displayStatus = "A";
-
-                badgeClass =
-                    "badge badge-absent";
-
-                absent++;
-
-            }
-
-            else if(status === "Leave"){
-
-                displayStatus = "L";
-
-                badgeClass =
-                    "badge badge-leave";
-
-                leave++;
-
-            }
-
-
-            rowHTML += `
+            workRowHTML += `
 
                 <td
                     style="
                         text-align:center;
-                        min-width:42px;
+                        vertical-align:top;
+                        min-width:90px;
+                        max-width:180px;
+                        white-space:normal;
+                        word-break:break-word;
+                        font-size:10px;
+                        line-height:1.3;
+                        background:#f3f6fa;
+                        color:#555;
+                        padding:7px 4px;
                     ">
 
                     ${
-                        displayStatus === "-"
+                        details
                         ?
-                        "-"
+                        details
                         :
-                        `<span class="${badgeClass}">
-                            ${displayStatus}
-                         </span>`
+                        "-"
                     }
 
                 </td>
@@ -6496,39 +6700,12 @@ activeEmployees.forEach(
         }
 
 
-        const total =
-            present +
-            absent +
-            leave;
+        workRowHTML += `
 
-
-        grandPresent += present;
-        grandAbsent += absent;
-        grandLeave += leave;
-
-
-        rowHTML += `
-
-                <td>
-                    <span class="badge badge-present">
-                        ${present}
-                    </span>
-                </td>
-
-                <td>
-                    <span class="badge badge-absent">
-                        ${absent}
-                    </span>
-                </td>
-
-                <td>
-                    <span class="badge badge-leave">
-                        ${leave}
-                    </span>
-                </td>
-
-                <td>
-                    <b>${total}</b>
+                <td colspan="4"
+                    style="
+                        background:#f3f6fa;
+                    ">
                 </td>
 
             </tr>
@@ -6536,17 +6713,16 @@ activeEmployees.forEach(
         `;
 
 
-        body.innerHTML +=
-            rowHTML;
+        body.innerHTML += workRowHTML;
 
-    });
+    }
 
 
     /* ================================
        EMPTY EMPLOYEE CHECK
     ================================= */
 
-    if(employees.length === 0){
+    if(activeEmployees.length === 0){
 
         body.innerHTML = `
 
@@ -6567,6 +6743,674 @@ activeEmployees.forEach(
     }
 
 }
+
+
+
+  function downloadDayWiseExcel(){
+
+    const table =
+        document.getElementById("monthlyDayWiseTable");
+
+    if(!table){
+
+        alert("Day-wise attendance table not found.");
+
+        return;
+    }
+
+    const monthInput =
+        document.getElementById("monthlyReportMonth");
+
+    const month =
+        monthInput ? monthInput.value : "";
+
+    if(!month){
+
+        alert("Please select a month first.");
+
+        return;
+    }
+
+    if(typeof XLSX === "undefined"){
+
+        alert("Excel library is not loaded.");
+
+        return;
+    }
+
+    const workbook =
+        XLSX.utils.table_to_book(
+            table,
+            {
+                sheet: "Day Wise Attendance"
+            }
+        );
+
+    const filename =
+        `Day_Wise_Attendance_${month}.xlsx`;
+
+    XLSX.writeFile(
+        workbook,
+        filename
+    );
+}
+
+
+  
+
+  
+async function downloadDayWisePDF(){
+
+    const { jsPDF } = window.jspdf;
+
+    const originalTable =
+        document.getElementById("monthlyDayWiseTable");
+
+    if(!originalTable){
+        alert("Day-wise attendance table not found.");
+        return;
+    }
+
+    const month =
+        document.getElementById("monthlyReportMonth")?.value;
+
+    if(!month){
+        alert("Please select a month first.");
+        return;
+    }
+
+    const [year, monthNumber] =
+        month.split("-");
+
+    const dateObj =
+        new Date(
+            Number(year),
+            Number(monthNumber) - 1,
+            1
+        );
+
+    const monthName =
+        dateObj.toLocaleString(
+            "en-IN",
+            {month:"long"}
+        );
+
+    const daysInMonth =
+        new Date(
+            Number(year),
+            Number(monthNumber),
+            0
+        ).getDate();
+
+
+    /* =========================
+       PDF
+    ========================= */
+
+    const doc =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    function addHeader(){
+
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(14);
+
+        doc.text(
+            "M/s Chakraborty Electricals (Vendor Code-501520)",
+            148,
+            10,
+            {align:"center"}
+        );
+
+        doc.setFontSize(11);
+
+        doc.text(
+            "STAFF ATTENDANCE SHEET",
+            148,
+            17,
+            {align:"center"}
+        );
+
+        doc.setFontSize(8.5);
+
+        doc.text(
+            `Month: ${monthName} ${year}`,
+            148,
+            23,
+            {align:"center"}
+        );
+    }
+
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    function addFooter(){
+
+        const pageWidth =
+            doc.internal.pageSize.getWidth();
+
+        const pageHeight =
+            doc.internal.pageSize.getHeight();
+
+        doc.setDrawColor(70);
+        doc.setLineWidth(0.25);
+
+        doc.line(
+            7,
+            pageHeight - 10,
+            pageWidth - 7,
+            pageHeight - 10
+        );
+
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(6.5);
+
+        doc.text(
+            "System Generated Report • M/s Chakraborty Electricals",
+            7,
+            pageHeight - 5
+        );
+
+        doc.text(
+            `Page ${doc.internal.getNumberOfPages()}`,
+            pageWidth - 7,
+            pageHeight - 5,
+            {align:"right"}
+        );
+    }
+
+
+    /* =========================
+       LOAD WORK DETAILS FIRST
+    ========================= */
+
+    const workRows = [];
+
+    for(
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ){
+
+        const date =
+            `${month}-${String(day).padStart(2,"0")}`;
+
+        try{
+
+            const workDoc =
+                await db
+                    .collection("dailyWorkDetails")
+                    .doc(date)
+                    .get();
+
+            let details = "";
+
+            if(workDoc.exists){
+
+                const data =
+                    workDoc.data();
+
+                details =
+                    data.details || "";
+            }
+
+            workRows.push({
+
+                day:
+                    String(day).padStart(2,"0"),
+
+                details:
+                    String(details).trim()
+
+            });
+
+        }
+        catch(error){
+
+            console.error(
+                "Work Details Error:",
+                date,
+                error
+            );
+
+            workRows.push({
+
+                day:
+                    String(day).padStart(2,"0"),
+
+                details:""
+
+            });
+        }
+    }
+
+
+    /* =========================
+       ATTENDANCE TABLE
+    ========================= */
+
+    addHeader();
+
+
+    const attendanceTable =
+        originalTable.cloneNode(true);
+
+
+    /*
+       Work Details row remove
+       from attendance table
+    */
+
+    attendanceTable
+        .querySelectorAll("tr")
+        .forEach(row => {
+
+            const text =
+                row.innerText
+                    .replace(/\s+/g," ")
+                    .trim()
+                    .toLowerCase();
+
+            if(
+                text.includes("work details")
+            ){
+                row.remove();
+            }
+
+        });
+
+
+    attendanceTable.style.display = "none";
+
+    document.body.appendChild(
+        attendanceTable
+    );
+
+
+    doc.autoTable({
+
+        html:attendanceTable,
+
+        startY:27,
+
+        theme:"grid",
+
+        styles:{
+            fontSize:5.8,
+            cellPadding:1.2,
+            lineWidth:0.3,
+            lineColor:[60,60,60],
+            textColor:[20,20,20],
+            valign:"middle",
+            halign:"center"
+        },
+
+        headStyles:{
+            fontSize:5.8,
+            fontStyle:"bold",
+            lineWidth:0.4,
+            lineColor:[40,40,40],
+            valign:"middle",
+            halign:"center"
+        },
+
+        bodyStyles:{
+            lineWidth:0.3,
+            lineColor:[70,70,70]
+        },
+
+        margin:{
+            left:7,
+            right:7,
+            top:27,
+            bottom:9
+        },
+
+        /*
+           IMPORTANT:
+           Page break হলে নতুন page-এ
+           আবার header/footer আসবে
+        */
+
+        didDrawPage:function(){
+
+            addHeader();
+            addFooter();
+
+        }
+
+    });
+
+
+    document.body.removeChild(
+        attendanceTable
+    );
+
+
+    /* =========================
+       WORK DETAILS
+       SAME PAGE IF SPACE EXISTS
+    ========================= */
+
+    let startY =
+        (doc.lastAutoTable?.finalY || 27) + 5;
+
+
+    /*
+       যদি Staff table-এর পরে
+       খুব কম জায়গা থাকে,
+       তাহলে নতুন page
+    */
+
+    const pageHeight =
+        doc.internal.pageSize.getHeight();
+
+    if(
+        startY > pageHeight - 75
+    ){
+
+        doc.addPage();
+
+        addHeader();
+
+        startY = 29;
+
+    }
+
+
+    /* =========================
+       WORK DETAILS TITLE
+    ========================= */
+
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(10);
+
+    doc.text(
+        "WORK DETAILS",
+        148,
+        startY,
+        {align:"center"}
+    );
+
+
+    startY += 4;
+
+
+    /* =========================
+       LEFT / RIGHT DATA
+    ========================= */
+
+    const leftRows =
+        workRows.filter(
+            item => Number(item.day) <= 15
+        );
+
+    const rightRows =
+        workRows.filter(
+            item => Number(item.day) >= 16
+        );
+
+
+    /*
+       Empty rows বাদ দিচ্ছি না।
+       তাই 01-15 এবং 16-31
+       ঠিক জায়গায় থাকবে।
+    */
+
+    const maxRows =
+        Math.max(
+            leftRows.length,
+            rightRows.length
+        );
+
+
+    const leftBody = [];
+
+    const rightBody = [];
+
+
+    for(
+        let i = 0;
+        i < maxRows;
+        i++
+    ){
+
+        const left =
+            leftRows[i];
+
+        const right =
+            rightRows[i];
+
+
+        leftBody.push([
+
+            left
+                ? left.day
+                : "",
+
+            left
+                ? left.details
+                : ""
+
+        ]);
+
+
+        rightBody.push([
+
+            right
+                ? right.day
+                : "",
+
+            right
+                ? right.details
+                : ""
+
+        ]);
+
+    }
+
+
+    /* =========================
+       LEFT WORK TABLE
+    ========================= */
+
+    doc.autoTable({
+
+        startY:startY,
+
+        margin:{
+            left:7,
+            right:153
+        },
+
+        tableWidth:138,
+
+        head:[
+            ["Date","Work Details"]
+        ],
+
+        body:leftBody,
+
+        theme:"grid",
+
+        styles:{
+
+            /*
+               Text wrap হবে।
+               তাই long text হলে
+               শুধু ওই row বড় হবে।
+            */
+
+            fontSize:6.3,
+
+            cellPadding:{
+                top:1.2,
+                right:2,
+                bottom:1.2,
+                left:2
+            },
+
+            overflow:"linebreak",
+
+            valign:"middle",
+
+            lineWidth:0.3,
+
+            lineColor:[60,60,60],
+
+            textColor:[20,20,20]
+
+        },
+
+        headStyles:{
+
+            fontSize:6.5,
+
+            fontStyle:"bold",
+
+            halign:"center",
+
+            valign:"middle",
+
+            lineWidth:0.4,
+
+            lineColor:[40,40,40]
+
+        },
+
+        columnStyles:{
+
+            0:{
+                cellWidth:22,
+                halign:"center"
+            },
+
+            1:{
+                cellWidth:116,
+                halign:"left"
+            }
+
+        }
+
+    });
+
+
+    /* =========================
+       RIGHT WORK TABLE
+    ========================= */
+
+    doc.autoTable({
+
+        startY:startY,
+
+        margin:{
+            left:153,
+            right:7
+        },
+
+        tableWidth:138,
+
+        head:[
+            ["Date","Work Details"]
+        ],
+
+        body:rightBody,
+
+        theme:"grid",
+
+        styles:{
+
+            fontSize:6.3,
+
+            cellPadding:{
+                top:1.2,
+                right:2,
+                bottom:1.2,
+                left:2
+            },
+
+            /*
+               IMPORTANT:
+               Long text wrap হবে।
+               Short text short row হবে।
+            */
+
+            overflow:"linebreak",
+
+            valign:"middle",
+
+            lineWidth:0.3,
+
+            lineColor:[60,60,60],
+
+            textColor:[20,20,20]
+
+        },
+
+        headStyles:{
+
+            fontSize:6.5,
+
+            fontStyle:"bold",
+
+            halign:"center",
+
+            valign:"middle",
+
+            lineWidth:0.4,
+
+            lineColor:[40,40,40]
+
+        },
+
+        columnStyles:{
+
+            0:{
+                cellWidth:22,
+                halign:"center"
+            },
+
+            1:{
+                cellWidth:116,
+                halign:"left"
+            }
+
+        }
+
+    });
+
+
+    /* =========================
+       FINAL FOOTER
+    ========================= */
+
+    addFooter();
+
+
+    /* =========================
+       DOWNLOAD
+    ========================= */
+
+    doc.save(
+        `Staff_Attendance_Sheet_${month}.pdf`
+    );
+
+}
+
+
+
+  
 
   function previewEmployeePhoto(event){
 
