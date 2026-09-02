@@ -1686,9 +1686,6 @@ let settings = {};
 let items = [];
 
 
-let items = [];
-
-
 const defaultSettings = {
 
 name:"M/S CHAKRABORTY ELECTRICALS",
@@ -2017,228 +2014,57 @@ function applySettings(){
 
 
 
-function saveSettings(){
+async function saveSettings(){
 
     settings = {
-
-        name:
-            document
-            .getElementById("setName")
-            .value.trim(),
-
-        gst:
-            document
-            .getElementById("setGST")
-            .value.trim(),
-
-        address:
-            document
-            .getElementById("setAddress")
-            .value.trim(),
-
-        pan:
-            document
-            .getElementById("setPAN")
-            .value.trim(),
-
-        mobile:
-            document
-            .getElementById("setMobile")
-            .value.trim()
-
-    };
-
-
-    async function saveSettings(){
-
-    settings = {
-
-        name:
-            document
-            .getElementById("setName")
-            .value.trim(),
-
-        gst:
-            document
-            .getElementById("setGST")
-            .value.trim(),
-
-        address:
-            document
-            .getElementById("setAddress")
-            .value.trim(),
-
-        pan:
-            document
-            .getElementById("setPAN")
-            .value.trim(),
-
-        mobile:
-            document
-            .getElementById("setMobile")
-            .value.trim()
-
+        name: document.getElementById("setName").value.trim(),
+        gst: document.getElementById("setGST").value.trim(),
+        address: document.getElementById("setAddress").value.trim(),
+        pan: document.getElementById("setPAN").value.trim(),
+        mobile: document.getElementById("setMobile").value.trim()
     };
 
     try{
-
-        await db
-            .collection("settings")
-            .doc("business")
-            .set(settings, {merge:true});
-
+        await db.collection("settings").doc("business").set(settings, {merge:true});
         applySettings();
-
         showToast("Settings saved to Firebase");
-
     }catch(error){
-
         console.error(error);
-
         showToast("Settings save failed");
-
     }
-
-  }
-
+}
 
 
-function saveProduct(){
+async function saveProduct(){
 
-    const name =
-        document
-        .getElementById("pName")
-        .value.trim();
-
+    const name = document.getElementById("pName").value.trim();
 
     if(!name){
-
-        showToast("Product name required");
-
-        return;
-
-    }
-
-
-    const p = {
-
-        id:Date.now().toString(),
-
-        name:name,
-
-        hsn:
-            document
-            .getElementById("pHSN")
-            .value.trim(),
-
-        unit:
-            document
-            .getElementById("pUnit")
-            .value.trim()
-            || "Nos",
-
-        gst:
-            Number(
-                document
-                .getElementById("pGST")
-                .value
-            ) || 0,
-
-        rate:
-            Number(
-                document
-                .getElementById("pRate")
-                .value
-            ) || 0,
-
-        desc:
-            document
-            .getElementById("pDesc")
-            .value.trim()
-
-    };
-
-
-    async function saveProduct(){
-
-    const name =
-        document
-        .getElementById("pName")
-        .value.trim();
-
-    if(!name){
-
         showToast("Product name required");
         return;
-
     }
 
     const p = {
-
-        name:name,
-
-        hsn:
-            document
-            .getElementById("pHSN")
-            .value.trim(),
-
-        unit:
-            document
-            .getElementById("pUnit")
-            .value.trim()
-            || "Nos",
-
-        gst:
-            Number(
-                document
-                .getElementById("pGST")
-                .value
-            ) || 0,
-
-        rate:
-            Number(
-                document
-                .getElementById("pRate")
-                .value
-            ) || 0,
-
-        desc:
-            document
-            .getElementById("pDesc")
-            .value.trim(),
-
-        createdAt:
-            firebase.firestore.FieldValue.serverTimestamp()
-
+        name: name,
+        hsn: document.getElementById("pHSN").value.trim(),
+        unit: document.getElementById("pUnit").value.trim() || "Nos",
+        gst: Number(document.getElementById("pGST").value) || 0,
+        rate: Number(document.getElementById("pRate").value) || 0,
+        desc: document.getElementById("pDesc").value.trim(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     try{
-
-        const ref = await db
-            .collection("products")
-            .add(p);
-
-        products.push({
-            id:ref.id,
-            ...p
-        });
-
+        const ref = await db.collection("products").add(p);
+        products.push({id: ref.id, ...p});
         clearProductForm();
-
         refreshAll();
-
         showToast("Product added to Firebase");
-
     }catch(error){
-
         console.error(error);
-
         showToast("Product save failed");
-
     }
-
-  }
-
+}
 
 
 function clearProductForm(){
@@ -2259,21 +2085,24 @@ function clearProductForm(){
 
 
 
-function deleteProduct(id){
+async function deleteProduct(id){
 
-    products =
-        products.filter(
-            p => p.id !== id
-        );
+    if(!confirm("Delete this product?")){
+        return;
+    }
 
-    saveLS();
+    try{
+        await db.collection("products").doc(id).delete();
 
-    refreshAll();
+        products = products.filter(p => p.id !== id);
+        refreshAll();
+        showToast("Product deleted");
 
-    showToast("Product deleted");
-
+    }catch(error){
+        console.error(error);
+        showToast("Delete failed. Admin permission required.");
+    }
 }
-
 
 
 function renderProducts(){
@@ -2898,143 +2727,48 @@ function getForm(){
 
 
 
-function saveInvoice(){
-
-    const f =
-        getForm();
-
-
-    if(!f.customer.name){
-
-        showToast(
-            "Consumer name is required"
-        );
-
-        return;
-
-    }
-
-
-    if(!f.items.length){
-
-        showToast(
-            "Add at least one item"
-        );
-
-        return;
-
-    }
-
-
-    const existing =
-        invoices.find(
-            x => x.no === f.no
-        );
-
-
-    if(existing){
-
-        showToast(
-            "This invoice number already exists"
-        );
-
-        return;
-
-    }
-
-
-    async function saveInvoice(){
+async function saveInvoice(){
 
     const f = getForm();
 
     if(!f.customer.name){
-
-        showToast(
-            "Consumer name is required"
-        );
-
+        showToast("Consumer name is required");
         return;
     }
 
     if(!f.items.length){
-
-        showToast(
-            "Add at least one item"
-        );
-
+        showToast("Add at least one item");
         return;
     }
 
-    const existing =
-        invoices.find(
-            x => x.no === f.no
-        );
+    const existing = invoices.find(x => x.no === f.no);
 
     if(existing){
-
-        showToast(
-            "This invoice number already exists"
-        );
-
+        showToast("This invoice number already exists");
         return;
     }
 
     const invoiceData = {
-
         ...f,
-
-        savedAt:
-            firebase.firestore.FieldValue.serverTimestamp()
-
+        savedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     try{
-
-        const ref =
-            await db
-            .collection("invoices")
-            .add(invoiceData);
+        const ref = await db.collection("invoices").add(invoiceData);
 
         invoices.push({
-
-            id:ref.id,
-
+            id: ref.id,
             ...f,
-
-            savedAt:
-                new Date().toISOString()
-
+            savedAt: new Date().toISOString()
         });
 
         refreshAll();
-
-        showToast(
-            "Invoice saved to Firebase"
-        );
-
+        showToast("Invoice saved to Firebase");
     }catch(error){
-
         console.error(error);
-
-        showToast(
-            "Invoice save failed"
-        );
-
+        showToast("Invoice save failed");
     }
-
 }
-
-
-    saveLS();
-
-    refreshAll();
-
-    showToast(
-        "Invoice saved successfully"
-    );
-
-}
-
 
 
 function newInvoice(){
@@ -4112,91 +3846,36 @@ function viewSaved(no){
 
 
 
-function deleteInvoice(no){
+async function deleteInvoice(no){
 
-    if(
-        !confirm(
-            "Delete this invoice record?"
-        )
-    ){
-
+    if(!confirm("Delete this invoice record?")){
         return;
-
-    }
-
-
-    async function deleteInvoice(no){
-
-    if(
-        !confirm(
-            "Delete this invoice record?"
-        )
-    ){
-
-        return;
-
     }
 
     try{
-
-        const snap =
-            await db
+        const snap = await db
             .collection("invoices")
             .where("no","==",no)
             .get();
 
         if(snap.empty){
-
-            showToast(
-                "Invoice not found"
-            );
-
+            showToast("Invoice not found");
             return;
-
         }
 
-        const batch =
-            db.batch();
-
-        snap.forEach(doc => {
-
-            batch.delete(doc.ref);
-
-        });
-
+        const batch = db.batch();
+        snap.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
 
-        invoices =
-            invoices.filter(
-                x => x.no !== no
-            );
-
+        invoices = invoices.filter(x => x.no !== no);
         refreshAll();
-
-        showToast(
-            "Invoice deleted"
-        );
+        showToast("Invoice deleted");
 
     }catch(error){
-
         console.error(error);
-
-        showToast(
-            "Delete failed. Admin permission required."
-        );
-
+        showToast("Delete failed. Admin permission required.");
     }
-
-  }
-
-    refreshAll();
-
-    showToast(
-        "Invoice deleted"
-    );
-
 }
-
 
 
 function updateKPIs(){
@@ -4304,85 +3983,32 @@ function exportData(){
 
 
 
-function clearAllData(){
+async function clearAllData(){
 
-    if(
-        !confirm(
-            "This will delete all local products and invoice records. Continue?"
-        )
-    ){
-
+    if(!confirm("This will delete all local products and invoice records. Continue?")){
         return;
-
-    }
-
-
-  async function clearAllData(){
-
-    if(
-        !confirm(
-            "Delete all products and invoices from Firebase?"
-        )
-    ){
-
-        return;
-
     }
 
     try{
+        const productSnap = await db.collection("products").get();
+        const invoiceSnap = await db.collection("invoices").get();
+        const batch = db.batch();
 
-        const productSnap =
-            await db
-            .collection("products")
-            .get();
-
-        const invoiceSnap =
-            await db
-            .collection("invoices")
-            .get();
-
-        const batch =
-            db.batch();
-
-        productSnap.forEach(doc => {
-            batch.delete(doc.ref);
-        });
-
-        invoiceSnap.forEach(doc => {
-            batch.delete(doc.ref);
-        });
+        productSnap.forEach(doc => batch.delete(doc.ref));
+        invoiceSnap.forEach(doc => batch.delete(doc.ref));
 
         await batch.commit();
 
         products = [];
         invoices = [];
-
         refreshAll();
-
-        showToast(
-            "All Firebase data cleared"
-        );
+        showToast("All Firebase data cleared");
 
     }catch(error){
-
         console.error(error);
-
-        showToast(
-            "Clear failed. Admin permission required."
-        );
-
+        showToast("Clear failed. Admin permission required.");
     }
-
-  }
-
-    refreshAll();
-
-    showToast(
-        "Local data cleared"
-    );
-
 }
-
 
 
 function refreshAll(){
