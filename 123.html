@@ -1869,12 +1869,15 @@ async function loadAllFirebaseData(){
 
     try{
 
+        console.log("Loading products...");
         await loadProducts();
         console.log("Products loaded:", products.length);
 
+        console.log("Loading invoices...");
         await loadInvoices();
         console.log("Invoices loaded:", invoices.length);
 
+        console.log("Loading settings...");
         await loadSettings();
         console.log("Settings loaded:", settings);
 
@@ -1884,7 +1887,7 @@ async function loadAllFirebaseData(){
 
     }catch(error){
 
-        console.error("FIREBASE ERROR:", error);
+        console.error("FIREBASE LOAD ERROR:", error);
 
         showToast(
             "Firebase load failed: " +
@@ -4027,7 +4030,7 @@ function renderHistory(){
   <button
 class="btn btn-primary"
 style="padding:5px 8px"
-onclick="editInvoice('${i.id}')">
+onclick="editInvoice('${x.id}')">
 Edit
 </button>
 
