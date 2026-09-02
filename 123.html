@@ -470,10 +470,11 @@ th{
     padding:6px 10px;
 }
 
-.toast{
+  .toast{
     position:fixed;
-    right:18px;
-    bottom:18px;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
     background:#111827;
     color:white;
     padding:12px 15px;
@@ -1864,34 +1865,35 @@ async function loadSettings(){
     }
 }
 
-
 async function loadAllFirebaseData(){
 
     try{
 
-        await Promise.all([
-            loadProducts(),
-            loadInvoices(),
-            loadSettings()
-        ]);
+        await loadProducts();
+        console.log("Products loaded:", products.length);
+
+        await loadInvoices();
+        console.log("Invoices loaded:", invoices.length);
+
+        await loadSettings();
+        console.log("Settings loaded:", settings);
 
         applySettings();
         updateInvoiceNo();
         refreshAll();
+
+    }catch(error){
+
+        console.error("FIREBASE ERROR:", error);
+
+        showToast(
+            "Firebase load failed: " +
+            (error.code || error.message || "Unknown error")
+        );
+
     }
 
-    catch(error){
-
-    console.error("Firebase data load failed:", error);
-
-    showToast(
-        "Firebase load failed: " +
-        (error.code || error.message || "Unknown error")
-    );
-
   }
-
-}
 
 
 
