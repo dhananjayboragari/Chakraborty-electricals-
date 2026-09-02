@@ -2047,8 +2047,9 @@ async function saveSettings(){
 
     try{
         await db.collection("solar_settings").doc("business").set(settings, {merge:true});
-        applySettings();
-        showToast("Settings saved to Firebase");
+        await loadAllFirebaseData();
+
+showToast("Settings saved & data refreshed");
     }catch(error){
         console.error("Settings save failed:", error);
         showToast("Settings save failed: " + (error.code || "permission/error"));
@@ -2077,8 +2078,10 @@ async function saveProduct(){
         const ref = await db.collection("solar_product").add(p);
         products.push({id: ref.id, ...p, createdAt: new Date().toISOString()});
         clearProductForm();
-        refreshAll();
-        showToast("Product added to Firebase");
+
+await loadAllFirebaseData();
+
+showToast("Product saved & data refreshed");
     }catch(error){
         console.error("Product save failed:", error);
         showToast("Product save failed: " + (error.code || "permission/error"));
@@ -2109,8 +2112,10 @@ async function deleteProduct(id){
     try{
         await db.collection("solar_product").doc(id).delete();
         products = products.filter(p => p.id !== id);
-        refreshAll();
-        showToast("Product deleted");
+
+await loadAllFirebaseData();
+
+showToast("Product deleted & data refreshed");
     }catch(error){
         console.error("Product delete failed:", error);
         showToast("Delete failed: " + (error.code || "permission/error"));
