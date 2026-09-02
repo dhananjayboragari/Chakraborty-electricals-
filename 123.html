@@ -2792,6 +2792,8 @@ async function saveInvoice(){
                 .doc(editingInvoiceId)
                 .update(invoiceData);
 
+  await loadAllFirebaseData();
+
             showToast("Invoice updated successfully");
 
             editingInvoiceId = null;
@@ -2800,7 +2802,7 @@ async function saveInvoice(){
                 '[onclick="saveInvoice()"]'
             ).textContent = "✓ Save Invoice";
 
-            refreshAll();
+            
 
             return;
         }
@@ -2832,7 +2834,7 @@ async function saveInvoice(){
             savedAt: new Date().toISOString()
         });
 
-        refreshAll();
+        await loadAllFirebaseData();
 
         showToast("Invoice saved successfully");
 
