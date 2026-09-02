@@ -802,14 +802,7 @@ th{
     line-height:1.5 !important;
 }
 
-/* Notes / Terms */
-.invoice-paper > div[style*="Notes / Terms"]{
-    margin-top:12px !important;
-    border:1.5px solid #222 !important;
-    padding:10px !important;
-    font-size:12px !important;
-    line-height:1.5 !important;
-}
+
 
 /* Signature Area */
 .sign{
@@ -857,16 +850,30 @@ th{
         border-bottom:1px solid #222 !important;
     }
 
-    .invoice-paper > div[style*="Amount in Words"],
-    .invoice-paper > div[style*="Notes / Terms"]{
-        border:1.5px solid #222 !important;
-    }
+    
 
     .sign{
         border-top:1px solid #222 !important;
     }
 }
 
+  /* Amount in Words - Bigger Border */
+.invoice-paper > div[style*="Amount in Words"]{
+    border:2px solid #222 !important;
+    padding:14px !important;
+    min-height:55px !important;
+    font-size:12px !important;
+    line-height:1.6 !important;
+}
+
+@media print{
+    .invoice-paper > div[style*="Amount in Words"]{
+        border:2px solid #222 !important;
+        padding:14px !important;
+        min-height:55px !important;
+    }
+}
+  
 </style>
 </head>
 
