@@ -4,7439 +4,4428 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Attendance Management System</title>
+<title>Solar GST Invoice System</title>
 
 <style>
-
-/* =========================
-   RESET
-========================= */
-
 *{
-    margin:0;
-    padding:0;
     box-sizing:border-box;
-    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+:root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#172033;
+    --muted:#6b7280;
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --border:#e5e7eb;
+    --green:#16a34a;
+    --red:#dc2626;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
 }
 
 body{
-    background:#f3f6fb;
-    color:#202124;
+    margin:0;
+    background:var(--bg);
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+    color:var(--text);
 }
 
-
-/* =========================
-   SIDEBAR
-========================= */
-
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    width:250px;
-    height:100vh;
-
-    background:linear-gradient(
-        180deg,
-        #09203f,
-        #123c69,
-        #0b5278
-    );
-
-    color:white;
-    padding:20px 14px;
-
-    z-index:1000;
-
-    box-shadow:4px 0 15px rgba(0,0,0,.15);
-
-    transition:.3s;
+button,
+input,
+select,
+textarea{
+    font:inherit;
 }
 
-
-/* Logo */
-
-.logo{
-    text-align:center;
-    padding:10px 5px 25px;
-    border-bottom:1px solid rgba(255,255,255,.15);
-    margin-bottom:18px;
-}
-
-.logo-icon{
-    width:55px;
-    height:55px;
-
-    margin:auto;
-
-    border-radius:50%;
-
-    background:white;
-    color:#123c69;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:28px;
-    font-weight:bold;
-
-    box-shadow:0 0 15px rgba(255,255,255,.25);
-}
-
-.logo h2{
-    font-size:18px;
-    margin-top:10px;
-}
-
-.logo p{
-    font-size:11px;
-    opacity:.7;
-}
-
-
-/* Sidebar menu */
-
-.menu-title{
-    font-size:11px;
-    opacity:.55;
-    margin:18px 10px 8px;
-    text-transform:uppercase;
-}
-
-.menu-item{
-    display:flex;
-    align-items:center;
-    gap:13px;
-
-    padding:12px 14px;
-    margin:5px 0;
-
-    border-radius:9px;
-
-    color:white;
-    text-decoration:none;
-
+button{
     cursor:pointer;
-
-    transition:.25s;
+    border:0;
 }
-
-.menu-item:hover{
-    background:rgba(255,255,255,.12);
-    transform:translateX(3px);
-}
-
-.menu-item.active{
-    background:linear-gradient(
-        90deg,
-        rgba(255,255,255,.22),
-        rgba(255,255,255,.08)
-    );
-
-    box-shadow:
-    inset 3px 0 white,
-    0 4px 10px rgba(0,0,0,.1);
-}
-
-.menu-icon{
-    width:25px;
-    text-align:center;
-    font-size:18px;
-}
-
-.menu-text{
-    font-size:14px;
-}
-
-
-/* =========================
-   MAIN
-========================= */
-
-.main{
-    margin-left:250px;
-    min-height:100vh;
-
-    transition:.3s;
-}
-
-
-/* =========================
-   TOP HEADER
-========================= */
 
 .topbar{
     height:70px;
-
-    background:white;
-
+    background:linear-gradient(
+        135deg,
+        #0f172a,
+        #1e3a8a
+    );
+    color:white;
     display:flex;
     align-items:center;
     justify-content:space-between;
-
-    padding:0 25px;
-
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-
+    padding:0 22px;
     position:sticky;
     top:0;
-
-    z-index:900;
+    z-index:100;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
 }
 
-.page-title{
-    font-size:21px;
-    font-weight:600;
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
 
-.page-subtitle{
+.brand-icon{
+    width:44px;
+    height:44px;
+    border-radius:13px;
+    background:#facc15;
+    color:#111827;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+    font-weight:900;
+}
+
+.brand h1{
+    margin:0;
+    font-size:18px;
+}
+
+.brand p{
+    margin:2px 0 0;
     font-size:12px;
-    color:#777;
-    margin-top:2px;
+    color:#cbd5e1;
 }
 
-.profile{
+.menu-btn{
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    border-radius:10px;
+    padding:9px 13px;
+}
+
+.layout{
+    max-width:1500px;
+    margin:auto;
     display:flex;
-    align-items:center;
-    gap:10px;
 }
 
+.sidebar{
+    width:245px;
+    padding:18px;
+    flex-shrink:0;
+}
 
-  .avatar{
-    width:40px;
-    height:40px;
-
-    border-radius:50%;
-
+.nav{
     background:white;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    overflow:hidden;
-
-    border:2px solid #1769aa;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.15);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:8px;
+    box-shadow:var(--shadow);
+    position:sticky;
+    top:88px;
 }
 
-.avatar img{
+.nav button{
     width:100%;
-    height:100%;
-
-    object-fit:cover;
-}
- 
-
-
-/* Mobile button */
-
-.menu-toggle{
-    display:none;
-
-    border:0;
-    background:#123c69;
-    color:white;
-
-    width:40px;
-    height:40px;
-
-    border-radius:8px;
-
-    font-size:20px;
+    text-align:left;
+    background:transparent;
+    color:#475569;
+    padding:12px;
+    border-radius:11px;
+    margin:2px 0;
 }
 
-
-/* =========================
-   CONTENT
-========================= */
+.nav button:hover,
+.nav button.active{
+    background:#eff6ff;
+    color:var(--primary);
+    font-weight:700;
+}
 
 .content{
-    padding:25px;
+    flex:1;
+    min-width:0;
+    padding:18px;
 }
-
-
-/* Sections */
 
 .section{
     display:none;
-    animation:fadeIn .25s ease;
 }
 
 .section.active{
     display:block;
 }
 
-@keyframes fadeIn{
-    from{
-        opacity:0;
-        transform:translateY(8px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-
-/* =========================
-   WELCOME
-========================= */
-
-.welcome{
-    background:
-    linear-gradient(
-        135deg,
-        #123c69,
-        #1677b8
-    );
-
-    color:white;
-
-    padding:25px;
-
-    border-radius:15px;
-
-    margin-bottom:25px;
-
-    box-shadow:0 8px 20px rgba(18,60,105,.2);
-}
-
-.welcome h1{
-    font-size:25px;
-}
-
-.welcome p{
-    margin-top:7px;
-    opacity:.85;
-}
-
-
-/* =========================
-   DASHBOARD CARDS
-========================= */
-
-.dashboard-grid{
-    display:grid;
-
-    grid-template-columns:
-    repeat(3,1fr);
-
-    gap:18px;
-}
-
-.module-card{
-
+.card{
     background:white;
-
-    border-radius:15px;
-
-    padding:25px;
-
-    min-height:170px;
-
-    cursor:pointer;
-
-    position:relative;
-
-    overflow:hidden;
-
-    box-shadow:
-    0 5px 18px rgba(0,0,0,.08);
-
-    transition:.3s;
-}
-
-.module-card:hover{
-
-    transform:
-    translateY(-5px);
-
-    box-shadow:
-    0 12px 28px rgba(0,0,0,.13);
-}
-
-.module-card::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:100px;
-    height:100px;
-
-    border-radius:50%;
-
-    right:-35px;
-    bottom:-35px;
-
-    background:rgba(18,60,105,.06);
-}
-
-.card-icon{
-
-    width:55px;
-    height:55px;
-
-    border-radius:13px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:27px;
-
-    background:#eaf3fb;
-
-    color:#123c69;
-
-    margin-bottom:18px;
-}
-
-.module-card h3{
-    font-size:17px;
-}
-
-.module-card p{
-    font-size:12px;
-    color:#777;
-    margin-top:6px;
-}
-
-.open-text{
-    position:absolute;
-
-    right:20px;
-    bottom:20px;
-
-    font-size:12px;
-
-    color:#1677b8;
-
-    font-weight:bold;
-}
-
-
-/* =========================
-   STAT CARDS
-========================= */
-
-.stats{
-    display:grid;
-
-    grid-template-columns:
-    repeat(4,1fr);
-
-    gap:15px;
-
-    margin-bottom:22px;
-}
-
-.stat-card{
-    background:white;
-
-    border-radius:13px;
-
+    border:1px solid var(--border);
+    border-radius:18px;
     padding:18px;
-
-    box-shadow:
-    0 4px 15px rgba(0,0,0,.07);
+    box-shadow:var(--shadow);
+    margin-bottom:16px;
 }
 
-.stat-card h4{
-    font-size:12px;
-    color:#777;
+.card h2,
+.card h3{
+    margin:0 0 14px;
 }
 
-.stat-card strong{
+.muted{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:14px;
+}
+
+.col-12{grid-column:span 12}
+.col-8{grid-column:span 8}
+.col-6{grid-column:span 6}
+.col-4{grid-column:span 4}
+.col-3{grid-column:span 3}
+.col-2{grid-column:span 2}
+
+label{
     display:block;
-
-    font-size:28px;
-
-    margin-top:7px;
+    font-size:12px;
+    font-weight:700;
+    color:#475569;
+    margin-bottom:6px;
 }
 
-.blue{
-    color:#1769aa;
-}
-
-.green{
-    color:#16874b;
-}
-
-.red{
-    color:#d93025;
-}
-
-.orange{
-    color:#e69b00;
-}
-
-
-/* =========================
-   PANEL
-========================= */
-
-.panel{
+input,
+select,
+textarea{
+    width:100%;
+    border:1px solid #dbe1ea;
+    border-radius:10px;
+    padding:10px 11px;
     background:white;
-
-    border-radius:14px;
-
-    padding:22px;
-
-    box-shadow:
-    0 4px 15px rgba(0,0,0,.07);
-
-    margin-bottom:20px;
+    color:#172033;
+    outline:none;
 }
 
-.panel-header{
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#93c5fd;
+    box-shadow:0 0 0 3px rgba(37,99,235,.10);
+}
+
+textarea{
+    min-height:82px;
+    resize:vertical;
+}
+
+.actions{
     display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:18px;
-
-    gap:10px;
-
+    gap:9px;
     flex-wrap:wrap;
 }
 
-.panel-title{
-    font-size:18px;
-    font-weight:600;
-}
-
-
-/* =========================
-   FORM
-========================= */
-
-.form-grid{
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(2,1fr);
-
-    gap:16px;
-}
-
-.form-group{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
-
-.form-group label{
-    font-size:13px;
-    font-weight:600;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea{
-
-    border:1px solid #d8dde5;
-
-    border-radius:8px;
-
-    padding:11px;
-
-    outline:none;
-
-    font-size:14px;
-
-    background:white;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
-
-    border-color:#1677b8;
-
-    box-shadow:
-    0 0 0 3px rgba(22,119,184,.08);
-}
-
-.full{
-    grid-column:1/-1;
-}
-
 .btn{
-
-    border:0;
-
-    padding:11px 18px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    font-weight:600;
-
-    color:white;
-
-    transition:.2s;
-}
-
-.btn:hover{
-    transform:translateY(-1px);
+    padding:10px 14px;
+    border-radius:10px;
+    font-weight:700;
 }
 
 .btn-primary{
-    background:#1769aa;
+    background:var(--primary);
+    color:white;
+}
+
+.btn-primary:hover{
+    background:var(--primary-dark);
+}
+
+.btn-light{
+    background:#f1f5f9;
+    color:#334155;
 }
 
 .btn-success{
-    background:#16874b;
+    background:var(--green);
+    color:white;
 }
 
 .btn-danger{
-    background:#d93025;
+    background:var(--red);
+    color:white;
 }
 
-.btn-warning{
-    background:#e69b00;
+.kpis{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
 }
 
-.btn-secondary{
-    background:#68717d;
+.kpi{
+    background:linear-gradient(
+        135deg,
+        #ffffff,
+        #f8fafc
+    );
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:16px;
 }
 
+.kpi b{
+    display:block;
+    font-size:22px;
+    margin-top:5px;
+}
 
-/* =========================
-   TABLE
-========================= */
-
-.table-wrapper{
-    overflow-x:auto;
+.table-wrap{
+    overflow:auto;
+    border:1px solid var(--border);
+    border-radius:12px;
 }
 
 table{
-
     width:100%;
-
     border-collapse:collapse;
+    min-width:760px;
+}
 
-    min-width:850px;
+th,
+td{
+    padding:10px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    font-size:13px;
 }
 
 th{
-
-    background:#123c69;
-
-    color:white;
-
-    padding:12px 9px;
-
-    font-size:12px;
-
-    text-align:center;
+    background:#f8fafc;
+    color:#475569;
 }
 
-td{
-
-    padding:10px 8px;
-
-    border-bottom:1px solid #e5e5e5;
-
-    font-size:13px;
-
-    text-align:center;
-}
-
-td input,
-td select{
-
-    border:1px solid #d5d9df;
-
-    border-radius:6px;
-
-    padding:7px;
-
-    width:100%;
+.num{
+    text-align:right;
 }
 
 .badge{
-
-    padding:5px 9px;
-
-    border-radius:20px;
-
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#eff6ff;
+    color:#1d4ed8;
     font-size:11px;
-
-    font-weight:bold;
+    font-weight:700;
 }
-
-.badge-present{
-    background:#e4f6eb;
-    color:#16874b;
-}
-
-.badge-absent{
-    background:#fde9e7;
-    color:#d93025;
-}
-
-.badge-leave{
-    background:#fff3d9;
-    color:#b87800;
-}
-
-
-/* =========================
-   SEARCH
-========================= */
-
-.search{
-
-    padding:10px 12px;
-
-    border:1px solid #d5d9df;
-
-    border-radius:8px;
-
-    outline:none;
-
-    min-width:220px;
-}
-
-
-/* =========================
-   DOWNLOAD CARDS
-========================= */
-
-.download-grid{
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(3,1fr);
-
-    gap:18px;
-}
-
-.download-card{
-
-    background:white;
-
-    padding:25px;
-
-    border-radius:14px;
-
-    text-align:center;
-
-    box-shadow:
-    0 4px 15px rgba(0,0,0,.07);
-}
-
-.download-card .icon{
-    font-size:40px;
-    margin-bottom:12px;
-}
-
-.download-card h3{
-    margin-bottom:7px;
-}
-
-.download-card p{
-    color:#777;
-    font-size:12px;
-    margin-bottom:18px;
-}
-
-
-/* =========================
-   EMPTY
-========================= */
 
 .empty{
-    padding:40px;
     text-align:center;
-    color:#888;
+    padding:28px;
+    color:var(--muted);
 }
 
+/* PREVIEW */
 
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:1000px){
-
-    .dashboard-grid{
-        grid-template-columns:
-        repeat(2,1fr);
-    }
-
-    .stats{
-        grid-template-columns:
-        repeat(2,1fr);
-    }
-
-    .download-grid{
-        grid-template-columns:
-        repeat(2,1fr);
-    }
-
-}
-
-
-@media(max-width:700px){
-
-    .sidebar{
-        left:-250px;
-    }
-
-    .sidebar.open{
-        left:0;
-    }
-
-    .main{
-        margin-left:0;
-    }
-
-    .menu-toggle{
-        display:block;
-    }
-
-    .topbar{
-        padding:0 15px;
-    }
-
-    .content{
-        padding:15px;
-    }
-
-    .dashboard-grid{
-        grid-template-columns:1fr;
-    }
-
-    .stats{
-        grid-template-columns:
-        repeat(2,1fr);
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .download-grid{
-        grid-template-columns:1fr;
-    }
-
-    .page-title{
-        font-size:17px;
-    }
-
-    .profile span{
-        display:none;
-    }
-
-}
-
-
-/* Overlay */
-
-.overlay{
-
-    display:none;
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,.4);
-
-    z-index:999;
-}
-
-.overlay.show{
-    display:block;
-}
-
-
-  @media(max-width:700px){
-
-    #staffReportInfo > div{
-        grid-template-columns:1fr !important;
-    }
-
-}
-
-</style>
-
-  <style>
-/* =========================
-   BEAUTIFUL ALERT POPUP
-========================= */
-
-.custom-alert-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    backdrop-filter:blur(5px);
-    -webkit-backdrop-filter:blur(5px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:99999;
-    opacity:0;
-    visibility:hidden;
-    transition:.25s ease;
-}
-
-.custom-alert-overlay.show{
-    opacity:1;
-    visibility:visible;
-}
-
-.custom-alert-box{
-    width:min(420px,90%);
-    background:#fff;
-    border-radius:22px;
-    padding:28px 25px 24px;
-    text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,.30);
-    transform:scale(.85) translateY(20px);
-    transition:.3s ease;
-}
-
-.custom-alert-overlay.show .custom-alert-box{
-    transform:scale(1) translateY(0);
-}
-
-.custom-alert-icon{
-    width:72px;
-    height:72px;
-    margin:0 auto 15px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:34px;
-    font-weight:bold;
-}
-
-.custom-alert-title{
-    font-size:22px;
-    font-weight:700;
-    margin-bottom:8px;
-    color:#1f2937;
-}
-
-.custom-alert-message{
-    font-size:15px;
-    line-height:1.6;
-    color:#6b7280;
-    white-space:pre-line;
-    margin-bottom:22px;
-}
-
-.custom-alert-buttons{
-    display:flex;
-    gap:10px;
-    justify-content:center;
-}
-
-.custom-alert-btn{
-    border:0;
-    border-radius:10px;
-    padding:11px 24px;
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.custom-alert-btn:hover{
-    transform:translateY(-2px);
-}
-
-.custom-alert-ok{
-    background:#2563eb;
-    color:white;
-}
-
-.custom-alert-cancel{
+.preview{
     background:#e5e7eb;
-    color:#374151;
+    padding:18px;
+    border-radius:16px;
 }
 
-.custom-alert-delete{
-    background:#dc2626;
+.invoice-paper{
+    background:white;
+    max-width:900px;
+    margin:auto;
+    padding:30px;
+    color:#111827;
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+
+.inv-head{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    border-bottom:2px solid #111827;
+    padding-bottom:16px;
+}
+
+.company{
+    font-size:18px;
+    font-weight:800;
+}
+
+.inv-title{
+    font-size:26px;
+    font-weight:800;
+}
+
+.small{
+    font-size:11px;
+    line-height:1.55;
+}
+
+.inv-meta{
+    min-width:230px;
+}
+
+.meta-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    border-bottom:1px solid #ddd;
+    padding:5px 0;
+    font-size:12px;
+}
+
+.bill-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:16px 0;
+}
+
+.bill-box{
+    border:1px solid #ddd;
+    padding:12px;
+    border-radius:6px;
+}
+
+.inv-table{
+    min-width:0;
+    border:1px solid #222;
+}
+
+.inv-table th,
+.inv-table td{
+    border:1px solid #bbb;
+    padding:7px;
+    font-size:11px;
+}
+
+.inv-table th{
+    background:#f3f4f6;
+}
+
+.summary{
+    width:360px;
+    margin-left:auto;
+    margin-top:12px;
+}
+
+.sumrow{
+    display:flex;
+    justify-content:space-between;
+    padding:5px 0;
+    font-size:12px;
+}
+
+.grand{
+    border-top:2px solid #111;
+    padding-top:8px;
+    font-size:16px;
+    font-weight:800;
+}
+
+.sign{
+    display:flex;
+    justify-content:space-between;
+    margin-top:55px;
+}
+
+.signbox{
+    width:200px;
+    text-align:center;
+    border-top:1px solid #777;
+    padding-top:7px;
+    font-size:11px;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+    z-index:500;
+}
+
+.modal-box{
+    background:white;
+    border-radius:18px;
+    max-width:950px;
+    width:100%;
+    padding:20px;
+    max-height:94vh;
+    overflow:auto;
+}
+
+.close{
+    float:right;
+    background:#f1f5f9;
+    border-radius:8px;
+    padding:6px 10px;
+}
+
+.toast{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    background:#111827;
     color:white;
-}
-
-/* SUCCESS */
-.alert-success .custom-alert-icon{
-    background:#dcfce7;
-    color:#16a34a;
-}
-
-/* ERROR */
-.alert-error .custom-alert-icon{
-    background:#fee2e2;
-    color:#dc2626;
-}
-
-/* WARNING */
-.alert-warning .custom-alert-icon{
-    background:#fef3c7;
-    color:#d97706;
-}
-
-/* INFO */
-.alert-info .custom-alert-icon{
-    background:#dbeafe;
-    color:#2563eb;
+    padding:12px 15px;
+    border-radius:10px;
+    display:none;
+    z-index:1000;
 }
 
 /* MOBILE */
-@media(max-width:500px){
-    .custom-alert-box{
-        width:calc(100% - 35px);
-        padding:24px 18px 20px;
+
+@media(max-width:900px){
+
+    .sidebar{
+        display:none;
     }
 
-    .custom-alert-title{
-        font-size:20px;
+    .content{
+        padding:12px;
     }
 
-    .custom-alert-message{
-        font-size:14px;
+    .kpis{
+        grid-template-columns:repeat(2,1fr);
     }
 
-    .custom-alert-btn{
-        flex:1;
-        padding:11px 15px;
+    .col-8,
+    .col-6,
+    .col-4,
+    .col-3,
+    .col-2{
+        grid-column:span 12;
     }
-}
-
-
-
-    /* =========================
-   ATTENDANCE SAVE TOAST
-========================= */
-
-.attendance-toast{
-    position:fixed;
-    top:80px;
-    right:20px;
-    z-index:100000;
-    
-    min-width:280px;
-    max-width:360px;
-    
-    background:#ffffff;
-    color:#1f2937;
-    
-    padding:14px 18px;
-    border-radius:12px;
-    
-    box-shadow:0 10px 35px rgba(0,0,0,.20);
-    
-    display:flex;
-    align-items:center;
-    gap:12px;
-    
-    transform:translateX(120%);
-    opacity:0;
-    
-    transition:
-        transform .35s ease,
-        opacity .35s ease;
-}
-
-.attendance-toast.show{
-    transform:translateX(0);
-    opacity:1;
-}
-
-.attendance-toast-icon{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    
-    background:#dcfce7;
-    color:#16a34a;
-    
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    
-    font-size:21px;
-    font-weight:bold;
-    
-    flex-shrink:0;
-}
-
-.attendance-toast-title{
-    font-size:15px;
-    font-weight:700;
-    margin-bottom:2px;
-}
-
-.attendance-toast-text{
-    font-size:13px;
-    color:#6b7280;
 }
 
 @media(max-width:600px){
 
-    .attendance-toast{
-        top:70px;
-        left:15px;
-        right:15px;
-        max-width:none;
-        min-width:0;
+    .topbar{
+        padding:0 13px;
     }
 
+    .brand h1{
+        font-size:15px;
+    }
+
+    .brand p{
+        font-size:10px;
+    }
+
+    .kpis{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .card{
+        padding:14px;
+    }
+
+    .invoice-paper{
+        padding:16px;
+    }
+
+    .inv-head{
+        flex-direction:column;
+    }
+
+    .bill-grid{
+        grid-template-columns:1fr;
+    }
+
+    .summary{
+        width:100%;
+    }
+
+
+/* PRINT - A4 EXACT PREVIEW */
+@page{
+    size:A4;
+    margin:0;
 }
 
-    
-</style>
+@media print{
+
+    html,
+    body{
+        width:210mm;
+        min-height:297mm;
+        margin:0 !important;
+        padding:0 !important;
+        background:#fff !important;
+    }
+
+    body *{
+        visibility:hidden !important;
+    }
+
+    #previewModal,
+    #previewModal *{
+        visibility:visible !important;
+    }
+
+    #previewModal{
+        position:absolute !important;
+        left:0 !important;
+        top:0 !important;
+        width:210mm !important;
+        min-height:297mm !important;
+        margin:0 !important;
+        padding:0 !important;
+        display:block !important;
+        background:#fff !important;
+        overflow:visible !important;
+    }
+
+    #previewModal .modal-box{
+        width:210mm !important;
+        min-height:297mm !important;
+        max-width:none !important;
+        margin:0 !important;
+        padding:0 !important;
+        border:0 !important;
+        border-radius:0 !important;
+        box-shadow:none !important;
+        background:#fff !important;
+    }
+
+    #previewModal .no-print{
+        display:none !important;
+    }
+
+    #previewContent{
+        width:210mm !important;
+        min-height:297mm !important;
+        margin:0 !important;
+        padding:0 !important;
+    }
+
+    #previewContent .invoice-paper{
+        width:210mm !important;
+        min-height:297mm !important;
+        max-width:none !important;
+        margin:0 !important;
+        padding:10mm !important;
+        box-sizing:border-box !important;
+        box-shadow:none !important;
+        border:0 !important;
+        page-break-after:avoid !important;
+        break-after:avoid !important;
+    }
+  }
+
   
-  <!-- =========================
-     FIREBASE
-========================= -->
+</style>
+</head>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<body>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<header class="topbar">
 
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <div class="brand">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+        <div class="brand-icon">☀</div>
+
+        <div>
+            <h1>Solar GST Invoice</h1>
+            <p>M/S CHAKRABORTY ELECTRICALS</p>
+        </div>
+
+    </div>
+
+    <button class="menu-btn" onclick="toggleSidebar()">
+        ☰ Menu
+    </button>
+
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+
+<nav class="nav">
+
+<button class="active"
+onclick="showSection('dashboard',this)">
+▣ Dashboard
+</button>
+
+<button
+onclick="showSection('invoiceSection',this)">
+▤ Create Invoice
+</button>
+
+<button
+onclick="showSection('productsSection',this)">
+▦ Products
+</button>
+
+<button
+onclick="showSection('historySection',this)">
+◷ Invoice History
+</button>
+
+<button
+onclick="showSection('settingsSection',this)">
+⚙ Settings
+</button>
+
+</nav>
+
+</aside>
+
+
+<main class="content">
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="section active">
+
+<div class="card">
+
+<h2>Solar Invoice Dashboard</h2>
+
+<p class="muted">
+Create GST invoices, manage solar products and keep
+invoice records in this browser.
+</p>
+
+</div>
+
+
+<div class="kpis">
+
+<div class="kpi">
+
+<span class="muted">
+Total Invoices
+</span>
+
+<b id="kpiInvoices">
+0
+</b>
+
+</div>
+
+
+<div class="kpi">
+
+<span class="muted">
+Products
+</span>
+
+<b id="kpiProducts">
+0
+</b>
+
+</div>
+
+
+<div class="kpi">
+
+<span class="muted">
+This FY Sales
+</span>
+
+<b id="kpiSales">
+₹0.00
+</b>
+
+</div>
+
+
+<div class="kpi">
+
+<span class="muted">
+Next Invoice
+</span>
+
+<b id="kpiNext">
+SOLAR/—
+</b>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- CREATE INVOICE -->
+
+<section id="invoiceSection" class="section">
+
+
+<div class="card">
+
+<h2>Create GST Invoice</h2>
+
+
+<div class="grid">
+
+
+<div class="col-3">
+
+<label>
+Invoice Date
+</label>
+
+<input
+type="date"
+id="invoiceDate"
+onchange="updateInvoiceNo()">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Invoice Number
+</label>
+
+<input
+id="invoiceNo"
+readonly>
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Financial Year
+</label>
+
+<input
+id="financialYear"
+readonly>
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Place of Supply
+</label>
+
+<input
+id="placeSupply"
+value="West Bengal">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- SELLER -->
+
+<div class="card">
+
+<h3>Seller Details</h3>
+
+
+<div class="grid">
+
+
+<div class="col-6">
+
+<label>
+Business Name
+</label>
+
+<input
+id="sellerName"
+value="M/S CHAKRABORTY ELECTRICALS">
+
+</div>
+
+
+<div class="col-6">
+
+<label>
+GSTIN
+</label>
+
+<input
+id="sellerGST"
+value="0000022765">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Address
+</label>
+
+<textarea id="sellerAddress">Dhupguri Hospital Para, Bairatiguri, Jalpaiguri, West Bengal 735210</textarea>
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+PAN
+</label>
+
+<input
+id="sellerPAN"
+placeholder="Enter PAN">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Mobile
+</label>
+
+<input
+id="sellerMobile"
+placeholder="Enter mobile number">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- CONSUMER -->
+
+<div class="card">
+
+<h3>
+Consumer / Bill To
+</h3>
+
+
+<div class="grid">
+
+
+<div class="col-4">
+
+<label>
+Consumer Name *
+</label>
+
+<input
+id="customerName"
+placeholder="Consumer name">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Consumer Mobile
+</label>
+
+<input
+id="customerMobile"
+placeholder="Mobile number">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Consumer GSTIN
+</label>
+
+<input
+id="customerGSTIN"
+placeholder="If applicable">
+
+</div>
+
+
+<div class="col-6">
+
+<label>
+Billing Address
+</label>
+
+<textarea
+id="customerAddress"
+placeholder="Full consumer address"></textarea>
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+State
+</label>
+
+<input
+id="customerState"
+value="West Bengal">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+State Code
+</label>
+
+<input
+id="stateCode"
+value="19">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ITEMS -->
+
+<div class="card">
+
+<h3>
+Add Items to Invoice
+</h3>
+
+
+<div class="grid">
+
+
+<div class="col-4">
+
+<label>
+Select Product
+</label>
+
+<select
+id="productSelect"
+onchange="loadProduct()">
+
+<option value="">
+-- Select product --
+</option>
+
+</select>
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+Qty
+</label>
+
+<input
+type="number"
+id="itemQty"
+min="0.01"
+step="0.01"
+value="1">
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+Rate (₹)
+</label>
+
+<input
+type="number"
+id="itemRate"
+min="0"
+step="0.01">
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+Discount (₹)
+</label>
+
+<input
+type="number"
+id="itemDiscount"
+min="0"
+step="0.01"
+value="0">
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+GST %
+</label>
+
+<input
+type="number"
+id="itemGST"
+min="0"
+step="0.01"
+value="12">
+
+</div>
+
+
+<div class="col-12">
+
+<label>
+Description
+</label>
+
+<input
+id="itemDescription"
+placeholder="Panel / inverter / installation etc.">
+
+</div>
+
+
+<div class="col-12 actions">
+
+<button
+class="btn btn-primary"
+onclick="addItem()">
+
+＋ Add Item
+
+</button>
+
+
+<button
+class="btn btn-light"
+onclick="clearItemForm()">
+
+Clear
+
+</button>
+
+</div>
+
+</div>
+
+
+<div
+class="table-wrap"
+style="margin-top:15px">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>Product / Description</th>
+<th>HSN</th>
+<th class="num">Qty</th>
+<th class="num">Rate</th>
+<th class="num">Disc.</th>
+<th class="num">Taxable</th>
+<th class="num">GST</th>
+<th class="num">Total</th>
+<th></th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="itemTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+
+<!-- OPTIONS -->
+
+<div class="card">
+
+<h3>
+Invoice Options
+</h3>
+
+
+<div class="grid">
+
+
+<div class="col-4">
+
+<label>
+Payment Mode
+</label>
+
+<select id="paymentMode">
+
+<option>Bank Transfer</option>
+<option>UPI</option>
+<option>Cash</option>
+<option>Cheque</option>
+<option>Other</option>
+
+</select>
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Bank / UPI Reference
+</label>
+
+<input
+id="paymentRef"
+placeholder="Optional">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Reverse Charge
+</label>
+
+<select id="reverseCharge">
+
+<option>No</option>
+<option>Yes</option>
+
+</select>
+
+</div>
+
+
+<div class="col-12">
+
+<label>
+Notes / Terms
+</label>
+
+<textarea id="invoiceNotes">Goods once sold will be subject to applicable terms and conditions. This is a computer-generated invoice.</textarea>
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="btn btn-success"
+onclick="saveInvoice()">
+
+✓ Save Invoice
+
+</button>
+
+<button
+class="btn btn-primary no-print"
+onclick="previewInvoice()">
+
+▣ Preview & Print
+
+</button>
+
+
+<button
+class="btn btn-light"
+onclick="newInvoice()">
+
+＋ New Invoice
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- PRODUCTS -->
+
+<section id="productsSection" class="section">
+
+
+<div class="card">
+
+<h2>
+Product Master
+</h2>
+
+<p class="muted">
+Add your solar products here. Products can later be
+selected directly while creating an invoice.
+</p>
+
+
+<div class="grid">
+
+
+<div class="col-4">
+
+<label>
+Product Name *
+</label>
+
+<input
+id="pName"
+placeholder="e.g. Solar PV Module">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+HSN/SAC
+</label>
+
+<input
+id="pHSN"
+placeholder="HSN">
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+Unit
+</label>
+
+<input
+id="pUnit"
+value="Nos">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Default GST %
+</label>
+
+<input
+type="number"
+id="pGST"
+value="12"
+step="0.01">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Default Rate ₹
+</label>
+
+<input
+type="number"
+id="pRate"
+value="0"
+step="0.01">
+
+</div>
+
+
+<div class="col-8">
+
+<label>
+Description
+</label>
+
+<input
+id="pDesc"
+placeholder="Product description">
+
+</div>
+
+
+<div class="col-12 actions">
+
+<button
+class="btn btn-primary"
+onclick="saveProduct()">
+
+＋ Save Product
+
+</button>
+
+
+<button
+class="btn btn-light"
+onclick="clearProductForm()">
+
+Clear
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Product</th>
+<th>HSN</th>
+<th>Unit</th>
+<th>Rate</th>
+<th>GST</th>
+<th>Description</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="productTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- HISTORY -->
+
+<section id="historySection" class="section">
+
+
+<div class="card">
+
+<h2>
+Invoice History
+</h2>
+
+
+<div class="actions">
+
+<button
+class="btn btn-light"
+onclick="exportData()">
+
+Export Backup
+
+</button>
+
+
+<button
+class="btn btn-danger"
+onclick="clearAllData()">
+
+Clear All Local Data
+
+</button>
+
+</div>
+
+
+<div
+class="table-wrap"
+style="margin-top:15px">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Invoice No.</th>
+<th>Date</th>
+<th>Consumer</th>
+<th class="num">Amount</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="historyTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- SETTINGS -->
+
+<section id="settingsSection" class="section">
+
+
+<div class="card">
+
+<h2>
+Business Settings
+</h2>
+
+<p class="muted">
+Update your business information here.
+</p>
+
+
+<div class="grid">
+
+
+<div class="col-6">
+
+<label>
+Business Name
+</label>
+
+<input id="setName">
+
+</div>
+
+
+<div class="col-6">
+
+<label>
+GSTIN
+</label>
+
+<input id="setGST">
+
+</div>
+
+
+<div class="col-6">
+
+<label>
+Address
+</label>
+
+<textarea id="setAddress"></textarea>
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+PAN
+</label>
+
+<input id="setPAN">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Mobile
+</label>
+
+<input id="setMobile">
+
+</div>
+
+</div>
+
+
+<button
+class="btn btn-primary"
+onclick="saveSettings()">
+
+Save Settings
+
+</button>
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<!-- PREVIEW MODAL -->
+
+<div
+class="modal"
+id="previewModal">
+
+<div class="modal-box">
+
+<button
+class="close"
+onclick="closePreview()">
+
+✕
+
+</button>
+
+
+<div
+class="actions no-print"
+style="margin-bottom:12px">
+
+<button
+class="btn btn-primary"
+onclick="printPreview()">
+
+🖨 Print / Save PDF
+
+</button>
+
+</div>
+
+
+<div id="previewContent"></div>
+
+</div>
+
+</div>
+
+
+
+<div
+class="toast"
+id="toast"></div>
+
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 <script>
 
-const firebaseConfig = {
-
+  const firebaseConfig = {
     apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
-
     authDomain: "chakraborty-ele-login.firebaseapp.com",
-
     projectId: "chakraborty-ele-login",
-
     storageBucket: "chakraborty-ele-login.firebasestorage.app",
-
     messagingSenderId: "414542805581",
-
     appId: "1:414542805581:web:cfd13593767abbb51cba04"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
+  
+
+const KEY = {
+
+products:"solar_products_v1",
+
+invoices:"solar_invoices_v1",
+
+settings:"solar_settings_v1"
+
+};
+
+  let products = [];
+let invoices = [];
+let settings = {};
+let items = [];
+
+
+let items = [];
+
+
+const defaultSettings = {
+
+name:"M/S CHAKRABORTY ELECTRICALS",
+
+gst:"0000022765",
+
+address:
+"Dhupguri Hospital Para, Bairatiguri, Jalpaiguri, West Bengal 735210",
+
+pan:"",
+
+mobile:""
 
 };
 
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-  const IMGBB_API_KEY = "a5d421a5cbe17ebcfd2e0b90915c2501";
-
-
-// Firestore Database
-const db = firebase.firestore();
-  const storage = firebase.storage();
-
-  // =========================
-// FIREBASE AUTHENTICATION
-// =========================
+settings = {
+    ...defaultSettings,
+    ...settings
+};
 
 
 
-const auth = firebase.auth();
+function money(n){
 
-auth.onAuthStateChanged(function(user){
+    return "₹" +
+        Number(n || 0).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
 
-    if(!user){
+}
 
-        window.location.href = "index.html";
 
-        return;
+
+function todayISO(){
+
+    return new Date()
+        .toISOString()
+        .slice(0,10);
+
+}
+
+
+
+function fyFor(dateStr){
+
+    const d =
+        new Date(dateStr + "T00:00:00");
+
+    const y =
+        d.getFullYear();
+
+    const m =
+        d.getMonth() + 1;
+
+    if(m >= 4){
+
+        return `${y}-${y+1}`;
+
     }
 
-    console.log("Logged in:", user.email);
+    return `${y-1}-${y}`;
 
+}
 
 
-  loadData();
 
-});
+function serialFor(dateStr){
 
-</script>
-  
-</head>
+    const fy =
+        fyFor(dateStr);
 
+    const nums =
+        invoices
+        .filter(x => x.fy === fy)
+        .map(x => Number(x.serial) || 0);
 
-<body>
+    return (
+        nums.length
+        ? Math.max(...nums)
+        : 0
+    ) + 1;
 
+}
 
-<!-- =========================
-     SIDEBAR
-========================= -->
 
-<div class="sidebar" id="sidebar">
 
-    <div class="logo">
+function makeInvoiceNo(dateStr){
 
-        <div class="logo-icon">
-            📋
-        </div>
+    return (
+        "SOLAR/" +
+        fyFor(dateStr) +
+        "/" +
+        String(
+            serialFor(dateStr)
+        ).padStart(2,"0")
+    );
 
-        <h2>Attendance System</h2>
+}
 
-        <p>Management Portal</p>
 
-    </div>
 
+function showToast(msg){
 
-    <div class="menu-title">
-        Main Menu
-    </div>
+    const t =
+        document.getElementById("toast");
 
+    t.textContent = msg;
 
-    <div class="menu-item active"
-         onclick="showSection('home',this)">
+    t.style.display = "block";
 
-        <span class="menu-icon">🏠</span>
-        <span class="menu-text">Dashboard</span>
+    setTimeout(
+        () => {
+            t.style.display = "none";
+        },
+        2200
+    );
 
-    </div>
+}
 
 
-    <div class="menu-item"
-         onclick="showSection('employee',this)">
+  async function loadProducts(){
 
-        <span class="menu-icon">👤</span>
-        <span class="menu-text">New Employee</span>
+    const snap = await db
+        .collection("products")
+        .get();
 
-    </div>
+    products = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+}
 
-  <div class="menu-item"
-     onclick="window.location.href='icard.html'">
 
-    <span class="menu-icon">🪪</span>
-    <span class="menu-text">I-Card</span>
+async function loadInvoices(){
 
-</div>
+    const snap = await db
+        .collection("invoices")
+        .get();
 
+    invoices = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+}
 
-    <div class="menu-item"
-         onclick="showSection('daily',this)">
 
-        <span class="menu-icon">📋</span>
-        <span class="menu-text">Daily Attendance</span>
+async function loadSettings(){
 
-    </div>
+    const doc = await db
+        .collection("settings")
+        .doc("business")
+        .get();
 
+    if(doc.exists){
 
-    <div class="menu-item"
-         onclick="showSection('edit',this)">
+        settings = {
+            ...defaultSettings,
+            ...doc.data()
+        };
 
-        <span class="menu-icon">✏️</span>
-        <span class="menu-text">Edit Attendance</span>
+    }else{
 
-    </div>
+        settings = {
+            ...defaultSettings
+        };
 
+    }
+}
 
-    <div class="menu-item"
-         onclick="showSection('attendanceDashboard',this)">
 
-        <span class="menu-icon">📊</span>
-        <span class="menu-text">Attendance Dashboard</span>
+async function loadAllFirebaseData(){
 
-    </div>
+    try{
 
+        await Promise.all([
+            loadProducts(),
+            loadInvoices(),
+            loadSettings()
+        ]);
 
-    <div class="menu-item"
-         onclick="showSection('downloads',this)">
+        applySettings();
+        updateInvoiceNo();
+        refreshAll();
 
-        <span class="menu-icon">📥</span>
-        <span class="menu-text">Downloads</span>
+    }catch(error){
 
-    </div>
+        console.error(error);
 
-  <div class="menu-item"
-     onclick="showSection('monthlyReport',this)">
+        showToast(
+            "Firebase data load failed"
+        );
 
-    <span class="menu-icon">📅</span>
-    <span class="menu-text">Monthly Report</span>
+    }
 
-</div>
+}
 
 
-  <div class="menu-item"
-     onclick="showSection('staffMonthlyReport',this)">
 
-    <span class="menu-icon">👤</span>
-    <span class="menu-text">Staff Monthly Report</span>
+function showSection(id,btn){
 
-</div>
-  
+    document
+        .querySelectorAll(".section")
+        .forEach(
+            s => s.classList.remove("active")
+        );
 
+    document
+        .getElementById(id)
+        .classList.add("active");
 
-    <div class="menu-title">
-        Other
-    </div>
 
+    document
+        .querySelectorAll(".nav button")
+        .forEach(
+            b => b.classList.remove("active")
+        );
 
-   
 
+    if(btn){
 
-    <div class="menu-item"
-         onclick="alert('Settings coming soon')">
+        btn.classList.add("active");
 
-        <span class="menu-icon">⚙️</span>
-        <span class="menu-text">Settings</span>
+    }
 
-    </div>
 
-</div>
+    refreshAll();
 
+}
 
-<div class="overlay"
-     id="overlay"
-     onclick="closeSidebar()">
-</div>
 
 
+function toggleSidebar(){
 
-<!-- =========================
-     MAIN
-========================= -->
+    const s =
+        document.getElementById("sidebar");
 
-<div class="main">
+    s.style.display =
+        s.style.display === "block"
+        ? "none"
+        : "block";
 
+}
 
-    <!-- TOP BAR -->
 
-    <div class="topbar">
 
-        <div style="display:flex;align-items:center;gap:12px;">
+function updateInvoiceNo(){
 
-            <button
-                class="menu-toggle"
-                onclick="toggleSidebar()">
+    const d =
+        document.getElementById("invoiceDate").value
+        || todayISO();
 
-                ☰
 
-            </button>
+    document.getElementById(
+        "financialYear"
+    ).value = fyFor(d);
 
 
-            <div>
+    document.getElementById(
+        "invoiceNo"
+    ).value = makeInvoiceNo(d);
 
-                <div class="page-title"
-                     id="pageTitle">
+}
 
-                    Attendance Dashboard
 
-                </div>
 
-                <div class="page-subtitle"
-                     id="pageSubtitle">
+async function init(){
 
-                    Employee attendance management system
+    document.getElementById(
+        "invoiceDate"
+    ).value = todayISO();
 
-                </div>
+    await loadAllFirebaseData();
 
-            </div>
+  }
 
-        </div>
 
+function applySettings(){
 
-        <div class="profile">
+    document.getElementById(
+        "sellerName"
+    ).value = settings.name;
 
-    <div class="avatar">
-        <img
-            src="https://i.ibb.co/fzFPjDVD/31092eed48aa.png"
-            alt="Logo">
-    </div>
+    document.getElementById(
+        "sellerGST"
+    ).value = settings.gst;
 
-    <span>
-        Chakraborty Electricals
-    </span>
+    document.getElementById(
+        "sellerAddress"
+    ).value = settings.address;
 
-</div>
+    document.getElementById(
+        "sellerPAN"
+    ).value = settings.pan;
 
-    </div>
+    document.getElementById(
+        "sellerMobile"
+    ).value = settings.mobile;
 
 
+    document.getElementById(
+        "setName"
+    ).value = settings.name;
 
-    <!-- CONTENT -->
+    document.getElementById(
+        "setGST"
+    ).value = settings.gst;
 
-    <div class="content">
+    document.getElementById(
+        "setAddress"
+    ).value = settings.address;
 
+    document.getElementById(
+        "setPAN"
+    ).value = settings.pan;
 
-        <!-- =====================
-             HOME
-        ====================== -->
+    document.getElementById(
+        "setMobile"
+    ).value = settings.mobile;
 
-        <section
-            id="home"
-            class="section active">
+}
 
 
-            <div class="welcome">
 
-                <h1>
-                    Welcome to Attendance Management System
-                </h1>
+function saveSettings(){
 
-                <p>
-                    Manage employees, attendance,
-                    reports and invoices from one place.
-                </p>
+    settings = {
 
-            </div>
+        name:
+            document
+            .getElementById("setName")
+            .value.trim(),
 
+        gst:
+            document
+            .getElementById("setGST")
+            .value.trim(),
 
-            <div class="stats">
+        address:
+            document
+            .getElementById("setAddress")
+            .value.trim(),
 
-                <div class="stat-card">
+        pan:
+            document
+            .getElementById("setPAN")
+            .value.trim(),
 
-                    <h4>
-                        Total Employees
-                    </h4>
+        mobile:
+            document
+            .getElementById("setMobile")
+            .value.trim()
 
-                    <strong
-                        class="blue"
-                        id="homeTotal">
+    };
 
-                        0
 
-                    </strong>
+    async function saveSettings(){
 
-                </div>
+    settings = {
 
+        name:
+            document
+            .getElementById("setName")
+            .value.trim(),
 
-                <div class="stat-card">
+        gst:
+            document
+            .getElementById("setGST")
+            .value.trim(),
 
-                    <h4>
-                        Present Today
-                    </h4>
+        address:
+            document
+            .getElementById("setAddress")
+            .value.trim(),
 
-                    <strong
-                        class="green"
-                        id="homePresent">
+        pan:
+            document
+            .getElementById("setPAN")
+            .value.trim(),
 
-                        0
+        mobile:
+            document
+            .getElementById("setMobile")
+            .value.trim()
 
-                    </strong>
+    };
 
-                </div>
+    try{
 
+        await db
+            .collection("settings")
+            .doc("business")
+            .set(settings, {merge:true});
 
-                <div class="stat-card">
+        applySettings();
 
-                    <h4>
-                        Absent Today
-                    </h4>
+        showToast("Settings saved to Firebase");
 
-                    <strong
-                        class="red"
-                        id="homeAbsent">
+    }catch(error){
 
-                        0
+        console.error(error);
 
-                    </strong>
+        showToast("Settings save failed");
 
-                </div>
+    }
 
+  }
 
-                <div class="stat-card">
 
-                    <h4>
-                        Leave Today
-                    </h4>
 
-                    <strong
-                        class="orange"
-                        id="homeLeave">
+function saveProduct(){
 
-                        0
+    const name =
+        document
+        .getElementById("pName")
+        .value.trim();
 
-                    </strong>
 
-                </div>
+    if(!name){
 
-            </div>
+        showToast("Product name required");
 
+        return;
 
+    }
 
-            <div class="dashboard-grid">
 
+    const p = {
 
-                <div class="module-card"
-                     onclick="openModule('employee')">
+        id:Date.now().toString(),
 
-                    <div class="card-icon">
-                        👤
-                    </div>
+        name:name,
 
-                    <h3>
-                        New Employee
-                    </h3>
+        hsn:
+            document
+            .getElementById("pHSN")
+            .value.trim(),
 
-                    <p>
-                        Add new employee information
-                    </p>
+        unit:
+            document
+            .getElementById("pUnit")
+            .value.trim()
+            || "Nos",
 
-                    <span class="open-text">
-                        Open →
-                    </span>
+        gst:
+            Number(
+                document
+                .getElementById("pGST")
+                .value
+            ) || 0,
 
-                </div>
+        rate:
+            Number(
+                document
+                .getElementById("pRate")
+                .value
+            ) || 0,
 
+        desc:
+            document
+            .getElementById("pDesc")
+            .value.trim()
 
-                <div class="module-card"
-                     onclick="openModule('daily')">
+    };
 
-                    <div class="card-icon">
-                        📋
-                    </div>
 
-                    <h3>
-                        Daily Attendance
-                    </h3>
+    async function saveProduct(){
 
-                    <p>
-                        Mark today's employee attendance
-                    </p>
+    const name =
+        document
+        .getElementById("pName")
+        .value.trim();
 
-                    <span class="open-text">
-                        Open →
-                    </span>
+    if(!name){
 
-                </div>
+        showToast("Product name required");
+        return;
 
+    }
 
-                <div class="module-card"
-                     onclick="openModule('edit')">
+    const p = {
 
-                    <div class="card-icon">
-                        ✏️
-                    </div>
+        name:name,
 
-                    <h3>
-                        Edit Attendance
-                    </h3>
+        hsn:
+            document
+            .getElementById("pHSN")
+            .value.trim(),
 
-                    <p>
-                        Search and edit previous attendance
-                    </p>
+        unit:
+            document
+            .getElementById("pUnit")
+            .value.trim()
+            || "Nos",
 
-                    <span class="open-text">
-                        Open →
-                    </span>
+        gst:
+            Number(
+                document
+                .getElementById("pGST")
+                .value
+            ) || 0,
 
-                </div>
+        rate:
+            Number(
+                document
+                .getElementById("pRate")
+                .value
+            ) || 0,
 
+        desc:
+            document
+            .getElementById("pDesc")
+            .value.trim(),
 
-                <div class="module-card"
-                     onclick="openModule('attendanceDashboard')">
+        createdAt:
+            firebase.firestore.FieldValue.serverTimestamp()
 
-                    <div class="card-icon">
-                        📊
-                    </div>
+    };
 
-                    <h3>
-                        Attendance Dashboard
-                    </h3>
+    try{
 
-                    <p>
-                        View attendance statistics
-                    </p>
+        const ref = await db
+            .collection("products")
+            .add(p);
 
-                    <span class="open-text">
-                        Open →
-                    </span>
+        products.push({
+            id:ref.id,
+            ...p
+        });
 
-                </div>
+        clearProductForm();
 
-               <div class="module-card"
-     onclick="window.location.href='icard.html'">
+        refreshAll();
 
-    <div class="card-icon">
-        🪪
-    </div>
+        showToast("Product added to Firebase");
 
-    <h3>
-        I-Card
-    </h3>
+    }catch(error){
 
-    <p>
-        Create and manage employee I-Cards
-    </p>
+        console.error(error);
 
-    <span class="open-text">
-        Open →
-    </span>
+        showToast("Product save failed");
 
-               </div>
+    }
 
+  }
 
-                <div class="module-card"
-                     onclick="openModule('downloads')">
 
-                    <div class="card-icon">
-                        📥
-                    </div>
 
-                    <h3>
-                        Downloads
-                    </h3>
+function clearProductForm(){
 
-                    <p>
-                        Download attendance reports
-                    </p>
+    document.getElementById("pName").value = "";
 
-                    <span class="open-text">
-                        Open →
-                    </span>
+    document.getElementById("pHSN").value = "";
 
-                </div>
+    document.getElementById("pUnit").value = "Nos";
 
+    document.getElementById("pGST").value = 12;
 
-      <div class="module-card"
-     onclick="openModule('monthlyReport')">
+    document.getElementById("pRate").value = 0;
 
-    <div class="card-icon">
-        📅
-    </div>
+    document.getElementById("pDesc").value = "";
 
-    <h3>
-        Monthly Report
-    </h3>
+}
 
-    <p>
-        View employee monthly attendance
-    </p>
 
-    <span class="open-text">
-        Open →
-    </span>
 
-</div>
+function deleteProduct(id){
 
-              <div class="module-card"
-     onclick="openModule('staffMonthlyReport')">
+    products =
+        products.filter(
+            p => p.id !== id
+        );
 
-    <div class="card-icon">
-        👤
-    </div>
+    saveLS();
 
-    <h3>
-        Staff Monthly Report
-    </h3>
+    refreshAll();
 
-    <p>
-        View selected staff day-wise attendance
-    </p>
+    showToast("Product deleted");
 
-    <span class="open-text">
-        Open →
-    </span>
+}
 
-</div>
 
 
-            </div>
+function renderProducts(){
 
-        </section>
+    const tb =
+        document.getElementById(
+            "productTable"
+        );
 
 
+    if(!products.length){
 
-        <!-- =====================
-             NEW EMPLOYEE
-        ====================== -->
+        tb.innerHTML =
+            `
+            <tr>
+                <td colspan="7" class="empty">
+                    No products added yet.
+                </td>
+            </tr>
+            `;
 
-        <section
-            id="employee"
-            class="section">
+        return;
 
-            <div class="panel">
+    }
 
-                <div class="panel-header">
 
-                    <div class="panel-title">
-                        👤 Add New Employee
-                    </div>
+    tb.innerHTML =
+        products.map(
+            p => `
 
-                </div>
+            <tr>
 
+                <td>
+                    <b>${esc(p.name)}</b>
+                </td>
 
-                <div class="form-grid">
+                <td>${esc(p.hsn)}</td>
 
-                    <div class="form-group">
+                <td>${esc(p.unit)}</td>
 
-                        <label>
-                            Employee ID
-                        </label>
+                <td>${money(p.rate)}</td>
 
-                        <input
-    type="text"
-    id="empId"
-    placeholder="Auto Generated"
-    readonly>
+                <td>${p.gst}%</td>
 
-                    </div>
+                <td>${esc(p.desc)}</td>
 
+                <td>
 
-                    <div class="form-group">
+                    <button
+                    class="btn btn-danger"
+                    style="padding:6px 9px"
+                    onclick="deleteProduct('${p.id}')">
 
-                        <label>
-                            Employee Name
-                        </label>
+                    Delete
 
-                        <input
-                            type="text"
-                            id="empName"
-                            placeholder="Enter Employee Name">
+                    </button>
 
-                    </div>
+                </td>
 
+            </tr>
 
-                    <div class="form-group">
+            `
+        )
+        .join("");
 
-                        <label>
-                            Mobile Number
-                        </label>
+}
 
-                        <input
-                            type="tel"
-                            id="empMobile"
-                            placeholder="Enter Mobile Number">
 
-                    </div>
 
+function renderProductSelect(){
 
-                    <div class="form-group">
+    const s =
+        document.getElementById(
+            "productSelect"
+        );
 
-    <label>
-        Designation
-    </label>
 
-    <select id="empDesignation">
-
+    s.innerHTML =
+        `
         <option value="">
-            Select Designation
+            -- Select product --
         </option>
+        ` +
+        products.map(
+            p =>
+            `
+            <option value="${p.id}">
+                ${esc(p.name)}
+            </option>
+            `
+        ).join("");
 
-        <option value="Skilled">
-            Skilled
-        </option>
+}
 
-        <option value="Unskilled">
-            Unskilled
-        </option>
 
-        <option value="Supervisor">
-            Supervisor
-        </option>
 
-        <option value="Extra Labour">
-            Extra Labour
-        </option>
+function loadProduct(){
 
-    </select>
+    const p =
+        products.find(
+            x =>
+            x.id ===
+            document.getElementById(
+                "productSelect"
+            ).value
+        );
 
-                    </div>
 
+    if(!p) return;
 
-                    <div class="form-group">
 
-                        <label>
-                            Joining Date
-                        </label>
+    document.getElementById(
+        "itemRate"
+    ).value = p.rate;
 
-                        <input
-                            type="date"
-                            id="empJoining">
 
-                    </div>
+    document.getElementById(
+        "itemGST"
+    ).value = p.gst;
 
-                  <div class="form-group">
 
-    <label>
-        Date of Birth
-    </label>
+    document.getElementById(
+        "itemDescription"
+    ).value = p.desc;
 
-    <input
-        type="date"
-        id="empDOB">
+}
 
-</div>
 
 
-                    <div class="form-group">
+function addItem(){
 
-                        <label>
-                            Status
-                        </label>
+    const id =
+        document.getElementById(
+            "productSelect"
+        ).value;
 
-                        <select id="empStatus">
 
-                            <option value="Active">
-                                Active
-                            </option>
+    const p =
+        products.find(
+            x => x.id === id
+        );
 
-                            <option value="Inactive">
-                                Inactive
-                            </option>
 
-                        </select>
+    const name =
+        p
+        ? p.name
+        : (
+            document
+            .getElementById(
+                "itemDescription"
+            )
+            .value.trim()
+            || "Solar Item"
+        );
 
-                    </div>
 
-                  <div class="form-group">
-    <label for="empPhoto">
-        Employee Photo
-    </label>
+    const qty =
+        Number(
+            document.getElementById(
+                "itemQty"
+            ).value
+        ) || 0;
 
-    <input
-        type="file"
-        id="empPhoto"
-        accept="image/*"
-        onchange="previewEmployeePhoto(event)"
-    >
 
-    <img
-        id="employeePhotoPreview"
-        src=""
-        alt="Employee Photo Preview"
-        style="
-            display:none;
-            width:100px;
-            height:100px;
-            object-fit:cover;
-            margin-top:10px;
-            border-radius:8px;
-            border:1px solid #ddd;
-        "
-    >
-                  </div>
+    const rate =
+        Number(
+            document.getElementById(
+                "itemRate"
+            ).value
+        ) || 0;
 
 
-                    <div class="form-group full">
+    const disc =
+        Number(
+            document.getElementById(
+                "itemDiscount"
+            ).value
+        ) || 0;
 
-                        <label>
-                            Address
-                        </label>
 
-                        <textarea
-                            id="empAddress"
-                            rows="3"
-                            placeholder="Employee Address"></textarea>
+    const gst =
+        Number(
+            document.getElementById(
+                "itemGST"
+            ).value
+        ) || 0;
 
-                    </div>
 
+    if(qty <= 0){
 
-                    <div class="full">
+        showToast(
+            "Enter valid quantity"
+        );
 
-                        <button
-                            class="btn btn-primary"
-                            onclick="addEmployee()">
+        return;
 
-                            + Save Employee
+    }
 
-                        </button>
 
-                        <button
-                            class="btn btn-secondary"
-                            onclick="clearEmployeeForm()">
+    if(rate < 0){
 
-                            Clear
+        showToast(
+            "Enter valid rate"
+        );
 
-                        </button>
+        return;
 
-                    </div>
+    }
 
-                </div>
 
-            </div>
+    items.push({
 
+        id:Date.now().toString(),
 
-            <div class="panel">
+        name:name,
 
-                <div class="panel-header">
+        desc:
+            document
+            .getElementById(
+                "itemDescription"
+            )
+            .value.trim()
+            || name,
 
-                    <div class="panel-title">
-                        Employee List
-                    </div>
+        hsn:
+            p
+            ? p.hsn
+            : "",
 
-                    <input
-                        class="search"
-                        id="employeeSearch"
-                        placeholder="🔍 Search employee..."
-                        oninput="renderEmployees()">
+        unit:
+            p
+            ? p.unit
+            : "Nos",
 
-                </div>
+        qty:qty,
 
+        rate:rate,
 
-                <div class="table-wrapper">
+        disc:disc,
 
-                    <table>
+        gst:gst
 
-                        <thead>
+    });
 
-                            <tr>
 
-                                <th>SL</th>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Mobile</th>
-                                <th>Designation</th>
-                              <th>Date of Birth</th>
-<th>Photo</th>
-                                <th>Joining Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
+    clearItemForm();
 
-                            </tr>
+    renderItems();
 
-                        </thead>
+}
 
-                        <tbody
-                            id="employeeTable">
 
-                        </tbody>
 
-                    </table>
+function clearItemForm(){
 
-                </div>
+    document.getElementById(
+        "productSelect"
+    ).value = "";
 
-            </div>
+    document.getElementById(
+        "itemQty"
+    ).value = 1;
 
-        </section>
+    document.getElementById(
+        "itemRate"
+    ).value = "";
 
+    document.getElementById(
+        "itemDiscount"
+    ).value = 0;
 
+    document.getElementById(
+        "itemGST"
+    ).value = 12;
 
-        <!-- =====================
-             DAILY ATTENDANCE
-        ====================== -->
+    document.getElementById(
+        "itemDescription"
+    ).value = "";
 
-        <section
-            id="daily"
-            class="section">
+}
 
 
-            <div class="panel">
 
-                <div class="panel-header">
+function deleteItem(id){
 
-                    <div>
+    items =
+        items.filter(
+            i => i.id !== id
+        );
 
-                        <div class="panel-title">
-                            📋 Daily Attendance
-                        </div>
+    renderItems();
 
-                        <div
-                            style="font-size:12px;color:#777;margin-top:4px">
+}
 
-                            Mark attendance for selected date
 
-                        </div>
 
-                    </div>
+function calc(){
 
+    let subtotal = 0;
 
-                    <input
-                        type="date"
-                        class="search"
-                        id="dailyDate"
-                        onchange="renderDailyAttendance()">
+    let discount = 0;
 
-                </div>
+    let taxable = 0;
 
+    let tax = 0;
 
-                <div class="table-wrapper">
 
-                    <table>
+    items.forEach(i => {
 
-                        <thead>
+        const gross =
+            i.qty * i.rate;
 
-                            <tr>
 
-                                <th>SL</th>
-                                <th>Employee ID</th>
-                                <th>Employee Name</th>
-                                <th>Status</th>
-                                <th>In Time</th>
-                                <th>Out Time</th>
-                                <th>Working Hours</th>
-                                <th>Remarks</th>
+        subtotal += gross;
 
-                            </tr>
+        discount += i.disc;
 
-                        </thead>
 
-                        <tbody
-                            id="dailyTable">
+        const tx =
+            Math.max(
+                0,
+                gross - i.disc
+            );
 
-                        </tbody>
 
-                    </table>
+        taxable += tx;
 
-                  <!-- =========================
-     DAILY WORK DETAILS
-========================= -->
+        tax +=
+            tx * i.gst / 100;
 
-<div class="panel" style="margin-top:20px;">
+    });
 
-    <div class="panel-header">
 
-        <div>
+    return {
 
-            <div class="panel-title">
-                📝 এই তারিখে কাজের বিবরণ
-            </div>
+        subtotal,
 
-        </div>
+        discount,
 
-    </div>
+        taxable,
 
+        tax,
 
-    <div class="form-group">
+        total:
+            taxable + tax
 
-        <label>
-            Work Details / কাজের বিবরণ
-        </label>
+    };
 
-        <textarea
-            id="dailyWorkDetails"
-            rows="6"
-            placeholder="আজ সবাই মিলে কী কী কাজ করা হয়েছে লিখুন...">
-        </textarea>
+}
 
-    </div>
 
 
-    <div style="margin-top:15px;">
+function renderItems(){
 
-        <button
-            class="btn btn-success"
-            onclick="saveDailyWorkDetails()">
+    const tb =
+        document.getElementById(
+            "itemTable"
+        );
 
-            💾 Save / Update Work Details
 
-        </button>
+    if(!items.length){
 
-        <span
-            id="workSaveStatus"
-            style="
-            margin-left:10px;
-            font-size:12px;
-            color:#16874b;
-            ">
+        tb.innerHTML =
+            `
+            <tr>
 
-        </span>
+                <td
+                colspan="10"
+                class="empty">
 
-    </div>
+                    No items added.
+                    Add solar products above.
 
-</div>
+                </td>
 
-                </div>
+            </tr>
+            `;
 
-            </div>
+        return;
 
-        </section>
+    }
 
 
+    tb.innerHTML =
+        items.map(
+            (i,n) => {
 
-        <!-- =====================
-             EDIT ATTENDANCE
-        ====================== -->
+                const tx =
+                    Math.max(
+                        0,
+                        i.qty*i.rate-i.disc
+                    );
 
-        <section
-            id="edit"
-            class="section">
 
+                const tax =
+                    tx*i.gst/100;
 
-            <div class="panel">
 
-                <div class="panel-header">
-
-                    <div class="panel-title">
-                        ✏️ Edit Attendance
-                    </div>
-
-
-                    <input
-                        type="date"
-                        class="search"
-                        id="editDate"
-                        onchange="renderEditAttendance()">
-
-                </div>
-
-
-                <div class="table-wrapper">
-
-                    <table>
-
-                        <thead>
-
-                            <tr>
-
-                                <th>SL</th>
-                                <th>Employee</th>
-                                <th>Status</th>
-                                <th>In</th>
-                                <th>Out</th>
-                                <th>Hours</th>
-                                <th>Remarks</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody
-                            id="editTable">
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-              <!-- EDIT ATTENDANCE WORK DETAILS -->
-
-<div class="panel" style="margin-top:20px;">
-
-    <div class="panel-header">
-
-        <div>
-
-            <div class="panel-title">
-                📝 কাজের বিবরণ
-            </div>
-
-            <div style="font-size:12px;color:#777;margin-top:4px;">
-                নির্বাচিত তারিখে সবাই মিলে যে কাজ করা হয়েছিল
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="form-group">
-
-        <label>
-            Work Details / কাজের বিবরণ
-        </label>
-
-        <textarea
-            id="editWorkDetails"
-            rows="6"
-            placeholder="এই তারিখে কী কী কাজ করা হয়েছিল লিখুন...">
-        </textarea>
-
-    </div>
-
-    <div style="margin-top:15px;">
-
-        <button
-            class="btn btn-success"
-            onclick="updateEditWorkDetails()">
-
-            💾 Save / Update Work Details
-
-        </button>
-
-        <span
-            id="editWorkSaveStatus"
-            style="
-            margin-left:10px;
-            font-size:12px;
-            color:#16874b;
-            ">
-        </span>
-
-    </div>
-
-</div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================
-             ATTENDANCE DASHBOARD
-        ====================== -->
-
-        <section
-            id="attendanceDashboard"
-            class="section">
-
-
-            <div class="stats">
-
-                <div class="stat-card">
-
-                    <h4>Total Employees</h4>
-
-                    <strong
-                        class="blue"
-                        id="dashTotal">
-
-                        0
-
-                    </strong>
-
-                </div>
-
-
-                <div class="stat-card">
-
-                    <h4>Present</h4>
-
-                    <strong
-                        class="green"
-                        id="dashPresent">
-
-                        0
-
-                    </strong>
-
-                </div>
-
-
-                <div class="stat-card">
-
-                    <h4>Absent</h4>
-
-                    <strong
-                        class="red"
-                        id="dashAbsent">
-
-                        0
-
-                    </strong>
-
-                </div>
-
-
-                <div class="stat-card">
-
-                    <h4>Leave</h4>
-
-                    <strong
-                        class="orange"
-                        id="dashLeave">
-
-                        0
-
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="panel">
-
-                <div class="panel-header">
-
-                    <div class="panel-title">
-                        📊 Attendance Overview
-                    </div>
-
-                    <input
-                        type="date"
-                        class="search"
-                        id="dashDate"
-                        onchange="updateDashboard()">
-
-                </div>
-
-
-                <div
-                    id="dashboardMessage"
-                    style="
-                    text-align:center;
-                    padding:60px;
-                    color:#777;
-                    ">
-
-                    Attendance statistics will appear here.
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================
-             DOWNLOADS
-        ====================== -->
-
-        <section
-            id="downloads"
-            class="section">
-
-
-            <div class="panel">
-
-                <div class="panel-title">
-                    📥 Download Reports
-                </div>
-
-                <p style="color:#777;font-size:13px;margin-top:5px">
-                    Select a date and download attendance data.
-                </p>
-
-            </div>
-
-
-            <div class="download-grid">
-
-
-                <div class="download-card">
-
-                    <div class="icon">
-                        📊
-                    </div>
-
-                    <h3>
-                        Excel / CSV
-                    </h3>
-
-                    <p>
-                        Download daily attendance
-                    </p>
-
-                    <input
-                        type="date"
-                        id="downloadDate"
-                        class="search"
-                        style="width:100%;margin-bottom:10px">
-
-                    <button
-                        class="btn btn-success"
-                        onclick="downloadCSV()">
-
-                        Download
-
-                    </button>
-
-                </div>
-
-
-                <div class="download-card">
-
-                    <div class="icon">
-                        📄
-                    </div>
-
-                    <h3>
-                        PDF Report
-                    </h3>
-
-                    <p>
-                        PDF report module
-                    </p>
-
-                    <button
-                        class="btn btn-danger"
-                        onclick="alert('PDF module next step-e add kora jabe')">
-
-                        Generate PDF
-
-                    </button>
-
-                </div>
-
-
-                <div class="download-card">
-
-                    <div class="icon">
-                        📅
-                    </div>
-
-                    <h3>
-                        Monthly Report
-                    </h3>
-
-                    <p>
-                        Monthly attendance summary
-                    </p>
-
-                    <button
-    class="btn btn-primary"
-    onclick="openModule('monthlyReport')">
-
-    View Report
-
-</button>
-
-                </div>
-
-
-            </div>
-
-        </section>
-
-
-      <!-- =====================
-     MONTHLY REPORT
-===================== -->
-
-<section
-    id="monthlyReport"
-    class="section">
-
-    <div class="panel">
-
-        <div class="panel-header">
-
-            <div>
-
-                <div class="panel-title">
-                    📅 Monthly Attendance Report
-                </div>
-
-                <div style="font-size:12px;color:#777;margin-top:4px">
-
-                    Select month to view employee attendance summary
-
-                </div>
-
-            </div>
-
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-
-                <input
-                    type="month"
-                    id="monthlyReportMonth"
-                    class="search"
-                    onchange="generateMonthlyReport()
-                  generateDayWiseMonthlyAttendance();">
-
-
-                <button
-                    class="btn btn-success"
-                    onclick="downloadMonthlyCSV()">
-
-                    📊 Excel / CSV
-
-                </button>
-
-              <div style="
-    display:flex;
-    gap:8px;
-    margin-top:8px;
-    flex-wrap:wrap;
-">
-
-    <button
-        id="monthlySummaryBtn"
-        class="btn btn-primary"
-        onclick="showMonthlyView('summary')">
-
-        📋 Monthly Summary
-
-    </button>
-
-    <button
-        id="monthlyDayWiseBtn"
-        class="btn btn-secondary"
-        onclick="showMonthlyView('daywise')">
-
-        📅 Day-wise Attendance
-
-    </button>
-
-              </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- SUMMARY -->
-
-        <div class="stats">
-
-            <div class="stat-card">
-
-                <h4>
-                    Total Employees
-                </h4>
-
-                <strong
-                    class="blue"
-                    id="monthlyTotalEmployees">
-
-                    0
-
-                </strong>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <h4>
-                    Total Present
-                </h4>
-
-                <strong
-                    class="green"
-                    id="monthlyTotalPresent">
-
-                    0
-
-                </strong>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <h4>
-                    Total Absent
-                </h4>
-
-                <strong
-                    class="red"
-                    id="monthlyTotalAbsent">
-
-                    0
-
-                </strong>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <h4>
-                    Total Leave
-                </h4>
-
-                <strong
-                    class="orange"
-                    id="monthlyTotalLeave">
-
-                    0
-
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <!-- EMPLOYEE MONTHLY TABLE -->
-
-        <div
-    id="monthlySummaryView"
-    class="table-wrapper"
-    style="display:block;">
-
-    <table>
-
-        <thead>
-
-                    <tr>
-
-                        <th>SL</th>
-
-                        <th>Employee ID</th>
-
-                        <th>Employee Name</th>
-
-                        <th>Present</th>
-
-                        <th>Absent</th>
-
-                        <th>Leave</th>
-
-                        <th>Total Marked Days</th>
-<th>Remarks</th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="monthlyReportTable">
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-
-
-      <!-- ================================
-     DAY-WISE MONTHLY ATTENDANCE
-     NEW VIEW
-================================= -->
-
-<div
-    id="monthlyDayWiseView"
-    style="display:none;">
-
-    <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:10px;
-        flex-wrap:wrap;
-        margin:20px 0 12px;
-    ">
-
-        <div>
-
-            <div style="
-                font-size:18px;
-                font-weight:700;
-            ">
-
-                📅 Day-wise Attendance
-
-            </div>
-
-            <div style="
-                font-size:12px;
-                color:#777;
-                margin-top:4px;
-            ">
-
-                All employees attendance for selected month
-
-            </div>
-
-        </div>
-
-        <button
-            class="btn btn-primary"
-            onclick="showMonthlyView('summary')">
-
-            📋 Back to Summary
-
-        </button>
-
-    </div>
-
-
-    <div
-        class="table-wrapper"
-        style="
-            overflow-x:auto;
-            width:100%;
-        ">
-
-      <button
-    type="button"
-    onclick="downloadDayWiseExcel()"
-    style="
-        display:inline-flex;
-        align-items:center;
-        gap:8px;
-        padding:15px 30px;
-        margin-bottom:12px;
-        border:none;
-        border-radius:10px;
-        background:linear-gradient(135deg,#16a34a,#15803d);
-        color:white;
-        font-size:15px;
-        font-weight:600;
-        cursor:pointer;
-        box-shadow:0 4px 10px rgba(0,0,0,0.15);
-        transition:all .2s ease;
-    "
-    onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 14px rgba(0,0,0,0.20)'"
-    onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)'"
->
-    <i class="fa-solid fa-file-excel"></i>
-    Day-wise attendance Download Excel
-      </button>
-
-      <button
-    type="button"
-    onclick="downloadDayWisePDF()"
-    style="
-        display:inline-flex;
-        align-items:center;
-        gap:8px;
-        padding:13px 24px;
-        margin-left:8px;
-        margin-bottom:12px;
-        border:none;
-        border-radius:10px;
-        background:linear-gradient(135deg,#dc2626,#b91c1c);
-        color:white;
-        font-size:16px;
-        font-weight:600;
-        cursor:pointer;
-        box-shadow:0 4px 10px rgba(0,0,0,0.15);
-    "
->
-    <i class="fa-solid fa-file-pdf"></i>
-    Download PDF
-      </button>
-
-        <table
-            id="monthlyDayWiseTable"
-            style="
-                min-width:1200px;
-                white-space:nowrap;
-            ">
-
-            <thead
-                id="monthlyDayWiseHead">
-
-            </thead>
-
-            <tbody
-              
-                id="monthlyDayWiseBody">
+                return `
 
                 <tr>
 
-                    <td
-                        colspan="10"
-                        class="empty">
+                    <td>
+                        ${n+1}
+                    </td>
 
-                        Select a month to view attendance
+                    <td>
+
+                        <b>
+                            ${esc(i.name)}
+                        </b>
+
+                        <br>
+
+                        <span class="muted">
+                            ${esc(i.desc)}
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${esc(i.hsn)}
+                    </td>
+
+                    <td class="num">
+                        ${i.qty}
+                        ${esc(i.unit)}
+                    </td>
+
+                    <td class="num">
+                        ${money(i.rate)}
+                    </td>
+
+                    <td class="num">
+                        ${money(i.disc)}
+                    </td>
+
+                    <td class="num">
+                        ${money(tx)}
+                    </td>
+
+                    <td class="num">
+                        ${i.gst}%
+                    </td>
+
+                    <td class="num">
+                        ${money(tx+tax)}
+                    </td>
+
+                    <td>
+
+                        <button
+                        class="btn btn-danger"
+                        style="padding:5px 8px"
+                        onclick="deleteItem('${i.id}')">
+
+                        ×
+
+                        </button>
 
                     </td>
 
                 </tr>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+
+function getForm(){
+
+    const d =
+        document.getElementById(
+            "invoiceDate"
+        ).value || todayISO();
+
+
+    return {
+
+        date:d,
+
+        no:
+            document
+            .getElementById(
+                "invoiceNo"
+            ).value,
+
+        fy:
+            fyFor(d),
+
+        serial:
+            serialFor(d),
+
+
+        seller:{
+
+            name:
+                document
+                .getElementById(
+                    "sellerName"
+                ).value,
+
+            gst:
+                document
+                .getElementById(
+                    "sellerGST"
+                ).value,
+
+            address:
+                document
+                .getElementById(
+                    "sellerAddress"
+                ).value,
+
+            pan:
+                document
+                .getElementById(
+                    "sellerPAN"
+                ).value,
+
+            mobile:
+                document
+                .getElementById(
+                    "sellerMobile"
+                ).value
+
+        },
+
+
+        customer:{
+
+            name:
+                document
+                .getElementById(
+                    "customerName"
+                ).value,
+
+            mobile:
+                document
+                .getElementById(
+                    "customerMobile"
+                ).value,
+
+            gstin:
+                document
+                .getElementById(
+                    "customerGSTIN"
+                ).value,
+
+            address:
+                document
+                .getElementById(
+                    "customerAddress"
+                ).value,
+
+            state:
+                document
+                .getElementById(
+                    "customerState"
+                ).value,
+
+            stateCode:
+                document
+                .getElementById(
+                    "stateCode"
+                ).value
+
+        },
+
+
+        place:
+            document
+            .getElementById(
+                "placeSupply"
+            ).value,
+
+
+        payment:
+            document
+            .getElementById(
+                "paymentMode"
+            ).value,
+
+
+        ref:
+            document
+            .getElementById(
+                "paymentRef"
+            ).value,
+
+
+        reverse:
+            document
+            .getElementById(
+                "reverseCharge"
+            ).value,
+
+
+        notes:
+            document
+            .getElementById(
+                "invoiceNotes"
+            ).value,
+
+
+        items:
+            JSON.parse(
+                JSON.stringify(items)
+            ),
+
+
+        totals:
+            calc()
+
+    };
+
+}
+
+
+
+function saveInvoice(){
+
+    const f =
+        getForm();
+
+
+    if(!f.customer.name){
+
+        showToast(
+            "Consumer name is required"
+        );
+
+        return;
+
+    }
+
+
+    if(!f.items.length){
+
+        showToast(
+            "Add at least one item"
+        );
+
+        return;
+
+    }
+
+
+    const existing =
+        invoices.find(
+            x => x.no === f.no
+        );
+
+
+    if(existing){
+
+        showToast(
+            "This invoice number already exists"
+        );
+
+        return;
+
+    }
+
+
+    async function saveInvoice(){
+
+    const f = getForm();
+
+    if(!f.customer.name){
+
+        showToast(
+            "Consumer name is required"
+        );
+
+        return;
+    }
+
+    if(!f.items.length){
+
+        showToast(
+            "Add at least one item"
+        );
+
+        return;
+    }
+
+    const existing =
+        invoices.find(
+            x => x.no === f.no
+        );
+
+    if(existing){
+
+        showToast(
+            "This invoice number already exists"
+        );
+
+        return;
+    }
+
+    const invoiceData = {
+
+        ...f,
+
+        savedAt:
+            firebase.firestore.FieldValue.serverTimestamp()
+
+    };
+
+    try{
+
+        const ref =
+            await db
+            .collection("invoices")
+            .add(invoiceData);
+
+        invoices.push({
+
+            id:ref.id,
+
+            ...f,
+
+            savedAt:
+                new Date().toISOString()
+
+        });
+
+        refreshAll();
+
+        showToast(
+            "Invoice saved to Firebase"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Invoice save failed"
+        );
+
+    }
+
+}
+
+
+    saveLS();
+
+    refreshAll();
+
+    showToast(
+        "Invoice saved successfully"
+    );
+
+}
+
+
+
+function newInvoice(){
+
+    items = [];
+
+
+    document.getElementById(
+        "customerName"
+    ).value = "";
+
+
+    document.getElementById(
+        "customerMobile"
+    ).value = "";
+
+
+    document.getElementById(
+        "customerGSTIN"
+    ).value = "";
+
+
+    document.getElementById(
+        "customerAddress"
+    ).value = "";
+
+
+    document.getElementById(
+        "paymentRef"
+    ).value = "";
+
+
+    document.getElementById(
+        "invoiceDate"
+    ).value = todayISO();
+
+
+    updateInvoiceNo();
+
+    renderItems();
+
+    showToast(
+        "New invoice ready"
+    );
+
+}
+
+
+
+function previewInvoice(){
+
+    const f =
+        getForm();
+
+
+    if(!f.items.length){
+
+        showToast(
+            "Add items before preview"
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "previewContent"
+    ).innerHTML =
+        invoiceHTML(f);
+
+
+    document.getElementById(
+        "previewModal"
+    ).style.display = "flex";
+
+}
+
+  function printPreview(){
+
+    const invoice =
+        document.getElementById("previewContent");
+
+    if(!invoice || !invoice.innerHTML.trim()){
+        showToast("Open invoice preview first");
+        return;
+    }
+
+    const iframe = document.createElement("iframe");
+
+    iframe.style.position = "fixed";
+    iframe.style.width = "1px";
+    iframe.style.height = "1px";
+    iframe.style.border = "0";
+    iframe.style.left = "-9999px";
+
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+
+    /* সব মূল CSS copy হবে */
+    const styles =
+        Array.from(document.querySelectorAll("style"))
+        .map(s => s.outerHTML)
+        .join("");
+
+    doc.open();
+
+    doc.write(`
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+
+${styles}
+
+<style>
+
+@page{
+    size:A4;
+    margin:0;
+}
+
+html,body{
+    margin:0 !important;
+    padding:0 !important;
+    width:210mm !important;
+    min-height:297mm !important;
+    background:white !important;
+}
+
+#printArea{
+    width:210mm !important;
+    margin:0 !important;
+    padding:0 !important;
+}
+
+#printArea .invoice-paper{
+    width:210mm !important;
+    min-height:297mm !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:10mm !important;
+    box-sizing:border-box !important;
+    background:white !important;
+    box-shadow:none !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="printArea">
+${invoice.innerHTML}
+</div>
+
+</body>
+</html>
+    `);
+
+    doc.close();
+
+    setTimeout(() => {
+
+        iframe.contentWindow.focus();
+
+        iframe.contentWindow.print();
+
+        setTimeout(() => {
+            iframe.remove();
+        }, 2000);
+
+    }, 1000);
+  }
+
+
+
+function closePreview(){
+
+    document.getElementById(
+        "previewModal"
+    ).style.display = "none";
+
+}
+
+
+
+function formatDate(s){
+
+    const [y,m,d] =
+        s.split("-");
+
+    return `${d}.${m}.${y}`;
+
+}
+
+
+
+function amountWords(n){
+
+    n =
+        Math.round(
+            Number(n)
+        );
+
+
+    if(n === 0){
+
+        return "Zero Rupees Only";
+
+    }
+
+
+    const ones = [
+
+        "",
+        "One",
+        "Two",
+        "Three",
+        "Four",
+        "Five",
+        "Six",
+        "Seven",
+        "Eight",
+        "Nine",
+        "Ten",
+        "Eleven",
+        "Twelve",
+        "Thirteen",
+        "Fourteen",
+        "Fifteen",
+        "Sixteen",
+        "Seventeen",
+        "Eighteen",
+        "Nineteen"
+
+    ];
+
+
+    const tens = [
+
+        "",
+        "",
+        "Twenty",
+        "Thirty",
+        "Forty",
+        "Fifty",
+        "Sixty",
+        "Seventy",
+        "Eighty",
+        "Ninety"
+
+    ];
+
+
+    function under100(x){
+
+        return x < 20
+
+            ? ones[x]
+
+            : tens[
+                Math.floor(x/10)
+            ] +
+            (
+                x%10
+                ? " " + ones[x%10]
+                : ""
+            );
+
+    }
+
+
+    function under1000(x){
+
+        return x < 100
+
+            ? under100(x)
+
+            : ones[
+                Math.floor(x/100)
+            ] +
+            " Hundred" +
+            (
+                x%100
+                ? " " +
+                  under100(x%100)
+                : ""
+            );
+
+    }
+
+
+    let parts = [];
+
+
+    let crore =
+        Math.floor(
+            n / 10000000
+        );
+
+    n %= 10000000;
+
+
+    let lakh =
+        Math.floor(
+            n / 100000
+        );
+
+    n %= 100000;
+
+
+    let thousand =
+        Math.floor(
+            n / 1000
+        );
+
+    n %= 1000;
+
+
+    if(crore){
+
+        parts.push(
+            under1000(crore) +
+            " Crore"
+        );
+
+    }
+
+
+    if(lakh){
+
+        parts.push(
+            under100(lakh) +
+            " Lakh"
+        );
+
+    }
+
+
+    if(thousand){
+
+        parts.push(
+            under100(thousand) +
+            " Thousand"
+        );
+
+    }
+
+
+    if(n){
+
+        parts.push(
+            under1000(n)
+        );
+
+    }
+
+
+    return (
+        parts.join(" ") +
+        " Rupees Only"
+    );
+
+}
+
+
+
+function invoiceHTML(f){
+
+    const t =
+        f.totals;
+
+
+    const sameState =
+        (
+            f.customer.state || ""
+        ).toLowerCase()
+        === "west bengal";
+
+
+    const cgst =
+        sameState
+        ? t.tax / 2
+        : 0;
+
+
+    const sgst =
+        sameState
+        ? t.tax / 2
+        : 0;
+
+
+    const igst =
+        sameState
+        ? 0
+        : t.tax;
+
+
+    return `
+
+    <div class="invoice-paper">
+
+
+        <div class="inv-head">
+
+
+            <div>
+
+                <div class="company">
+
+                    ${esc(
+                        f.seller.name
+                    )}
+
+                </div>
+
+
+                <div class="small">
+
+                    ${esc(
+                        f.seller.address
+                    ).replace(
+                        /\n/g,
+                        "<br>"
+                    )}
+
+                    <br>
+
+                    <b>GSTIN:</b>
+                    ${esc(
+                        f.seller.gst
+                    )}
+
+                    ${
+                        f.seller.pan
+                        ?
+                        ` |
+                        <b>PAN:</b>
+                        ${esc(
+                            f.seller.pan
+                        )}`
+                        :
+                        ""
+                    }
+
+                    <br>
+
+                    ${
+                        f.seller.mobile
+                        ?
+                        `Mobile:
+                        ${esc(
+                            f.seller.mobile
+                        )}`
+                        :
+                        ""
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="inv-meta">
+
+                <div class="inv-title">
+                    TAX INVOICE
+                </div>
+
+
+                <div class="meta-row">
+
+                    <span>
+                        Invoice No.
+                    </span>
+
+                    <b>
+                        ${esc(f.no)}
+                    </b>
+
+                </div>
+
+
+                <div class="meta-row">
+
+                    <span>
+                        Date
+                    </span>
+
+                    <b>
+                        ${formatDate(f.date)}
+                    </b>
+
+                </div>
+
+
+                <div class="meta-row">
+
+                    <span>
+                        Financial Year
+                    </span>
+
+                    <b>
+                        ${esc(f.fy)}
+                    </b>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="bill-grid">
+
+
+            <div class="bill-box">
+
+                <b>
+                    Bill To
+                </b>
+
+
+                <div
+                class="small"
+                style="margin-top:6px">
+
+                    <b>
+                        ${esc(
+                            f.customer.name
+                        )}
+                    </b>
+
+                    <br>
+
+                    ${esc(
+                        f.customer.address
+                    ).replace(
+                        /\n/g,
+                        "<br>"
+                    )}
+
+                    <br>
+
+                    Mobile:
+                    ${esc(
+                        f.customer.mobile ||
+                        "-"
+                    )}
+
+                    <br>
+
+                    GSTIN:
+                    ${esc(
+                        f.customer.gstin ||
+                        "Unregistered"
+                    )}
+
+                    <br>
+
+                    State:
+                    ${esc(
+                        f.customer.state ||
+                        "-"
+                    )}
+
+                    (
+                    ${esc(
+                        f.customer.stateCode ||
+                        "-"
+                    )}
+                    )
+
+                </div>
+
+            </div>
+
+
+
+            <div class="bill-box">
+
+                <b>
+                    Invoice Details
+                </b>
+
+
+                <div
+                class="small"
+                style="margin-top:6px">
+
+                    Place of Supply:
+                    <b>
+                        ${esc(
+                            f.place || "-"
+                        )}
+                    </b>
+
+                    <br>
+
+                    Payment Mode:
+                    ${esc(
+                        f.payment
+                    )}
+
+                    <br>
+
+                    Payment Ref:
+                    ${esc(
+                        f.ref || "-"
+                    )}
+
+                    <br>
+
+                    Reverse Charge:
+                    ${esc(
+                        f.reverse
+                    )}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <table class="inv-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>
+                        Description
+                    </th>
+
+                    <th>
+                        HSN/SAC
+                    </th>
+
+                    <th>
+                        Qty
+                    </th>
+
+                    <th>
+                        Rate
+                    </th>
+
+                    <th>
+                        Discount
+                    </th>
+
+                    <th>
+                        Taxable
+                    </th>
+
+                    <th>
+                        GST
+                    </th>
+
+                    <th>
+                        Amount
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            ${
+                f.items.map(
+                    (i,n) => {
+
+                        const tx =
+                            Math.max(
+                                0,
+                                i.qty*i.rate-i.disc
+                            );
+
+
+                        const tax =
+                            tx*i.gst/100;
+
+
+                        return `
+
+                        <tr>
+
+                            <td>
+                                ${n+1}
+                            </td>
+
+                            <td>
+
+                                <b>
+                                    ${esc(i.name)}
+                                </b>
+
+                                <br>
+
+                                ${esc(i.desc)}
+
+                            </td>
+
+                            <td>
+                                ${esc(i.hsn)}
+                            </td>
+
+                            <td>
+                                ${i.qty}
+                                ${esc(i.unit)}
+                            </td>
+
+                            <td>
+                                ${money(i.rate)}
+                            </td>
+
+                            <td>
+                                ${money(i.disc)}
+                            </td>
+
+                            <td>
+                                ${money(tx)}
+                            </td>
+
+                            <td>
+                                ${i.gst}%
+                            </td>
+
+                            <td>
+                                ${money(tx+tax)}
+                            </td>
+
+                        </tr>
+
+                        `;
+
+                    }
+                ).join("")
+            }
 
             </tbody>
 
         </table>
 
-    </div>
 
-</div>
 
-</section>
+        <div class="summary">
 
-      <!-- =====================
-     STAFF MONTHLY REPORT
-===================== -->
 
-<section
-    id="staffMonthlyReport"
-    class="section">
+            <div class="sumrow">
 
-    <div class="panel">
+                <span>
+                    Subtotal
+                </span>
 
-        <div class="panel-header">
+                <b>
+                    ${money(t.subtotal)}
+                </b>
 
-            <div>
+            </div>
 
-                <div class="panel-title">
-                    👤 Staff Monthly Attendance Report
+
+            <div class="sumrow">
+
+                <span>
+                    Discount
+                </span>
+
+                <b>
+                    − ${money(t.discount)}
+                </b>
+
+            </div>
+
+
+            <div class="sumrow">
+
+                <span>
+                    Taxable Amount
+                </span>
+
+                <b>
+                    ${money(t.taxable)}
+                </b>
+
+            </div>
+
+
+            ${
+                cgst
+                ?
+                `
+
+                <div class="sumrow">
+
+                    <span>
+                        CGST
+                    </span>
+
+                    <b>
+                        ${money(cgst)}
+                    </b>
+
                 </div>
 
-                <div style="font-size:12px;color:#777;margin-top:4px">
 
-                    Select month and staff to view day-wise attendance
+                <div class="sumrow">
+
+                    <span>
+                        SGST
+                    </span>
+
+                    <b>
+                        ${money(sgst)}
+                    </b>
 
                 </div>
 
+                `
+                :
+                ""
+            }
+
+
+            ${
+                igst
+                ?
+                `
+
+                <div class="sumrow">
+
+                    <span>
+                        IGST
+                    </span>
+
+                    <b>
+                        ${money(igst)}
+                    </b>
+
+                </div>
+
+                `
+                :
+                ""
+            }
+
+
+            <div class="sumrow grand">
+
+                <span>
+                    Grand Total
+                </span>
+
+                <b>
+                    ${money(t.total)}
+                </b>
+
             </div>
 
         </div>
 
 
-        <!-- FILTER -->
-
-        <div class="form-grid">
-
-            <div class="form-group">
-
-                <label>
-                    Select Month
-                </label>
-
-                <input
-                    type="month"
-                    id="staffReportMonth">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Select Staff
-                </label>
-
-                <select id="staffReportEmployee">
-
-                    <option value="">
-                        -- Select Staff --
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
-
-
-        <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
-
-    <button
-        class="btn btn-primary"
-        onclick="generateStaffMonthlyReport()">
-
-        🔍 View Report
-
-    </button>
-
-    <button
-        class="btn btn-success"
-        onclick="downloadStaffMonthlyExcel()">
-
-        📊 Download Excel
-
-    </button>
-
-</div>
-
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <div class="stats">
-
-        <div class="stat-card">
-
-            <h4>
-                Present
-            </h4>
-
-            <strong
-                class="green"
-                id="staffReportPresent">
-
-                0
-
-            </strong>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <h4>
-                Absent
-            </h4>
-
-            <strong
-                class="red"
-                id="staffReportAbsent">
-
-                0
-
-            </strong>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <h4>
-                Leave
-            </h4>
-
-            <strong
-                class="orange"
-                id="staffReportLeave">
-
-                0
-
-            </strong>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <h4>
-                Total Marked Days
-            </h4>
-
-            <strong
-                class="blue"
-                id="staffReportTotal">
-
-                0
-
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <!-- STAFF INFO -->
-
-    <div
-        id="staffReportInfo"
-        class="panel"
-        style="display:none;">
-
-    </div>
-
-
-    <!-- DAY WISE TABLE -->
-
-    <div class="panel">
-
-        <div class="panel-header">
-
-            <div class="panel-title">
-                📋 Day-wise Attendance & Work Details
-            </div>
-
-        </div>
-
-
-        <div class="table-wrapper">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>SL</th>
-
-                        <th>Date</th>
-
-                        <th>Day</th>
-
-                        <th>Status</th>
-
-                        <th>In Time</th>
-
-                        <th>Out Time</th>
-
-                        <th>Working Hours</th>
-
-                        <th>Work Details</th>
-
-                        <th>Remarks</th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="staffMonthlyReportTable">
-
-                    <tr>
-
-                        <td
-                            colspan="9"
-                            class="empty">
-
-                            Month এবং Staff select করে
-                            View Report চাপুন
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-</section>
-
-        <!-- =====================
-             INVOICE
-        ====================== -->
-
-        <section
-            id="invoice"
-            class="section">
-
-
-    </div>
-
-</div>
-
-
-  <!-- =========================
-     BEAUTIFUL ALERT POPUP
-========================= -->
-
-<div id="customAlertOverlay" class="custom-alert-overlay">
-
-    <div id="customAlertBox" class="custom-alert-box">
-
-        <div id="customAlertIcon" class="custom-alert-icon">
-            ✓
-        </div>
-
-        <div id="customAlertTitle" class="custom-alert-title">
-            Success
-        </div>
-
-        <div id="customAlertMessage" class="custom-alert-message">
-        </div>
-
-        <div id="customAlertButtons" class="custom-alert-buttons">
-
-            <button
-                id="customAlertCancel"
-                class="custom-alert-btn custom-alert-cancel"
-                style="display:none;">
-                Cancel
-            </button>
-
-            <button
-                id="customAlertOK"
-                class="custom-alert-btn custom-alert-ok">
-                OK
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-  <!-- ATTENDANCE SAVE TOAST -->
-
-<div id="attendanceToast" class="attendance-toast">
-
-    <div class="attendance-toast-icon">
-        ✓
-    </div>
-
-    <div>
-        <div class="attendance-toast-title">
-            Attendance Saved
-        </div>
 
         <div
-            id="attendanceToastText"
-            class="attendance-toast-text">
-            Saved successfully
-        </div>
-    </div>
-
-</div>
-
-<script>
-
-  /* =========================
-   BEAUTIFUL ALERT FUNCTIONS
-========================= */
-
-function showAlert(message, type="info", title="Information"){
-
-    const overlay =
-        document.getElementById("customAlertOverlay");
-
-    const box =
-        document.getElementById("customAlertBox");
-
-    const icon =
-        document.getElementById("customAlertIcon");
-
-    const titleBox =
-        document.getElementById("customAlertTitle");
-
-    const messageBox =
-        document.getElementById("customAlertMessage");
-
-    const okBtn =
-        document.getElementById("customAlertOK");
-
-    const cancelBtn =
-        document.getElementById("customAlertCancel");
-
-    box.className =
-        "custom-alert-box alert-" + type;
-
-    titleBox.innerText = title;
-    messageBox.innerText = message;
-
-    cancelBtn.style.display = "none";
-
-    if(type === "success"){
-        icon.innerText = "✓";
-    }
-    else if(type === "error"){
-        icon.innerText = "×";
-    }
-    else if(type === "warning"){
-        icon.innerText = "!";
-    }
-    else{
-        icon.innerText = "i";
-    }
-
-    okBtn.innerText = "OK";
-    okBtn.className =
-        "custom-alert-btn custom-alert-ok";
-
-    overlay.classList.add("show");
-
-    okBtn.onclick = function(){
-        overlay.classList.remove("show");
-    };
-}
-
-
-
-  // =====================================
-// CONVERT ALL NORMAL ALERTS TO POPUP
-// =====================================
-window.alert = function(message){
-
-    let type = "info";
-    let title = "Information";
-
-    const text = String(message).toLowerCase();
-
-    if(
-        text.includes("success") ||
-        text.includes("successfully") ||
-        text.includes("সফলভাবে") ||
-        text.includes("saved") ||
-        text.includes("updated") ||
-        text.includes("added") ||
-        text.includes("deleted")
-    ){
-        type = "success";
-        title = "Success";
-    }
-
-    else if(
-        text.includes("সমস্যা") ||
-        text.includes("error") ||
-        text.includes("failed") ||
-        text.includes("cannot") ||
-        text.includes("যায়নি")
-    ){
-        type = "error";
-        title = "Error";
-    }
-
-    else if(
-        text.includes("আগে") ||
-        text.includes("required") ||
-        text.includes("already exists") ||
-        text.includes("পাওয়া যায়নি")
-    ){
-        type = "warning";
-        title = "Warning";
-    }
-
-    showAlert(message, type, title);
-};
-
-/* =========================
-   CONFIRM POPUP
-========================= */
-
-function showConfirm(
-    message,
-    onConfirm,
-    title="Confirm Action"
-){
-
-    const overlay =
-        document.getElementById("customAlertOverlay");
-
-    const box =
-        document.getElementById("customAlertBox");
-
-    const icon =
-        document.getElementById("customAlertIcon");
-
-    const titleBox =
-        document.getElementById("customAlertTitle");
-
-    const messageBox =
-        document.getElementById("customAlertMessage");
-
-    const okBtn =
-        document.getElementById("customAlertOK");
-
-    const cancelBtn =
-        document.getElementById("customAlertCancel");
-
-    box.className =
-        "custom-alert-box alert-warning";
-
-    icon.innerText = "!";
-    titleBox.innerText = title;
-    messageBox.innerText = message;
-
-    cancelBtn.style.display = "inline-block";
-
-    okBtn.innerText = "Delete";
-    okBtn.className =
-        "custom-alert-btn custom-alert-delete";
-
-    overlay.classList.add("show");
-
-    cancelBtn.onclick = function(){
-
-        overlay.classList.remove("show");
-
-    };
-
-    okBtn.onclick = function(){
-
-        overlay.classList.remove("show");
-
-        if(typeof onConfirm === "function"){
-            onConfirm();
-        }
-
-    };
-}
-
-/* =========================
-   DATA
-========================= */
-
-
-  let employees = [];
-let attendance = [];
-  let editingEmployeeId = null;
-
-
-/* =========================
-   DATE
-========================= */
-
-const today =
-new Date().toISOString().split("T")[0];
-
-
-document.getElementById("dailyDate").value=today;
-
-document.getElementById("editDate").value=today;
-
-document.getElementById("dashDate").value=today;
-
-document.getElementById("downloadDate").value=today;
-
-
-/* =========================
-   NAVIGATION
-========================= */
-
-const titles={
-
-    home:[
-        "Attendance Dashboard",
-        "Employee attendance management system"
-    ],
-
-    employee:[
-        "New Employee",
-        "Add and manage employee information"
-    ],
-
-    daily:[
-        "Daily Attendance",
-        "Mark today's attendance"
-    ],
-
-    edit:[
-        "Edit Attendance",
-        "Modify previous attendance records"
-    ],
-
-    attendanceDashboard:[
-        "Attendance Dashboard",
-        "Attendance statistics and overview"
-    ],
-
-    downloads:[
-        "Downloads",
-        "Download attendance reports"
-    ],
-
-  monthlyReport:[
-        "Monthly Attendance Report",
-        "Employee monthly attendance summary"
-    ],
-
-  staffMonthlyReport:[
-    "Staff Monthly Report",
-    "Selected staff day-wise attendance report"
-],
-
-    invoice:[
-        "Invoice Management",
-        "Invoice management module"
-    ]
-
-};
-
-
-function showSection(id,element){
-
-    document
-    .querySelectorAll(".section")
-    .forEach(s=>{
-        s.classList.remove("active");
-    });
-
-
-    document
-    .getElementById(id)
-    .classList.add("active");
-
-
-    document
-    .querySelectorAll(".menu-item")
-    .forEach(m=>{
-        m.classList.remove("active");
-    });
-
-
-    if(element)
-        element.classList.add("active");
-
-
-    document.getElementById("pageTitle")
-    .innerText=titles[id][0];
-
-    document.getElementById("pageSubtitle")
-    .innerText=titles[id][1];
-
-
-    if(id==="employee")
-        renderEmployees();
-
-  
-  if(id==="employee"){
-    renderEmployees();
-
-    if(!editingEmployeeId){
-        document.getElementById("empId").value =
-            generateEmployeeId();
-    }
-  }
-
-    if(id==="daily")
-        renderDailyAttendance();
-
-    if(id==="edit")
-        renderEditAttendance();
-
-    if(id==="attendanceDashboard")
-        updateDashboard();
-  
-  if(id==="monthlyReport")
-    generateMonthlyReport();
-
-  if(id==="staffMonthlyReport")
-    loadStaffReportEmployees();
-
-    updateHomeStats();
-
-    closeSidebar();
-}
-
-
-function openModule(id){
-
-    let item =
-    [...document.querySelectorAll(".menu-item")]
-    .find(x=>
-        x.getAttribute("onclick") &&
-        x.getAttribute("onclick").includes("'"+id+"'")
-    );
-
-
-    showSection(id,item);
-}
-
-
-/* =========================
-   SIDEBAR MOBILE
-========================= */
-
-function toggleSidebar(){
-
-    document
-    .getElementById("sidebar")
-    .classList.toggle("open");
-
-    document
-    .getElementById("overlay")
-    .classList.toggle("show");
-
-}
-
-
-function closeSidebar(){
-
-    document
-    .getElementById("sidebar")
-    .classList.remove("open");
-
-    document
-    .getElementById("overlay")
-    .classList.remove("show");
-
-}
-
-
-/* =========================
-   EMPLOYEE
-========================= */
-
-
-  function generateEmployeeId(){
-
-    let maxNumber = 0;
-
-    employees.forEach(employee => {
-
-        if(!employee.id) return;
-
-        const parts = employee.id.split("/");
-
-        if(parts.length !== 2) return;
-
-        if(parts[0] !== "501520") return;
-
-        const number =
-            parseInt(parts[1], 10);
-
-        if(
-            !isNaN(number) &&
-            number > maxNumber
-        ){
-            maxNumber = number;
-        }
-    });
-
-    return "501520/" +
-        String(maxNumber + 1).padStart(2, "0");
-}
-  
-
-
-  async function uploadEmployeePhotoToImgBB(file){
-
-    if(!file){
-        return "";
-    }
-
-    const formData = new FormData();
-
-    formData.append("key", IMGBB_API_KEY);
-    formData.append("image", file);
-
-    const response = await fetch(
-        "https://api.imgbb.com/1/upload",
-        {
-            method: "POST",
-            body: formData
-        }
-    );
-
-    const data = await response.json();
-
-    if(
-        !data.success ||
-        !data.data ||
-        !data.data.url
-    ){
-        throw new Error(
-            "Image upload failed"
-        );
-    }
-
-    return data.data.url;
-}
-
-
-  
-  async function addEmployee(){
-
-    // =========================
-    // EDIT MODE
-    // =========================
-    if(editingEmployeeId){
-        await updateEmployee(editingEmployeeId);
-        return;
-    }
-
-    // =========================
-    // GENERATE EMPLOYEE ID
-    // =========================
-    const id = generateEmployeeId();
-
-    // =========================
-    // GET FORM DATA
-    // =========================
-    const name =
-        document.getElementById("empName").value.trim();
-
-    const mobile =
-        document.getElementById("empMobile").value.trim();
-
-    const designation =
-        document.getElementById("empDesignation").value.trim();
-
-    const joining =
-        document.getElementById("empJoining").value;
-
-    const dob =
-        document.getElementById("empDOB").value;
-
-    const status =
-        document.getElementById("empStatus").value;
-
-    const address =
-        document.getElementById("empAddress").value.trim();
-
-    const photoFile =
-        document.getElementById("empPhoto").files[0];
-
-    // =========================
-    // REQUIRED FIELD CHECK
-    // =========================
-    if(
-        !name ||
-        !mobile ||
-        !designation ||
-        !joining ||
-        !dob ||
-        !address
-    ){
-        showAlert(
-            "সব তথ্য পূরণ করুন",
-            "warning",
-            "Required Information"
-        );
-
-        return;
-    }
-
-    // =========================
-    // DUPLICATE ID CHECK
-    // =========================
-    if(
-        employees.some(
-            e => e.id &&
-            e.id.toLowerCase() === id.toLowerCase()
-        )
-    ){
-        showAlert(
-            "এই Employee ID already exists",
-            "warning",
-            "Duplicate Employee ID"
-        );
-
-        return;
-    }
-
-    try{
-
-        // =========================
-        // PHOTO UPLOAD
-        // =========================
-        let photoURL = "";
-
-        if(photoFile){
-
-            photoURL =
-                await uploadEmployeePhotoToImgBB(
-                    photoFile
-                );
-        }
-
-        // =========================
-        // SAVE TO FIRESTORE
-        // =========================
-        await db
-            .collection("employees")
-            .doc(id.replace(/\//g, "_"))
-            .set({
-
-                id: id,
-                name: name,
-                mobile: mobile,
-                designation: designation,
-                joining: joining,
-                dob: dob,
-                photoURL: photoURL,
-                status: status,
-                address: address,
-
-                createdAt:
-                    firebase.firestore.FieldValue
-                    .serverTimestamp()
-
-            });
-
-        // =========================
-        // LOCAL DATA UPDATE
-        // =========================
-        employees.push({
-
-            id: id,
-            name: name,
-            mobile: mobile,
-            designation: designation,
-            joining: joining,
-            dob: dob,
-            photoURL: photoURL,
-            status: status,
-            address: address
-
-        });
-
-        // =========================
-        // RESET FORM
-        // =========================
-        editingEmployeeId = null;
-
-        clearEmployeeForm();
-
-        // নতুন ID আবার দেখাবে
-        document.getElementById("empId").value =
-            generateEmployeeId();
-
-        // =========================
-        // REFRESH
-        // =========================
-        renderEmployees();
-        updateHomeStats();
-        renderDailyAttendance();
-        updateDashboard();
-        loadStaffReportEmployees();
-
-        // =========================
-        // SUCCESS
-        // =========================
-        showAlert(
-            "Employee added successfully",
-            "success",
-            "Employee Added"
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            "Employee Add Error:",
-            error
-        );
-
-        showAlert(
-            "Employee add করতে সমস্যা হয়েছে!\n\n" +
-            error.message,
-            "error",
-            "Add Employee Failed"
-        );
-    }
-}
-
-
-
-
-
-
-
-  
-
-  async function updateEmployee(id){
-
-    const employee =
-        employees.find(e => e.id === id);
-
-    if(!employee){
-        showAlert(
-            "Employee পাওয়া যায়নি",
-            "error",
-            "Update Failed"
-        );
-        return;
-    }
-
-    const name =
-        document.getElementById("empName").value.trim();
-
-    const mobile =
-        document.getElementById("empMobile").value.trim();
-
-    const designation =
-        document.getElementById("empDesignation").value.trim();
-
-    const joining =
-        document.getElementById("empJoining").value;
-
-    const dob =
-        document.getElementById("empDOB").value;
-
-    const status =
-        document.getElementById("empStatus").value;
-
-    const address =
-        document.getElementById("empAddress").value.trim();
-
-    const photoFile =
-        document.getElementById("empPhoto").files[0];
-
-
-    if(
-        !name ||
-        !mobile ||
-        !designation ||
-        !joining ||
-        !dob ||
-        !address
-    ){
-
-        showAlert(
-            "সব তথ্য পূরণ করুন",
-            "warning",
-            "Required Information"
-        );
-
-        return;
-    }
-
-
-    try{
-
-        // পুরনো Photo URL রাখা হবে
-        let photoURL =
-            employee.photoURL || "";
-
-
-        // নতুন Photo দিলে ImgBB-তে upload হবে
-        if(photoFile){
-
-            photoURL =
-                await uploadEmployeePhotoToImgBB(
-                    photoFile
-                );
-        }
-
-
-        // Firestore Update
-        await db
-            .collection("employees")
-            .doc(id.replace(/\//g, "_"))
-            .update({
-
-                name: name,
-                mobile: mobile,
-                designation: designation,
-                joining: joining,
-                dob: dob,
-
-                photoURL: photoURL,
-
-                status: status,
-                address: address,
-
-                updatedAt:
-                    firebase.firestore.FieldValue
-                    .serverTimestamp()
-
-            });
-
-
-        // Local data update
-        employee.name = name;
-        employee.mobile = mobile;
-        employee.designation = designation;
-        employee.joining = joining;
-        employee.dob = dob;
-        employee.photoURL = photoURL;
-        employee.status = status;
-        employee.address = address;
-
-
-        editingEmployeeId = null;
-
-        clearEmployeeForm();
-
-        renderEmployees();
-
-        updateHomeStats();
-
-
-        showAlert(
-            "Employee successfully updated",
-            "success",
-            "Employee Updated"
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            "Employee Update Error:",
-            error
-        );
-
-        showAlert(
-            "Employee update করতে সমস্যা হয়েছে!\n\n" +
-            error.message,
-            "error",
-            "Update Failed"
-        );
-    }
-}
-
-
-
-  
-
-
-
-
-
-function clearEmployeeForm(){
-
-    document.getElementById("empId").value="";
-    document.getElementById("empName").value="";
-    document.getElementById("empMobile").value="";
-    document.getElementById("empDesignation").value="";
-    document.getElementById("empJoining").value="";
-
-
-  document.getElementById("empPhoto").value = "";
-    document.getElementById("empStatus").value="Active";
-    document.getElementById("empAddress").value="";
-  document.getElementById("empDOB").value="";
-
-  editingEmployeeId = null;
-
-}
-
-
-function renderEmployees(){
-
-    let search =
-    document.getElementById("employeeSearch")
-    .value.toLowerCase();
-
-
-    let data =
-    employees.filter(e=>
-        e.name.toLowerCase().includes(search) ||
-        e.id.toLowerCase().includes(search)
-    );
-
-
-    let body =
-    document.getElementById("employeeTable");
-
-    body.innerHTML="";
-
-
-    if(data.length===0){
-
-        body.innerHTML=`
-        <tr>
-        <td colspan="8" class="empty">
-        No employees found
-        </td>
-        </tr>`;
-
-        return;
-    }
-
-
-    data.forEach((e,i)=>{
-
-        body.innerHTML+=`
-
-        <tr>
-
-        <td>${i+1}</td>
-
-        <td><b>${e.id}</b></td>
-
-        <td>${e.name}</td>
-
-        <td>${e.mobile||"-"}</td>
-
-        <td>${e.designation||"-"}</td>
-        <td>${e.dob||"-"}</td>
-        <td>
-    ${
-        e.photoURL
-        ?
-        `<img
-            src="${e.photoURL}"
-            style="
-                width:45px;
-                height:45px;
-                object-fit:cover;
-                border-radius:50%;
-            "
-        >`
-        :
-        "-"
-    }
-</td>
-
-
-        <td>${e.joining||"-"}</td>
-
-        <td>
-
-        <span class="badge ${
-            e.status==="Active"
-            ?"badge-present"
-            :"badge-absent"
-        }">
-
-        ${e.status}
-
-        </span>
-
-        </td>
-
-        <td>
-
-        <button
-class="btn ${e.status==="Active" ? "btn-warning" : "btn-success"}"
-style="padding:7px 10px"
-onclick="toggleEmployeeStatus('${e.id}')">
-
-${e.status==="Active" ? "Deactivate" : "Activate"}
-
-</button>
-
-  <button
-    class="btn btn-primary"
-    style="padding:7px 10px;margin-left:5px"
-    onclick="editEmployee('${e.id}')">
-
-    Edit
-
-</button>
-
-<button
-class="btn btn-danger"
-style="padding:7px 10px;margin-left:5px"
-onclick="deleteEmployee('${e.id}')">
-
-Delete
-
-</button>
-
-        </td>
-
-        </tr>
-
-        `;
-
-    });
-
-}
-
-
-  function editEmployee(id){
-
-    const employee = employees.find(
-        e => e.id === id
-    );
-
-    if(!employee){
-        showAlert(
-            "Employee পাওয়া যায়নি",
-            "error",
-            "Employee Not Found"
-        );
-        return;
-    }
-
-    // Employee ID
-    document.getElementById("empId").value =
-        employee.id || "";
-
-    // Employee Name
-    document.getElementById("empName").value =
-        employee.name || "";
-
-    // Mobile
-    document.getElementById("empMobile").value =
-        employee.mobile || "";
-
-    // Designation
-    document.getElementById("empDesignation").value =
-        employee.designation || "";
-
-    // Joining Date
-    document.getElementById("empJoining").value =
-        employee.joining || "";
-
-    // Date of Birth
-    document.getElementById("empDOB").value =
-        employee.dob || "";
-
-  document.getElementById("empPhoto").value = "";
-
-    // Status
-    document.getElementById("empStatus").value =
-        employee.status || "Active";
-
-    // Address
-    document.getElementById("empAddress").value =
-        employee.address || "";
-
-    // Open Employee section
-    editingEmployeeId = employee.id;
-    showSection("employee");
-
-}
-
-  async function toggleEmployeeStatus(id){
-
-    const employee =
-        employees.find(e => e.id === id);
-
-    if(!employee)
-        return;
-
-    const newStatus =
-        employee.status === "Active"
-        ? "Inactive"
-        : "Active";
-
-
-    try{
-
-        await db
-            .collection("employees")
-            .doc(id.replace(/\//g, "_"))
-            .update({
-
-                status: newStatus
-
-            });
-
-
-        employee.status = newStatus;
-
-renderEmployees();
-renderDailyAttendance();
-updateHomeStats();
-updateDashboard();
-
-generateMonthlyReport();
-generateDayWiseMonthlyAttendance();
-loadStaffReportEmployees();
-
-
-        showAlert(
-    `Employee status changed to ${newStatus}`,
-    "success",
-    "Status Updated"
-);
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        showAlert(
-    "Status change করতে সমস্যা হয়েছে!\n\n" +
-    error.message,
-    "error",
-    "Status Change Failed"
-);
-
-    }
-
-}
-
-  async function deleteEmployee(id){
-
-    showConfirm(
-        "এই Employee এবং তার সব Attendance record permanently delete হবে। আপনি কি নিশ্চিত?",
-        async function(){
-
-            try{
-
-                await db
-                    .collection("employees")
-                    .doc(id.replace(/\//g, "_"))
-                    .delete();
-
-                const records =
-                    attendance.filter(
-                        a => a.employeeId === id
-                    );
-
-                for(const record of records){
-
-                    const docId =
-                        record.employeeId.replace(/\//g, "_")
-                        + "_" +
-                        record.date;
-
-                    await db
-                        .collection("attendance")
-                        .doc(docId)
-                        .delete();
-
-                }
-
-                employees =
-                    employees.filter(
-                        e => e.id !== id
-                    );
-
-                attendance =
-                    attendance.filter(
-                        a => a.employeeId !== id
-                    );
-
-                renderEmployees();
-                renderDailyAttendance();
-                updateHomeStats();
-                updateDashboard();
-
-                showAlert(
-                    "Employee successfully deleted",
-                    "success",
-                    "Employee Deleted"
-                );
-
-            }
-            catch(error){
-
-                console.error(error);
-
-                showAlert(
-                    "Delete করতে সমস্যা হয়েছে!\n\n" +
-                    error.message,
-                    "error",
-                    "Delete Failed"
-                );
-
-            }
-
-        },
-        "Delete Employee"
-    );
-
-}
-
-
-/* =========================
-   DAILY ATTENDANCE
-========================= */
-
-  /* =========================
-   DAILY WORK DETAILS
-========================= */
-
-async function saveDailyWorkDetails(){
-
-    const date =
-        document.getElementById("dailyDate").value;
-
-    const details =
-        document.getElementById("dailyWorkDetails").value.trim();
-
-
-    if(!date){
-
-    showAlert(
-        "আগে Date select করুন",
-        "warning",
-        "Date Required"
-    );
-
-    return;
-}
-
-
-    if(!details){
-
-    showAlert(
-        "আজকের কাজের বিবরণ লিখুন",
-        "warning",
-        "Work Details Required"
-    );
-
-    return;
-}
-
-
-    try{
-
-        await db
-            .collection("dailyWorkDetails")
-            .doc(date)
-            .set({
-
-                date: date,
-
-                details: details,
-
-                updatedAt:
-                    firebase.firestore.FieldValue.serverTimestamp()
-
-            });
-
-
-        document.getElementById("workSaveStatus")
-            .innerText =
-            "✓ Successfully Saved";
-
-
-        showAlert(
-    "আজকের কাজের বিবরণ সফলভাবে Save হয়েছে",
-    "success",
-    "Work Details Saved"
-);
-
-
-    }
-    catch(error){
-
-        console.error(
-            "Work Details Save Error:",
-            error
-        );
-
-
-        showAlert(
-    "Work Details save করতে সমস্যা হয়েছে!\n\n" +
-    error.message,
-    "error",
-    "Save Failed"
-);
-
-    }
-
-}
-
-
-/* =========================
-   LOAD DAILY WORK DETAILS
-========================= */
-
-async function loadDailyWorkDetails(){
-
-    const date =
-        document.getElementById("dailyDate").value;
-
-
-    const textarea =
-        document.getElementById("dailyWorkDetails");
-
-    const status =
-        document.getElementById("workSaveStatus");
-
-
-    if(!date)
-        return;
-
-
-    textarea.value = "";
-
-    status.innerText = "";
-
-
-    try{
-
-        const doc =
-            await db
-            .collection("dailyWorkDetails")
-            .doc(date)
-            .get();
-
-
-        if(doc.exists){
-
-            const data = doc.data();
-
-            textarea.value =
-                data.details || "";
-
-            status.innerText =
-                "✓ Saved data loaded";
-
-        }
-
-    }
-    catch(error){
-
-        console.error(
-            "Work Details Load Error:",
-            error
-        );
-
-    }
-
-}
-
-function getAttendance(employee,date){
-
-    return attendance.find(
-        a=>
-        a.employeeId===employee.id &&
-        a.date===date
-    );
-
-}
-
-
-function renderDailyAttendance(){
-
-  loadDailyWorkDetails();
-
-    let date =
-    document.getElementById("dailyDate").value;
-
-
-    let body =
-    document.getElementById("dailyTable");
-
-    body.innerHTML="";
-
-
-    let activeEmployees =
-    employees.filter(
-        e=>e.status==="Active"
-    );
-
-
-    if(activeEmployees.length===0){
-
-        body.innerHTML=`
-        <tr>
-        <td colspan="10" class="empty">
-        আগে Employee add করুন
-        </td>
-        </tr>`;
-
-        return;
-    }
-
-
-    activeEmployees.forEach((e,i)=>{
-
-        let a =
-        getAttendance(e,date);
-
-
-        let status =
-        a ? a.status : "Absent";
-
-        let inTime =
-        a ? a.inTime : "";
-
-        let outTime =
-        a ? a.outTime : "";
-
-        let remarks =
-        a ? a.remarks : "";
-
-
-        body.innerHTML+=`
-
-        <tr>
-
-        <td>${i+1}</td>
-
-        <td>${e.id}</td>
-
-        <td>
-        <b>${e.name}</b>
-        </td>
-
-
-        <td>
-
-        <select
-        onchange="saveAttendance(
-            '${e.id}',
-            '${date}',
-            'status',
-            this.value
-        )">
-
-        <option
-        value="Present"
-        ${status==="Present"?"selected":""}>
-        Present
-        </option>
-
-        <option
-        value="Absent"
-        ${status==="Absent"?"selected":""}>
-        Absent
-        </option>
-
-        <option
-        value="Leave"
-        ${status==="Leave"?"selected":""}>
-        Leave
-        </option>
-
-        </select>
-
-        </td>
-
-
-        <td>
-
-        <input
-        type="time"
-        value="${inTime}"
-        onchange="saveAttendance(
-            '${e.id}',
-            '${date}',
-            'inTime',
-            this.value
-        )">
-
-        </td>
-
-
-        <td>
-
-        <input
-        type="time"
-        value="${outTime}"
-        onchange="saveAttendance(
-            '${e.id}',
-            '${date}',
-            'outTime',
-            this.value
-        )">
-
-        </td>
-
-
-        <td>
-
-        <b>
-        ${calculateHours(inTime,outTime)}
-        </b>
-
-        </td>
-
-
-        <td>
-
-        <input
-        type="text"
-        value="${remarks}"
-        placeholder="Remarks"
-        onchange="saveAttendance(
-            '${e.id}',
-            '${date}',
-            'remarks',
-            this.value
-        )">
-
-        </td>
-
-        </tr>
-
-        `;
-
-    });
-
-}
-
-
-  /* =========================
-   ATTENDANCE SAVE TOAST
-========================= */
-
-let attendanceToastTimer;
-
-function showAttendanceSaved(status){
-
-    const toast =
-        document.getElementById("attendanceToast");
-
-    const text =
-        document.getElementById("attendanceToastText");
-
-    if(!toast || !text) return;
-
-    text.innerText =
-        status + " — Saved successfully";
-
-    toast.classList.add("show");
-
-    clearTimeout(attendanceToastTimer);
-
-    attendanceToastTimer =
-        setTimeout(function(){
-
-            toast.classList.remove("show");
-
-        }, 2500);
-}
-  
-
-  async function saveAttendance(
-    employeeId,
-    date,
-    field,
-    value
-){
-
-    try{
-
-        let item =
-            attendance.find(
-                a =>
-                a.employeeId === employeeId &&
-                a.date === date
-            );
-
-
-        // New attendance record
-        if(!item){
-
-            item = {
-
-                employeeId: employeeId,
-
-                date: date,
-
-                status: "Absent",
-
-                inTime: "",
-
-                outTime: "",
-
-                remarks: ""
-
-            };
-
-
-            attendance.push(item);
-
-        }
-
-
-        // Update field
-        item[field] = value;
-
-
-        // Firestore document ID
-        const docId =
-        employeeId.replace(/\//g, "_") + "_" + date;
-
-
-        // Save to Firebase
-        await db
-            .collection("attendance")
-            .doc(docId)
-            .set(item);
-
-
-        console.log(
-            "Attendance saved:",
-            docId
-        );
-
-  showAttendanceSaved(value);
-
-
-        // Refresh UI
-        renderDailyAttendance();
-
-        renderEditAttendance();
-
-        updateHomeStats();
-
-        updateDashboard();
-
-
-    }
-    catch(error){
-
-        console.error(
-            "Attendance Save Error:",
-            error
-        );
-
-
-      showAlert(
-    "Attendance save করতে সমস্যা হয়েছে!\n\n" +
-    error.message,
-    "error",
-    "Attendance Save Failed"
-);
-
-    }
-
-}
-
-  
-/* =========================
-   EDIT ATTENDANCE
-========================= */
-
-function renderEditAttendance(){
-
-    let date =
-    document.getElementById("editDate").value;
-
-      loadEditWorkDetails();
-
-
-    let body =
-    document.getElementById("editTable");
-
-    body.innerHTML="";
-
-
-    let records =
-    attendance.filter(
-        a=>a.date===date
-    );
-
-
-    if(records.length===0){
-
-        body.innerHTML=`
-        <tr>
-        <td colspan="7" class="empty">
-        এই তারিখে কোনো attendance record নেই
-        </td>
-        </tr>`;
-
-        return;
-    }
-
-
-    records.forEach((a,i)=>{
-
-        let employee =
-        employees.find(
-            e=>e.id===a.employeeId
-        );
-
-
-        body.innerHTML+=`
-
-        <tr>
-
-        <td>${i+1}</td>
-
-        <td>
-        ${employee ? employee.name : a.employeeId}
-        </td>
-
-
-        <td>
-
-        <select
-        onchange="saveAttendance(
-        '${a.employeeId}',
-        '${a.date}',
-        'status',
-        this.value
-        )">
-
-        <option
-        ${a.status==="Present"?"selected":""}>
-        Present
-        </option>
-
-        <option
-        ${a.status==="Absent"?"selected":""}>
-        Absent
-        </option>
-
-        <option
-        ${a.status==="Leave"?"selected":""}>
-        Leave
-        </option>
-
-        </select>
-
-        </td>
-
-
-        <td>
-
-        <input
-        type="time"
-        value="${a.inTime}"
-        onchange="saveAttendance(
-        '${a.employeeId}',
-        '${a.date}',
-        'inTime',
-        this.value
-        )">
-
-        </td>
-
-
-        <td>
-
-        <input
-        type="time"
-        value="${a.outTime}"
-        onchange="saveAttendance(
-        '${a.employeeId}',
-        '${a.date}',
-        'outTime',
-        this.value
-        )">
-
-        </td>
-
-
-        <td>
-
-        ${calculateHours(
-            a.inTime,
-            a.outTime
-        )}
-
-        </td>
-
-
-        <td>
-
-        <input
-        type="text"
-        value="${a.remarks}"
-        onchange="saveAttendance(
-        '${a.employeeId}',
-        '${a.date}',
-        'remarks',
-        this.value
-        )">
-
-        </td>
-
-        </tr>
-
-        `;
-
-    });
-
-}
-
-
-  /* =========================
-   EDIT WORK DETAILS
-========================= */
-
-async function loadEditWorkDetails(){
-
-    const date =
-        document.getElementById("editDate").value;
-
-    const textarea =
-        document.getElementById("editWorkDetails");
-
-    const status =
-        document.getElementById("editWorkSaveStatus");
-
-    if(!textarea || !date)
-        return;
-
-    textarea.value = "";
-    status.innerText = "";
-
-    try{
-
-        const doc =
-            await db
-            .collection("dailyWorkDetails")
-            .doc(date)
-            .get();
-
-        if(doc.exists){
-
-            const data = doc.data();
-
-            textarea.value =
-                data.details || "";
-
-            status.innerText =
-                "✓ Saved data loaded";
-
-        }
-
-    }
-    catch(error){
-
-        console.error(
-            "Edit Work Details Load Error:",
-            error
-        );
-
-    }
-
-}
-
-
-async function updateEditWorkDetails(){
-
-    const date =
-        document.getElementById("editDate").value;
-
-    const details =
-        document.getElementById("editWorkDetails")
-        .value.trim();
-
-    if(!date){
-
-        alert("আগে Date select করুন");
-
-        return;
-    }
-
-    if(!details){
-
-        alert("কাজের বিবরণ লিখুন");
-
-        return;
-    }
-
-    try{
-
-        await db
-            .collection("dailyWorkDetails")
-            .doc(date)
-            .set({
-
-                date: date,
-
-                details: details,
-
-                updatedAt:
-                    firebase.firestore.FieldValue.serverTimestamp()
-
-            });
-
-        document.getElementById(
-            "editWorkSaveStatus"
-        ).innerText =
-            "✓ Successfully Updated";
-
-        alert(
-            "Work Details সফলভাবে Update হয়েছে"
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            "Edit Work Details Update Error:",
-            error
-        );
-
-        alert(
-            "Work Details update করতে সমস্যা হয়েছে!\n\n" +
-            error.message
-        );
-
-    }
-
-}
-
-/* =========================
-   HOURS
-========================= */
-
-function calculateHours(
-    start,
-    end
-){
-
-    if(!start || !end)
-        return "-";
-
-
-    let s =
-    new Date("2000-01-01 "+start);
-
-    let e =
-    new Date("2000-01-01 "+end);
-
-
-    let diff =
-    e-s;
-
-
-    if(diff<0)
-        diff += 24*60*60*1000;
-
-
-    let hours =
-    Math.floor(
-        diff/3600000
-    );
-
-
-    let minutes =
-    Math.floor(
-        (diff%3600000)/60000
-    );
-
-
-    return `${hours}h ${minutes}m`;
-
-}
-
-
-/* =========================
-   DASHBOARD
-========================= */
-
-function updateDashboard(){
-
-    let date =
-    document.getElementById("dashDate").value;
-
-
-    let records =
-    attendance.filter(
-        a=>a.date===date
-    );
-
-
-    document.getElementById("dashTotal")
-    .innerText=employees.length;
-
-
-    document.getElementById("dashPresent")
-    .innerText=
-    records.filter(
-        a=>a.status==="Present"
-    ).length;
-
-
-    document.getElementById("dashAbsent")
-    .innerText=
-    records.filter(
-        a=>a.status==="Absent"
-    ).length;
-
-
-    document.getElementById("dashLeave")
-    .innerText=
-    records.filter(
-        a=>a.status==="Leave"
-    ).length;
-
-
-    document.getElementById(
-        "dashboardMessage"
-    ).innerHTML=
-
-    `
-    <div style="font-size:40px">
-        📊
-    </div>
-
-    <div style="margin-top:10px">
-        ${date} এর Attendance Summary
-    </div>
-    `;
-
-}
-
-
-/* =========================
-   HOME STATS
-========================= */
-
-function updateHomeStats(){
-
-    let records =
-    attendance.filter(
-        a=>a.date===today
-    );
-
-
-    document.getElementById("homeTotal")
-    .innerText=employees.length;
-
-
-    document.getElementById("homePresent")
-    .innerText=
-    records.filter(
-        a=>a.status==="Present"
-    ).length;
-
-
-    document.getElementById("homeAbsent")
-    .innerText=
-    records.filter(
-        a=>a.status==="Absent"
-    ).length;
-
-
-    document.getElementById("homeLeave")
-    .innerText=
-    records.filter(
-        a=>a.status==="Leave"
-    ).length;
-
-}
-
-  /* =========================
-   CSV DOWNLOAD WITH WORK DETAILS
-========================= */
-
-async function downloadCSV(){
-
-    let date =
-        document.getElementById(
-            "downloadDate"
-        ).value;
-
-
-    if(!date){
-
-        alert("আগে একটি Date select করুন");
-
-        return;
-    }
-
-
-    try{
-
-        // =========================
-        // LOAD WORK DETAILS
-        // =========================
-
-        const workDoc =
-            await db
-            .collection("dailyWorkDetails")
-            .doc(date)
-            .get();
-
-
-        let workDetails = "";
-
-        if(workDoc.exists){
-
-            const data = workDoc.data();
-
-            workDetails =
-                data.details || "";
-
-        }
-
-
-        // =========================
-        // LOAD ATTENDANCE
-        // =========================
-
-        let records =
-            attendance.filter(
-                a => a.date === date
-            );
-
-
-        if(records.length === 0 && !workDetails){
-
-            alert(
-                "এই তারিখে Attendance বা Work Details কোনোটিই পাওয়া যায়নি"
-            );
-
-            return;
-        }
-
-
-        // =========================
-        // CSV HEADER
-        // =========================
-
-        let csv =
-            "SL,Date,Employee ID,Employee Name,Status,In Time,Out Time,Working Hours,Remarks,Work Details\n";
-
-
-        // =========================
-        // ATTENDANCE DATA
-        // =========================
-
-        records.forEach((a,i)=>{
-
-            let employee =
-                employees.find(
-                    e => e.id === a.employeeId
-                );
-
-
-            let employeeName =
-                employee
-                ? employee.name
-                : "";
-
-
-            let hours =
-                calculateHours(
-                    a.inTime,
-                    a.outTime
-                );
-
-
-            // CSV-এর ভিতরে comma/quote সমস্যা আটকানো
-            let remarks =
-                String(a.remarks || "")
-                .replace(/"/g,'""');
-
-
-            let work =
-                String(workDetails || "")
-                .replace(/"/g,'""')
-                .replace(/\n/g," ");
-
-
-            csv +=
-                `${i+1},` +
-                `"${a.date}",` +
-                `"${a.employeeId}",` +
-                `"${employeeName}",` +
-                `"${a.status}",` +
-                `"${a.inTime || ""}",` +
-                `"${a.outTime || ""}",` +
-                `"${hours}",` +
-                `"${remarks}",` +
-                `"${work}"\n`;
-
-        });
-
-
-        // =========================
-        // যদি Attendance না থাকে,
-        // শুধু Work Details থাকে
-        // =========================
-
-        if(records.length === 0 && workDetails){
-
-            csv +=
-                `,"${date}",,,,,,,,"${workDetails.replace(/"/g,'""').replace(/\n/g," ")}"\n`;
-
-        }
-
-
-        // =========================
-        // CREATE FILE
-        // =========================
-
-        let blob =
-            new Blob(
-                [csv],
-                {
-                    type:
-                    "text/csv;charset=utf-8;"
-                }
-            );
-
-
-        let url =
-            URL.createObjectURL(blob);
-
-
-        let link =
-            document.createElement("a");
-
-
-        link.href = url;
-
-
-        link.download =
-            `Attendance_${date}.csv`;
-
-
-        document.body.appendChild(link);
-
-
-        link.click();
-
-
-        document.body.removeChild(link);
-
-
-        URL.revokeObjectURL(url);
-
-
-    }
-    catch(error){
-
-        console.error(
-            "CSV Download Error:",
-            error
-        );
-
-
-        alert(
-            "Excel/CSV download করতে সমস্যা হয়েছে!\n\n" +
-            error.message
-        );
-
-    }
-
-}
-  
-
-  /* =========================
-   MONTHLY REPORT
-========================= */
-
-function generateMonthlyReport(){
-
-    let month =
-        document.getElementById(
-            "monthlyReportMonth"
-        ).value;
-
-
-    let table =
-        document.getElementById(
-            "monthlyReportTable"
-        );
-
-
-    table.innerHTML = "";
-
-
-    if(!month){
-
-        table.innerHTML = `
-        <tr>
-            <td colspan="7" class="empty">
-                Please select a month
-            </td>
-        </tr>
-        `;
-
-        return;
-    }
-
-
-    let totalPresent = 0;
-let totalAbsent = 0;
-let totalLeave = 0;
-
-let activeEmployees = employees.filter(
-    e => e.status === "Active"
-);
-
-activeEmployees.forEach((employee,index)=>{
-
-        let records =
-            attendance.filter(a =>
-
-                a.employeeId === employee.id &&
-
-                a.date.startsWith(month)
-
-            );
-
-
-        let present =
-            records.filter(
-                a => a.status === "Present"
-            ).length;
-
-
-        let absent =
-            records.filter(
-                a => a.status === "Absent"
-            ).length;
-
-
-        let leave =
-            records.filter(
-                a => a.status === "Leave"
-            ).length;
-
-
-        let total =
-            present + absent + leave;
-
-let remarksList = records
-    .filter(a => a.remarks && a.remarks.trim())
-    .map(a => {
-        let dateParts = a.date.split("-");
-        let formattedDate =
-            dateParts[2] + "-" +
-            dateParts[1] + "-" +
-            dateParts[0];
-
-        return `${formattedDate} — ${a.remarks.trim()}`;
-    });
-
-
-        totalPresent += present;
-        totalAbsent += absent;
-        totalLeave += leave;
-
-
-        table.innerHTML += `
-
-        <tr>
-
-            <td>
-                ${index + 1}
-            </td>
-
-
-            <td>
-                <b>${employee.id}</b>
-            </td>
-
-
-            <td>
-                ${employee.name}
-            </td>
-
-
-            <td>
-
-                <span class="badge badge-present">
-
-                    ${present}
-
-                </span>
-
-            </td>
-
-
-            <td>
-
-                <span class="badge badge-absent">
-
-                    ${absent}
-
-                </span>
-
-            </td>
-
-
-            <td>
-
-                <span class="badge badge-leave">
-
-                    ${leave}
-
-                </span>
-
-            </td>
-
-
-            <td>
-
-                <b>${total}</b>
-
-            </td>
-<td style="
-    text-align:left;
-    white-space:normal;
-    min-width:300px;
-">
-    ${
-        remarksList.length
-        ? remarksList.join("<br>")
-        : "-"
-    }
-</td>
-
-        </tr>
-
-        `;
-
-    });
-
-
-    document.getElementById(
-    "monthlyTotalEmployees"
-).innerText = activeEmployees.length;
-
-
-    document.getElementById(
-        "monthlyTotalPresent"
-    ).innerText = totalPresent;
-
-
-    document.getElementById(
-        "monthlyTotalAbsent"
-    ).innerText = totalAbsent;
-
-
-    document.getElementById(
-        "monthlyTotalLeave"
-    ).innerText = totalLeave;
-
-
-    if(employees.length === 0){
-
-        table.innerHTML = `
-        <tr>
-            <td colspan="7" class="empty">
-
-                আগে Employee add করুন
-
-            </td>
-        </tr>
-        `;
-
-    }
-
-}
-
-  /* =========================
-   MONTHLY CSV DOWNLOAD
-========================= */
-
-function downloadMonthlyCSV(){
-
-    let month =
-        document.getElementById(
-            "monthlyReportMonth"
-        ).value;
-
-
-    if(!month){
-
-        showAlert(     "আগে একটি Month select করুন",     "warning",     "Month Required" );
-
-        return;
-    }
-
-
-    let csv =
-        "SL,Employee ID,Employee Name,Present,Absent,Leave,Total Marked Days\n";
-
-
-    employees.forEach((employee,index)=>{
-
-        let records =
-            attendance.filter(a =>
-
-                a.employeeId === employee.id &&
-
-                a.date.startsWith(month)
-
-            );
-
-
-        let present =
-            records.filter(
-                a => a.status === "Present"
-            ).length;
-
-
-        let absent =
-            records.filter(
-                a => a.status === "Absent"
-            ).length;
-
-
-        let leave =
-            records.filter(
-                a => a.status === "Leave"
-            ).length;
-
-
-        let total =
-            present + absent + leave;
-
-
-        csv +=
-            `${index + 1},` +
-            `${employee.id},` +
-            `"${employee.name}",` +
-            `${present},` +
-            `${absent},` +
-            `${leave},` +
-            `${total}\n`;
-
-    });
-
-
-    let blob =
-        new Blob(
-            [csv],
-            {
-                type:"text/csv;charset=utf-8;"
-            }
-        );
-
-
-    let url =
-        URL.createObjectURL(blob);
-
-
-    let link =
-        document.createElement("a");
-
-
-    link.href = url;
-
-
-    link.download =
-        `Monthly_Attendance_${month}.csv`;
-
-
-    document.body.appendChild(link);
-
-
-    link.click();
-
-
-    document.body.removeChild(link);
-
-
-    URL.revokeObjectURL(url);
-
-}
-
-/* =========================
-   SAVE DATA
-========================= */
-
-  async function saveData(){
-
-    try{
-
-        // Save Employees
-        for(const employee of employees){
-
-            await db
-                .collection("employees")
-                .doc(employee.id.replace(/\//g, "_"))
-                .set(employee);
-
-        }
-
-
-        // Save Attendance
-        for(const record of attendance){
-
-            const docId =
-                record.employeeId.replace(/\//g, "_") + "_" + record.date;
-
-            await db
-                .collection("attendance")
-                .doc(docId)
-                .set(record);
-
-        }
-
-        console.log("Database saved successfully");
-
-    }
-    catch(error){
-
-        console.error("Firebase Save Error:", error);
-
-        showAlert(
-    "Database save করতে সমস্যা হয়েছে!\n\n" +
-    error.message,
-    "error",
-    "Database Save Failed"
-);
-
-    }
-
-}
-
-
-
-
-  async function loadData(){
-
-    try{
-
-        console.log("Loading Firebase data...");
-
-
-        // =========================
-        // LOAD EMPLOYEES
-        // =========================
-
-        const employeeSnapshot =
-            await db
-            .collection("employees")
-            .get();
-
-
-        employees = [];
-
-
-        employeeSnapshot.forEach(doc=>{
-
-            employees.push({
-                id: doc.data().id || doc.id,
-                ...doc.data()
-            });
-
-        });
-
-
-        // =========================
-        // LOAD ATTENDANCE
-        // =========================
-
-        const attendanceSnapshot =
-            await db
-            .collection("attendance")
-            .get();
-
-
-        attendance = [];
-
-
-        attendanceSnapshot.forEach(doc=>{
-
-            attendance.push({
-                ...doc.data()
-            });
-
-        });
-
-
-        console.log(
-            "Employees:",
-            employees.length
-        );
-
-        console.log(
-            "Attendance:",
-            attendance.length
-        );
-
-
-        // =========================
-        // REFRESH PAGE
-        // =========================
-
-        renderEmployees();
-
-        renderDailyAttendance();
-
-        renderEditAttendance();
-
-        updateDashboard();
-
-        updateHomeStats();
-
-
-    }
-    catch(error){
-
-        console.error(
-            "Firebase Load Error:",
-            error
-        );
-
-        showAlert(
-    "Firebase Database থেকে data load করা যাচ্ছে না!\n\n" +
-    error.message,
-    "error",
-    "Database Load Failed"
-);
-
-    }
-
-}
-
-  
-
-
-/* =========================
-   INITIAL
-========================= */
-
-  const monthlyMonth =
-    document.getElementById("monthlyReportMonth");
-
-if(monthlyMonth){
-    monthlyMonth.value = today.substring(0,7);
-generateMonthlyReport();
-}
-
-  
-
-
-  /* =========================
-   STAFF MONTHLY REPORT
-========================= */
-
-function loadStaffReportEmployees(){
-
-    const select =
-        document.getElementById(
-            "staffReportEmployee"
-        );
-
-    if(!select)
-        return;
-
-
-    const currentValue =
-        select.value;
-
-
-    select.innerHTML = `
-        <option value="">
-            -- Select Staff --
-        </option>
-    `;
-
-
-    employees
-        .filter(e => e.status === "Active")
-        .forEach(employee => {
-
-            const option =
-                document.createElement("option");
-
-            option.value =
-                employee.id;
-
-            option.textContent =
-                employee.name +
-                " (" +
-                employee.id +
-                ")";
-
-            select.appendChild(option);
-
-        });
-
-
-    if(currentValue)
-        select.value = currentValue;
-
-
-    // Default current month
-    const month =
-        document.getElementById(
-            "staffReportMonth"
-        );
-
-    if(month && !month.value){
-
-        month.value =
-            today.substring(0,7);
-
-    }
-
-}
-
-  async function generateStaffMonthlyReport(){
-
-    const month =
-        document.getElementById(
-            "staffReportMonth"
-        ).value;
-
-
-    const employeeId =
-        document.getElementById(
-            "staffReportEmployee"
-        ).value;
-
-
-    const table =
-        document.getElementById(
-            "staffMonthlyReportTable"
-        );
-
-
-    if(!month){
-
-        alert("আগে Month select করুন");
-
-        return;
-
-    }
-
-
-    if(!employeeId){
-
-        alert("আগে Staff select করুন");
-
-        return;
-
-    }
-
-
-    const employee =
-        employees.find(
-            e => e.id === employeeId
-        );
-
-
-    if(!employee){
-
-        alert("Employee পাওয়া যায়নি");
-
-        return;
-
-    }
-
-
-    /* =========================
-       EMPLOYEE INFO
-    ========================= */
-
-    const info =
-        document.getElementById(
-            "staffReportInfo"
-        );
-
-
-    info.style.display = "block";
-
-
-    info.innerHTML = `
-
-        <div style="
-            display:grid;
-            grid-template-columns:
-            repeat(3,1fr);
-            gap:15px;
+        style="
+        margin-top:18px;
+        border:1px solid #ddd;
+        padding:9px;
+        font-size:11px;
         ">
 
-            <div>
-                <b>Employee ID</b>
-                <br>
-                ${employee.id}
+            <b>
+                Amount in Words:
+            </b>
+
+            ${amountWords(t.total)}
+
+        </div>
+
+
+
+        <div
+        style="
+        margin-top:12px;
+        font-size:11px;
+        ">
+
+            <b>
+                Notes / Terms:
+            </b>
+
+            <br>
+
+            ${esc(
+                f.notes
+            ).replace(
+                /\n/g,
+                "<br>"
+            )}
+
+        </div>
+
+
+
+        <div class="sign">
+
+            <div class="signbox">
+
+                Customer Signature
+
             </div>
 
-            <div>
-                <b>Employee Name</b>
-                <br>
-                ${employee.name}
-            </div>
 
-            <div>
-                <b>Designation</b>
+            <div class="signbox">
+
+                For
+                ${esc(
+                    f.seller.name
+                )}
+
                 <br>
-                ${employee.designation || "-"}
+                <br>
+
+                Authorised Signatory
+
             </div>
 
         </div>
 
+
+    </div>
+
     `;
 
-
-    /* =========================
-       GET MONTH DAYS
-    ========================= */
-
-    const [year,monthNumber] =
-        month.split("-").map(Number);
+}
 
 
-    const daysInMonth =
-        new Date(
-            year,
-            monthNumber,
-            0
-        ).getDate();
+
+function renderHistory(){
+
+    const tb =
+        document.getElementById(
+            "historyTable"
+        );
 
 
-    let present = 0;
-    let absent = 0;
-    let leave = 0;
-    let totalMarked = 0;
+    if(!invoices.length){
+
+        tb.innerHTML =
+            `
+            <tr>
+
+                <td
+                colspan="5"
+                class="empty">
+
+                    No invoices saved yet.
+
+                </td>
+
+            </tr>
+            `;
+
+        return;
+
+    }
 
 
-    table.innerHTML = "";
-
-
-    /* =========================
-       DAY BY DAY
-    ========================= */
-
-    for(let day=1; day<=daysInMonth; day++){
-
-        const date =
-            `${year}-${String(monthNumber).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-
-
-        const dateObject =
-            new Date(
-                year,
-                monthNumber - 1,
-                day
-            );
-
-
-        const dayName =
-            dateObject.toLocaleDateString(
-                "en-IN",
-                {
-                    weekday:"short"
-                }
-            );
-
-
-        /* =========================
-           ATTENDANCE
-        ========================= */
-
-        const attendanceRecord =
-            attendance.find(
-                a =>
-                a.employeeId === employeeId &&
-                a.date === date
-            );
-
-
-        let status = "-";
-        let inTime = "";
-        let outTime = "";
-        let remarks = "";
-
-
-        if(attendanceRecord){
-
-            status =
-                attendanceRecord.status ||
-                "Absent";
-
-            inTime =
-                attendanceRecord.inTime ||
-                "";
-
-            outTime =
-                attendanceRecord.outTime ||
-                "";
-
-            remarks =
-                attendanceRecord.remarks ||
-                "";
-
-
-            if(status === "Present")
-                present++;
-
-
-            if(status === "Absent")
-                absent++;
-
-
-            if(status === "Leave")
-                leave++;
-
-
-            totalMarked++;
-
-        }
-
-
-        /* =========================
-           WORK DETAILS
-        ========================= */
-
-        let workDetails = "";
-
-
-        try{
-
-            const workDoc =
-                await db
-                .collection("dailyWorkDetails")
-                .doc(date)
-                .get();
-
-
-            if(workDoc.exists){
-
-                const data =
-                    workDoc.data();
-
-                workDetails =
-                    data.details || "";
-
-            }
-
-        }
-        catch(error){
-
-            console.error(
-                "Work details load error:",
-                error
-            );
-
-        }
-
-
-        /* =========================
-           TABLE ROW
-        ========================= */
-
-        table.innerHTML += `
+    tb.innerHTML =
+        [...invoices]
+        .reverse()
+        .map(
+            x => `
 
             <tr>
 
                 <td>
-                    ${day}
-                </td>
 
+                    <span class="badge">
 
-                <td>
-                    ${date}
-                </td>
+                        ${esc(x.no)}
 
-
-                <td>
-                    ${dayName}
-                </td>
-
-
-                <td>
-
-                    ${
-                        status === "Present"
-
-                        ? `<span class="badge badge-present">
-                            Present
-                           </span>`
-
-                        : status === "Absent"
-
-                        ? `<span class="badge badge-absent">
-                            Absent
-                           </span>`
-
-                        : status === "Leave"
-
-                        ? `<span class="badge badge-leave">
-                            Leave
-                           </span>`
-
-                        : "-"
-                    }
+                    </span>
 
                 </td>
 
 
                 <td>
-                    ${inTime || "-"}
+                    ${formatDate(x.date)}
                 </td>
 
 
                 <td>
-                    ${outTime || "-"}
-                </td>
-
-
-                <td>
-                    ${calculateHours(
-                        inTime,
-                        outTime
+                    ${esc(
+                        x.customer.name
                     )}
                 </td>
 
 
-                <td style="
-                    text-align:left;
-                    min-width:250px;
-                    white-space:normal;
-                ">
+                <td class="num">
 
-                    ${
-                        workDetails
-                        ? workDetails
-                        : "-"
-                    }
+                    ${money(
+                        x.totals.total
+                    )}
 
                 </td>
 
 
                 <td>
-                    ${remarks || "-"}
-                </td>
 
-            </tr>
+                    <button
+                    class="btn btn-primary"
+                    style="padding:6px 9px"
+                    onclick="viewSaved('${x.no}')">
 
-        `;
+                        View
 
-    }
+                    </button>
 
 
-    /* =========================
-       SUMMARY
-    ========================= */
+                    <button
+                    class="btn btn-danger"
+                    style="padding:6px 9px"
+                    onclick="deleteInvoice('${x.no}')">
 
-    document.getElementById(
-        "staffReportPresent"
-    ).innerText =
-        present;
+                        Delete
 
-
-    document.getElementById(
-        "staffReportAbsent"
-    ).innerText =
-        absent;
-
-
-    document.getElementById(
-        "staffReportLeave"
-    ).innerText =
-        leave;
-
-
-    document.getElementById(
-        "staffReportTotal"
-    ).innerText =
-        totalMarked;
-
-
-}
-
-  
-
-  function downloadStaffMonthlyExcel(){
-
-    const table =
-        document.getElementById("staffMonthlyReportTable");
-
-    if(!table || table.rows.length === 0){
-
-        showAlert(     "আগে View Report চাপুন",     "info",     "Report Required" );
-
-        return;
-    }
-
-    const rows = [];
-
-    // Header
-    rows.push([
-        "SL",
-        "Date",
-        "Day",
-        "Status",
-        "In Time",
-        "Out Time",
-        "Working Hours",
-        "Work Details",
-        "Remarks"
-    ]);
-
-    // Table-এর বর্তমানে দেখা data
-    Array.from(table.rows).forEach(row => {
-
-        const cells =
-            Array.from(row.cells);
-
-        const rowData =
-            cells.map(cell => {
-
-                return cell.innerText
-                    .replace(/\n/g, " ")
-                    .trim();
-
-            });
-
-        // Empty message row বাদ
-        if(rowData.length === 9){
-
-            rows.push(rowData);
-
-        }
-
-    });
-
-    if(rows.length <= 1){
-
-        alert("Download করার মতো কোনো report data নেই");
-
-        return;
-    }
-
-    // CSV তৈরি
-    const csv =
-        rows.map(row =>
-
-            row.map(value => {
-
-                return `"${String(value)
-                    .replace(/"/g, '""')}"`;
-
-            }).join(",")
-
-        ).join("\n");
-
-    // UTF-8 BOM — Excel-এ Bengali text ঠিক রাখার জন্য
-    const blob =
-        new Blob(
-            ["\uFEFF" + csv],
-            {
-                type:
-                "text/csv;charset=utf-8;"
-            }
-        );
-
-    const url =
-        URL.createObjectURL(blob);
-
-    const link =
-        document.createElement("a");
-
-    link.href = url;
-
-    const month =
-        document.getElementById(
-            "staffReportMonth"
-        ).value || "Report";
-
-    const employeeSelect =
-        document.getElementById(
-            "staffReportEmployee"
-        );
-
-    const employeeName =
-        employeeSelect.options[
-            employeeSelect.selectedIndex
-        ]?.text || "Staff";
-
-    link.download =
-        `Staff_Monthly_Report_${employeeName}_${month}.csv`;
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-}
-
-
-  /* =====================================================
-   MONTHLY REPORT VIEW SWITCH
-   NEW CODE - EXISTING FUNCTIONS UNTOUCHED
-===================================================== */
-
-function showMonthlyView(view){
-
-    const summary =
-        document.getElementById("monthlySummaryView");
-
-    const daywise =
-        document.getElementById("monthlyDayWiseView");
-
-    const summaryBtn =
-        document.getElementById("monthlySummaryBtn");
-
-    const daywiseBtn =
-        document.getElementById("monthlyDayWiseBtn");
-
-
-    if(view === "summary"){
-
-        summary.style.display = "block";
-
-        daywise.style.display = "none";
-
-        summaryBtn.classList.remove("btn-secondary");
-        summaryBtn.classList.add("btn-primary");
-
-        daywiseBtn.classList.remove("btn-primary");
-        daywiseBtn.classList.add("btn-secondary");
-
-    }
-
-
-    if(view === "daywise"){
-
-        summary.style.display = "none";
-
-        daywise.style.display = "block";
-
-        summaryBtn.classList.remove("btn-primary");
-        summaryBtn.classList.add("btn-secondary");
-
-        daywiseBtn.classList.remove("btn-secondary");
-        daywiseBtn.classList.add("btn-primary");
-
-
-        generateDayWiseMonthlyAttendance();
-
-    }
-
-}
-
-
-
-  
-async function generateDayWiseMonthlyAttendance(){
-
-    const monthInput =
-        document.getElementById("monthlyReportMonth");
-
-    const month =
-        monthInput ? monthInput.value : "";
-
-    const head =
-        document.getElementById("monthlyDayWiseHead");
-
-    const body =
-        document.getElementById("monthlyDayWiseBody");
-
-    if(!head || !body) return;
-
-    head.innerHTML = "";
-    body.innerHTML = "";
-
-    if(!month){
-
-        body.innerHTML = `
-            <tr>
-                <td colspan="10" class="empty">
-                    Please select a month first
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-    /* ================================
-       DAYS IN MONTH
-    ================================= */
-
-    const year =
-        Number(month.split("-")[0]);
-
-    const monthNumber =
-        Number(month.split("-")[1]);
-
-    const daysInMonth =
-        new Date(
-            year,
-            monthNumber,
-            0
-        ).getDate();
-
-
-    /* ================================
-       HEADER
-    ================================= */
-
-    let headerHTML = `
-
-        <tr>
-
-            <th>SL</th>
-            <th>Employee ID</th>
-            <th>Employee Name</th>
-
-    `;
-
-    for(
-        let day = 1;
-        day <= daysInMonth;
-        day++
-    ){
-
-        headerHTML += `
-            <th>
-                ${String(day).padStart(2,"0")}
-            </th>
-        `;
-
-    }
-
-    headerHTML += `
-
-            <th>Present</th>
-            <th>Absent</th>
-            <th>Leave</th>
-            <th>Total</th>
-
-        </tr>
-
-    `;
-
-    head.innerHTML = headerHTML;
-
-
-    /* ================================
-       ACTIVE EMPLOYEES
-    ================================= */
-
-    const activeEmployees =
-        employees.filter(
-            e => e.status === "Active"
-        );
-
-
-        /* ================================
-       WORK DETAILS MAP
-       FAST PARALLEL LOAD
-    ================================= */
-
-    const workDetailsMap = {};
-
-    const workPromises = [];
-
-    for(let day = 1; day <= daysInMonth; day++){
-
-        const date =
-            `${month}-${String(day).padStart(2,"0")}`;
-
-        workPromises.push(
-            db
-                .collection("dailyWorkDetails")
-                .doc(date)
-                .get()
-                .then(doc => {
-
-                    workDetailsMap[date] =
-                        doc.exists
-                        ? (doc.data().details || "")
-                        : "";
-
-                })
-                .catch(error => {
-
-                    console.error(
-                        "Work Details Error:",
-                        date,
-                        error
-                    );
-
-                    workDetailsMap[date] = "";
-
-                })
-        );
-
-    }
-
-    await Promise.all(workPromises);
-
-
-  /* ================================
-   FAST ATTENDANCE MAP
-================================= */
-
-const attendanceMap = new Map();
-
-attendance.forEach(record => {
-
-    if(record.date && record.date.startsWith(month)){
-
-        const key =
-            record.employeeId + "_" + record.date;
-
-        attendanceMap.set(key, record);
-    }
-
-});
-  
-    /* ================================
-       EMPLOYEE ROWS
-    ================================= */
-
-    activeEmployees.forEach(
-        (employee,index) => {
-
-            let present = 0;
-            let absent = 0;
-            let leave = 0;
-
-            let rowHTML = `
-
-                <tr>
-
-                    <td>
-                        ${index + 1}
-                    </td>
-
-                    <td>
-                        <b>
-                            ${employee.id}
-                        </b>
-                    </td>
-
-                    <td>
-                        ${employee.name}
-                    </td>
-
-            `;
-
-
-            for(
-                let day = 1;
-                day <= daysInMonth;
-                day++
-            ){
-
-                const date =
-                    `${month}-${String(day).padStart(2,"0")}`;
-
-        const key =
-    employee.id + "_" + date;
-
-const record =
-    attendanceMap.get(key);
-
-
-                let status =
-                    record
-                    ? record.status
-                    : "";
-
-                let displayStatus = "-";
-
-                let badgeClass = "";
-
-
-                if(status === "Present"){
-
-                    displayStatus = "P";
-
-                    badgeClass =
-                        "badge badge-present";
-
-                    present++;
-
-                }
-
-                else if(status === "Absent"){
-
-                    displayStatus = "A";
-
-                    badgeClass =
-                        "badge badge-absent";
-
-                    absent++;
-
-                }
-
-                else if(status === "Leave"){
-
-                    displayStatus = "L";
-
-                    badgeClass =
-                        "badge badge-leave";
-
-                    leave++;
-
-                }
-
-
-                rowHTML += `
-
-                    <td
-                        style="
-                            text-align:center;
-                            min-width:42px;
-                        ">
-
-                        ${
-                            displayStatus === "-"
-                            ?
-                            "-"
-                            :
-                            `<span class="${badgeClass}">
-                                ${displayStatus}
-                             </span>`
-                        }
-
-                    </td>
-
-                `;
-
-            }
-
-
-            const total =
-                present +
-                absent +
-                leave;
-
-
-            rowHTML += `
-
-                    <td>
-                        <span class="badge badge-present">
-                            ${present}
-                        </span>
-                    </td>
-
-                    <td>
-                        <span class="badge badge-absent">
-                            ${absent}
-                        </span>
-                    </td>
-
-                    <td>
-                        <span class="badge badge-leave">
-                            ${leave}
-                        </span>
-                    </td>
-
-                    <td>
-                        <b>${total}</b>
-                    </td>
-
-                </tr>
-
-            `;
-
-
-            body.insertAdjacentHTML("beforeend", rowHTML);
-
-        }
-    );
-
-
-    /* ================================
-       ONE WORK DETAILS ROW
-       AFTER ALL STAFF
-    ================================= */
-
-    if(activeEmployees.length > 0){
-
-        let workRowHTML = `
-
-            <tr>
-
-                <td
-                    colspan="3"
-                    style="
-                        text-align:right;
-                        font-weight:700;
-                        background:#f3f6fa;
-                        color:#444;
-                        white-space:nowrap;
-                    ">
-
-                    Work Details
-
-                </td>
-
-        `;
-
-
-        for(
-            let day = 1;
-            day <= daysInMonth;
-            day++
-        ){
-
-            const date =
-                `${month}-${String(day).padStart(2,"0")}`;
-
-            const details =
-                workDetailsMap[date] || "";
-
-
-            workRowHTML += `
-
-                <td
-                    style="
-                        text-align:center;
-                        vertical-align:top;
-                        min-width:90px;
-                        max-width:180px;
-                        white-space:normal;
-                        word-break:break-word;
-                        font-size:10px;
-                        line-height:1.3;
-                        background:#f3f6fa;
-                        color:#555;
-                        padding:7px 4px;
-                    ">
-
-                    ${
-                        details
-                        ?
-                        details
-                        :
-                        "-"
-                    }
-
-                </td>
-
-            `;
-
-        }
-
-
-        workRowHTML += `
-
-                <td colspan="4"
-                    style="
-                        background:#f3f6fa;
-                    ">
-                </td>
-
-            </tr>
-
-        `;
-
-
-        body.innerHTML += workRowHTML;
-
-    }
-
-
-    /* ================================
-       EMPTY EMPLOYEE CHECK
-    ================================= */
-
-    if(activeEmployees.length === 0){
-
-        body.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="${daysInMonth + 7}"
-                    class="empty">
-
-                    No employees found
+                    </button>
 
                 </td>
 
             </tr>
 
-        `;
-
-    }
+            `
+        )
+        .join("");
 
 }
 
 
 
-  function downloadDayWiseExcel(){
+function viewSaved(no){
 
-    const table =
-        document.getElementById("monthlyDayWiseTable");
-
-    if(!table){
-
-        alert("Day-wise attendance table not found.");
-
-        return;
-    }
-
-    const monthInput =
-        document.getElementById("monthlyReportMonth");
-
-    const month =
-        monthInput ? monthInput.value : "";
-
-    if(!month){
-
-        alert("Please select a month first.");
-
-        return;
-    }
-
-    if(typeof XLSX === "undefined"){
-
-        alert("Excel library is not loaded.");
-
-        return;
-    }
-
-    const workbook =
-        XLSX.utils.table_to_book(
-            table,
-            {
-                sheet: "Day Wise Attendance"
-            }
+    const x =
+        invoices.find(
+            i => i.no === no
         );
 
-    const filename =
-        `Day_Wise_Attendance_${month}.xlsx`;
 
-    XLSX.writeFile(
-        workbook,
-        filename
-    );
+    if(!x) return;
+
+
+    document.getElementById(
+        "previewContent"
+    ).innerHTML =
+        invoiceHTML(x);
+
+
+    document.getElementById(
+        "previewModal"
+    ).style.display = "flex";
+
 }
 
 
-  
 
-  
-async function downloadDayWisePDF(){
-
-    const { jsPDF } = window.jspdf;
-
-    const originalTable =
-        document.getElementById("monthlyDayWiseTable");
-
-    if(!originalTable){
-        alert("Day-wise attendance table not found.");
-        return;
-    }
-
-    const month =
-        document.getElementById("monthlyReportMonth")?.value;
-
-    if(!month){
-        alert("Please select a month first.");
-        return;
-    }
-
-    const [year, monthNumber] =
-        month.split("-");
-
-    const dateObj =
-        new Date(
-            Number(year),
-            Number(monthNumber) - 1,
-            1
-        );
-
-    const monthName =
-        dateObj.toLocaleString(
-            "en-IN",
-            {month:"long"}
-        );
-
-    const daysInMonth =
-        new Date(
-            Number(year),
-            Number(monthNumber),
-            0
-        ).getDate();
-
-
-    /* =========================
-       PDF
-    ========================= */
-
-    const doc =
-        new jsPDF({
-            orientation:"landscape",
-            unit:"mm",
-            format:"a4"
-        });
-
-
-    /* =========================
-       HEADER
-    ========================= */
-
-    function addHeader(){
-
-        doc.setFont("helvetica","bold");
-        doc.setFontSize(14);
-
-        doc.text(
-            "M/s Chakraborty Electricals (Vendor Code-501520)",
-            148,
-            10,
-            {align:"center"}
-        );
-
-        doc.setFontSize(11);
-
-        doc.text(
-            "STAFF ATTENDANCE SHEET",
-            148,
-            17,
-            {align:"center"}
-        );
-
-        doc.setFontSize(8.5);
-
-        doc.text(
-            `Month: ${monthName} ${year}`,
-            148,
-            23,
-            {align:"center"}
-        );
-    }
-
-
-    /* =========================
-       FOOTER
-    ========================= */
-
-    function addFooter(){
-
-        const pageWidth =
-            doc.internal.pageSize.getWidth();
-
-        const pageHeight =
-            doc.internal.pageSize.getHeight();
-
-        doc.setDrawColor(70);
-        doc.setLineWidth(0.25);
-
-        doc.line(
-            7,
-            pageHeight - 10,
-            pageWidth - 7,
-            pageHeight - 10
-        );
-
-        doc.setFont("helvetica","normal");
-        doc.setFontSize(6.5);
-
-        doc.text(
-            "System Generated Report • M/s Chakraborty Electricals",
-            7,
-            pageHeight - 5
-        );
-
-        doc.text(
-            `Page ${doc.internal.getNumberOfPages()}`,
-            pageWidth - 7,
-            pageHeight - 5,
-            {align:"right"}
-        );
-    }
-
-
-    /* =========================
-       LOAD WORK DETAILS FIRST
-    ========================= */
-
-    const workRows = [];
-
-    for(
-        let day = 1;
-        day <= daysInMonth;
-        day++
-    ){
-
-        const date =
-            `${month}-${String(day).padStart(2,"0")}`;
-
-        try{
-
-            const workDoc =
-                await db
-                    .collection("dailyWorkDetails")
-                    .doc(date)
-                    .get();
-
-            let details = "";
-
-            if(workDoc.exists){
-
-                const data =
-                    workDoc.data();
-
-                details =
-                    data.details || "";
-            }
-
-            workRows.push({
-
-                day:
-                    String(day).padStart(2,"0"),
-
-                details:
-                    String(details).trim()
-
-            });
-
-        }
-        catch(error){
-
-            console.error(
-                "Work Details Error:",
-                date,
-                error
-            );
-
-            workRows.push({
-
-                day:
-                    String(day).padStart(2,"0"),
-
-                details:""
-
-            });
-        }
-    }
-
-
-    /* =========================
-       ATTENDANCE TABLE
-    ========================= */
-
-    addHeader();
-
-
-    const attendanceTable =
-        originalTable.cloneNode(true);
-
-
-    /*
-       Work Details row remove
-       from attendance table
-    */
-
-    attendanceTable
-        .querySelectorAll("tr")
-        .forEach(row => {
-
-            const text =
-                row.innerText
-                    .replace(/\s+/g," ")
-                    .trim()
-                    .toLowerCase();
-
-            if(
-                text.includes("work details")
-            ){
-                row.remove();
-            }
-
-        });
-
-
-    attendanceTable.style.display = "none";
-
-    document.body.appendChild(
-        attendanceTable
-    );
-
-
-    doc.autoTable({
-
-        html:attendanceTable,
-
-        startY:27,
-
-        theme:"grid",
-
-        styles:{
-            fontSize:5.8,
-            cellPadding:1.2,
-            lineWidth:0.3,
-            lineColor:[60,60,60],
-            textColor:[20,20,20],
-            valign:"middle",
-            halign:"center"
-        },
-
-        headStyles:{
-            fontSize:5.8,
-            fontStyle:"bold",
-            lineWidth:0.4,
-            lineColor:[40,40,40],
-            valign:"middle",
-            halign:"center"
-        },
-
-        bodyStyles:{
-            lineWidth:0.3,
-            lineColor:[70,70,70]
-        },
-
-        margin:{
-            left:7,
-            right:7,
-            top:27,
-            bottom:9
-        },
-
-        /*
-           IMPORTANT:
-           Page break হলে নতুন page-এ
-           আবার header/footer আসবে
-        */
-
-        didDrawPage:function(){
-
-            addHeader();
-            addFooter();
-
-        }
-
-    });
-
-
-    document.body.removeChild(
-        attendanceTable
-    );
-
-
-    /* =========================
-       WORK DETAILS
-       SAME PAGE IF SPACE EXISTS
-    ========================= */
-
-    let startY =
-        (doc.lastAutoTable?.finalY || 27) + 5;
-
-
-    /*
-       যদি Staff table-এর পরে
-       খুব কম জায়গা থাকে,
-       তাহলে নতুন page
-    */
-
-    const pageHeight =
-        doc.internal.pageSize.getHeight();
+function deleteInvoice(no){
 
     if(
-        startY > pageHeight - 75
+        !confirm(
+            "Delete this invoice record?"
+        )
     ){
 
-        doc.addPage();
-
-        addHeader();
-
-        startY = 29;
+        return;
 
     }
 
 
-    /* =========================
-       WORK DETAILS TITLE
-    ========================= */
+    async function deleteInvoice(no){
 
-    doc.setFont("helvetica","bold");
-    doc.setFontSize(10);
-
-    doc.text(
-        "WORK DETAILS",
-        148,
-        startY,
-        {align:"center"}
-    );
-
-
-    startY += 4;
-
-
-    /* =========================
-       LEFT / RIGHT DATA
-    ========================= */
-
-    const leftRows =
-        workRows.filter(
-            item => Number(item.day) <= 15
-        );
-
-    const rightRows =
-        workRows.filter(
-            item => Number(item.day) >= 16
-        );
-
-
-    /*
-       Empty rows বাদ দিচ্ছি না।
-       তাই 01-15 এবং 16-31
-       ঠিক জায়গায় থাকবে।
-    */
-
-    const maxRows =
-        Math.max(
-            leftRows.length,
-            rightRows.length
-        );
-
-
-    const leftBody = [];
-
-    const rightBody = [];
-
-
-    for(
-        let i = 0;
-        i < maxRows;
-        i++
+    if(
+        !confirm(
+            "Delete this invoice record?"
+        )
     ){
 
-        const left =
-            leftRows[i];
-
-        const right =
-            rightRows[i];
-
-
-        leftBody.push([
-
-            left
-                ? left.day
-                : "",
-
-            left
-                ? left.details
-                : ""
-
-        ]);
-
-
-        rightBody.push([
-
-            right
-                ? right.day
-                : "",
-
-            right
-                ? right.details
-                : ""
-
-        ]);
+        return;
 
     }
 
+    try{
 
-    /* =========================
-       LEFT WORK TABLE
-    ========================= */
+        const snap =
+            await db
+            .collection("invoices")
+            .where("no","==",no)
+            .get();
 
-    doc.autoTable({
+        if(snap.empty){
 
-        startY:startY,
+            showToast(
+                "Invoice not found"
+            );
 
-        margin:{
-            left:7,
-            right:153
-        },
-
-        tableWidth:138,
-
-        head:[
-            ["Date","Work Details"]
-        ],
-
-        body:leftBody,
-
-        theme:"grid",
-
-        styles:{
-
-            /*
-               Text wrap হবে।
-               তাই long text হলে
-               শুধু ওই row বড় হবে।
-            */
-
-            fontSize:6.3,
-
-            cellPadding:{
-                top:1.2,
-                right:2,
-                bottom:1.2,
-                left:2
-            },
-
-            overflow:"linebreak",
-
-            valign:"middle",
-
-            lineWidth:0.3,
-
-            lineColor:[60,60,60],
-
-            textColor:[20,20,20]
-
-        },
-
-        headStyles:{
-
-            fontSize:6.5,
-
-            fontStyle:"bold",
-
-            halign:"center",
-
-            valign:"middle",
-
-            lineWidth:0.4,
-
-            lineColor:[40,40,40]
-
-        },
-
-        columnStyles:{
-
-            0:{
-                cellWidth:22,
-                halign:"center"
-            },
-
-            1:{
-                cellWidth:116,
-                halign:"left"
-            }
+            return;
 
         }
 
-    });
+        const batch =
+            db.batch();
 
+        snap.forEach(doc => {
 
-    /* =========================
-       RIGHT WORK TABLE
-    ========================= */
+            batch.delete(doc.ref);
 
-    doc.autoTable({
+        });
 
-        startY:startY,
+        await batch.commit();
 
-        margin:{
-            left:153,
-            right:7
-        },
+        invoices =
+            invoices.filter(
+                x => x.no !== no
+            );
 
-        tableWidth:138,
+        refreshAll();
 
-        head:[
-            ["Date","Work Details"]
-        ],
+        showToast(
+            "Invoice deleted"
+        );
 
-        body:rightBody,
+    }catch(error){
 
-        theme:"grid",
+        console.error(error);
 
-        styles:{
+        showToast(
+            "Delete failed. Admin permission required."
+        );
 
-            fontSize:6.3,
+    }
 
-            cellPadding:{
-                top:1.2,
-                right:2,
-                bottom:1.2,
-                left:2
-            },
+  }
 
-            /*
-               IMPORTANT:
-               Long text wrap হবে।
-               Short text short row হবে।
-            */
+    refreshAll();
 
-            overflow:"linebreak",
-
-            valign:"middle",
-
-            lineWidth:0.3,
-
-            lineColor:[60,60,60],
-
-            textColor:[20,20,20]
-
-        },
-
-        headStyles:{
-
-            fontSize:6.5,
-
-            fontStyle:"bold",
-
-            halign:"center",
-
-            valign:"middle",
-
-            lineWidth:0.4,
-
-            lineColor:[40,40,40]
-
-        },
-
-        columnStyles:{
-
-            0:{
-                cellWidth:22,
-                halign:"center"
-            },
-
-            1:{
-                cellWidth:116,
-                halign:"left"
-            }
-
-        }
-
-    });
-
-
-    /* =========================
-       FINAL FOOTER
-    ========================= */
-
-    addFooter();
-
-
-    /* =========================
-       DOWNLOAD
-    ========================= */
-
-    doc.save(
-        `Staff_Attendance_Sheet_${month}.pdf`
+    showToast(
+        "Invoice deleted"
     );
 
 }
 
 
 
-  
+function updateKPIs(){
 
-  function previewEmployeePhoto(event){
+    document.getElementById(
+        "kpiInvoices"
+    ).textContent =
+        invoices.length;
 
-    const file = event.target.files[0];
 
-    const preview =
-        document.getElementById("employeePhotoPreview");
+    document.getElementById(
+        "kpiProducts"
+    ).textContent =
+        products.length;
 
-    if(!file){
-        preview.style.display = "none";
-        preview.src = "";
-        return;
-    }
 
-    const reader = new FileReader();
+    const fy =
+        fyFor(todayISO());
 
-    reader.onload = function(e){
 
-        preview.src = e.target.result;
-        preview.style.display = "block";
+    const sales =
+        invoices
+        .filter(
+            x => x.fy === fy
+        )
+        .reduce(
+            (a,x) =>
+                a +
+                Number(
+                    x.totals.total || 0
+                ),
+            0
+        );
+
+
+    document.getElementById(
+        "kpiSales"
+    ).textContent =
+        money(sales);
+
+
+    document.getElementById(
+        "kpiNext"
+    ).textContent =
+        makeInvoiceNo(
+            todayISO()
+        );
+
+}
+
+
+
+function exportData(){
+
+    const data = {
+
+        settings,
+
+        products,
+
+        invoices,
+
+        exportedAt:
+            new Date().toISOString()
 
     };
 
-    reader.readAsDataURL(file);
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    data,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:
+                "application/json"
+            }
+        );
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href =
+        URL.createObjectURL(blob);
+
+
+    a.download =
+        "solar-invoice-backup.json";
+
+
+    a.click();
+
+
+    URL.revokeObjectURL(
+        a.href
+    );
+
 }
-  
+
+
+
+function clearAllData(){
+
+    if(
+        !confirm(
+            "This will delete all local products and invoice records. Continue?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+  async function clearAllData(){
+
+    if(
+        !confirm(
+            "Delete all products and invoices from Firebase?"
+        )
+    ){
+
+        return;
+
+    }
+
+    try{
+
+        const productSnap =
+            await db
+            .collection("products")
+            .get();
+
+        const invoiceSnap =
+            await db
+            .collection("invoices")
+            .get();
+
+        const batch =
+            db.batch();
+
+        productSnap.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+
+        invoiceSnap.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+
+        products = [];
+        invoices = [];
+
+        refreshAll();
+
+        showToast(
+            "All Firebase data cleared"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Clear failed. Admin permission required."
+        );
+
+    }
+
+  }
+
+    refreshAll();
+
+    showToast(
+        "Local data cleared"
+    );
+
+}
+
+
+
+function refreshAll(){
+
+    renderProducts();
+
+    renderProductSelect();
+
+    renderItems();
+
+    renderHistory();
+
+    updateKPIs();
+
+}
+
+
+
+function esc(v){
+
+    return String(
+        v ?? ""
+    ).replace(
+        /[&<>"']/g,
+        m =>
+        ({
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#039;"
+        }[m])
+    );
+
+}
+
+
+
+window.addEventListener(
+    "load",
+    init
+);
+
 </script>
 
 </body>
