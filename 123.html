@@ -1844,7 +1844,7 @@ async function loadInvoices(){
 async function loadSettings(){
 
     const doc = await db
-        .collection("settings")
+        .collection("solar_settings")
         .doc("business")
         .get();
 
@@ -1879,15 +1879,16 @@ async function loadAllFirebaseData(){
         updateInvoiceNo();
         refreshAll();
 
-    }catch(error){
+    catch(error){
 
-        console.error(error);
+    console.error("Firebase data load failed:", error);
 
-        showToast(
-            "Firebase data load failed"
-        );
+    showToast(
+        "Firebase load failed: " +
+        (error.code || error.message || "Unknown error")
+    );
 
-    }
+  }
 
 }
 
