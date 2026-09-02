@@ -352,8 +352,10 @@ th{
 }
 
 .company{
-    font-size:18px;
-    font-weight:800;
+    font-size:24px;
+    font-weight:900;
+    line-height:1.2;
+    letter-spacing:.2px;
 }
 
 .inv-title{
@@ -362,8 +364,8 @@ th{
 }
 
 .small{
-    font-size:11px;
-    line-height:1.55;
+    font-size:13px;
+    line-height:1.6;
 }
 
 .inv-meta{
@@ -399,9 +401,9 @@ th{
 
 .inv-table th,
 .inv-table td{
-    border:1px solid #bbb;
-    padding:7px;
-    font-size:11px;
+    border:1px solid #222;
+    padding:8px;
+    font-size:12px;
 }
 
 .inv-table th{
@@ -637,9 +639,234 @@ th{
         page-break-after:avoid !important;
         break-after:avoid !important;
     }
+  #previewContent .company{
+    font-size:24px !important;
+    font-weight:900 !important;
+}
+
+#previewContent .small{
+    font-size:13px !important;
+    line-height:1.6 !important;
+}
+
+#previewContent .inv-table th,
+#previewContent .inv-table td{
+    font-size:12px !important;
+    border-color:#222 !important;
+  }
   }
 
-  
+
+
+  /* =========================================
+   TAX INVOICE - FULL BOX BORDER DESIGN
+   ========================================= */
+
+/* Main Invoice Outer Border */
+.invoice-paper{
+    background:#fff !important;
+    border:1.5px solid #222 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    padding:20px !important;
+    color:#111 !important;
+}
+
+/* Top Header Full Border */
+.inv-head{
+    border:1.5px solid #222 !important;
+    padding:14px !important;
+    margin-bottom:14px !important;
+    align-items:flex-start !important;
+}
+
+/* Company Name */
+.company{
+    font-size:24px !important;
+    font-weight:900 !important;
+    line-height:1.2 !important;
+}
+
+/* Seller Address / GST / Mobile */
+.small{
+    font-size:13px !important;
+    line-height:1.6 !important;
+}
+
+/* Invoice Title */
+.inv-title{
+    font-size:26px !important;
+    font-weight:900 !important;
+    text-decoration:underline;
+    text-underline-offset:5px;
+}
+
+/* Invoice Number / Date / FY */
+.inv-meta{
+    border-left:1px solid #222;
+    padding-left:14px;
+}
+
+.meta-row{
+    border-bottom:1px solid #222 !important;
+    padding:7px 0 !important;
+    font-size:12px !important;
+}
+
+.meta-row:last-child{
+    border-bottom:0 !important;
+}
+
+/* Bill To + Invoice Details */
+.bill-grid{
+    gap:14px !important;
+    margin:14px 0 !important;
+}
+
+.bill-box{
+    border:1.5px solid #222 !important;
+    border-radius:0 !important;
+    padding:14px !important;
+    min-height:125px;
+}
+
+.bill-box > b{
+    font-size:15px !important;
+    font-weight:900 !important;
+    text-transform:uppercase;
+}
+
+/* Product Table */
+.inv-table{
+    width:100% !important;
+    border-collapse:collapse !important;
+    border:1.5px solid #222 !important;
+    margin-top:8px;
+}
+
+.inv-table th,
+.inv-table td{
+    border:1px solid #222 !important;
+    padding:8px !important;
+    font-size:12px !important;
+    color:#111 !important;
+}
+
+.inv-table th{
+    background:#fff !important;
+    font-weight:900 !important;
+    text-align:center !important;
+}
+
+.inv-table td{
+    vertical-align:middle !important;
+}
+
+.inv-table td:not(:nth-child(2)){
+    text-align:center;
+}
+
+/* Summary Box */
+.summary{
+    width:360px !important;
+    margin-left:auto !important;
+    margin-top:12px !important;
+    border:1.5px solid #222 !important;
+}
+
+.sumrow{
+    border-bottom:1px solid #222 !important;
+    padding:7px 9px !important;
+    font-size:12px !important;
+}
+
+.sumrow:last-child{
+    border-bottom:0 !important;
+}
+
+/* Grand Total */
+.sumrow.grand{
+    border-top:2px solid #111 !important;
+    border-bottom:0 !important;
+    padding:9px !important;
+    font-size:16px !important;
+    font-weight:900 !important;
+}
+
+/* Amount in Words */
+.invoice-paper > div[style*="Amount in Words"]{
+    margin-top:14px !important;
+    border:1.5px solid #222 !important;
+    padding:10px !important;
+    font-size:12px !important;
+    line-height:1.5 !important;
+}
+
+/* Notes / Terms */
+.invoice-paper > div[style*="Notes / Terms"]{
+    margin-top:12px !important;
+    border:1.5px solid #222 !important;
+    padding:10px !important;
+    font-size:12px !important;
+    line-height:1.5 !important;
+}
+
+/* Signature Area */
+.sign{
+    margin-top:45px !important;
+    padding-top:10px;
+    border-top:1px solid #222;
+}
+
+.signbox{
+    width:210px !important;
+    border-top:1.5px solid #222 !important;
+    padding-top:8px !important;
+    font-size:11px !important;
+}
+
+/* Print / PDF */
+@media print{
+
+    .invoice-paper{
+        border:1.5px solid #222 !important;
+        border-radius:0 !important;
+        box-shadow:none !important;
+    }
+
+    .inv-head{
+        border:1.5px solid #222 !important;
+    }
+
+    .bill-box{
+        border:1.5px solid #222 !important;
+        border-radius:0 !important;
+    }
+
+    .inv-table,
+    .inv-table th,
+    .inv-table td{
+        border-color:#222 !important;
+    }
+
+    .summary{
+        border:1.5px solid #222 !important;
+    }
+
+    .sumrow{
+        border-bottom:1px solid #222 !important;
+    }
+
+    .invoice-paper > div[style*="Amount in Words"],
+    .invoice-paper > div[style*="Notes / Terms"]{
+        border:1.5px solid #222 !important;
+    }
+
+    .sign{
+        border-top:1px solid #222 !important;
+    }
+}
+
 </style>
 </head>
 
