@@ -1687,6 +1687,7 @@ let invoices = [];
 let settings = {};
 
 let items = [];
+  let editingInvoiceId = null;
 
 
 const defaultSettings = {
@@ -2732,6 +2733,7 @@ function getForm(){
 
 
 async function saveInvoice(){
+
     const f = getForm();
 
     if(!f.customer.name){
@@ -2744,23 +2746,73 @@ async function saveInvoice(){
         return;
     }
 
-    // Re-check the invoice number from the latest in-memory Firebase data.
-    f.no = makeInvoiceNo(f.date);
-    document.getElementById("invoiceNo").value = f.no;
-
-    const existing = invoices.find(x => x.no === f.no);
-    if(existing){
-        showToast("This invoice number already exists");
-        return;
-    }
-
-    const invoiceData = {
-        ...f,
-        savedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-
     try{
-        const ref = await db.collection("solar_invoice").add(invoiceData);
+
+        const invoiceData = {
+            ...f,
+            savedAt:
+                firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        /* =========================
+           EDIT MODE
+        ========================= */
+
+        if(editingInvoiceId){
+
+            // IMPORTANT:
+            // Keep original invoice number
+            const oldInvoice =
+                invoices.find(
+                    x => x.id === editingInvoiceId
+                );
+
+            if(oldInvoice){
+
+                invoiceData.no = oldInvoice.no;
+                invoiceData.serial = oldInvoice.serial;
+                invoiceData.fy = oldInvoice.fy;
+
+            }
+
+            await db
+                .collection("solar_invoice")
+                .doc(editingInvoiceId)
+                .update(invoiceData);
+
+            showToast("Invoice updated successfully");
+
+            editingInvoiceId = null;
+
+            document.querySelector(
+                '[onclick="saveInvoice()"]'
+            ).textContent = "✓ Save Invoice";
+
+            refreshAll();
+
+            return;
+        }
+
+        /* =========================
+           NEW INVOICE
+        ========================= */
+
+        const existing =
+            invoices.find(
+                x => x.no === f.no
+            );
+
+        if(existing){
+            showToast(
+                "This invoice number already exists"
+            );
+            return;
+        }
+
+        const ref =
+            await db
+            .collection("solar_invoice")
+            .add(invoiceData);
 
         invoices.push({
             id: ref.id,
@@ -2769,14 +2821,178 @@ async function saveInvoice(){
         });
 
         refreshAll();
-        showToast("Invoice saved to Firebase");
+
+        showToast("Invoice saved successfully");
+
     }catch(error){
-        console.error("Invoice save failed:", error);
-        showToast("Invoice save failed: " + (error.code || "permission/error"));
+
+        console.error(error);
+
+        showToast(
+            "Invoice save failed"
+        );
     }
 }
 
+
+  function editInvoice(id){
+
+    const invoice =
+        invoices.find(
+            x => x.id === id
+        );
+
+    if(!invoice){
+        showToast("Invoice not found");
+        return;
+    }
+
+    /* =========================
+       SET EDIT MODE
+    ========================= */
+
+    editingInvoiceId = id;
+
+    /* =========================
+       BASIC DETAILS
+    ========================= */
+
+    document.getElementById("invoiceDate").value =
+        invoice.date || "";
+
+    document.getElementById("invoiceNo").value =
+        invoice.no || "";
+
+    document.getElementById("financialYear").value =
+        invoice.fy || "";
+
+
+    /* =========================
+       SELLER
+    ========================= */
+
+    document.getElementById("sellerName").value =
+        invoice.seller?.name || "";
+
+    document.getElementById("sellerGST").value =
+        invoice.seller?.gst || "";
+
+    document.getElementById("sellerAddress").value =
+        invoice.seller?.address || "";
+
+    document.getElementById("sellerPAN").value =
+        invoice.seller?.pan || "";
+
+    document.getElementById("sellerMobile").value =
+        invoice.seller?.mobile || "";
+
+
+    /* =========================
+       CUSTOMER
+    ========================= */
+
+    document.getElementById("customerName").value =
+        invoice.customer?.name || "";
+
+    document.getElementById("customerMobile").value =
+        invoice.customer?.mobile || "";
+
+    document.getElementById("customerGSTIN").value =
+        invoice.customer?.gstin || "";
+
+    document.getElementById("customerAddress").value =
+        invoice.customer?.address || "";
+
+    document.getElementById("customerState").value =
+        invoice.customer?.state || "";
+
+    document.getElementById("stateCode").value =
+        invoice.customer?.stateCode || "";
+
+
+    /* =========================
+       OTHER OPTIONS
+    ========================= */
+
+    document.getElementById("placeSupply").value =
+        invoice.place || "";
+
+    document.getElementById("paymentMode").value =
+        invoice.payment || "";
+
+    document.getElementById("paymentRef").value =
+        invoice.ref || "";
+
+    document.getElementById("reverseCharge").value =
+        invoice.reverse || "No";
+
+    document.getElementById("invoiceNotes").value =
+        invoice.notes || "";
+
+
+    /* =========================
+       ITEMS
+    ========================= */
+
+    items =
+        JSON.parse(
+            JSON.stringify(
+                invoice.items || []
+            )
+        );
+
+    renderItems();
+
+
+    /* =========================
+       CHANGE BUTTON
+    ========================= */
+
+    const saveBtn =
+        document.querySelector(
+            '[onclick="saveInvoice()"]'
+        );
+
+    if(saveBtn){
+        saveBtn.textContent =
+            "✓ Update Invoice";
+    }
+
+
+    /* =========================
+       OPEN CREATE INVOICE
+    ========================= */
+
+    const invoiceButton =
+        document.querySelector(
+            '[onclick*="invoiceSection"]'
+        );
+
+    showSection(
+        "invoiceSection",
+        invoiceButton
+    );
+
+
+    showToast(
+        "Invoice loaded for editing"
+    );
+
+}
+
 function newInvoice(){
+
+  editingInvoiceId = null;
+
+  const saveBtn =
+    document.querySelector(
+        '[onclick="saveInvoice()"]'
+    );
+
+if(saveBtn){
+    saveBtn.textContent =
+        "✓ Save Invoice";
+}
 
     items = [];
 
@@ -3803,6 +4019,13 @@ function renderHistory(){
                         View
 
                     </button>
+
+  <button
+class="btn btn-primary"
+style="padding:5px 8px"
+onclick="editInvoice('${i.id}')">
+Edit
+</button>
 
 
                     <button
