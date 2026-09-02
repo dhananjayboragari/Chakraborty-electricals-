@@ -1652,6 +1652,7 @@ id="toast"></div>
 
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 
 <script>
 
@@ -1667,6 +1668,7 @@ id="toast"></div>
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
+const auth = firebase.auth();
 
   
 
@@ -1963,7 +1965,18 @@ async function init(){
         "invoiceDate"
     ).value = todayISO();
 
-    await loadAllFirebaseData();
+    auth.onAuthStateChanged(async (user) => {
+
+        if(!user){
+            showToast("Please login first");
+            return;
+        }
+
+        console.log("Logged in:", user.email);
+
+        await loadAllFirebaseData();
+
+    });
 
   }
 
