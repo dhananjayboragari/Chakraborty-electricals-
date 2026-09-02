@@ -1817,7 +1817,7 @@ function showToast(msg){
   async function loadProducts(){
 
     const snap = await db
-        .collection("products")
+        .collection("solar_product")
         .get();
 
     products = snap.docs.map(doc => ({
@@ -1830,7 +1830,7 @@ function showToast(msg){
 async function loadInvoices(){
 
     const snap = await db
-        .collection("invoices")
+        .collection("solar_invoice")
         .get();
 
     invoices = snap.docs.map(doc => ({
@@ -2038,7 +2038,7 @@ async function saveSettings(){
     };
 
     try{
-        await db.collection("settings").doc("business").set(settings, {merge:true});
+        await db.collection("solar_settings").doc("business").set(settings, {merge:true});
         applySettings();
         showToast("Settings saved to Firebase");
     }catch(error){
@@ -2066,7 +2066,7 @@ async function saveProduct(){
     };
 
     try{
-        const ref = await db.collection("products").add(p);
+        const ref = await db.collection("solar_product").add(p);
         products.push({id: ref.id, ...p, createdAt: new Date().toISOString()});
         clearProductForm();
         refreshAll();
@@ -2099,7 +2099,7 @@ async function deleteProduct(id){
     if(!confirm("Delete this product?")) return;
 
     try{
-        await db.collection("products").doc(id).delete();
+        await db.collection("solar_product").doc(id).delete();
         products = products.filter(p => p.id !== id);
         refreshAll();
         showToast("Product deleted");
@@ -2760,7 +2760,7 @@ async function saveInvoice(){
     };
 
     try{
-        const ref = await db.collection("invoices").add(invoiceData);
+        const ref = await db.collection("solar_invoice").add(invoiceData);
 
         invoices.push({
             id: ref.id,
@@ -3855,7 +3855,7 @@ async function deleteInvoice(no){
     if(!confirm("Delete this invoice record?")) return;
 
     try{
-        const snap = await db.collection("invoices").where("no","==",no).get();
+        const snap = await db.collection("solar_invoice").where("no","==",no).get();
 
         if(snap.empty){
             showToast("Invoice not found");
@@ -3985,8 +3985,8 @@ async function clearAllData(){
 
     try{
         const [productSnap, invoiceSnap] = await Promise.all([
-            db.collection("products").get(),
-            db.collection("invoices").get()
+            db.collection("solar_product").get(),
+            db.collection("solar_invoice").get()
         ]);
 
         const batch = db.batch();
