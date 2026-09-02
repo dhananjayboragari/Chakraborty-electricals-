@@ -3149,84 +3149,251 @@ function previewInvoice(){
     const iframe = document.createElement("iframe");
 
     iframe.style.position = "fixed";
+    iframe.style.left = "-10000px";
+    iframe.style.top = "0";
     iframe.style.width = "1px";
     iframe.style.height = "1px";
     iframe.style.border = "0";
-    iframe.style.left = "-9999px";
 
     document.body.appendChild(iframe);
 
     const doc = iframe.contentWindow.document;
 
-    /* সব মূল CSS copy হবে */
+    /*
+      IMPORTANT:
+      Main page-এর PRINT CSS iframe-এ copy করা হবে না।
+      শুধু normal screen CSS copy হবে।
+    */
+
     const styles =
         Array.from(document.querySelectorAll("style"))
-        .map(s => s.outerHTML)
-        .join("");
+        .map(style => style.textContent)
+        .join("\n");
+
 
     doc.open();
 
     doc.write(`
 <!DOCTYPE html>
+
 <html>
+
 <head>
 
 <meta charset="UTF-8">
 
+<style>
+
 ${styles}
+
+</style>
+
 
 <style>
 
+/* =========================
+   A4 PRINT
+========================= */
+
 @page{
-    size:A4;
+    size:A4 portrait;
     margin:0;
 }
 
-html,body{
+
+html,
+body{
+
     margin:0 !important;
     padding:0 !important;
+
     width:210mm !important;
     min-height:297mm !important;
-    background:white !important;
+
+    background:#fff !important;
+
 }
+
+
+/* =========================
+   PRINT AREA
+========================= */
 
 #printArea{
-    width:210mm !important;
-    margin:0 !important;
-    padding:0 !important;
-    visibility:visible !important;
-}
 
-#printArea .invoice-paper{
     width:210mm !important;
-    min-height:297mm !important;
-    max-width:none !important;
+
     margin:0 !important;
     padding:10mm !important;
+
     box-sizing:border-box !important;
-    background:white !important;
-    box-shadow:none !important;
+
+    background:#fff !important;
+
 }
 
-body *{
-    visibility:visible !important;
+
+/* =========================
+   SAME INVOICE DESIGN
+========================= */
+
+#printArea .invoice-paper{
+
+    /*
+      Preview-এর original 900px design
+      그대로 রাখা হচ্ছে
+    */
+
+    width:900px !important;
+
+    max-width:900px !important;
+
+    min-height:auto !important;
+
+    margin:0 !important;
+
+    padding:30px !important;
+
+    box-sizing:border-box !important;
+
+    background:#fff !important;
+
+    color:#111827 !important;
+
+    box-shadow:none !important;
+
+    border:0 !important;
+
+    /*
+      900px → A4 printable width
+      scale করে fit করা হচ্ছে
+    */
+
+    transform:scale(0.7937);
+
+    transform-origin:top left;
+
 }
-  
+
+
+/*
+  Invoice-এর ভিতরের সব design
+  normal অবস্থায় থাকবে
+*/
+
+#printArea .invoice-paper *{
+
+    box-sizing:border-box;
+
+}
+
+
+/*
+  Table যেন desktop-এর মতো থাকে
+*/
+
+#printArea .inv-table{
+
+    width:100% !important;
+
+    min-width:0 !important;
+
+}
+
+
+/*
+  Preview-এর দুই-column layout
+  print-এও দুই-column থাকবে
+*/
+
+#printArea .bill-grid{
+
+    grid-template-columns:1fr 1fr !important;
+
+}
+
+
+/*
+  Summary একই জায়গায় থাকবে
+*/
+
+#printArea .summary{
+
+    width:360px !important;
+
+    margin-left:auto !important;
+
+}
+
+
+/*
+  Header দুই পাশে থাকবে
+*/
+
+#printArea .inv-head{
+
+    display:flex !important;
+
+    flex-direction:row !important;
+
+    justify-content:space-between !important;
+
+    gap:20px !important;
+
+}
+
+
+/*
+  সব element visible
+*/
+
+#printArea,
+#printArea *{
+
+    visibility:visible !important;
+
+}
+
+
+/*
+  Print button / close button
+  iframe-এর মধ্যে থাকার কথা নেই,
+  তবুও safety হিসেবে hide
+*/
+
+.no-print,
+.close{
+
+    display:none !important;
+
+}
+
 </style>
 
 </head>
 
+
 <body>
 
+
 <div id="printArea">
+
 ${invoice.innerHTML}
+
 </div>
 
+
 </body>
+
 </html>
     `);
 
     doc.close();
+
+
+    /*
+      Browser-কে rendering-এর সময় দিচ্ছি
+    */
 
     setTimeout(() => {
 
@@ -3234,12 +3401,16 @@ ${invoice.innerHTML}
 
         iframe.contentWindow.print();
 
-        setTimeout(() => {
-            iframe.remove();
-        }, 2000);
 
-    }, 1000);
-  }
+        setTimeout(() => {
+
+            iframe.remove();
+
+        }, 1500);
+
+    }, 500);
+
+}
 
 
 
