@@ -511,15 +511,25 @@ th{
 .inv-table th,
 .inv-table td{
     border:1px solid #999;
-    padding:8px 8px;
+    padding:5px 6px;
     font-size:13px;
-    line-height:1.4;
+    line-height:1.25;
     vertical-align:top;
     height:auto !important;
     min-height:0 !important;
-    white-space:normal;
-    word-break:normal;
-    overflow-wrap:break-word;
+    white-space:normal !important;
+    overflow-wrap:anywhere;
+}
+  .inv-table tr{
+    height:auto !important;
+}
+
+.inv-table tbody tr{
+    height:auto !important;
+}
+
+.inv-table td{
+    vertical-align:top !important;
 }
 
 .inv-table th{
