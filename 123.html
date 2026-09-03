@@ -487,6 +487,10 @@ th{
     font-size:14px;
     line-height:1.6;
 }
+  .bill-box{
+    height:auto !important;
+    min-height:0 !important;
+    }
 
 .bill-box b{
     font-size:15px;
@@ -507,10 +511,15 @@ th{
 .inv-table th,
 .inv-table td{
     border:1px solid #999;
-    padding:9px 8px;
+    padding:8px 8px;
     font-size:13px;
     line-height:1.4;
-    vertical-align:middle;
+    vertical-align:top;
+    height:auto !important;
+    min-height:0 !important;
+    white-space:normal;
+    word-break:normal;
+    overflow-wrap:break-word;
 }
 
 .inv-table th{
@@ -525,7 +534,9 @@ th{
     width:360px;
     margin-left:auto;
     margin-top:12px;
-}
+    height:auto !important;
+    min-height:0 !important;
+  }
 
 .sumrow{
     display:flex;
@@ -757,6 +768,47 @@ th{
         page-break-after:avoid !important;
         break-after:avoid !important;
     }
+  #previewContent .inv-table{
+    width:100% !important;
+    height:auto !important;
+    table-layout:auto !important;
+    border-collapse:collapse !important;
+}
+
+#previewContent .inv-table tr{
+    height:auto !important;
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#previewContent .inv-table td,
+#previewContent .inv-table th{
+    height:auto !important;
+    min-height:0 !important;
+    white-space:normal !important;
+    overflow-wrap:break-word !important;
+    vertical-align:top !important;
+}
+
+#previewContent .bill-box{
+    height:auto !important;
+    min-height:0 !important;
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#previewContent .summary{
+    height:auto !important;
+    min-height:0 !important;
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#previewContent .sign{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
+  
   /* A4 PRINT - INVOICE HEADER */
 #previewContent .inv-head{
     display:grid !important;
@@ -3770,7 +3822,7 @@ function invoiceHTML(f){
         :
         ""
     }
-    
+    <br>
 
     ${
         f.seller.tan
@@ -4024,17 +4076,15 @@ function invoiceHTML(f){
                                 ${n+1}
                             </td>
 
-                            <td>
 
-                                <b>
-                                    ${esc(i.name)}
-                                </b>
-
-                                <br>
-
-                                ${esc(i.desc)}
-
-                            </td>
+<td>
+    <b>${esc(i.name)}</b>
+    ${
+        i.desc && i.desc !== i.name
+        ? `<br>${esc(i.desc)}`
+        : ""
+    }
+</td>
 
                             <td>
                                 ${esc(i.hsn)}
