@@ -4781,10 +4781,16 @@ window.addEventListener(
 
     } catch (error) {
 
-        console.error("Product save error:", error);
+    console.error("PRODUCT SAVE ERROR:", error);
 
-        showToast("Product save/update failed");
-    }
+    alert(
+        "Product Save/Update Failed\n\n" +
+        "Error Code: " + (error.code || "unknown") +
+        "\n\nError Message:\n" +
+        (error.message || error)
+    );
+
+  }
   }
 
   
