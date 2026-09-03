@@ -326,235 +326,266 @@ th{
     color:var(--muted);
 }
 
-/* PREVIEW */
+
+  /* =========================
+   A4 INVOICE PREVIEW
+========================= */
 
 .preview{
-    background:#e5e7eb;
-    padding:18px;
+    background:#dfe3e8;
+    padding:24px;
     border-radius:16px;
+    overflow:auto;
 }
 
 .invoice-paper{
-    background:white;
-    max-width:900px;
-    margin:auto;
-    padding:30px;
-    color:#111827;
-    box-shadow:0 8px 25px rgba(0,0,0,.12);
+    width:210mm;
+    min-height:297mm;
+    box-sizing:border-box;
+    background:#fff;
+    margin:0 auto;
+    padding:9mm 10mm 8mm;
+    color:#111;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:11px;
+    line-height:1.35;
+    box-shadow:0 10px 35px rgba(0,0,0,.18);
+    overflow:hidden;
 }
 
 .inv-head{
-    display:flex;
-    justify-content:space-between;
-    gap:20px;
-    border-bottom:2px solid #111827;
-    padding-bottom:16px;
+    display:grid;
+    grid-template-columns:1fr 76mm;
+    gap:8mm;
+    align-items:start;
+    border-bottom:2px solid #111;
+    padding-bottom:5mm;
 }
 
 .company{
-    font-size:24px;
+    font-size:18px;
     font-weight:900;
-    line-height:1.2;
     letter-spacing:.2px;
+    text-transform:uppercase;
+    margin-bottom:2px;
 }
 
-.inv-title{
-    font-size:26px;
-    font-weight:800;
-}
-
-.small{
-    font-size:13px;
-    line-height:1.6;
+.company-address{
+    font-size:10.5px;
+    line-height:1.45;
 }
 
 .inv-meta{
-    min-width:230px;
+    min-width:0;
+}
+
+.inv-title{
+    font-size:25px;
+    line-height:1;
+    font-weight:900;
+    text-align:center;
+    text-decoration:underline;
+    text-underline-offset:5px;
+    margin-bottom:7px;
+    letter-spacing:.4px;
 }
 
 .meta-row{
-    display:flex;
-    justify-content:space-between;
-    gap:15px;
-    border-bottom:1px solid #ddd;
-    padding:5px 0;
-    font-size:12px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:12px;
+    padding:4px 0;
+    border-bottom:1px solid #cfcfcf;
+    font-size:10.5px;
+}
+
+.meta-row:last-child{
+    border-bottom:0;
+}
+
+.meta-row b{
+    text-align:right;
+    white-space:nowrap;
 }
 
 .bill-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:14px;
-    margin:16px 0;
+    gap:5mm;
+    margin:5mm 0 4mm;
 }
 
 .bill-box{
-    border:1px solid #ddd;
-    padding:12px;
-    border-radius:6px;
+    border:1.2px solid #222;
+    border-radius:7px;
+    padding:3.2mm 3.5mm;
+    min-height:32mm;
+}
+
+.bill-box > b{
+    display:block;
+    font-size:13px;
+    margin-bottom:4px;
+}
+
+.bill-box .small{
+    font-size:10.5px;
+    line-height:1.5;
 }
 
 .inv-table{
-    min-width:0;
-    border:1px solid #222;
+    width:100%;
+    min-width:0 !important;
+    border-collapse:collapse;
+    table-layout:fixed;
+    border:1.2px solid #111;
+    font-size:9.5px;
 }
 
 .inv-table th,
 .inv-table td{
-    border:1px solid #222;
-    padding:8px;
-    font-size:12px;
+    border:1px solid #333;
+    padding:2.7mm 1.8mm;
+    vertical-align:top;
+    word-break:normal;
+    overflow-wrap:anywhere;
 }
 
 .inv-table th{
-    background:#f3f4f6;
+    background:#f7f7f7;
+    font-weight:800;
+    text-align:left;
+    white-space:nowrap;
+}
+
+.inv-table th:nth-child(1),
+.inv-table td:nth-child(1){width:5%}
+
+.inv-table th:nth-child(2),
+.inv-table td:nth-child(2){width:23%}
+
+.inv-table th:nth-child(3),
+.inv-table td:nth-child(3){width:11%}
+
+.inv-table th:nth-child(4),
+.inv-table td:nth-child(4){width:9%}
+
+.inv-table th:nth-child(5),
+.inv-table td:nth-child(5){width:11%}
+
+.inv-table th:nth-child(6),
+.inv-table td:nth-child(6){width:11%}
+
+.inv-table th:nth-child(7),
+.inv-table td:nth-child(7){width:11%}
+
+.inv-table th:nth-child(8),
+.inv-table td:nth-child(8){width:8%}
+
+.inv-table th:nth-child(9),
+.inv-table td:nth-child(9){width:11%}
+
+.inv-table td:nth-child(1),
+.inv-table th:nth-child(1){
+    text-align:center;
+}
+
+.inv-table td:nth-child(n+4),
+.inv-table th:nth-child(n+4){
+    text-align:right;
+}
+
+.inv-table td:nth-child(2),
+.inv-table th:nth-child(2),
+.inv-table td:nth-child(3),
+.inv-table th:nth-child(3){
+    text-align:left;
+}
+
+.inv-table td b{
+    font-size:10px;
+}
+
+.item-desc{
+    display:block;
+    margin-top:1px;
+    font-size:9px;
+    line-height:1.25;
 }
 
 .summary{
-    width:360px;
+    width:104mm;
     margin-left:auto;
-    margin-top:12px;
+    margin-top:4mm;
+    border:1.2px solid #111;
 }
 
 .sumrow{
-    display:flex;
-    justify-content:space-between;
-    padding:5px 0;
-    font-size:12px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:10px;
+    padding:2.4mm 3mm;
+    font-size:10.5px;
+    border-bottom:1px solid #777;
 }
 
-.grand{
+.sumrow b{
+    text-align:right;
+    white-space:nowrap;
+}
+
+.sumrow:last-child{
+    border-bottom:0;
+}
+
+.sumrow.grand{
     border-top:2px solid #111;
-    padding-top:8px;
-    font-size:16px;
-    font-weight:800;
+    border-bottom:0;
+    padding-top:3mm;
+    padding-bottom:3mm;
+    font-size:15px;
+    font-weight:900;
+}
+
+.amount-words{
+    margin-top:4mm;
+    border:1px solid #222;
+    padding:3mm;
+    font-size:10.5px;
+    min-height:11mm;
+}
+
+.notes-box{
+    margin-top:3mm;
+    font-size:10px;
+    line-height:1.45;
 }
 
 .sign{
     display:flex;
     justify-content:space-between;
-    margin-top:55px;
+    align-items:flex-end;
+    margin-top:18mm;
+    padding:0 2mm;
 }
 
 .signbox{
-    width:200px;
+    width:58mm;
+    min-height:17mm;
     text-align:center;
-    border-top:1px solid #777;
-    padding-top:7px;
-    font-size:11px;
+    border-top:1px solid #222;
+    padding-top:2.5mm;
+    font-size:10px;
+    line-height:1.45;
 }
 
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(15,23,42,.55);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:15px;
-    z-index:500;
-}
 
-.modal-box{
-    background:white;
-    border-radius:18px;
-    max-width:950px;
-    width:100%;
-    padding:20px;
-    max-height:94vh;
-    overflow:auto;
-}
+/* =========================
+   PRINT / SAVE PDF — A4
+========================= */
 
-.close{
-    float:right;
-    background:#f1f5f9;
-    border-radius:8px;
-    padding:6px 10px;
-}
-
-  .toast{
-    position:fixed;
-    top:18px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#111827;
-    color:white;
-    padding:12px 15px;
-    border-radius:10px;
-    display:none;
-    z-index:1000;
-}
-
-/* MOBILE */
-
-@media(max-width:900px){
-
-    .sidebar{
-        display:none;
-    }
-
-    .content{
-        padding:12px;
-    }
-
-    .kpis{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .col-8,
-    .col-6,
-    .col-4,
-    .col-3,
-    .col-2{
-        grid-column:span 12;
-    }
-}
-
-@media(max-width:600px){
-
-    .topbar{
-        padding:0 13px;
-    }
-
-    .brand h1{
-        font-size:15px;
-    }
-
-    .brand p{
-        font-size:10px;
-    }
-
-    .kpis{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .card{
-        padding:14px;
-    }
-
-    .invoice-paper{
-        padding:16px;
-    }
-
-    .inv-head{
-        flex-direction:column;
-    }
-
-    .bill-grid{
-        grid-template-columns:1fr;
-    }
-
-    .summary{
-        width:100%;
-    }
-  }
-
-
-  
-
-/* PRINT - A4 EXACT PREVIEW */
 @page{
-    size:A4;
+    size:A4 portrait;
     margin:0;
 }
 
@@ -562,25 +593,12 @@ th{
 
     html,
     body{
-        width:210mm;
-        min-height:297mm;
+        width:210mm !important;
+        min-height:297mm !important;
         margin:0 !important;
         padding:0 !important;
         background:#fff !important;
     }
-
-  #previewContent .bill-grid{
-    display:grid !important;
-    grid-template-columns:1fr 1fr !important;
-    gap:14px !important;
-  }
-
-  #previewContent .inv-head{
-    display:flex !important;
-    flex-direction:row !important;
-    justify-content:space-between !important;
-    align-items:flex-start !important;
-}
 
     body *{
         visibility:hidden !important;
@@ -593,9 +611,9 @@ th{
 
     #previewModal{
         position:absolute !important;
-        left:0 !important;
-        top:0 !important;
+        inset:0 !important;
         width:210mm !important;
+        height:auto !important;
         min-height:297mm !important;
         margin:0 !important;
         padding:0 !important;
@@ -606,17 +624,20 @@ th{
 
     #previewModal .modal-box{
         width:210mm !important;
-        min-height:297mm !important;
         max-width:none !important;
+        min-height:297mm !important;
+        height:auto !important;
         margin:0 !important;
         padding:0 !important;
         border:0 !important;
         border-radius:0 !important;
         box-shadow:none !important;
         background:#fff !important;
+        overflow:visible !important;
     }
 
-    #previewModal .no-print{
+    #previewModal .no-print,
+    #previewModal .close{
         display:none !important;
     }
 
@@ -625,254 +646,68 @@ th{
         min-height:297mm !important;
         margin:0 !important;
         padding:0 !important;
+        display:block !important;
     }
 
     #previewContent .invoice-paper{
         width:210mm !important;
+        height:297mm !important;
         min-height:297mm !important;
         max-width:none !important;
         margin:0 !important;
-        padding:10mm !important;
+        padding:9mm 10mm 8mm !important;
         box-sizing:border-box !important;
         box-shadow:none !important;
         border:0 !important;
+        overflow:hidden !important;
         page-break-after:avoid !important;
-        break-after:avoid !important;
+        break-after:avoid-page !important;
     }
-  #previewContent .company{
-    font-size:24px !important;
-    font-weight:900 !important;
-}
 
-#previewContent .small{
-    font-size:13px !important;
-    line-height:1.6 !important;
-}
+    #previewContent .inv-head{
+        display:grid !important;
+        grid-template-columns:1fr 76mm !important;
+    }
 
-#previewContent .inv-table th,
-#previewContent .inv-table td{
-    font-size:12px !important;
-    border-color:#222 !important;
-  }
-  }
+    #previewContent .bill-grid{
+        display:grid !important;
+        grid-template-columns:1fr 1fr !important;
+        gap:5mm !important;
+    }
 
+    #previewContent .inv-table{
+        width:100% !important;
+        min-width:0 !important;
+        table-layout:fixed !important;
+    }
 
+    #previewContent .summary{
+        width:104mm !important;
+    }
 
-  /* =========================================
-   TAX INVOICE - FULL BOX BORDER DESIGN
-   ========================================= */
-
-/* Main Invoice Outer Border */
-.invoice-paper{
-    background:#fff !important;
-    border:0;
-    border-radius:0 !important;
-    box-shadow:none !important;
-    padding:20px !important;
-    color:#111 !important;
-}
-
-/* Top Header Full Border */
-.inv-head{
-    border:1.5px solid #222 !important;
-    padding:14px !important;
-    margin-bottom:14px !important;
-    align-items:flex-start !important;
-}
-
-/* Company Name */
-.company{
-    font-size:24px !important;
-    font-weight:900 !important;
-    line-height:1.2 !important;
-}
-
-/* Seller Address / GST / Mobile */
-.small{
-    font-size:13px !important;
-    line-height:1.6 !important;
-}
-
-/* Invoice Title */
-.inv-title{
-    font-size:26px !important;
-    font-weight:900 !important;
-    text-decoration:underline;
-    text-underline-offset:5px;
-}
-
-/* Invoice Number / Date / FY */
-.inv-meta{
-    border-left:1px solid #222;
-    padding-left:14px;
-}
-
-.meta-row{
-    border-bottom:1px solid #222 !important;
-    padding:7px 0 !important;
-    font-size:12px !important;
-}
-
-.meta-row:last-child{
-    border-bottom:0 !important;
-}
-
-/* Bill To + Invoice Details */
-.bill-grid{
-    gap:14px !important;
-    margin:14px 0 !important;
-}
-
-.bill-box{
-    border:1.5px solid #222 !important;
-    border-radius:0 !important;
-    padding:14px !important;
-    min-height:125px;
-}
-
-.bill-box > b{
-    font-size:15px !important;
-    font-weight:900 !important;
-    text-transform:uppercase;
-}
-
-/* Product Table */
-.inv-table{
-    width:100% !important;
-    border-collapse:collapse !important;
-    border:1.5px solid #222 !important;
-    margin-top:8px;
-}
-
-.inv-table th,
-.inv-table td{
-    border:1px solid #222 !important;
-    padding:8px !important;
-    font-size:12px !important;
-    color:#111 !important;
-}
-
-.inv-table th{
-    background:#fff !important;
-    font-weight:900 !important;
-    text-align:center !important;
-}
-
-.inv-table td{
-    vertical-align:middle !important;
-}
-
-.inv-table td:not(:nth-child(2)){
-    text-align:center;
-}
-
-/* Summary Box */
-.summary{
-    width:360px !important;
-    margin-left:auto !important;
-    margin-top:12px !important;
-    border:1.5px solid #222 !important;
-}
-
-.sumrow{
-    border-bottom:1px solid #222 !important;
-    padding:7px 9px !important;
-    font-size:12px !important;
-}
-
-.sumrow:last-child{
-    border-bottom:0 !important;
-}
-
-/* Grand Total */
-.sumrow.grand{
-    border-top:2px solid #111 !important;
-    border-bottom:0 !important;
-    padding:9px !important;
-    font-size:16px !important;
-    font-weight:900 !important;
-}
-
-/* Amount in Words */
-.invoice-paper > div[style*="Amount in Words"]{
-    margin-top:14px !important;
-    border:1.5px solid #222 !important;
-    padding:10px !important;
-    font-size:12px !important;
-    line-height:1.5 !important;
+    #previewContent .sign{
+        display:flex !important;
+        justify-content:space-between !important;
+    }
 }
 
 
+/* MOBILE PREVIEW */
 
-/* Signature Area */
-.sign{
-    margin-top:45px !important;
-    padding-top:10px;
-    border-top:1px solid #222;
-}
+@media(max-width:600px){
 
-.signbox{
-    width:210px !important;
-    border-top:1.5px solid #222 !important;
-    padding-top:8px !important;
-    font-size:11px !important;
-}
-
-/* Print / PDF */
-@media print{
+    .preview{
+        padding:8px;
+    }
 
     .invoice-paper{
-        border:0;
-        border-radius:0 !important;
-        box-shadow:none !important;
-    }
-
-    .inv-head{
-        border:1.5px solid #222 !important;
-    }
-
-    .bill-box{
-        border:1.5px solid #222 !important;
-        border-radius:0 !important;
-    }
-
-    .inv-table,
-    .inv-table th,
-    .inv-table td{
-        border-color:#222 !important;
-    }
-
-    .summary{
-        border:1.5px solid #222 !important;
-    }
-
-    .sumrow{
-        border-bottom:1px solid #222 !important;
-    }
-
-    
-
-    .sign{
-        border-top:1px solid #222 !important;
+        transform:scale(.46);
+        transform-origin:top left;
+        margin-right:-113mm;
+        margin-bottom:-160mm;
     }
 }
 
-  /* Amount in Words - Bigger Border */
-.invoice-paper > div[style*="Amount in Words"]{
-    border:2px solid #222 !important;
-    padding:14px !important;
-    min-height:55px !important;
-    font-size:12px !important;
-    line-height:1.6 !important;
-}
-
-@media print{
-    .invoice-paper > div[style*="Amount in Words"]{
-        border:2px solid #222 !important;
-        padding:14px !important;
-        min-height:55px !important;
-    }
-}
   
 </style>
 </head>
@@ -3342,100 +3177,142 @@ function previewInvoice(){
         return;
     }
 
-    const iframe = document.createElement("iframe");
+    const printWindow =
+        window.open(
+            "",
+            "_blank",
+            "width=900,height=1200"
+        );
 
-    iframe.style.position = "fixed";
-    iframe.style.width = "1px";
-    iframe.style.height = "1px";
-    iframe.style.border = "0";
-    iframe.style.left = "-9999px";
+    if(!printWindow){
+        showToast(
+            "Please allow pop-ups to print the invoice"
+        );
+        return;
+    }
 
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow.document;
-
-    /* সব মূল CSS copy হবে */
     const styles =
-        Array.from(document.querySelectorAll("style"))
+        Array.from(
+            document.querySelectorAll("style")
+        )
         .map(s => s.outerHTML)
         .join("");
 
-    doc.open();
 
-    doc.write(`
+    printWindow.document.open();
+
+    printWindow.document.write(`
+
 <!DOCTYPE html>
+
 <html>
+
 <head>
 
 <meta charset="UTF-8">
 
+<title>
+    Tax Invoice
+</title>
+
 ${styles}
+
 
 <style>
 
+/* =========================
+   A4 PRINT PAGE
+========================= */
+
 @page{
-    size:A4;
+    size:A4 portrait;
     margin:0;
 }
 
-html,body{
+
+html,
+body{
+
     margin:0 !important;
+
     padding:0 !important;
+
     width:210mm !important;
+
     min-height:297mm !important;
-    background:white !important;
+
+    background:#fff !important;
+
 }
 
-#printArea{
-    width:210mm !important;
-    margin:0 !important;
-    padding:0 !important;
-    visibility:visible !important;
+
+body{
+
+    overflow:visible !important;
+
 }
 
-#printArea .invoice-paper{
+
+.invoice-paper{
+
     width:210mm !important;
+
+    height:297mm !important;
+
     min-height:297mm !important;
+
     max-width:none !important;
+
     margin:0 !important;
-    padding:10mm !important;
+
+    padding:9mm 10mm 8mm !important;
+
     box-sizing:border-box !important;
-    background:white !important;
+
     box-shadow:none !important;
+
+    overflow:hidden !important;
+
 }
 
-body *{
-    visibility:visible !important;
-}
-  
+
 </style>
 
 </head>
 
+
 <body>
 
-<div id="printArea">
 ${invoice.innerHTML}
-</div>
+
+
+<script>
+
+window.onload = function(){
+
+    setTimeout(function(){
+
+        window.focus();
+
+        window.print();
+
+    }, 300);
+
+};
+
+<\/script>
+
 
 </body>
+
 </html>
+
     `);
 
-    doc.close();
 
-    setTimeout(() => {
+    printWindow.document.close();
 
-        iframe.contentWindow.focus();
-
-        iframe.contentWindow.print();
-
-        setTimeout(() => {
-            iframe.remove();
-        }, 2000);
-
-    }, 1000);
-  }
+      }
 
 
 
@@ -3630,93 +3507,77 @@ function amountWords(n){
 
 
 
-function invoiceHTML(f){
 
-    const t =
-        f.totals;
+  function invoiceHTML(f){
 
+    const t = f.totals;
 
     const sameState =
-        (
-            f.customer.state || ""
-        ).toLowerCase()
+        (f.customer.state || "").toLowerCase()
         === "west bengal";
 
-
     const cgst =
-        sameState
-        ? t.tax / 2
-        : 0;
-
+        sameState ? t.tax / 2 : 0;
 
     const sgst =
-        sameState
-        ? t.tax / 2
-        : 0;
-
+        sameState ? t.tax / 2 : 0;
 
     const igst =
-        sameState
-        ? 0
-        : t.tax;
+        sameState ? 0 : t.tax;
 
+    const sellerAddress =
+        esc(f.seller.address || "")
+        .replace(/\n/g,"<br>");
+
+    const customerAddress =
+        esc(f.customer.address || "")
+        .replace(/\n/g,"<br>");
+
+    const notes =
+        esc(f.notes || "")
+        .replace(/\n/g,"<br>");
 
     return `
 
     <div class="invoice-paper">
 
+        <!-- =========================
+             HEADER
+        ========================= -->
 
         <div class="inv-head">
-
 
             <div>
 
                 <div class="company">
-
-                    ${esc(
-                        f.seller.name
-                    )}
-
+                    ${esc(f.seller.name || "")}
                 </div>
 
+                <div class="company-address">
 
-                <div class="small">
-
-                    ${esc(
-                        f.seller.address
-                    ).replace(
-                        /\n/g,
-                        "<br>"
-                    )}
+                    ${sellerAddress}
 
                     <br>
 
                     <b>GSTIN:</b>
-                    ${esc(
-                        f.seller.gst
-                    )}
+                    ${esc(f.seller.gst || "-")}
 
                     ${
                         f.seller.pan
                         ?
-                        ` |
-                        <b>PAN:</b>
-                        ${esc(
-                            f.seller.pan
-                        )}`
+                        `<br>
+                         <b>PAN:</b>
+                         ${esc(f.seller.pan)}`
                         :
                         ""
                     }
 
-                    <br>
-
                     ${
                         f.seller.mobile
                         ?
-                        `Mobile:
-                        ${esc(
-                            f.seller.mobile
-                        )}`
+                        `<br>
+                         <b>Mobile:</b>
+                         ${esc(f.seller.mobile)}`
                         :
                         ""
                     }
@@ -3726,12 +3587,13 @@ function invoiceHTML(f){
             </div>
 
 
+            <!-- RIGHT HEADER -->
+
             <div class="inv-meta">
 
                 <div class="inv-title">
                     TAX INVOICE
                 </div>
-
 
                 <div class="meta-row">
 
@@ -3740,7 +3602,7 @@ function invoiceHTML(f){
                     </span>
 
                     <b>
-                        ${esc(f.no)}
+                        ${esc(f.no || "-")}
                     </b>
 
                 </div>
@@ -3766,7 +3628,7 @@ function invoiceHTML(f){
                     </span>
 
                     <b>
-                        ${esc(f.fy)}
+                        ${esc(f.fy || "-")}
                     </b>
 
                 </div>
@@ -3776,9 +3638,14 @@ function invoiceHTML(f){
         </div>
 
 
+        <!-- =========================
+             BILL TO / INVOICE DETAILS
+        ========================= -->
 
         <div class="bill-grid">
 
+
+            <!-- BILL TO -->
 
             <div class="bill-box">
 
@@ -3786,33 +3653,24 @@ function invoiceHTML(f){
                     Bill To
                 </b>
 
-
-                <div
-                class="small"
-                style="margin-top:6px">
+                <div class="small">
 
                     <b>
-                        ${esc(
-                            f.customer.name
-                        )}
+                        ${esc(f.customer.name || "-")}
                     </b>
 
-                    <br>
-
-                    ${esc(
-                        f.customer.address
-                    ).replace(
-                        /\n/g,
-                        "<br>"
-                    )}
+                    ${
+                        customerAddress
+                        ?
+                        `<br>${customerAddress}`
+                        :
+                        ""
+                    }
 
                     <br>
 
                     Mobile:
-                    ${esc(
-                        f.customer.mobile ||
-                        "-"
-                    )}
+                    ${esc(f.customer.mobile || "-")}
 
                     <br>
 
@@ -3825,23 +3683,15 @@ function invoiceHTML(f){
                     <br>
 
                     State:
-                    ${esc(
-                        f.customer.state ||
-                        "-"
-                    )}
-
-                    (
-                    ${esc(
-                        f.customer.stateCode ||
-                        "-"
-                    )}
-                    )
+                    ${esc(f.customer.state || "-")}
+                    (${esc(f.customer.stateCode || "-")})
 
                 </div>
 
             </div>
 
 
+            <!-- INVOICE DETAILS -->
 
             <div class="bill-box">
 
@@ -3849,38 +3699,27 @@ function invoiceHTML(f){
                     Invoice Details
                 </b>
 
-
-                <div
-                class="small"
-                style="margin-top:6px">
+                <div class="small">
 
                     Place of Supply:
                     <b>
-                        ${esc(
-                            f.place || "-"
-                        )}
+                        ${esc(f.place || "-")}
                     </b>
 
                     <br>
 
                     Payment Mode:
-                    ${esc(
-                        f.payment
-                    )}
+                    ${esc(f.payment || "-")}
 
                     <br>
 
                     Payment Ref:
-                    ${esc(
-                        f.ref || "-"
-                    )}
+                    ${esc(f.ref || "-")}
 
                     <br>
 
                     Reverse Charge:
-                    ${esc(
-                        f.reverse
-                    )}
+                    ${esc(f.reverse || "No")}
 
                 </div>
 
@@ -3889,9 +3728,11 @@ function invoiceHTML(f){
         </div>
 
 
+        <!-- =========================
+             ITEMS TABLE
+        ========================= -->
 
         <table class="inv-table">
-
 
             <thead>
 
@@ -3939,75 +3780,79 @@ function invoiceHTML(f){
             <tbody>
 
             ${
-                f.items.map(
-                    (i,n) => {
+                f.items.map((i,n) => {
 
-                        const tx =
-                            Math.max(
-                                0,
-                                i.qty*i.rate-i.disc
-                            );
+                    const tx =
+                        Math.max(
+                            0,
+                            i.qty * i.rate - i.disc
+                        );
+
+                    const tax =
+                        tx * i.gst / 100;
+
+                    return `
+
+                    <tr>
+
+                        <td>
+                            ${n + 1}
+                        </td>
 
 
-                        const tax =
-                            tx*i.gst/100;
+                        <td>
+
+                            <b>
+                                ${esc(i.name)}
+                            </b>
+
+                            <span class="item-desc">
+                                ${esc(i.desc || "")}
+                            </span>
+
+                        </td>
 
 
-                        return `
+                        <td>
+                            ${esc(i.hsn || "-")}
+                        </td>
 
-                        <tr>
 
-                            <td>
-                                ${n+1}
-                            </td>
+                        <td>
+                            ${i.qty}
+                            ${esc(i.unit || "")}
+                        </td>
 
-                            <td>
 
-                                <b>
-                                    ${esc(i.name)}
-                                </b>
+                        <td>
+                            ${money(i.rate)}
+                        </td>
 
-                                <br>
 
-                                ${esc(i.desc)}
+                        <td>
+                            ${money(i.disc)}
+                        </td>
 
-                            </td>
 
-                            <td>
-                                ${esc(i.hsn)}
-                            </td>
+                        <td>
+                            ${money(tx)}
+                        </td>
 
-                            <td>
-                                ${i.qty}
-                                ${esc(i.unit)}
-                            </td>
 
-                            <td>
-                                ${money(i.rate)}
-                            </td>
+                        <td>
+                            ${i.gst}%
+                        </td>
 
-                            <td>
-                                ${money(i.disc)}
-                            </td>
 
-                            <td>
-                                ${money(tx)}
-                            </td>
+                        <td>
+                            ${money(tx + tax)}
+                        </td>
 
-                            <td>
-                                ${i.gst}%
-                            </td>
+                    </tr>
 
-                            <td>
-                                ${money(tx+tax)}
-                            </td>
+                    `;
 
-                        </tr>
-
-                        `;
-
-                    }
-                ).join("")
+                }).join("")
             }
 
             </tbody>
@@ -4015,6 +3860,9 @@ function invoiceHTML(f){
         </table>
 
 
+        <!-- =========================
+             TOTAL SUMMARY
+        ========================= -->
 
         <div class="summary">
 
@@ -4129,17 +3977,15 @@ function invoiceHTML(f){
 
             </div>
 
+
         </div>
 
 
+        <!-- =========================
+             AMOUNT IN WORDS
+        ========================= -->
 
-        <div
-        style="
-        margin-top:18px;
-        border:1px solid #ddd;
-        padding:9px;
-        font-size:11px;
-        ">
+        <div class="amount-words">
 
             <b>
                 Amount in Words:
@@ -4150,12 +3996,11 @@ function invoiceHTML(f){
         </div>
 
 
+        <!-- =========================
+             NOTES
+        ========================= -->
 
-        <div
-        style="
-        margin-top:12px;
-        font-size:11px;
-        ">
+        <div class="notes-box">
 
             <b>
                 Notes / Terms:
@@ -4163,18 +4008,17 @@ function invoiceHTML(f){
 
             <br>
 
-            ${esc(
-                f.notes
-            ).replace(
-                /\n/g,
-                "<br>"
-            )}
+            ${notes}
 
         </div>
 
 
+        <!-- =========================
+             SIGNATURE
+        ========================= -->
 
         <div class="sign">
+
 
             <div class="signbox">
 
@@ -4186,9 +4030,7 @@ function invoiceHTML(f){
             <div class="signbox">
 
                 For
-                ${esc(
-                    f.seller.name
-                )}
+                ${esc(f.seller.name || "")}
 
                 <br>
                 <br>
@@ -4197,13 +4039,13 @@ function invoiceHTML(f){
 
             </div>
 
+
         </div>
 
 
     </div>
 
     `;
-
 }
 
 
