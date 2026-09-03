@@ -2126,10 +2126,17 @@ function showToast(msg){
         .collection("solar_product")
         .get();
 
-    products = snap.docs.map(doc => ({
+    products = snap.docs.map(doc => {
+
+    const data = doc.data() || {};
+
+    return {
         id: doc.id,
-        ...doc.data()
-    }));
+        ...data,
+        desc: data.desc ?? data.description ?? ""
+    };
+
+});
 }
 
 
@@ -2391,23 +2398,62 @@ async function saveSettings(){
     }
   }
 
-function clearProductForm(){
+function clearProductForm() {
 
     document.getElementById("pName").value = "";
-
     document.getElementById("pHSN").value = "";
-
     document.getElementById("pUnit").value = "Nos";
-
-    document.getElementById("pGST").value = 12;
-
-    document.getElementById("pRate").value = 0;
-
+    document.getElementById("pGST").value = "";
+    document.getElementById("pRate").value = "";
     document.getElementById("pDesc").value = "";
 
+    editingProductId = null;
+
+    const saveBtn =
+        document.querySelector(
+            'button[onclick="saveProduct()"]'
+        );
+
+    if (saveBtn) {
+        saveBtn.innerHTML = "＋ Save Product";
+    }
+  }
+
+
+  function editProduct(id) {
+
+    const product = products.find(p => p.id === id);
+
+    if (!product) {
+        showToast("Product not found");
+        return;
+    }
+
+    document.getElementById("pName").value = product.name || "";
+    document.getElementById("pHSN").value = product.hsn || "";
+    document.getElementById("pUnit").value = product.unit || "Nos";
+    document.getElementById("pGST").value = product.gst ?? "";
+    document.getElementById("pRate").value = product.rate ?? "";
+
+    document.getElementById("pDesc").value =
+        product.desc ?? product.description ?? "";
+
+    editingProductId = id;
+
+    const saveBtn =
+        document.querySelector(
+            'button[onclick="saveProduct()"]'
+        );
+
+    if (saveBtn) {
+        saveBtn.innerHTML = "✓ Update Product";
+    }
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
-
-
 
 async function deleteProduct(id){
     if(!confirm("Delete this product?")) return;
@@ -2470,6 +2516,11 @@ function renderProducts(){
                 <td>${esc(p.desc)}</td>
 
                 <td>
+                <button class="btn btn-primary"
+style="padding:6px 9px"
+onclick="editProduct('${p.id}')">
+Edit
+</button>
 
                     <button
                     class="btn btn-danger"
@@ -4666,54 +4717,78 @@ window.addEventListener(
 );
 
 
-  function saveProduct() {
+  async function saveProduct() {
+
     const name = document.getElementById("pName").value.trim();
     const hsn = document.getElementById("pHSN").value.trim();
-    const unit = document.getElementById("pUnit").value.trim();
-    const gst = parseFloat(document.getElementById("pGST").value) || 0;
-    const rate = parseFloat(document.getElementById("pRate").value) || 0;
+    const unit = document.getElementById("pUnit").value.trim() || "Nos";
+    const gst = Number(document.getElementById("pGST").value);
+    const rate = Number(document.getElementById("pRate").value);
     const desc = document.getElementById("pDesc").value.trim();
 
     if (!name) {
-        alert("Please enter Product Name");
-        document.getElementById("pName").focus();
+        showToast("Product name required");
         return;
     }
 
-    const product = {
-        id: Date.now().toString(),
-        name: name,
-        hsn: hsn,
-        unit: unit || "Nos",
-        gst: gst,
-        rate: rate,
-        description: desc,
-        createdAt: new Date().toISOString()
-    };
-
-    // Local storage-এ save
-    let products = JSON.parse(localStorage.getItem("products") || "[]");
-
-    products.push(product);
-
-    localStorage.setItem("products", JSON.stringify(products));
-
-    alert("Product saved successfully!");
-
-    clearProductForm();
-
-    if (typeof loadProducts === "function") {
-        loadProducts();
+    if (gst < 0 || rate < 0) {
+        showToast("GST/Rate cannot be negative");
+        return;
     }
-}
-function clearProductForm() {
-    document.getElementById("pName").value = "";
-    document.getElementById("pHSN").value = "";
-    document.getElementById("pUnit").value = "Nos";
-    document.getElementById("pGST").value = "12";
-    document.getElementById("pRate").value = "0";
-    document.getElementById("pDesc").value = "";
+
+    try {
+
+        const productData = {
+            name: name,
+            hsn: hsn,
+            unit: unit,
+            gst: gst,
+            rate: rate,
+            desc: desc,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // EDIT PRODUCT
+        if (editingProductId) {
+
+            await db.collection("solar_product")
+                .doc(editingProductId)
+                .update(productData);
+
+            showToast("Product updated successfully");
+
+        }
+
+        // NEW PRODUCT
+        else {
+
+            productData.createdAt =
+                firebase.firestore.FieldValue.serverTimestamp();
+
+            await db.collection("solar_product")
+                .add(productData);
+
+            showToast("Product saved successfully");
+        }
+
+        clearProductForm();
+
+        editingProductId = null;
+
+        await loadProducts();
+
+        refreshAll();
+
+    } catch (error) {
+
+        console.error("Product save error:", error);
+
+        showToast("Product save/update failed");
+    }
   }
+
+  
+
   
 </script>
 
