@@ -4665,6 +4665,56 @@ window.addEventListener(
     init
 );
 
+
+  function saveProduct() {
+    const name = document.getElementById("pName").value.trim();
+    const hsn = document.getElementById("pHSN").value.trim();
+    const unit = document.getElementById("pUnit").value.trim();
+    const gst = parseFloat(document.getElementById("pGST").value) || 0;
+    const rate = parseFloat(document.getElementById("pRate").value) || 0;
+    const desc = document.getElementById("pDesc").value.trim();
+
+    if (!name) {
+        alert("Please enter Product Name");
+        document.getElementById("pName").focus();
+        return;
+    }
+
+    const product = {
+        id: Date.now().toString(),
+        name: name,
+        hsn: hsn,
+        unit: unit || "Nos",
+        gst: gst,
+        rate: rate,
+        description: desc,
+        createdAt: new Date().toISOString()
+    };
+
+    // Local storage-এ save
+    let products = JSON.parse(localStorage.getItem("products") || "[]");
+
+    products.push(product);
+
+    localStorage.setItem("products", JSON.stringify(products));
+
+    alert("Product saved successfully!");
+
+    clearProductForm();
+
+    if (typeof loadProducts === "function") {
+        loadProducts();
+    }
+}
+function clearProductForm() {
+    document.getElementById("pName").value = "";
+    document.getElementById("pHSN").value = "";
+    document.getElementById("pUnit").value = "Nos";
+    document.getElementById("pGST").value = "12";
+    document.getElementById("pRate").value = "0";
+    document.getElementById("pDesc").value = "";
+  }
+  
 </script>
 
 </body>
