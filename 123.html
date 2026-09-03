@@ -3519,16 +3519,21 @@ html,body{
     min-height:0 !important;
     max-width:none !important;
     margin:0 !important;
-    padding:6mm !important;
+    padding:7mm !important;
     box-sizing:border-box !important;
     background:white !important;
     box-shadow:none !important;
-    overflow:hidden !important;
   }
   
 #printArea .company{
-    font-size:24px !important;
+    font-size:26px !important;
+    font-weight:900 !important;
+    line-height:1.15 !important;
 }
+#printArea .inv-head .small{
+    font-size:10px !important;
+    line-height:1.25 !important;
+  }
 #printArea .inv-head{
     display:grid !important;
     grid-template-columns:60% 40% !important;
@@ -3560,144 +3565,131 @@ html,body{
     font-weight:900 !important;
     white-space:nowrap !important;
 }
+/* ===== PDF COMPACT TABLE ===== */
 
-body *{
-    visibility:visible !important;
-}
-
-  /* ===== COMPACT A4 PRINT - 10 PRODUCTS ===== */
-
-#printArea .invoice-paper{
-    font-size:10px !important;
-    line-height:1.15 !important;
-}
-
-#printArea .company{
-    font-size:19px !important;
-    line-height:1.1 !important;
-}
-
-#printArea .small{
-    font-size:9px !important;
-    line-height:1.15 !important;
-}
-
-#printArea .inv-head{
-    margin-bottom:4px !important;
-}
-
-#printArea .inv-head .inv-title{
-    font-size:20px !important;
-    line-height:1.1 !important;
-}
-
-#printArea .meta-row{
-    font-size:9px !important;
-    line-height:1.15 !important;
-    padding:1px 0 !important;
-}
-
-#printArea .meta-row b{
-    font-size:9px !important;
-}
-
-/* BILL TO + INVOICE DETAILS */
-#printArea .bill-grid{
-    gap:6px !important;
-    margin:7px 0 !important;
-}
-
-#printArea .bill-box{
-    padding:6px !important;
-    min-height:0 !important;
-}
-
-#printArea .bill-box .small{
-    font-size:8.5px !important;
-    line-height:1.15 !important;
-}
-
-/* PRODUCT TABLE */
 #printArea .inv-table{
     width:100% !important;
-    table-layout:fixed !important;
+    table-layout:auto !important;
     border-collapse:collapse !important;
-    margin:4px 0 !important;
 }
 
+/* Description gets the maximum useful space */
+#printArea .inv-table th:nth-child(2),
+#printArea .inv-table td:nth-child(2){
+    width:34% !important;
+    white-space:normal !important;
+    overflow-wrap:break-word !important;
+    word-break:normal !important;
+}
+
+/* Other columns take only required space */
+#printArea .inv-table th:nth-child(1),
+#printArea .inv-table td:nth-child(1){
+    width:3% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(3),
+#printArea .inv-table td:nth-child(3){
+    width:7% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(4),
+#printArea .inv-table td:nth-child(4){
+    width:6% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(5),
+#printArea .inv-table td:nth-child(5){
+    width:11% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(6),
+#printArea .inv-table td:nth-child(6){
+    width:10% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(7),
+#printArea .inv-table td:nth-child(7){
+    width:11% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(8),
+#printArea .inv-table td:nth-child(8){
+    width:5% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(9),
+#printArea .inv-table td:nth-child(9){
+    width:13% !important;
+    white-space:nowrap !important;
+}
+
+/* Table text */
 #printArea .inv-table th,
 #printArea .inv-table td{
-    padding:2px 3px !important;
-    font-size:8px !important;
-    line-height:1.05 !important;
+    padding:3px 3px !important;
+    font-size:8.5px !important;
+    line-height:1.1 !important;
     height:auto !important;
     min-height:0 !important;
     vertical-align:top !important;
 }
 
-#printArea .inv-table th{
-    font-size:8px !important;
-    line-height:1 !important;
-    padding:3px 2px !important;
-}
-
-/* Description column */
+/* Description text */
 #printArea .inv-table td:nth-child(2){
-    font-size:8px !important;
-    line-height:1.05 !important;
+    font-size:9px !important;
+    line-height:1.12 !important;
 }
 
-/* PRODUCT NAME */
+/* Product name inside Description */
 #printArea .inv-table td:nth-child(2) b{
-    font-size:8px !important;
-    line-height:1.05 !important;
-}
-
-/* SUMMARY */
-#printArea .summary{
-    width:300px !important;
-    margin-top:5px !important;
-}
-
-#printArea .sumrow{
-    font-size:9px !important;
-    line-height:1.05 !important;
-}
-
-#printArea .sumrow b{
     font-size:9px !important;
 }
 
-#printArea .grand{
-    font-size:13px !important;
-    padding-top:4px !important;
-    margin-top:2px !important;
+/* Header */
+#printArea .inv-table th{
+    font-size:8.5px !important;
+    font-weight:800 !important;
+    white-space:nowrap !important;
 }
 
-/* AMOUNT IN WORDS + NOTES */
-#printArea .sign{
-    margin-top:18px !important;
+body *{
+    visibility:visible !important;
 }
 
-#printArea .signbox{
-    width:160px !important;
-    padding-top:4px !important;
-    font-size:8px !important;
+  
+
+  #printArea .bill-grid{
+    gap:8px !important;
+    margin:8px 0 !important;
 }
 
-/* Keep everything compact */
-#printArea table,
-#printArea .bill-grid,
-#printArea .summary,
-#printArea .sign{
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
+#printArea .bill-box{
+    padding:7px !important;
 }
 
-#printArea .invoice-paper{
-    page-break-after:avoid !important;
-    break-after:avoid-page !important;
+#printArea .bill-box{
+    font-size:10px !important;
+    line-height:1.25 !important;
 }
+
+#printArea .bill-box .small{
+    font-size:9.5px !important;
+    line-height:1.25 !important;
+}
+
+#printArea .bill-box b{
+    font-size:11px !important;
+}
+
+
   
 </style>
 
