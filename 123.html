@@ -3516,14 +3516,16 @@ html,body{
 
 #printArea .invoice-paper{
     width:210mm !important;
-    min-height:297mm !important;
+    min-height:0 !important;
     max-width:none !important;
     margin:0 !important;
-    padding:10mm !important;
+    padding:6mm !important;
     box-sizing:border-box !important;
     background:white !important;
     box-shadow:none !important;
-}
+    overflow:hidden !important;
+  }
+  
 #printArea .company{
     font-size:24px !important;
 }
@@ -3561,6 +3563,140 @@ html,body{
 
 body *{
     visibility:visible !important;
+}
+
+  /* ===== COMPACT A4 PRINT - 10 PRODUCTS ===== */
+
+#printArea .invoice-paper{
+    font-size:10px !important;
+    line-height:1.15 !important;
+}
+
+#printArea .company{
+    font-size:19px !important;
+    line-height:1.1 !important;
+}
+
+#printArea .small{
+    font-size:9px !important;
+    line-height:1.15 !important;
+}
+
+#printArea .inv-head{
+    margin-bottom:4px !important;
+}
+
+#printArea .inv-head .inv-title{
+    font-size:20px !important;
+    line-height:1.1 !important;
+}
+
+#printArea .meta-row{
+    font-size:9px !important;
+    line-height:1.15 !important;
+    padding:1px 0 !important;
+}
+
+#printArea .meta-row b{
+    font-size:9px !important;
+}
+
+/* BILL TO + INVOICE DETAILS */
+#printArea .bill-grid{
+    gap:6px !important;
+    margin:7px 0 !important;
+}
+
+#printArea .bill-box{
+    padding:6px !important;
+    min-height:0 !important;
+}
+
+#printArea .bill-box .small{
+    font-size:8.5px !important;
+    line-height:1.15 !important;
+}
+
+/* PRODUCT TABLE */
+#printArea .inv-table{
+    width:100% !important;
+    table-layout:fixed !important;
+    border-collapse:collapse !important;
+    margin:4px 0 !important;
+}
+
+#printArea .inv-table th,
+#printArea .inv-table td{
+    padding:2px 3px !important;
+    font-size:8px !important;
+    line-height:1.05 !important;
+    height:auto !important;
+    min-height:0 !important;
+    vertical-align:top !important;
+}
+
+#printArea .inv-table th{
+    font-size:8px !important;
+    line-height:1 !important;
+    padding:3px 2px !important;
+}
+
+/* Description column */
+#printArea .inv-table td:nth-child(2){
+    font-size:8px !important;
+    line-height:1.05 !important;
+}
+
+/* PRODUCT NAME */
+#printArea .inv-table td:nth-child(2) b{
+    font-size:8px !important;
+    line-height:1.05 !important;
+}
+
+/* SUMMARY */
+#printArea .summary{
+    width:300px !important;
+    margin-top:5px !important;
+}
+
+#printArea .sumrow{
+    font-size:9px !important;
+    line-height:1.05 !important;
+}
+
+#printArea .sumrow b{
+    font-size:9px !important;
+}
+
+#printArea .grand{
+    font-size:13px !important;
+    padding-top:4px !important;
+    margin-top:2px !important;
+}
+
+/* AMOUNT IN WORDS + NOTES */
+#printArea .sign{
+    margin-top:18px !important;
+}
+
+#printArea .signbox{
+    width:160px !important;
+    padding-top:4px !important;
+    font-size:8px !important;
+}
+
+/* Keep everything compact */
+#printArea table,
+#printArea .bill-grid,
+#printArea .summary,
+#printArea .sign{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#printArea .invoice-paper{
+    page-break-after:avoid !important;
+    break-after:avoid-page !important;
 }
   
 </style>
