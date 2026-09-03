@@ -359,7 +359,7 @@ th{
 
 .inv-head{
     display:grid;
-    grid-template-columns:70% 30%;
+    grid-template-columns:60% 40%;
     align-items:stretch;
     gap:0;
     border-bottom:2px solid #111827;
@@ -388,7 +388,7 @@ th{
 /* TAX INVOICE */
 .inv-head .inv-title{
     text-align:center;
-    font-size:32px;
+    font-size:30px;
     font-weight:900;
     white-space:nowrap;
     margin-bottom:6px;
@@ -431,10 +431,10 @@ th{
 }
 
   .company{
-    font-size:23px;
+    font-size:25px;
     font-weight:900;
     line-height:1.25;
-    white-space:nowrap;
+    
 }
 
 .inv-title{
@@ -760,7 +760,7 @@ th{
   /* A4 PRINT - INVOICE HEADER */
 #previewContent .inv-head{
     display:grid !important;
-    grid-template-columns:70% 30% !important;
+    grid-template-columns:60% 40% !important;
     align-items:stretch !important;
     position:relative !important;
     gap:0 !important;
@@ -770,13 +770,13 @@ th{
 
 
   #previewContent .inv-head > div:first-child{
-    width:70% !important;
+    width:60% !important;
     padding-right:15px !important;
     box-sizing:border-box !important;
 }
 
 #previewContent .inv-head .inv-meta{
-    width:30% !important;
+    width:40% !important;
     padding-left:15px !important;
     box-sizing:border-box !important;
     position:relative !important;
@@ -3344,9 +3344,12 @@ html,body{
     background:white !important;
     box-shadow:none !important;
 }
+#printArea .company{
+    font-size:24px !important;
+}
 #printArea .inv-head{
     display:grid !important;
-    grid-template-columns:70% 30% !important;
+    grid-template-columns:60% 40% !important;
     align-items:stretch !important;
     gap:0 !important;
     width:100% !important;
@@ -3371,7 +3374,7 @@ html,body{
 
 #printArea .inv-head .inv-title{
     text-align:center !important;
-    font-size:30px !important;
+    font-size:28px !important;
     font-weight:900 !important;
     white-space:nowrap !important;
 }
