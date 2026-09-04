@@ -779,20 +779,46 @@ th{
         box-sizing:border-box !important;
         box-shadow:none !important;
         border:0 !important;
-        page-break-after:avoid !important;
-        break-after:avoid !important;
+      
     }
+
+
+
   #previewContent .inv-table{
     width:100% !important;
     height:auto !important;
     table-layout:auto !important;
     border-collapse:collapse !important;
+
+    page-break-before:auto !important;
+    page-break-after:auto !important;
+
+    break-before:auto !important;
+    break-after:auto !important;
+}
+
+#previewContent .inv-table thead{
+    display:table-header-group !important;
+}
+
+#previewContent .inv-table tbody{
+    display:table-row-group !important;
 }
 
 #previewContent .inv-table tr{
     height:auto !important;
+
     page-break-inside:avoid !important;
     break-inside:avoid !important;
+}
+
+#previewContent .inv-table td,
+#previewContent .inv-table th{
+    height:auto !important;
+    min-height:0 !important;
+    white-space:normal !important;
+    overflow-wrap:break-word !important;
+    vertical-align:top !important;
 }
 
 #previewContent .inv-table td,
@@ -819,6 +845,22 @@ th{
 }
 
 #previewContent .sign{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
+
+  #previewContent .summary{
+    page-break-before:auto !important;
+    break-before:auto !important;
+
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#previewContent .sign{
+    page-break-before:auto !important;
+    break-before:auto !important;
+
     page-break-inside:avoid !important;
     break-inside:avoid !important;
   }
@@ -3524,6 +3566,12 @@ html,body{
     background:white !important;
     box-shadow:none !important;
   }
+  #printArea .invoice-paper{
+    page-break-before:auto !important;
+    page-break-after:auto !important;
+    break-before:auto !important;
+    break-after:auto !important;
+}
   
 #printArea .company{
     font-size:26px !important;
@@ -3571,6 +3619,35 @@ html,body{
     width:100% !important;
     table-layout:auto !important;
     border-collapse:collapse !important;
+}
+
+  /* ===== MULTI PAGE A4 TABLE ===== */
+
+#printArea .inv-table{
+    page-break-before:auto !important;
+    page-break-after:auto !important;
+
+    break-before:auto !important;
+    break-after:auto !important;
+}
+
+#printArea .inv-table thead{
+    display:table-header-group !important;
+}
+
+#printArea .inv-table tbody{
+    display:table-row-group !important;
+}
+
+#printArea .inv-table tr{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#printArea .inv-table td,
+#printArea .inv-table th{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
 }
 
 /* Description gets the maximum useful space */
