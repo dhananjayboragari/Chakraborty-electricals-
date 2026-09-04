@@ -2522,19 +2522,24 @@ function statusClass(status){
    AUTH
 ========================================== */
 
-
 auth.onAuthStateChanged(user=>{
-    if(user){
-        $("userEmail").textContent = user.email || "Logged in";
-        listenData();
-    }else{
-        setTimeout(()=>{
-            if(!auth.currentUser){
-                location.href = "index.html";
-            }
-        },3000);
+
+    console.log("AUTH STATE:", user);
+
+    if(!user){
+
+        location.replace("index.html");
+
+        return;
     }
+
+    $("userEmail").textContent =
+    user.email || "Logged in";
+
+    listenData();
+
 });
+
 
 /* ==========================================
    LOAD FIRESTORE
