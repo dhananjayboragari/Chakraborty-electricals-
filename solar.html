@@ -1,0 +1,5076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Solar GST Invoice System</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#172033;
+    --muted:#6b7280;
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --border:#e5e7eb;
+    --green:#16a34a;
+    --red:#dc2626;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
+}
+
+body{
+    margin:0;
+    background:var(--bg);
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+    color:var(--text);
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+    border:0;
+}
+
+.topbar{
+    height:70px;
+    background:linear-gradient(
+        135deg,
+        #0f172a,
+        #1e3a8a
+    );
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.brand-icon{
+    width:44px;
+    height:44px;
+    border-radius:13px;
+    background:#facc15;
+    color:#111827;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+    font-weight:900;
+}
+
+.brand h1{
+    margin:0;
+    font-size:18px;
+}
+
+.brand p{
+    margin:2px 0 0;
+    font-size:12px;
+    color:#cbd5e1;
+}
+
+.menu-btn{
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    border-radius:10px;
+    padding:9px 13px;
+}
+
+.layout{
+    max-width:1500px;
+    margin:auto;
+    display:flex;
+}
+
+.sidebar{
+    width:245px;
+    padding:18px;
+    flex-shrink:0;
+}
+
+.nav{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:8px;
+    box-shadow:var(--shadow);
+    position:sticky;
+    top:88px;
+}
+
+.nav button{
+    width:100%;
+    text-align:left;
+    background:transparent;
+    color:#475569;
+    padding:12px;
+    border-radius:11px;
+    margin:2px 0;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:#eff6ff;
+    color:var(--primary);
+    font-weight:700;
+}
+
+.content{
+    flex:1;
+    min-width:0;
+    padding:18px;
+}
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+.card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:18px;
+    box-shadow:var(--shadow);
+    margin-bottom:16px;
+}
+
+.card h2,
+.card h3{
+    margin:0 0 14px;
+}
+
+.muted{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:14px;
+}
+
+.col-12{grid-column:span 12}
+.col-8{grid-column:span 8}
+.col-6{grid-column:span 6}
+.col-4{grid-column:span 4}
+.col-3{grid-column:span 3}
+.col-2{grid-column:span 2}
+
+label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:#475569;
+    margin-bottom:6px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    border:1px solid #dbe1ea;
+    border-radius:10px;
+    padding:10px 11px;
+    background:white;
+    color:#172033;
+    outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#93c5fd;
+    box-shadow:0 0 0 3px rgba(37,99,235,.10);
+}
+
+textarea{
+    min-height:82px;
+    resize:vertical;
+}
+
+.actions{
+    display:flex;
+    gap:9px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:10px 14px;
+    border-radius:10px;
+    font-weight:700;
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-primary:hover{
+    background:var(--primary-dark);
+}
+
+.btn-light{
+    background:#f1f5f9;
+    color:#334155;
+}
+
+.btn-success{
+    background:var(--green);
+    color:white;
+}
+
+.btn-danger{
+    background:var(--red);
+    color:white;
+}
+
+.kpis{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+
+.kpi{
+    background:linear-gradient(
+        135deg,
+        #ffffff,
+        #f8fafc
+    );
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:16px;
+}
+
+.kpi b{
+    display:block;
+    font-size:22px;
+    margin-top:5px;
+}
+
+.table-wrap{
+    overflow:auto;
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:760px;
+}
+
+th,
+td{
+    padding:10px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    font-size:13px;
+}
+
+th{
+    background:#f8fafc;
+    color:#475569;
+}
+
+.num{
+    text-align:right;
+}
+
+.badge{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-size:11px;
+    font-weight:700;
+}
+
+.empty{
+    text-align:center;
+    padding:28px;
+    color:var(--muted);
+}
+
+/* PREVIEW */
+
+.preview{
+    background:#e5e7eb;
+    padding:18px;
+    border-radius:16px;
+}
+
+.invoice-paper{
+    background:white;
+    max-width:900px;
+    margin:auto;
+    padding:30px;
+    color:#111827;
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+
+  .invoice-paper{
+    font-size:14px;
+    line-height:1.5;
+}
+
+.invoice-paper p{
+    font-size:14px;
+    line-height:1.5;
+}
+
+.invoice-paper span{
+    line-height:1.5;
+}
+
+.inv-head{
+    display:grid;
+    grid-template-columns:60% 40%;
+    align-items:stretch;
+    gap:0;
+    border-bottom:2px solid #111827;
+    padding-bottom:16px;
+    position:relative;
+    width:100%;
+    box-sizing:border-box;
+}
+
+/* COMPANY SIDE */
+.inv-head > div:first-child{
+    width:100%;
+    padding-right:15px;
+    box-sizing:border-box;
+    white-space:nowrap;
+}
+
+.inv-head .inv-meta{
+    width:100%;
+    padding-left:15px;
+    box-sizing:border-box;
+    position:relative;
+    text-align:center;
+  }
+
+/* TAX INVOICE */
+.inv-head .inv-title{
+    text-align:center;
+    font-size:30px;
+    font-weight:900;
+    white-space:nowrap;
+    margin-bottom:6px;
+}
+
+/* Invoice No / Date / FY */
+.inv-head .meta-row{
+    text-align:left;
+}
+
+/* Middle decorative curved divider */
+.inv-head .inv-meta::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:-10px;
+    width:18px;
+    height:calc(100% + 20px);
+    border-left:3px solid #111827;
+    border-radius:50%;
+    transform:skewX(-8deg);
+    pointer-events:none;
+}
+
+/* Small star */
+.inv-head .inv-meta::after{
+    content:"✦";
+    position:absolute;
+    left:-13px;
+    top:30%;
+    width:22px;
+    height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    font-size:14px;
+    font-weight:900;
+  z-index:2;
+}
+
+  .company{
+    font-size:30px;
+    font-weight:900;
+    line-height:1.2;
+    
+}
+
+.inv-title{
+    font-size:32px;
+    font-weight:900;
+    letter-spacing:.5px;
+}
+
+.small{
+    font-size:14px;
+    line-height:1.5;
+}
+
+.inv-meta{
+    min-width:230px;
+}
+
+.meta-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    border-bottom:1px solid #ccc;
+    padding:7px 0;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.meta-row b{
+    font-size:14px;
+    font-weight:800;
+}
+
+.bill-grid{
+    display:grid;
+    grid-template-columns:48% 48%;
+    column-gap:4%;
+    row-gap:0;
+    margin:16px 0;
+    width:100%;
+    box-sizing:border-box;
+  }
+
+.bill-box{
+    border:1px solid #ddd;
+    padding:12px;
+    border-radius:6px;
+}
+
+  .bill-box{
+    border:1px solid #999;
+    padding:14px;
+    border-radius:6px;
+    font-size:14px;
+    line-height:1.6;
+}
+  .bill-box{
+    height:auto !important;
+    min-height:0 !important;
+    }
+
+.bill-box b{
+    font-size:15px;
+    font-weight:800;
+}
+
+.bill-box .small{
+    font-size:13px;
+    line-height:1.6;
+}
+  
+
+.inv-table{
+    min-width:0;
+    border:1px solid #222;
+}
+
+.inv-table th,
+.inv-table td{
+    border:1px solid #999;
+    padding:5px 6px;
+    font-size:13px;
+    line-height:1.25;
+    vertical-align:top;
+    height:auto !important;
+    min-height:0 !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere;
+}
+  .inv-table tr{
+    height:auto !important;
+}
+
+.inv-table tbody tr{
+    height:auto !important;
+}
+
+.inv-table td{
+    vertical-align:top !important;
+}
+
+.inv-table th{
+    background:#f3f4f6;
+    color:#111827;
+    font-size:13px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.summary{
+    width:360px;
+    margin-left:auto;
+    margin-top:12px;
+    height:auto !important;
+    min-height:0 !important;
+  }
+
+.sumrow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 !important;
+    margin:0 !important;
+    font-size:14px;
+    line-height:1.2;
+    height:auto !important;
+    min-height:0 !important;
+  }
+
+.sumrow b{
+    font-size:14px;
+    font-weight:800;
+}
+
+.grand{
+    border-top:2px solid #111;
+    padding-top:10px;
+    margin-top:4px;
+    font-size:19px;
+    font-weight:900;
+}
+
+.sign{
+    display:flex;
+    justify-content:space-between;
+    margin-top:55px;
+}
+
+.signbox{
+    width:200px;
+    text-align:center;
+    border-top:1px solid #777;
+    padding-top:7px;
+    font-size:11px;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+    z-index:500;
+}
+
+.modal-box{
+    background:white;
+    border-radius:18px;
+    max-width:950px;
+    width:100%;
+    padding:20px;
+    max-height:94vh;
+    overflow:auto;
+}
+
+.close{
+    float:right;
+    background:#f1f5f9;
+    border-radius:8px;
+    padding:6px 10px;
+}
+
+  .toast{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#111827;
+    color:white;
+    padding:12px 15px;
+    border-radius:10px;
+    display:none;
+    z-index:1000;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .content{
+        padding:12px;
+    }
+
+    .kpis{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .col-8,
+    .col-6,
+    .col-4,
+    .col-3,
+    .col-2{
+        grid-column:span 12;
+    }
+}
+
+@media(max-width:600px){
+
+    .topbar{
+        padding:0 13px;
+    }
+
+    .brand h1{
+        font-size:15px;
+    }
+
+    .brand p{
+        font-size:10px;
+    }
+
+    .kpis{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .card{
+        padding:14px;
+    }
+
+    .invoice-paper{
+        padding:16px;
+    }
+
+    .inv-head{
+        flex-direction:column;
+    }
+
+    .bill-grid{
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+
+    .summary{
+        width:100%;
+    }
+  }
+
+
+  
+
+/* PRINT - A4 EXACT PREVIEW */
+@page{
+    size:A4;
+    margin:0;
+}
+
+@media print{
+
+    html,
+    body{
+        width:210mm;
+        min-height:297mm;
+        margin:0 !important;
+        padding:0 !important;
+        background:#fff !important;
+    }
+
+  #previewContent .bill-grid{
+    display:grid !important;
+    grid-template-columns:48% 48% !important;
+    column-gap:4% !important;
+    row-gap:0 !important;
+    width:100% !important;
+    margin:16px 0 !important;
+    box-sizing:border-box !important;
+}
+
+#previewContent .bill-box{
+    width:100% !important;
+    box-sizing:border-box !important;
+    padding:14px !important;
+    border:1px solid #999 !important;
+    border-radius:6px !important;
+    font-size:15px !important;
+    line-height:1.6 !important;
+}
+
+#previewContent .bill-box .small{
+    font-size:15px !important;
+    line-height:1.6 !important;
+}
+
+#previewContent .bill-box b{
+    font-size:17px !important;
+    font-weight:800 !important;
+  }
+
+  #previewContent .inv-head{
+    display:flex !important;
+    flex-direction:row !important;
+    justify-content:space-between !important;
+    align-items:flex-start !important;
+}
+
+    body *{
+        visibility:hidden !important;
+    }
+
+    #previewModal,
+    #previewModal *{
+        visibility:visible !important;
+    }
+
+    #previewModal{
+        position:absolute !important;
+        left:0 !important;
+        top:0 !important;
+        width:210mm !important;
+        min-height:297mm !important;
+        margin:0 !important;
+        padding:0 !important;
+        display:block !important;
+        background:#fff !important;
+        overflow:visible !important;
+    }
+
+    #previewModal .modal-box{
+        width:210mm !important;
+        min-height:297mm !important;
+        max-width:none !important;
+        margin:0 !important;
+        padding:0 !important;
+        border:0 !important;
+        border-radius:0 !important;
+        box-shadow:none !important;
+        background:#fff !important;
+    }
+
+    #previewModal .no-print{
+        display:none !important;
+    }
+
+    #previewContent{
+        width:210mm !important;
+        min-height:297mm !important;
+        margin:0 !important;
+        padding:0 !important;
+    }
+
+    #previewContent .invoice-paper{
+        width:210mm !important;
+        min-height:297mm !important;
+        max-width:none !important;
+        margin:0 !important;
+        padding:10mm !important;
+        box-sizing:border-box !important;
+        box-shadow:none !important;
+        border:0 !important;
+      
+    }
+
+
+
+  #previewContent .inv-table{
+    width:100% !important;
+    height:auto !important;
+    table-layout:auto !important;
+    border-collapse:collapse !important;
+
+    page-break-before:auto !important;
+    page-break-after:auto !important;
+
+    break-before:auto !important;
+    break-after:auto !important;
+}
+
+#previewContent .inv-table thead{
+    display:table-header-group !important;
+}
+
+#previewContent .inv-table tbody{
+    display:table-row-group !important;
+}
+
+#previewContent .inv-table tr{
+    height:auto !important;
+
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#previewContent .inv-table td,
+#previewContent .inv-table th{
+    height:auto !important;
+    min-height:0 !important;
+    white-space:normal !important;
+    overflow-wrap:break-word !important;
+    vertical-align:top !important;
+}
+
+#previewContent .inv-table td,
+#previewContent .inv-table th{
+    height:auto !important;
+    min-height:0 !important;
+    white-space:normal !important;
+    overflow-wrap:break-word !important;
+    vertical-align:top !important;
+}
+
+#previewContent .bill-box{
+    height:auto !important;
+    min-height:0 !important;
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#previewContent .summary{
+    height:auto !important;
+    min-height:0 !important;
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#previewContent .sign{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
+
+  #previewContent .summary{
+    page-break-before:auto !important;
+    break-before:auto !important;
+
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#previewContent .sign{
+    page-break-before:auto !important;
+    break-before:auto !important;
+
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
+  
+  /* A4 PRINT - INVOICE HEADER */
+#previewContent .inv-head{
+    display:grid !important;
+    grid-template-columns:60% 40% !important;
+    align-items:stretch !important;
+    position:relative !important;
+    gap:0 !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+
+  #previewContent .inv-head > div:first-child{
+    width:60% !important;
+    padding-right:15px !important;
+    box-sizing:border-box !important;
+}
+
+#previewContent .inv-head .inv-meta{
+    width:40% !important;
+    padding-left:15px !important;
+    box-sizing:border-box !important;
+    position:relative !important;
+      }
+
+/* Curve divider in A4 PDF */
+#previewContent .inv-head .inv-meta::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    top:-10px !important;
+    width:18px !important;
+    height:calc(100% + 20px) !important;
+    border-left:3px solid #111827 !important;
+    border-radius:50% !important;
+    transform:skewX(-8deg) !important;
+    pointer-events:none !important;
+}
+
+/* Center decoration */
+#previewContent .inv-head .inv-meta::after{
+    content:"✦" !important;
+    position:absolute !important;
+    left:-13px !important;
+    top:38% !important;
+    width:22px !important;
+    height:22px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:14px !important;
+    font-weight:900 !important;
+    color:#111827 !important;
+    background:#fff !important;
+}
+  #previewContent .small{
+    font-size:14px !important;
+    line-height:1.5 !important;
+}
+
+#previewContent .meta-row{
+    font-size:14px !important;
+    line-height:1.5 !important;
+  }
+  #previewContent .company{
+    font-size:30px !important;
+    font-weight:900 !important;
+    line-height:1.2 !important;
+  }
+  }
+
+  
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">☀</div>
+
+        <div>
+            <h1>Solar GST Invoice</h1>
+            <p>M/S CHAKRABORTY ELECTRICALS</p>
+        </div>
+
+    </div>
+
+    <button class="menu-btn" onclick="toggleSidebar()">
+        ☰ Menu
+    </button>
+
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+
+<nav class="nav">
+
+<button class="active"
+onclick="showSection('dashboard',this)">
+▣ Dashboard
+</button>
+
+<button
+onclick="showSection('invoiceSection',this)">
+▤ Create Invoice
+</button>
+
+<button
+onclick="showSection('productsSection',this)">
+▦ Products
+</button>
+
+<button
+onclick="showSection('historySection',this)">
+◷ Invoice History
+</button>
+
+<button
+onclick="showSection('settingsSection',this)">
+⚙ Settings
+</button>
+
+</nav>
+
+</aside>
+
+
+<main class="content">
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="section active">
+
+<div class="card">
+
+<h2>Solar Invoice Dashboard</h2>
+
+<p class="muted">
+Create GST invoices, manage solar products and keep
+invoice records in this browser.
+</p>
+
+</div>
+
+
+<div class="kpis">
+
+<div class="kpi">
+
+<span class="muted">
+Total Invoices
+</span>
+
+<b id="kpiInvoices">
+0
+</b>
+
+</div>
+
+
+<div class="kpi">
+
+<span class="muted">
+Products
+</span>
+
+<b id="kpiProducts">
+0
+</b>
+
+</div>
+
+
+<div class="kpi">
+
+<span class="muted">
+This FY Sales
+</span>
+
+<b id="kpiSales">
+₹0.00
+</b>
+
+</div>
+
+
+<div class="kpi">
+
+<span class="muted">
+Next Invoice
+</span>
+
+<b id="kpiNext">
+SOLAR/—
+</b>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- CREATE INVOICE -->
+
+<section id="invoiceSection" class="section">
+
+
+<div class="card">
+
+<h2>Create GST Invoice</h2>
+
+
+<div class="grid">
+
+
+<div class="col-3">
+
+<label>
+Invoice Date
+</label>
+
+<input
+type="date"
+id="invoiceDate"
+onchange="updateInvoiceNo()">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Invoice Number
+</label>
+
+<input
+id="invoiceNo"
+readonly>
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Financial Year
+</label>
+
+<input
+id="financialYear"
+readonly>
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Place of Supply
+</label>
+
+<input
+id="placeSupply"
+value="West Bengal">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- SELLER -->
+
+<div class="card">
+
+<h3>Seller Details</h3>
+
+
+<div class="grid">
+
+
+<div class="col-6">
+
+<label>
+Business Name
+</label>
+
+<input
+id="sellerName"
+value="M/S CHAKRABORTY ELECTRICALS">
+
+</div>
+
+
+<div class="col-6">
+
+<label>
+GSTIN
+</label>
+
+<input
+id="sellerGST"
+value="0000022765">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Address
+</label>
+
+<textarea id="sellerAddress">Dhupguri Hospital Para, Bairatiguri, Jalpaiguri, West Bengal 735210</textarea>
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+PAN
+</label>
+
+<input
+id="sellerPAN"
+placeholder="Enter PAN">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Mobile
+</label>
+
+<input
+id="sellerMobile"
+placeholder="Enter mobile number">
+
+</div>
+
+  <div class="col-4">
+
+<label>
+Email
+</label>
+
+<input
+type="email"
+id="sellerEmail"
+placeholder="Enter Email">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+TAN Number
+</label>
+
+<input
+id="sellerTAN"
+placeholder="Enter TAN Number">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- CONSUMER -->
+
+<div class="card">
+
+<h3>
+Consumer / Bill To
+</h3>
+
+
+<div class="grid">
+
+
+<div class="col-4">
+
+<label>
+Consumer Name *
+</label>
+
+<input
+id="customerName"
+placeholder="Consumer name">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Consumer Mobile
+</label>
+
+<input
+id="customerMobile"
+placeholder="Mobile number">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Consumer GSTIN
+</label>
+
+<input
+id="customerGSTIN"
+placeholder="If applicable">
+
+</div>
+
+
+<div class="col-6">
+
+<label>
+Billing Address
+</label>
+
+<textarea
+id="customerAddress"
+placeholder="Full consumer address"></textarea>
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+State
+</label>
+
+<input
+id="customerState"
+value="West Bengal">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+State Code
+</label>
+
+<input
+id="stateCode"
+value="19">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ITEMS -->
+
+<div class="card">
+
+<h3>
+Add Items to Invoice
+</h3>
+
+
+<div class="grid">
+
+
+<div class="col-4">
+
+<label>
+Select Product
+</label>
+
+<select
+id="productSelect"
+onchange="loadProduct()">
+
+<option value="">
+-- Select product --
+</option>
+
+</select>
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+Qty
+</label>
+
+<input
+type="number"
+id="itemQty"
+min="0.01"
+step="0.01"
+value="1">
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+Rate (₹)
+</label>
+
+<input
+type="number"
+id="itemRate"
+min="0"
+step="0.01">
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+Discount (₹)
+</label>
+
+<input
+type="number"
+id="itemDiscount"
+min="0"
+step="0.01"
+value="0">
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+GST %
+</label>
+
+<input
+type="number"
+id="itemGST"
+min="0"
+step="0.01"
+value="12">
+
+</div>
+
+
+<div class="col-12">
+
+<label>
+Description
+</label>
+
+<input
+id="itemDescription"
+placeholder="Panel / inverter / installation etc.">
+
+</div>
+
+
+<div class="col-12 actions">
+
+<button
+class="btn btn-primary"
+onclick="addItem()">
+
+＋ Add Item
+
+</button>
+
+
+<button
+class="btn btn-light"
+onclick="clearItemForm()">
+
+Clear
+
+</button>
+
+</div>
+
+</div>
+
+
+<div
+class="table-wrap"
+style="margin-top:15px">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>Product / Description</th>
+<th>HSN</th>
+<th class="num">Qty</th>
+<th class="num">Rate</th>
+<th class="num">Disc.</th>
+<th class="num">Taxable</th>
+<th class="num">GST</th>
+<th class="num">Total</th>
+<th></th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="itemTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+
+<!-- OPTIONS -->
+
+<div class="card">
+
+<h3>
+Invoice Options
+</h3>
+
+
+<div class="grid">
+
+
+<div class="col-4">
+
+<label>
+Payment Mode
+</label>
+
+<select id="paymentMode">
+
+<option>Bank Transfer</option>
+<option>UPI</option>
+<option>Cash</option>
+<option>Cheque</option>
+<option>Other</option>
+
+</select>
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Bank / UPI Reference
+</label>
+
+<input
+id="paymentRef"
+placeholder="Optional">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Reverse Charge
+</label>
+
+<select id="reverseCharge">
+
+<option>No</option>
+<option>Yes</option>
+
+</select>
+
+</div>
+
+
+<div class="col-12">
+
+<label>
+Notes / Terms
+</label>
+
+<textarea id="invoiceNotes">Goods once sold will be subject to applicable terms and conditions. This is a computer-generated invoice.</textarea>
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="btn btn-success"
+onclick="saveInvoice()">
+
+✓ Save Invoice
+
+</button>
+
+<button
+class="btn btn-primary no-print"
+onclick="previewInvoice()">
+
+▣ Preview & Print
+
+</button>
+
+
+<button
+class="btn btn-light"
+onclick="newInvoice()">
+
+＋ New Invoice
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- PRODUCTS -->
+
+<section id="productsSection" class="section">
+
+
+<div class="card">
+
+<h2>
+Product Master
+</h2>
+
+<p class="muted">
+Add your solar products here. Products can later be
+selected directly while creating an invoice.
+</p>
+
+
+<div class="grid">
+
+
+<div class="col-4">
+
+<label>
+Product Name *
+</label>
+
+<input
+id="pName"
+placeholder="e.g. Solar PV Module">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+HSN/SAC
+</label>
+
+<input
+id="pHSN"
+placeholder="HSN">
+
+</div>
+
+
+<div class="col-2">
+
+<label>
+Unit
+</label>
+
+<input
+id="pUnit"
+value="Nos">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Default GST %
+</label>
+
+<input
+type="number"
+id="pGST"
+value="12"
+step="0.01">
+
+</div>
+
+
+<div class="col-4">
+
+<label>
+Default Rate ₹
+</label>
+
+<input
+type="number"
+id="pRate"
+value="0"
+step="0.01">
+
+</div>
+
+
+<div class="col-8">
+
+<label>
+Description
+</label>
+
+<input
+id="pDesc"
+placeholder="Product description">
+
+</div>
+
+
+<div class="col-12 actions">
+
+<button
+class="btn btn-primary"
+onclick="saveProduct()">
+
+＋ Save Product
+
+</button>
+
+
+<button
+class="btn btn-light"
+onclick="clearProductForm()">
+
+Clear
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Product</th>
+<th>HSN</th>
+<th>Unit</th>
+<th>Rate</th>
+<th>GST</th>
+<th>Description</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="productTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- HISTORY -->
+
+<section id="historySection" class="section">
+
+
+<div class="card">
+
+<h2>
+Invoice History
+</h2>
+
+
+<div class="actions">
+
+<button
+class="btn btn-light"
+onclick="exportData()">
+
+Export Backup
+
+</button>
+
+
+<button
+class="btn btn-danger"
+onclick="clearAllData()">
+
+Clear All Local Data
+
+</button>
+
+</div>
+
+
+<div
+class="table-wrap"
+style="margin-top:15px">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Invoice No.</th>
+<th>Date</th>
+<th>Consumer</th>
+<th class="num">Amount</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="historyTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- SETTINGS -->
+
+<section id="settingsSection" class="section">
+
+
+<div class="card">
+
+<h2>
+Business Settings
+</h2>
+
+<p class="muted">
+Update your business information here.
+</p>
+
+
+<div class="grid">
+
+
+<div class="col-6">
+
+<label>
+Business Name
+</label>
+
+<input id="setName">
+
+</div>
+
+
+<div class="col-6">
+
+<label>
+GSTIN
+</label>
+
+<input id="setGST">
+
+</div>
+
+
+<div class="col-6">
+
+<label>
+Address
+</label>
+
+<textarea id="setAddress"></textarea>
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+PAN
+</label>
+
+<input id="setPAN">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+Mobile
+</label>
+
+<input id="setMobile">
+
+</div>
+  <div class="col-3">
+
+<label>
+Email
+</label>
+
+<input
+type="email"
+id="setEmail"
+placeholder="Enter Email">
+
+</div>
+
+
+<div class="col-3">
+
+<label>
+TAN Number
+</label>
+
+<input
+id="setTAN"
+placeholder="Enter TAN Number">
+
+</div>
+
+</div>
+
+
+<button
+class="btn btn-primary"
+onclick="saveSettings()">
+
+Save Settings
+
+</button>
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<!-- PREVIEW MODAL -->
+
+<div
+class="modal"
+id="previewModal">
+
+<div class="modal-box">
+
+<button
+class="close"
+onclick="closePreview()">
+
+✕
+
+</button>
+
+
+<div
+class="actions no-print"
+style="margin-bottom:12px">
+
+<button
+class="btn btn-primary"
+onclick="printPreview()">
+
+🖨 Print / Save PDF
+
+</button>
+
+</div>
+
+
+<div id="previewContent"></div>
+
+</div>
+
+</div>
+
+
+
+<div
+class="toast"
+id="toast"></div>
+
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+<script>
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+    authDomain: "chakraborty-ele-login.firebaseapp.com",
+    projectId: "chakraborty-ele-login",
+    storageBucket: "chakraborty-ele-login.firebasestorage.app",
+    messagingSenderId: "414542805581",
+    appId: "1:414542805581:web:cfd13593767abbb51cba04"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+  
+
+const KEY = {
+
+products:"solar_products_v1",
+
+invoices:"solar_invoices_v1",
+
+settings:"solar_settings_v1"
+
+};
+
+  let products = [];
+  let editingProductId = null;
+let invoices = [];
+let settings = {};
+
+let items = [];
+  let editingInvoiceId = null;
+
+
+
+  const defaultSettings = {
+    name:"M/S CHAKRABORTY ELECTRICALS",
+    gst:"",
+    address:"",
+    pan:"",
+    mobile:"",
+    email:"",
+    tan:""
+};
+
+
+settings = {
+    ...defaultSettings,
+    ...settings
+};
+
+
+
+function money(n){
+
+    return "₹" +
+        Number(n || 0).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+
+}
+
+
+
+function todayISO(){
+
+    return new Date()
+        .toISOString()
+        .slice(0,10);
+
+}
+
+
+
+function fyFor(dateStr){
+
+    const d =
+        new Date(dateStr + "T00:00:00");
+
+    const y =
+        d.getFullYear();
+
+    const m =
+        d.getMonth() + 1;
+
+    if(m >= 4){
+
+        return `${y}-${y+1}`;
+
+    }
+
+    return `${y-1}-${y}`;
+
+}
+
+
+
+function serialFor(dateStr){
+
+    const fy =
+        fyFor(dateStr);
+
+    const nums =
+        invoices
+        .filter(x => x.fy === fy)
+        .map(x => Number(x.serial) || 0);
+
+    return (
+        nums.length
+        ? Math.max(...nums)
+        : 0
+    ) + 1;
+
+}
+
+
+
+function makeInvoiceNo(dateStr){
+
+    return (
+        "SOLAR/" +
+        fyFor(dateStr) +
+        "/" +
+        String(
+            serialFor(dateStr)
+        ).padStart(2,"0")
+    );
+
+}
+
+
+
+function showToast(msg){
+
+    const t =
+        document.getElementById("toast");
+
+    t.textContent = msg;
+
+    t.style.display = "block";
+
+    setTimeout(
+        () => {
+            t.style.display = "none";
+        },
+        2200
+    );
+
+}
+
+
+  async function loadProducts(){
+
+    const snap = await db
+        .collection("solar_product")
+        .get();
+
+    products = snap.docs.map(doc => {
+
+    const data = doc.data() || {};
+
+    return {
+        id: doc.id,
+        ...data,
+        desc: data.desc ?? data.description ?? ""
+    };
+
+});
+}
+
+
+async function loadInvoices(){
+
+    const snap = await db
+        .collection("solar_invoice")
+        .get();
+
+    invoices = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+}
+
+
+async function loadSettings(){
+
+    const doc = await db
+        .collection("solar_settings")
+        .doc("business")
+        .get();
+
+    if(doc.exists){
+
+        settings = {
+            ...defaultSettings,
+            ...doc.data()
+        };
+
+    }else{
+
+        settings = {
+            ...defaultSettings
+        };
+
+    }
+}
+
+async function loadAllFirebaseData(){
+
+    try{
+
+        console.log("Loading products...");
+        await loadProducts();
+        console.log("Products loaded:", products.length);
+
+        console.log("Loading invoices...");
+        await loadInvoices();
+        console.log("Invoices loaded:", invoices.length);
+
+        console.log("Loading settings...");
+        await loadSettings();
+        console.log("Settings loaded:", settings);
+
+        applySettings();
+        updateInvoiceNo();
+        refreshAll();
+
+    }catch(error){
+
+        console.error("FIREBASE LOAD ERROR:", error);
+
+        showToast(
+            "Firebase load failed: " +
+            (error.code || error.message || "Unknown error")
+        );
+
+    }
+
+  }
+
+
+
+function showSection(id,btn){
+
+    document
+        .querySelectorAll(".section")
+        .forEach(
+            s => s.classList.remove("active")
+        );
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(
+            b => b.classList.remove("active")
+        );
+
+
+    if(btn){
+
+        btn.classList.add("active");
+
+    }
+
+
+    refreshAll();
+
+}
+
+
+
+function toggleSidebar(){
+
+    const s =
+        document.getElementById("sidebar");
+
+    s.style.display =
+        s.style.display === "block"
+        ? "none"
+        : "block";
+
+}
+
+
+
+function updateInvoiceNo(){
+
+    const d =
+        document.getElementById("invoiceDate").value
+        || todayISO();
+
+
+    document.getElementById(
+        "financialYear"
+    ).value = fyFor(d);
+
+
+    document.getElementById(
+        "invoiceNo"
+    ).value = makeInvoiceNo(d);
+
+}
+
+
+
+async function init(){
+
+    document.getElementById(
+        "invoiceDate"
+    ).value = todayISO();
+
+    auth.onAuthStateChanged(async (user) => {
+
+        if(!user){
+            showToast("Please login first");
+            return;
+        }
+
+        console.log("Logged in:", user.email);
+
+        await loadAllFirebaseData();
+
+    });
+
+  }
+
+
+function applySettings(){
+
+    // Invoice Seller Information
+    document.getElementById(
+        "sellerName"
+    ).value = settings.name;
+
+    document.getElementById(
+        "sellerGST"
+    ).value = settings.gst;
+
+    document.getElementById(
+        "sellerAddress"
+    ).value = settings.address;
+
+    document.getElementById(
+        "sellerPAN"
+    ).value = settings.pan;
+
+    document.getElementById(
+        "sellerMobile"
+    ).value = settings.mobile;
+
+    document.getElementById(
+        "sellerEmail"
+    ).value = settings.email || "";
+
+    document.getElementById(
+        "sellerTAN"
+    ).value = settings.tan || "";
+
+
+    // Settings Page
+    document.getElementById(
+        "setName"
+    ).value = settings.name;
+
+    document.getElementById(
+        "setGST"
+    ).value = settings.gst;
+
+    document.getElementById(
+        "setAddress"
+    ).value = settings.address;
+
+    document.getElementById(
+        "setPAN"
+    ).value = settings.pan;
+
+    document.getElementById(
+        "setMobile"
+    ).value = settings.mobile;
+
+    document.getElementById(
+        "setEmail"
+    ).value = settings.email || "";
+
+    document.getElementById(
+        "setTAN"
+    ).value = settings.tan || "";
+
+  }
+
+
+
+async function saveSettings(){
+    settings = {
+        name: document.getElementById("setName").value.trim(),
+        gst: document.getElementById("setGST").value.trim(),
+        address: document.getElementById("setAddress").value.trim(),
+        pan: document.getElementById("setPAN").value.trim(),
+        mobile: document.getElementById("setMobile").value.trim(),
+
+        email: document.getElementById("setEmail").value.trim(),
+        tan: document.getElementById("setTAN").value.trim()
+    };
+
+    try{
+        await db
+            .collection("solar_settings")
+            .doc("business")
+            .set(settings, {merge:true});
+
+        await loadAllFirebaseData();
+
+        showToast("Settings saved & data refreshed");
+
+    }catch(error){
+
+        console.error("Settings save failed:", error);
+
+        showToast(
+            "Settings save failed: " +
+            (error.code || "permission/error")
+        );
+    }
+  }
+
+function clearProductForm() {
+
+    document.getElementById("pName").value = "";
+    document.getElementById("pHSN").value = "";
+    document.getElementById("pUnit").value = "Nos";
+    document.getElementById("pGST").value = "";
+    document.getElementById("pRate").value = "";
+    document.getElementById("pDesc").value = "";
+
+    editingProductId = null;
+
+    const saveBtn =
+        document.querySelector(
+            'button[onclick="saveProduct()"]'
+        );
+
+    if (saveBtn) {
+        saveBtn.innerHTML = "＋ Save Product";
+    }
+  }
+
+
+  function editProduct(id) {
+
+    const product = products.find(p => p.id === id);
+
+    if (!product) {
+        showToast("Product not found");
+        return;
+    }
+
+    document.getElementById("pName").value = product.name || "";
+    document.getElementById("pHSN").value = product.hsn || "";
+    document.getElementById("pUnit").value = product.unit || "Nos";
+    document.getElementById("pGST").value = product.gst ?? "";
+    document.getElementById("pRate").value = product.rate ?? "";
+
+    document.getElementById("pDesc").value =
+        product.desc ?? product.description ?? "";
+
+    editingProductId = id;
+
+    const saveBtn =
+        document.querySelector(
+            'button[onclick="saveProduct()"]'
+        );
+
+    if (saveBtn) {
+        saveBtn.innerHTML = "✓ Update Product";
+    }
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+async function deleteProduct(id){
+    if(!confirm("Delete this product?")) return;
+
+    try{
+        await db.collection("solar_product").doc(id).delete();
+        products = products.filter(p => p.id !== id);
+
+await loadAllFirebaseData();
+
+showToast("Product deleted & data refreshed");
+    }catch(error){
+        console.error("Product delete failed:", error);
+        showToast("Delete failed: " + (error.code || "permission/error"));
+    }
+}
+
+function renderProducts(){
+
+    const tb =
+        document.getElementById(
+            "productTable"
+        );
+
+
+    if(!products.length){
+
+        tb.innerHTML =
+            `
+            <tr>
+                <td colspan="7" class="empty">
+                    No products added yet.
+                </td>
+            </tr>
+            `;
+
+        return;
+
+    }
+
+
+    tb.innerHTML =
+        products.map(
+            p => `
+
+            <tr>
+
+                <td>
+                    <b>${esc(p.name)}</b>
+                </td>
+
+                <td>${esc(p.hsn)}</td>
+
+                <td>${esc(p.unit)}</td>
+
+                <td>${money(p.rate)}</td>
+
+                <td>${p.gst}%</td>
+
+                <td>${esc(p.desc)}</td>
+
+                <td>
+                <button class="btn btn-primary"
+style="padding:6px 9px"
+onclick="editProduct('${p.id}')">
+Edit
+</button>
+
+                    <button
+                    class="btn btn-danger"
+                    style="padding:6px 9px"
+                    onclick="deleteProduct('${p.id}')">
+
+                    Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+            `
+        )
+        .join("");
+
+}
+
+
+
+function renderProductSelect(){
+
+    const s =
+        document.getElementById(
+            "productSelect"
+        );
+
+
+    s.innerHTML =
+        `
+        <option value="">
+            -- Select product --
+        </option>
+        ` +
+        products.map(
+            p =>
+            `
+            <option value="${p.id}">
+                ${esc(p.name)}
+            </option>
+            `
+        ).join("");
+
+}
+
+
+
+function loadProduct(){
+
+    const p =
+        products.find(
+            x =>
+            x.id ===
+            document.getElementById(
+                "productSelect"
+            ).value
+        );
+
+
+    if(!p) return;
+
+
+    document.getElementById(
+        "itemRate"
+    ).value = p.rate;
+
+
+    document.getElementById(
+        "itemGST"
+    ).value = p.gst;
+
+
+    document.getElementById(
+        "itemDescription"
+    ).value = p.desc;
+
+}
+
+
+
+function addItem(){
+
+    const id =
+        document.getElementById(
+            "productSelect"
+        ).value;
+
+
+    const p =
+        products.find(
+            x => x.id === id
+        );
+
+
+    const name =
+        p
+        ? p.name
+        : (
+            document
+            .getElementById(
+                "itemDescription"
+            )
+            .value.trim()
+            || "Solar Item"
+        );
+
+
+    const qty =
+        Number(
+            document.getElementById(
+                "itemQty"
+            ).value
+        ) || 0;
+
+
+    const rate =
+        Number(
+            document.getElementById(
+                "itemRate"
+            ).value
+        ) || 0;
+
+
+    const disc =
+        Number(
+            document.getElementById(
+                "itemDiscount"
+            ).value
+        ) || 0;
+
+
+    const gst =
+        Number(
+            document.getElementById(
+                "itemGST"
+            ).value
+        ) || 0;
+
+
+    if(qty <= 0){
+
+        showToast(
+            "Enter valid quantity"
+        );
+
+        return;
+
+    }
+
+
+    if(rate < 0){
+
+        showToast(
+            "Enter valid rate"
+        );
+
+        return;
+
+    }
+
+
+    items.push({
+
+        id:Date.now().toString(),
+
+        name:name,
+
+        desc:
+            document
+            .getElementById(
+                "itemDescription"
+            )
+            .value.trim()
+            || name,
+
+        hsn:
+            p
+            ? p.hsn
+            : "",
+
+        unit:
+            p
+            ? p.unit
+            : "Nos",
+
+        qty:qty,
+
+        rate:rate,
+
+        disc:disc,
+
+        gst:gst
+
+    });
+
+
+    clearItemForm();
+
+    renderItems();
+
+}
+
+
+
+function clearItemForm(){
+
+    document.getElementById(
+        "productSelect"
+    ).value = "";
+
+    document.getElementById(
+        "itemQty"
+    ).value = 1;
+
+    document.getElementById(
+        "itemRate"
+    ).value = "";
+
+    document.getElementById(
+        "itemDiscount"
+    ).value = 0;
+
+    document.getElementById(
+        "itemGST"
+    ).value = 12;
+
+    document.getElementById(
+        "itemDescription"
+    ).value = "";
+
+}
+
+
+
+function deleteItem(id){
+
+    items =
+        items.filter(
+            i => i.id !== id
+        );
+
+    renderItems();
+
+}
+
+
+
+function calc(){
+
+    let subtotal = 0;
+
+    let discount = 0;
+
+    let taxable = 0;
+
+    let tax = 0;
+
+
+    items.forEach(i => {
+
+        const gross =
+            i.qty * i.rate;
+
+
+        subtotal += gross;
+
+        discount += i.disc;
+
+
+        const tx =
+            Math.max(
+                0,
+                gross - i.disc
+            );
+
+
+        taxable += tx;
+
+        tax +=
+            tx * i.gst / 100;
+
+    });
+
+
+    return {
+
+        subtotal,
+
+        discount,
+
+        taxable,
+
+        tax,
+
+        total:
+            taxable + tax
+
+    };
+
+}
+
+
+
+function renderItems(){
+
+    const tb =
+        document.getElementById(
+            "itemTable"
+        );
+
+
+    if(!items.length){
+
+        tb.innerHTML =
+            `
+            <tr>
+
+                <td
+                colspan="10"
+                class="empty">
+
+                    No items added.
+                    Add solar products above.
+
+                </td>
+
+            </tr>
+            `;
+
+        return;
+
+    }
+
+
+    tb.innerHTML =
+        items.map(
+            (i,n) => {
+
+                const tx =
+                    Math.max(
+                        0,
+                        i.qty*i.rate-i.disc
+                    );
+
+
+                const tax =
+                    tx*i.gst/100;
+
+
+                return `
+
+                <tr>
+
+                    <td>
+                        ${n+1}
+                    </td>
+
+                    <td>
+
+                        <b>
+                            ${esc(i.name)}
+                        </b>
+
+                        <br>
+
+                        <span class="muted">
+                            ${esc(i.desc)}
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${esc(i.hsn)}
+                    </td>
+
+                    <td class="num">
+                        ${i.qty}
+                        ${esc(i.unit)}
+                    </td>
+
+                    <td class="num">
+                        ${money(i.rate)}
+                    </td>
+
+                    <td class="num">
+                        ${money(i.disc)}
+                    </td>
+
+                    <td class="num">
+                        ${money(tx)}
+                    </td>
+
+                    <td class="num">
+                        ${i.gst}%
+                    </td>
+
+                    <td class="num">
+                        ${money(tx+tax)}
+                    </td>
+
+                    <td>
+
+                        <button
+                        class="btn btn-danger"
+                        style="padding:5px 8px"
+                        onclick="deleteItem('${i.id}')">
+
+                        ×
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+
+function getForm(){
+
+    const d =
+        document.getElementById(
+            "invoiceDate"
+        ).value || todayISO();
+
+
+    return {
+
+        date:d,
+
+        no:
+            document
+            .getElementById(
+                "invoiceNo"
+            ).value,
+
+        fy:
+            fyFor(d),
+
+        serial:
+            serialFor(d),
+
+
+        seller:{
+
+            name:
+                document
+                .getElementById(
+                    "sellerName"
+                ).value,
+
+            gst:
+                document
+                .getElementById(
+                    "sellerGST"
+                ).value,
+
+            address:
+                document
+                .getElementById(
+                    "sellerAddress"
+                ).value,
+
+            pan:
+                document
+                .getElementById(
+                    "sellerPAN"
+                ).value,
+
+            mobile:
+                document
+                .getElementById(
+                    "sellerMobile"
+                ).value,
+      email:
+        document
+        .getElementById(
+            "sellerEmail"
+        ).value,
+
+    tan:
+        document
+        .getElementById(
+            "sellerTAN"
+        ).value
+
+        },
+
+
+        customer:{
+
+            name:
+                document
+                .getElementById(
+                    "customerName"
+                ).value,
+
+            mobile:
+                document
+                .getElementById(
+                    "customerMobile"
+                ).value,
+
+            gstin:
+                document
+                .getElementById(
+                    "customerGSTIN"
+                ).value,
+
+            address:
+                document
+                .getElementById(
+                    "customerAddress"
+                ).value,
+
+            state:
+                document
+                .getElementById(
+                    "customerState"
+                ).value,
+
+            stateCode:
+                document
+                .getElementById(
+                    "stateCode"
+                ).value
+
+        },
+
+
+        place:
+            document
+            .getElementById(
+                "placeSupply"
+            ).value,
+
+
+        payment:
+            document
+            .getElementById(
+                "paymentMode"
+            ).value,
+
+
+        ref:
+            document
+            .getElementById(
+                "paymentRef"
+            ).value,
+
+
+        reverse:
+            document
+            .getElementById(
+                "reverseCharge"
+            ).value,
+
+
+        notes:
+            document
+            .getElementById(
+                "invoiceNotes"
+            ).value,
+
+
+        items:
+            JSON.parse(
+                JSON.stringify(items)
+            ),
+
+
+        totals:
+            calc()
+
+    };
+
+}
+
+
+
+async function saveInvoice(){
+
+    const f = getForm();
+
+    if(!f.customer.name){
+        showToast("Consumer name is required");
+        return;
+    }
+
+    if(!f.items.length){
+        showToast("Add at least one item");
+        return;
+    }
+
+    try{
+
+        const invoiceData = {
+            ...f,
+            savedAt:
+                firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        /* =========================
+           EDIT MODE
+        ========================= */
+
+        if(editingInvoiceId){
+
+            // IMPORTANT:
+            // Keep original invoice number
+            const oldInvoice =
+                invoices.find(
+                    x => x.id === editingInvoiceId
+                );
+
+            if(oldInvoice){
+
+                invoiceData.no = oldInvoice.no;
+                invoiceData.serial = oldInvoice.serial;
+                invoiceData.fy = oldInvoice.fy;
+
+            }
+
+            await db
+                .collection("solar_invoice")
+                .doc(editingInvoiceId)
+                .update(invoiceData);
+
+  await loadAllFirebaseData();
+
+            showToast("Invoice updated successfully");
+
+            editingInvoiceId = null;
+
+            document.querySelector(
+                '[onclick="saveInvoice()"]'
+            ).textContent = "✓ Save Invoice";
+
+            
+
+            return;
+        }
+
+        /* =========================
+           NEW INVOICE
+        ========================= */
+
+        const existing =
+            invoices.find(
+                x => x.no === f.no
+            );
+
+        if(existing){
+            showToast(
+                "This invoice number already exists"
+            );
+            return;
+        }
+
+        const ref =
+            await db
+            .collection("solar_invoice")
+            .add(invoiceData);
+
+        invoices.push({
+            id: ref.id,
+            ...f,
+            savedAt: new Date().toISOString()
+        });
+
+        await loadAllFirebaseData();
+
+        showToast("Invoice saved successfully");
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Invoice save failed"
+        );
+    }
+}
+
+
+  function editInvoice(id){
+
+    const invoice =
+        invoices.find(
+            x => x.id === id
+        );
+
+    if(!invoice){
+        showToast("Invoice not found");
+        return;
+    }
+
+    /* =========================
+       SET EDIT MODE
+    ========================= */
+
+    editingInvoiceId = id;
+
+    /* =========================
+       BASIC DETAILS
+    ========================= */
+
+    document.getElementById("invoiceDate").value =
+        invoice.date || "";
+
+    document.getElementById("invoiceNo").value =
+        invoice.no || "";
+
+    document.getElementById("financialYear").value =
+        invoice.fy || "";
+
+
+    /* =========================
+       SELLER
+    ========================= */
+
+    document.getElementById("sellerName").value =
+        invoice.seller?.name || "";
+
+    document.getElementById("sellerGST").value =
+        invoice.seller?.gst || "";
+
+    document.getElementById("sellerAddress").value =
+        invoice.seller?.address || "";
+
+    document.getElementById("sellerPAN").value =
+        invoice.seller?.pan || "";
+
+    document.getElementById("sellerMobile").value =
+        invoice.seller?.mobile || "";
+    document.getElementById("sellerEmail").value =
+    invoice.seller?.email || "";
+
+document.getElementById("sellerTAN").value =
+    invoice.seller?.tan || "";
+
+
+    /* =========================
+       CUSTOMER
+    ========================= */
+
+    document.getElementById("customerName").value =
+        invoice.customer?.name || "";
+
+    document.getElementById("customerMobile").value =
+        invoice.customer?.mobile || "";
+
+    document.getElementById("customerGSTIN").value =
+        invoice.customer?.gstin || "";
+
+    document.getElementById("customerAddress").value =
+        invoice.customer?.address || "";
+
+    document.getElementById("customerState").value =
+        invoice.customer?.state || "";
+
+    document.getElementById("stateCode").value =
+        invoice.customer?.stateCode || "";
+
+
+    /* =========================
+       OTHER OPTIONS
+    ========================= */
+
+    document.getElementById("placeSupply").value =
+        invoice.place || "";
+
+    document.getElementById("paymentMode").value =
+        invoice.payment || "";
+
+    document.getElementById("paymentRef").value =
+        invoice.ref || "";
+
+    document.getElementById("reverseCharge").value =
+        invoice.reverse || "No";
+
+    document.getElementById("invoiceNotes").value =
+        invoice.notes || "";
+
+
+    /* =========================
+       ITEMS
+    ========================= */
+
+    items =
+        JSON.parse(
+            JSON.stringify(
+                invoice.items || []
+            )
+        );
+
+    renderItems();
+
+
+    /* =========================
+       CHANGE BUTTON
+    ========================= */
+
+    const saveBtn =
+        document.querySelector(
+            '[onclick="saveInvoice()"]'
+        );
+
+    if(saveBtn){
+        saveBtn.textContent =
+            "✓ Update Invoice";
+    }
+
+
+    /* =========================
+       OPEN CREATE INVOICE
+    ========================= */
+
+    const invoiceButton =
+        document.querySelector(
+            '[onclick*="invoiceSection"]'
+        );
+
+    showSection(
+        "invoiceSection",
+        invoiceButton
+    );
+
+
+    showToast(
+        "Invoice loaded for editing"
+    );
+
+}
+
+function newInvoice(){
+
+  editingInvoiceId = null;
+
+  const saveBtn =
+    document.querySelector(
+        '[onclick="saveInvoice()"]'
+    );
+
+if(saveBtn){
+    saveBtn.textContent =
+        "✓ Save Invoice";
+}
+
+    items = [];
+
+
+    document.getElementById(
+        "customerName"
+    ).value = "";
+
+
+    document.getElementById(
+        "customerMobile"
+    ).value = "";
+
+
+    document.getElementById(
+        "customerGSTIN"
+    ).value = "";
+
+
+    document.getElementById(
+        "customerAddress"
+    ).value = "";
+
+
+    document.getElementById(
+        "paymentRef"
+    ).value = "";
+
+
+    document.getElementById(
+        "invoiceDate"
+    ).value = todayISO();
+
+
+    updateInvoiceNo();
+
+    renderItems();
+
+    showToast(
+        "New invoice ready"
+    );
+
+}
+
+
+
+function previewInvoice(){
+
+    const f =
+        getForm();
+
+
+    if(!f.items.length){
+
+        showToast(
+            "Add items before preview"
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "previewContent"
+    ).innerHTML =
+        invoiceHTML(f);
+
+
+    document.getElementById(
+        "previewModal"
+    ).style.display = "flex";
+
+}
+
+  function printPreview(){
+
+    const invoice =
+        document.getElementById("previewContent");
+
+    if(!invoice || !invoice.innerHTML.trim()){
+        showToast("Open invoice preview first");
+        return;
+    }
+
+    const iframe = document.createElement("iframe");
+
+    iframe.style.position = "fixed";
+    iframe.style.width = "1px";
+    iframe.style.height = "1px";
+    iframe.style.border = "0";
+    iframe.style.left = "-9999px";
+
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+
+    /* সব মূল CSS copy হবে */
+    const styles =
+        Array.from(document.querySelectorAll("style"))
+        .map(s => s.outerHTML)
+        .join("");
+
+    doc.open();
+
+    doc.write(`
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+
+${styles}
+
+<style>
+
+@page{
+    size:A4;
+    margin:0;
+}
+
+html,body{
+    margin:0 !important;
+    padding:0 !important;
+    width:210mm !important;
+    min-height:297mm !important;
+    background:white !important;
+}
+
+#printArea{
+    width:210mm !important;
+    margin:0 !important;
+    padding:0 !important;
+    visibility:visible !important;
+}
+
+#printArea .invoice-paper{
+    width:210mm !important;
+    min-height:0 !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:7mm !important;
+    box-sizing:border-box !important;
+    background:white !important;
+    box-shadow:none !important;
+  }
+  #printArea .invoice-paper{
+    page-break-before:auto !important;
+    page-break-after:auto !important;
+    break-before:auto !important;
+    break-after:auto !important;
+}
+  
+#printArea .company{
+    font-size:27px !important;
+    font-weight:900 !important;
+    line-height:1.2 !important;
+}
+
+#printArea .inv-head .small{
+    font-size:14px !important;
+    line-height:1.5 !important;
+}
+
+#printArea .inv-head .inv-title{
+    font-size:30px !important;
+    font-weight:900 !important;
+    line-height:1.2 !important;
+}
+#printArea .inv-head{
+    display:grid !important;
+    grid-template-columns:60% 40% !important;
+    align-items:stretch !important;
+    gap:0 !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+    position:relative !important;
+}
+#printArea .inv-head > div:first-child{
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:space-between !important;
+    height:100% !important;
+    box-sizing:border-box !important;
+}
+
+#printArea .inv-head .inv-meta{
+    height:100% !important;
+}
+
+#printArea .inv-head > div:first-child{
+    width:100% !important;
+    padding-right:15px !important;
+    box-sizing:border-box !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-head .inv-meta{
+    width:100% !important;
+    padding-left:15px !important;
+    box-sizing:border-box !important;
+    position:relative !important;
+    text-align:center !important;
+}
+
+#printArea .inv-head .inv-title{
+    text-align:center !important;
+    font-size:28px !important;
+    font-weight:900 !important;
+    white-space:nowrap !important;
+}
+/* ===== PDF COMPACT TABLE ===== */
+
+#printArea .inv-table{
+    width:100% !important;
+    table-layout:auto !important;
+    border-collapse:collapse !important;
+}
+
+  /* ===== MULTI PAGE A4 TABLE ===== */
+
+#printArea .inv-table{
+    page-break-before:auto !important;
+    page-break-after:auto !important;
+
+    break-before:auto !important;
+    break-after:auto !important;
+}
+
+#printArea .inv-table thead{
+    display:table-header-group !important;
+}
+
+#printArea .inv-table tbody{
+    display:table-row-group !important;
+}
+
+#printArea .inv-table tr{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+#printArea .inv-table td,
+#printArea .inv-table th{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+}
+
+/* Description gets the maximum useful space */
+#printArea .inv-table th:nth-child(2),
+#printArea .inv-table td:nth-child(2){
+    width:34% !important;
+    white-space:normal !important;
+    overflow-wrap:break-word !important;
+    word-break:normal !important;
+}
+
+/* Other columns take only required space */
+#printArea .inv-table th:nth-child(1),
+#printArea .inv-table td:nth-child(1){
+    width:3% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(3),
+#printArea .inv-table td:nth-child(3){
+    width:7% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(4),
+#printArea .inv-table td:nth-child(4){
+    width:6% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(5),
+#printArea .inv-table td:nth-child(5){
+    width:11% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(6),
+#printArea .inv-table td:nth-child(6){
+    width:10% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(7),
+#printArea .inv-table td:nth-child(7){
+    width:11% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(8),
+#printArea .inv-table td:nth-child(8){
+    width:5% !important;
+    white-space:nowrap !important;
+}
+
+#printArea .inv-table th:nth-child(9),
+#printArea .inv-table td:nth-child(9){
+    width:13% !important;
+    white-space:nowrap !important;
+}
+
+/* Table text */
+#printArea .inv-table th,
+#printArea .inv-table td{
+    padding:3px 3px !important;
+    font-size:8.5px !important;
+    line-height:1.1 !important;
+    height:auto !important;
+    min-height:0 !important;
+    vertical-align:top !important;
+}
+
+/* Description text */
+#printArea .inv-table td:nth-child(2){
+    font-size:9px !important;
+    line-height:1.12 !important;
+}
+
+/* Product name inside Description */
+#printArea .inv-table td:nth-child(2) b{
+    font-size:9px !important;
+}
+
+/* Header */
+#printArea .inv-table th{
+    font-size:8.5px !important;
+    font-weight:800 !important;
+    white-space:nowrap !important;
+}
+
+body *{
+    visibility:visible !important;
+}
+
+  
+
+  #printArea .bill-grid{
+    display:grid !important;
+    grid-template-columns:48% 48% !important;
+    column-gap:4% !important;
+    row-gap:0 !important;
+    width:100% !important;
+    margin:16px 0 !important;
+    box-sizing:border-box !important;
+  }
+
+  #printArea .bill-box{
+    width:100% !important;
+    box-sizing:border-box !important;
+    padding:14px !important;
+    border:1px solid #999 !important;
+    border-radius:6px !important;
+    font-size:15px !important;
+    line-height:1.6 !important;
+}
+
+#printArea .bill-box .small{
+    font-size:15px !important;
+    line-height:1.6 !important;
+}
+
+#printArea .bill-box b{
+    font-size:17px !important;
+    font-weight:800 !important;
+}
+
+
+  
+</style>
+
+</head>
+
+<body>
+
+<div id="printArea">
+${invoice.innerHTML}
+</div>
+
+</body>
+</html>
+    `);
+
+    doc.close();
+
+    setTimeout(() => {
+
+        iframe.contentWindow.focus();
+
+        iframe.contentWindow.print();
+
+        setTimeout(() => {
+            iframe.remove();
+        }, 2000);
+
+    }, 1000);
+  }
+
+
+
+function closePreview(){
+
+    document.getElementById(
+        "previewModal"
+    ).style.display = "none";
+
+}
+
+
+
+function formatDate(s){
+
+    const [y,m,d] =
+        s.split("-");
+
+    return `${d}.${m}.${y}`;
+
+}
+
+
+
+function amountWords(n){
+
+    n =
+        Math.round(
+            Number(n)
+        );
+
+
+    if(n === 0){
+
+        return "Zero Rupees Only";
+
+    }
+
+
+    const ones = [
+
+        "",
+        "One",
+        "Two",
+        "Three",
+        "Four",
+        "Five",
+        "Six",
+        "Seven",
+        "Eight",
+        "Nine",
+        "Ten",
+        "Eleven",
+        "Twelve",
+        "Thirteen",
+        "Fourteen",
+        "Fifteen",
+        "Sixteen",
+        "Seventeen",
+        "Eighteen",
+        "Nineteen"
+
+    ];
+
+
+    const tens = [
+
+        "",
+        "",
+        "Twenty",
+        "Thirty",
+        "Forty",
+        "Fifty",
+        "Sixty",
+        "Seventy",
+        "Eighty",
+        "Ninety"
+
+    ];
+
+
+    function under100(x){
+
+        return x < 20
+
+            ? ones[x]
+
+            : tens[
+                Math.floor(x/10)
+            ] +
+            (
+                x%10
+                ? " " + ones[x%10]
+                : ""
+            );
+
+    }
+
+
+    function under1000(x){
+
+        return x < 100
+
+            ? under100(x)
+
+            : ones[
+                Math.floor(x/100)
+            ] +
+            " Hundred" +
+            (
+                x%100
+                ? " " +
+                  under100(x%100)
+                : ""
+            );
+
+    }
+
+
+    let parts = [];
+
+
+    let crore =
+        Math.floor(
+            n / 10000000
+        );
+
+    n %= 10000000;
+
+
+    let lakh =
+        Math.floor(
+            n / 100000
+        );
+
+    n %= 100000;
+
+
+    let thousand =
+        Math.floor(
+            n / 1000
+        );
+
+    n %= 1000;
+
+
+    if(crore){
+
+        parts.push(
+            under1000(crore) +
+            " Crore"
+        );
+
+    }
+
+
+    if(lakh){
+
+        parts.push(
+            under100(lakh) +
+            " Lakh"
+        );
+
+    }
+
+
+    if(thousand){
+
+        parts.push(
+            under100(thousand) +
+            " Thousand"
+        );
+
+    }
+
+
+    if(n){
+
+        parts.push(
+            under1000(n)
+        );
+
+    }
+
+
+    return (
+        parts.join(" ") +
+        " Rupees Only"
+    );
+
+}
+
+
+
+function invoiceHTML(f){
+
+    const t =
+        f.totals;
+
+
+    const sameState =
+        (
+            f.customer.state || ""
+        ).toLowerCase()
+        === "west bengal";
+
+
+    const cgst =
+        sameState
+        ? t.tax / 2
+        : 0;
+
+
+    const sgst =
+        sameState
+        ? t.tax / 2
+        : 0;
+
+
+    const igst =
+        sameState
+        ? 0
+        : t.tax;
+
+
+    return `
+
+    <div class="invoice-paper">
+
+
+        <div class="inv-head">
+
+
+            <div>
+
+                <div class="company">
+
+                    ${esc(
+                        f.seller.name
+                    )}
+
+                </div>
+
+
+  <div class="small">
+
+    ${esc(
+        f.seller.address
+    ).replace(
+        /\n/g,
+        "<br>"
+    )}
+
+    <br>
+
+    <b>GSTIN:</b>
+    ${esc(
+        f.seller.gst
+    )}
+
+    ${
+        f.seller.pan
+        ?
+        ` |
+        <b>PAN:</b>
+        ${esc(
+            f.seller.pan
+        )}`
+        :
+        ""
+    }
+
+    <br>
+
+    ${
+        f.seller.mobile
+        ?
+        `Mobile:
+        ${esc(
+            f.seller.mobile
+        )}`
+        :
+        ""
+    }
+    <br>
+
+    ${
+        f.seller.email
+        ?
+        ` |
+        Email:
+        ${esc(
+            f.seller.email
+        )}`
+        :
+        ""
+    }
+    
+
+    ${
+        f.seller.tan
+        ?
+        `<br>
+        <b>TAN:</b>
+        ${esc(
+            f.seller.tan
+        )}`
+        :
+        ""
+    }
+
+</div>
+
+            </div>
+
+
+            <div class="inv-meta">
+
+                <div class="inv-title">
+                    TAX INVOICE
+                </div>
+
+
+                <div class="meta-row">
+
+                    <span>
+                        Invoice No.
+                    </span>
+
+                    <b>
+                        ${esc(f.no)}
+                    </b>
+
+                </div>
+
+
+                <div class="meta-row">
+
+                    <span>
+                        Date
+                    </span>
+
+                    <b>
+                        ${formatDate(f.date)}
+                    </b>
+
+                </div>
+
+
+                <div class="meta-row">
+
+                    <span>
+                        Financial Year
+                    </span>
+
+                    <b>
+                        ${esc(f.fy)}
+                    </b>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="bill-grid">
+
+
+            <div class="bill-box">
+
+                <b>
+                    Bill To
+                </b>
+
+
+                <div
+                class="small"
+                style="margin-top:6px">
+
+                    <b>
+                        ${esc(
+                            f.customer.name
+                        )}
+                    </b>
+
+                    <br>
+
+                    ${esc(
+                        f.customer.address
+                    ).replace(
+                        /\n/g,
+                        "<br>"
+                    )}
+
+                    <br>
+
+                    Mobile:
+                    ${esc(
+                        f.customer.mobile ||
+                        "-"
+                    )}
+
+                    <br>
+
+                    GSTIN:
+                    ${esc(
+                        f.customer.gstin ||
+                        "Unregistered"
+                    )}
+
+                    <br>
+
+                    State:
+                    ${esc(
+                        f.customer.state ||
+                        "-"
+                    )}
+
+                    (
+                    ${esc(
+                        f.customer.stateCode ||
+                        "-"
+                    )}
+                    )
+
+                </div>
+
+            </div>
+
+
+
+            <div class="bill-box">
+
+                <b>
+                    Invoice Details
+                </b>
+
+
+                <div
+                class="small"
+                style="margin-top:6px">
+
+                    Place of Supply:
+                    <b>
+                        ${esc(
+                            f.place || "-"
+                        )}
+                    </b>
+
+                    <br>
+
+                    Payment Mode:
+                    ${esc(
+                        f.payment
+                    )}
+
+                    <br>
+
+                    Payment Ref:
+                    ${esc(
+                        f.ref || "-"
+                    )}
+
+                    <br>
+
+                    Reverse Charge:
+                    ${esc(
+                        f.reverse
+                    )}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <table class="inv-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>
+                        Description
+                    </th>
+
+                    <th>
+                        HSN/SAC
+                    </th>
+
+                    <th>
+                        Qty
+                    </th>
+
+                    <th>
+                        Rate
+                    </th>
+
+                    <th>
+                        Discount
+                    </th>
+
+                    <th>
+                        Taxable
+                    </th>
+
+                    <th>
+                        GST
+                    </th>
+
+                    <th>
+                        Amount
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            ${
+                f.items.map(
+                    (i,n) => {
+
+                        const tx =
+                            Math.max(
+                                0,
+                                i.qty*i.rate-i.disc
+                            );
+
+
+                        const tax =
+                            tx*i.gst/100;
+
+
+                        return `
+
+                        <tr>
+
+                            <td>
+                                ${n+1}
+                            </td>
+
+
+<td>
+    <b>${esc(i.name)}</b>
+    ${
+        i.desc && i.desc !== i.name
+        ? `<br>${esc(i.desc)}`
+        : ""
+    }
+</td>
+
+                            <td>
+                                ${esc(i.hsn)}
+                            </td>
+
+                            <td>
+                                ${i.qty}
+                                ${esc(i.unit)}
+                            </td>
+
+                            <td>
+                                ${money(i.rate)}
+                            </td>
+
+                            <td>
+                                ${money(i.disc)}
+                            </td>
+
+                            <td>
+                                ${money(tx)}
+                            </td>
+
+                            <td>
+                                ${i.gst}%
+                            </td>
+
+                            <td>
+                                ${money(tx+tax)}
+                            </td>
+
+                        </tr>
+
+                        `;
+
+                    }
+                ).join("")
+            }
+
+            </tbody>
+
+        </table>
+
+
+
+        <div class="summary">
+
+
+            <div class="sumrow">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <b>
+                    ${money(t.subtotal)}
+                </b>
+
+            </div>
+
+
+            <div class="sumrow">
+
+                <span>
+                    Discount
+                </span>
+
+                <b>
+                    − ${money(t.discount)}
+                </b>
+
+            </div>
+
+
+            <div class="sumrow">
+
+                <span>
+                    Taxable Amount
+                </span>
+
+                <b>
+                    ${money(t.taxable)}
+                </b>
+
+            </div>
+
+
+            ${
+                cgst
+                ?
+                `
+
+                <div class="sumrow">
+
+                    <span>
+                        CGST
+                    </span>
+
+                    <b>
+                        ${money(cgst)}
+                    </b>
+
+                </div>
+
+
+                <div class="sumrow">
+
+                    <span>
+                        SGST
+                    </span>
+
+                    <b>
+                        ${money(sgst)}
+                    </b>
+
+                </div>
+
+                `
+                :
+                ""
+            }
+
+
+            ${
+                igst
+                ?
+                `
+
+                <div class="sumrow">
+
+                    <span>
+                        IGST
+                    </span>
+
+                    <b>
+                        ${money(igst)}
+                    </b>
+
+                </div>
+
+                `
+                :
+                ""
+            }
+
+
+            <div class="sumrow grand">
+
+                <span>
+                    Grand Total
+                </span>
+
+                <b>
+                    ${money(t.total)}
+                </b>
+
+            </div>
+
+        </div>
+
+
+
+        <div
+style="
+margin-top:18px;
+border:1.5px solid #777;
+border-radius:5px;
+padding:9px;
+font-size:12px;
+">
+
+            <b>
+                Amount in Words:
+            </b>
+
+            ${amountWords(t.total)}
+
+        </div>
+
+
+
+        <div
+        style="
+        margin-top:12px;
+        font-size:11px;
+        ">
+
+            <b>
+                Notes / Terms:
+            </b>
+
+            <br>
+
+            ${esc(
+                f.notes
+            ).replace(
+                /\n/g,
+                "<br>"
+            )}
+
+        </div>
+
+
+
+        <div class="sign">
+
+            <div class="signbox">
+
+                Customer Signature
+
+            </div>
+
+
+            <div class="signbox">
+
+                For
+                ${esc(
+                    f.seller.name
+                )}
+
+                <br>
+                <br>
+
+                Authorised Signatory
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    `;
+
+}
+
+
+
+function renderHistory(){
+
+    const tb =
+        document.getElementById(
+            "historyTable"
+        );
+
+
+    if(!invoices.length){
+
+        tb.innerHTML =
+            `
+            <tr>
+
+                <td
+                colspan="5"
+                class="empty">
+
+                    No invoices saved yet.
+
+                </td>
+
+            </tr>
+            `;
+
+        return;
+
+    }
+
+
+    tb.innerHTML =
+        [...invoices]
+        .reverse()
+        .map(
+            x => `
+
+            <tr>
+
+                <td>
+
+                    <span class="badge">
+
+                        ${esc(x.no)}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+                    ${formatDate(x.date)}
+                </td>
+
+
+                <td>
+                    ${esc(
+                        x.customer.name
+                    )}
+                </td>
+
+
+                <td class="num">
+
+                    ${money(
+                        x.totals.total
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    <button
+                    class="btn btn-primary"
+                    style="padding:6px 9px"
+                    onclick="viewSaved('${x.no}')">
+
+                        View
+
+                    </button>
+
+  <button
+class="btn btn-primary"
+style="padding:5px 8px"
+onclick="editInvoice('${x.id}')">
+Edit
+</button>
+
+
+                    <button
+                    class="btn btn-danger"
+                    style="padding:6px 9px"
+                    onclick="deleteInvoice('${x.no}')">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+            `
+        )
+        .join("");
+
+}
+
+
+
+function viewSaved(no){
+
+    const x =
+        invoices.find(
+            i => i.no === no
+        );
+
+
+    if(!x) return;
+
+
+    document.getElementById(
+        "previewContent"
+    ).innerHTML =
+        invoiceHTML(x);
+
+
+    document.getElementById(
+        "previewModal"
+    ).style.display = "flex";
+
+}
+
+
+
+async function deleteInvoice(no){
+    if(!confirm("Delete this invoice record?")) return;
+
+    try{
+        const snap = await db.collection("solar_invoice").where("no","==",no).get();
+
+        if(snap.empty){
+            showToast("Invoice not found");
+            return;
+        }
+
+        const batch = db.batch();
+        snap.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+
+        invoices = invoices.filter(x => x.no !== no);
+        refreshAll();
+        showToast("Invoice deleted");
+    }catch(error){
+        console.error("Invoice delete failed:", error);
+        showToast("Delete failed: " + (error.code || "permission/error"));
+    }
+}
+
+function updateKPIs(){
+
+    document.getElementById(
+        "kpiInvoices"
+    ).textContent =
+        invoices.length;
+
+
+    document.getElementById(
+        "kpiProducts"
+    ).textContent =
+        products.length;
+
+
+    const fy =
+        fyFor(todayISO());
+
+
+    const sales =
+        invoices
+        .filter(
+            x => x.fy === fy
+        )
+        .reduce(
+            (a,x) =>
+                a +
+                Number(
+                    x.totals.total || 0
+                ),
+            0
+        );
+
+
+    document.getElementById(
+        "kpiSales"
+    ).textContent =
+        money(sales);
+
+
+    document.getElementById(
+        "kpiNext"
+    ).textContent =
+        makeInvoiceNo(
+            todayISO()
+        );
+
+}
+
+
+
+function exportData(){
+
+    const data = {
+
+        settings,
+
+        products,
+
+        invoices,
+
+        exportedAt:
+            new Date().toISOString()
+
+    };
+
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    data,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:
+                "application/json"
+            }
+        );
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href =
+        URL.createObjectURL(blob);
+
+
+    a.download =
+        "solar-invoice-backup.json";
+
+
+    a.click();
+
+
+    URL.revokeObjectURL(
+        a.href
+    );
+
+}
+
+
+
+async function clearAllData(){
+    if(!confirm("Delete all products and invoices from Firebase?")) return;
+
+    try{
+        const [productSnap, invoiceSnap] = await Promise.all([
+            db.collection("solar_product").get(),
+            db.collection("solar_invoice").get()
+        ]);
+
+        const batch = db.batch();
+        productSnap.forEach(doc => batch.delete(doc.ref));
+        invoiceSnap.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+
+        products = [];
+        invoices = [];
+        refreshAll();
+        updateInvoiceNo();
+        showToast("All Firebase data cleared");
+    }catch(error){
+        console.error("Clear failed:", error);
+        showToast("Clear failed: " + (error.code || "permission/error"));
+    }
+}
+
+function refreshAll(){
+
+    renderProducts();
+
+    renderProductSelect();
+
+    renderItems();
+
+    renderHistory();
+
+    updateKPIs();
+
+}
+
+
+
+function esc(v){
+
+    return String(
+        v ?? ""
+    ).replace(
+        /[&<>"']/g,
+        m =>
+        ({
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#039;"
+        }[m])
+    );
+
+}
+
+
+
+window.addEventListener(
+    "load",
+    init
+);
+
+
+  async function saveProduct() {
+
+    const name = document.getElementById("pName").value.trim();
+    const hsn = document.getElementById("pHSN").value.trim();
+    const unit = document.getElementById("pUnit").value.trim() || "Nos";
+    const gst = Number(document.getElementById("pGST").value);
+    const rate = Number(document.getElementById("pRate").value);
+    const desc = document.getElementById("pDesc").value.trim();
+
+    if (!name) {
+        showToast("Product name required");
+        return;
+    }
+
+    if (gst < 0 || rate < 0) {
+        showToast("GST/Rate cannot be negative");
+        return;
+    }
+
+    try {
+
+        const productData = {
+            name: name,
+            hsn: hsn,
+            unit: unit,
+            gst: gst,
+            rate: rate,
+            desc: desc,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // EDIT PRODUCT
+        if (editingProductId) {
+
+            await db.collection("solar_product")
+                .doc(editingProductId)
+                .update(productData);
+
+            showToast("Product updated successfully");
+
+        }
+
+        // NEW PRODUCT
+        else {
+
+            productData.createdAt =
+                firebase.firestore.FieldValue.serverTimestamp();
+
+            await db.collection("solar_product")
+                .add(productData);
+
+            showToast("Product saved successfully");
+        }
+
+        clearProductForm();
+
+        editingProductId = null;
+
+        await loadProducts();
+
+        refreshAll();
+
+    } catch (error) {
+
+    console.error("PRODUCT SAVE ERROR:", error);
+
+    alert(
+        "Product Save/Update Failed\n\n" +
+        "Error Code: " + (error.code || "unknown") +
+        "\n\nError Message:\n" +
+        (error.message || error)
+    );
+
+  }
+  }
+
+  
+
+  
+</script>
+
+</body>
+</html>
