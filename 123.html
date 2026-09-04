@@ -469,10 +469,13 @@ th{
 
 .bill-grid{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
+    grid-template-columns:48% 48%;
+    column-gap:4%;
+    row-gap:0;
     margin:16px 0;
-}
+    width:100%;
+    box-sizing:border-box;
+  }
 
 .bill-box{
     border:1px solid #ddd;
@@ -684,8 +687,9 @@ th{
     }
 
     .bill-grid{
-        grid-template-columns:1fr;
-    }
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
 
     .summary{
         width:100%;
@@ -714,8 +718,32 @@ th{
 
   #previewContent .bill-grid{
     display:grid !important;
-    grid-template-columns:1fr 1fr !important;
-    gap:14px !important;
+    grid-template-columns:48% 48% !important;
+    column-gap:4% !important;
+    row-gap:0 !important;
+    width:100% !important;
+    margin:16px 0 !important;
+    box-sizing:border-box !important;
+}
+
+#previewContent .bill-box{
+    width:100% !important;
+    box-sizing:border-box !important;
+    padding:14px !important;
+    border:1px solid #999 !important;
+    border-radius:6px !important;
+    font-size:15px !important;
+    line-height:1.6 !important;
+}
+
+#previewContent .bill-box .small{
+    font-size:15px !important;
+    line-height:1.6 !important;
+}
+
+#previewContent .bill-box b{
+    font-size:17px !important;
+    font-weight:800 !important;
   }
 
   #previewContent .inv-head{
@@ -3776,26 +3804,33 @@ body *{
   
 
   #printArea .bill-grid{
-    gap:8px !important;
-    margin:8px 0 !important;
-}
+    display:grid !important;
+    grid-template-columns:48% 48% !important;
+    column-gap:4% !important;
+    row-gap:0 !important;
+    width:100% !important;
+    margin:16px 0 !important;
+    box-sizing:border-box !important;
+  }
 
-#printArea .bill-box{
-    padding:7px !important;
-}
-
-#printArea .bill-box{
-    font-size:10px !important;
-    line-height:1.25 !important;
+  #printArea .bill-box{
+    width:100% !important;
+    box-sizing:border-box !important;
+    padding:14px !important;
+    border:1px solid #999 !important;
+    border-radius:6px !important;
+    font-size:15px !important;
+    line-height:1.6 !important;
 }
 
 #printArea .bill-box .small{
-    font-size:9.5px !important;
-    line-height:1.25 !important;
+    font-size:15px !important;
+    line-height:1.6 !important;
 }
 
 #printArea .bill-box b{
-    font-size:11px !important;
+    font-size:17px !important;
+    font-weight:800 !important;
 }
 
 
