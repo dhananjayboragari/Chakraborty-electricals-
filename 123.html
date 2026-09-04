@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Solar GST Invoice System</title>
+<title>Solar Consumer Database</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 <style>
 *{
@@ -15,27 +20,20 @@
     --bg:#f4f7fb;
     --card:#ffffff;
     --text:#172033;
-    --muted:#6b7280;
+    --muted:#697386;
     --primary:#2563eb;
-    --primary-dark:#1d4ed8;
-    --border:#e5e7eb;
+    --primary2:#0ea5e9;
     --green:#16a34a;
+    --orange:#f59e0b;
     --red:#dc2626;
-    --shadow:0 10px 30px rgba(15,23,42,.08);
+    --border:#e5eaf2;
+    --shadow:0 12px 35px rgba(15,23,42,.08);
 }
 
 body{
     margin:0;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
     background:var(--bg);
-    font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
     color:var(--text);
 }
 
@@ -51,22 +49,31 @@ button{
     border:0;
 }
 
+/* TOP BAR */
+
 .topbar{
-    height:70px;
-    background:linear-gradient(
-        135deg,
-        #0f172a,
-        #1e3a8a
-    );
-    color:white;
+    position:sticky;
+    top:0;
+    z-index:30;
+    padding:14px 22px;
+    color:#fff;
+    background:
+        linear-gradient(
+            135deg,
+            #0f3b91,
+            #1677d2 55%,
+            #10b981
+        );
+    box-shadow:0 8px 25px rgba(15,23,42,.16);
+}
+
+.top-inner{
+    max-width:1450px;
+    margin:auto;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 22px;
-    position:sticky;
-    top:0;
-    z-index:100;
-    box-shadow:0 5px 20px rgba(0,0,0,.15);
+    gap:15px;
 }
 
 .brand{
@@ -75,1027 +82,870 @@ button{
     gap:12px;
 }
 
-.brand-icon{
-    width:44px;
-    height:44px;
-    border-radius:13px;
-    background:#facc15;
-    color:#111827;
+.logo{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    background:rgba(255,255,255,.16);
     display:grid;
     place-items:center;
-    font-size:23px;
-    font-weight:900;
+    font-size:25px;
+    border:1px solid rgba(255,255,255,.25);
 }
 
 .brand h1{
+    font-size:19px;
     margin:0;
-    font-size:18px;
 }
 
-.brand p{
-    margin:2px 0 0;
-    font-size:12px;
-    color:#cbd5e1;
+.brand small{
+    opacity:.82;
 }
 
-.menu-btn{
-    background:rgba(255,255,255,.12);
-    color:#fff;
-    border-radius:10px;
-    padding:9px 13px;
-}
-
-.layout{
-    max-width:1500px;
-    margin:auto;
+.userbox{
     display:flex;
+    align-items:center;
+    gap:10px;
 }
 
-.sidebar{
-    width:245px;
-    padding:18px;
-    flex-shrink:0;
-}
-
-.nav{
-    background:white;
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:8px;
-    box-shadow:var(--shadow);
-    position:sticky;
-    top:88px;
-}
-
-.nav button{
-    width:100%;
-    text-align:left;
-    background:transparent;
-    color:#475569;
-    padding:12px;
-    border-radius:11px;
-    margin:2px 0;
-}
-
-.nav button:hover,
-.nav button.active{
-    background:#eff6ff;
-    color:var(--primary);
-    font-weight:700;
-}
-
-.content{
-    flex:1;
-    min-width:0;
-    padding:18px;
-}
-
-.section{
-    display:none;
-}
-
-.section.active{
-    display:block;
-}
-
-.card{
-    background:white;
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:18px;
-    box-shadow:var(--shadow);
-    margin-bottom:16px;
-}
-
-.card h2,
-.card h3{
-    margin:0 0 14px;
-}
-
-.muted{
-    color:var(--muted);
+.useremail{
     font-size:13px;
+    opacity:.9;
 }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(12,1fr);
-    gap:14px;
-}
-
-.col-12{grid-column:span 12}
-.col-8{grid-column:span 8}
-.col-6{grid-column:span 6}
-.col-4{grid-column:span 4}
-.col-3{grid-column:span 3}
-.col-2{grid-column:span 2}
-
-label{
-    display:block;
-    font-size:12px;
-    font-weight:700;
-    color:#475569;
-    margin-bottom:6px;
-}
-
-input,
-select,
-textarea{
-    width:100%;
-    border:1px solid #dbe1ea;
+.logout{
+    padding:9px 13px;
     border-radius:10px;
-    padding:10px 11px;
-    background:white;
-    color:#172033;
-    outline:none;
+    background:rgba(255,255,255,.14);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.25);
 }
 
-input:focus,
-select:focus,
-textarea:focus{
-    border-color:#93c5fd;
-    box-shadow:0 0 0 3px rgba(37,99,235,.10);
-}
+/* MAIN */
 
-textarea{
-    min-height:82px;
-    resize:vertical;
+.container{
+    max-width:1450px;
+    margin:auto;
+    padding:22px;
 }
 
 .actions{
     display:flex;
-    gap:9px;
-    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
 }
 
+.page-title h2{
+    margin:0 0 4px;
+    font-size:25px;
+}
+
+.page-title p{
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* BUTTON */
+
 .btn{
-    padding:10px 14px;
-    border-radius:10px;
+    padding:11px 15px;
+    border-radius:11px;
     font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
 }
 
 .btn-primary{
-    background:var(--primary);
-    color:white;
-}
-
-.btn-primary:hover{
-    background:var(--primary-dark);
+    color:#fff;
+    background:linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary2)
+    );
+    box-shadow:0 7px 18px rgba(37,99,235,.22);
 }
 
 .btn-light{
-    background:#f1f5f9;
-    color:#334155;
-}
-
-.btn-success{
-    background:var(--green);
-    color:white;
+    background:#fff;
+    border:1px solid var(--border);
+    color:var(--text);
 }
 
 .btn-danger{
-    background:var(--red);
-    color:white;
+    background:#fee2e2;
+    color:#b91c1c;
 }
 
-.kpis{
+/* STATS */
+
+.stats{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+    margin-bottom:18px;
 }
 
-.kpi{
-    background:linear-gradient(
-        135deg,
-        #ffffff,
-        #f8fafc
-    );
+.stat{
+    background:var(--card);
     border:1px solid var(--border);
-    border-radius:15px;
-    padding:16px;
+    border-radius:16px;
+    padding:17px;
+    box-shadow:var(--shadow);
 }
 
-.kpi b{
-    display:block;
-    font-size:22px;
-    margin-top:5px;
+.stat-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.stat-icon{
+    font-size:23px;
+}
+
+.stat .label{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.stat .value{
+    font-size:26px;
+    font-weight:800;
+    margin-top:6px;
+}
+
+/* TOOLBAR */
+
+.toolbar{
+    background:#fff;
+    border:1px solid var(--border);
+    padding:13px;
+    border-radius:16px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+    box-shadow:var(--shadow);
+}
+
+.search{
+    flex:1;
+    min-width:230px;
+    position:relative;
+}
+
+.search input{
+    width:100%;
+    padding:11px 13px 11px 38px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    outline:none;
+}
+
+.search span{
+    position:absolute;
+    left:13px;
+    top:9px;
+}
+
+.toolbar select{
+    min-width:155px;
+    padding:10px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:#fff;
+    outline:none;
+}
+
+/* TABLE */
+
+.table-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
 }
 
 .table-wrap{
     overflow:auto;
-    border:1px solid var(--border);
-    border-radius:12px;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
-    min-width:760px;
+    min-width:1050px;
 }
 
 th,
 td{
-    padding:10px;
-    border-bottom:1px solid var(--border);
+    padding:13px 14px;
+    border-bottom:1px solid #edf0f5;
     text-align:left;
     font-size:13px;
+    white-space:nowrap;
 }
 
 th{
     background:#f8fafc;
+    color:#596579;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+}
+
+.consumer{
+    font-weight:750;
+}
+
+.sub{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+/* BADGES */
+
+.badge{
+    display:inline-flex;
+    padding:5px 8px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:750;
+}
+
+.b-blue{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.b-green{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.b-orange{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.b-red{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.b-gray{
+    background:#f1f5f9;
     color:#475569;
 }
 
-.num{
-    text-align:right;
+/* ACTION */
+
+.row-actions{
+    display:flex;
+    gap:6px;
 }
 
-.badge{
-    display:inline-block;
-    padding:4px 8px;
-    border-radius:999px;
-    background:#eff6ff;
-    color:#1d4ed8;
-    font-size:11px;
-    font-weight:700;
+.icon-btn{
+    width:32px;
+    height:32px;
+    border-radius:9px;
+    background:#f1f5f9;
+    color:#334155;
 }
+
+.icon-btn:hover{
+    background:#e2e8f0;
+}
+
+/* EMPTY */
 
 .empty{
+    padding:45px;
     text-align:center;
-    padding:28px;
     color:var(--muted);
-}
-
-/* PREVIEW */
-
-.preview{
-    background:#e5e7eb;
-    padding:18px;
-    border-radius:16px;
-}
-
-.invoice-paper{
-    background:white;
-    max-width:900px;
-    margin:auto;
-    padding:30px;
-    color:#111827;
-    box-shadow:0 8px 25px rgba(0,0,0,.12);
-}
-
-  .invoice-paper{
-    font-size:14px;
-    line-height:1.5;
-}
-
-.invoice-paper p{
-    font-size:14px;
-    line-height:1.5;
-}
-
-.invoice-paper span{
-    line-height:1.5;
-}
-
-.inv-head{
-    display:grid;
-    grid-template-columns:60% 40%;
-    align-items:stretch;
-    gap:0;
-    border-bottom:2px solid #111827;
-    padding-bottom:16px;
-    position:relative;
-    width:100%;
-    box-sizing:border-box;
-}
-
-/* COMPANY SIDE */
-.inv-head > div:first-child{
-    width:100%;
-    padding-right:15px;
-    box-sizing:border-box;
-    white-space:nowrap;
-}
-
-.inv-head .inv-meta{
-    width:100%;
-    padding-left:15px;
-    box-sizing:border-box;
-    position:relative;
-    text-align:center;
-  }
-
-/* TAX INVOICE */
-.inv-head .inv-title{
-    text-align:center;
-    font-size:30px;
-    font-weight:900;
-    white-space:nowrap;
-    margin-bottom:6px;
-}
-
-/* Invoice No / Date / FY */
-.inv-head .meta-row{
-    text-align:left;
-}
-
-/* Middle decorative curved divider */
-.inv-head .inv-meta::before{
-    content:"";
-    position:absolute;
-    left:0;
-    top:-10px;
-    width:18px;
-    height:calc(100% + 20px);
-    border-left:3px solid #111827;
-    border-radius:50%;
-    transform:skewX(-8deg);
-    pointer-events:none;
-}
-
-/* Small star */
-.inv-head .inv-meta::after{
-    content:"✦";
-    position:absolute;
-    left:-13px;
-    top:30%;
-    width:22px;
-    height:22px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#fff;
-    font-size:14px;
-    font-weight:900;
-  z-index:2;
-}
-
-  .company{
-    font-size:30px;
-    font-weight:900;
-    line-height:1.2;
-    
-}
-
-.inv-title{
-    font-size:32px;
-    font-weight:900;
-    letter-spacing:.5px;
-}
-
-.small{
-    font-size:14px;
-    line-height:1.5;
-}
-
-.inv-meta{
-    min-width:230px;
-}
-
-.meta-row{
-    display:flex;
-    justify-content:space-between;
-    gap:15px;
-    border-bottom:1px solid #ccc;
-    padding:7px 0;
-    font-size:14px;
-    line-height:1.5;
-}
-
-.meta-row b{
-    font-size:14px;
-    font-weight:800;
-}
-
-.bill-grid{
-    display:grid;
-    grid-template-columns:48% 48%;
-    column-gap:4%;
-    row-gap:0;
-    margin:16px 0;
-    width:100%;
-    box-sizing:border-box;
-  }
-
-.bill-box{
-    border:1px solid #ddd;
-    padding:12px;
-    border-radius:6px;
-}
-
-  .bill-box{
-    border:1px solid #999;
-    padding:14px;
-    border-radius:6px;
-    font-size:14px;
-    line-height:1.6;
-}
-  .bill-box{
-    height:auto !important;
-    min-height:0 !important;
-    }
-
-.bill-box b{
-    font-size:15px;
-    font-weight:800;
-}
-
-.bill-box .small{
-    font-size:13px;
-    line-height:1.6;
-}
-  
-
-.inv-table{
-    min-width:0;
-    border:1px solid #222;
-}
-
-.inv-table th,
-.inv-table td{
-    border:1px solid #999;
-    padding:5px 6px;
-    font-size:13px;
-    line-height:1.25;
-    vertical-align:top;
-    height:auto !important;
-    min-height:0 !important;
-    white-space:normal !important;
-    overflow-wrap:anywhere;
-}
-  .inv-table tr{
-    height:auto !important;
-}
-
-.inv-table tbody tr{
-    height:auto !important;
-}
-
-.inv-table td{
-    vertical-align:top !important;
-}
-
-.inv-table th{
-    background:#f3f4f6;
-    color:#111827;
-    font-size:13px;
-    font-weight:800;
-    white-space:nowrap;
-}
-
-.summary{
-    width:360px;
-    margin-left:auto;
-    margin-top:12px;
-    height:auto !important;
-    min-height:0 !important;
-  }
-
-.sumrow{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:0 !important;
-    margin:0 !important;
-    font-size:14px;
-    line-height:1.2;
-    height:auto !important;
-    min-height:0 !important;
-  }
-
-.sumrow b{
-    font-size:14px;
-    font-weight:800;
-}
-
-.grand{
-    border-top:2px solid #111;
-    padding-top:10px;
-    margin-top:4px;
-    font-size:19px;
-    font-weight:900;
-}
-
-.sign{
-    display:flex;
-    justify-content:space-between;
-    margin-top:55px;
-}
-
-.signbox{
-    width:200px;
-    text-align:center;
-    border-top:1px solid #777;
-    padding-top:7px;
-    font-size:11px;
-}
-
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(15,23,42,.55);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:15px;
-    z-index:500;
-}
-
-.modal-box{
-    background:white;
-    border-radius:18px;
-    max-width:950px;
-    width:100%;
-    padding:20px;
-    max-height:94vh;
-    overflow:auto;
-}
-
-.close{
-    float:right;
-    background:#f1f5f9;
-    border-radius:8px;
-    padding:6px 10px;
-}
-
-  .toast{
-    position:fixed;
-    top:18px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#111827;
-    color:white;
-    padding:12px 15px;
-    border-radius:10px;
-    display:none;
-    z-index:1000;
 }
 
 /* MOBILE */
 
-@media(max-width:900px){
-
-    .sidebar{
-        display:none;
-    }
-
-    .content{
-        padding:12px;
-    }
-
-    .kpis{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .col-8,
-    .col-6,
-    .col-4,
-    .col-3,
-    .col-2{
-        grid-column:span 12;
-    }
+.mobile-list{
+    display:none;
 }
 
-@media(max-width:600px){
+.consumer-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:15px;
+    box-shadow:var(--shadow);
+    margin-bottom:11px;
+}
 
-    .topbar{
-        padding:0 13px;
-    }
+.cc-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
 
-    .brand h1{
-        font-size:15px;
-    }
+.cc-name{
+    font-weight:800;
+}
 
-    .brand p{
-        font-size:10px;
-    }
+.cc-meta{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:4px;
+}
 
-    .kpis{
-        grid-template-columns:1fr 1fr;
-    }
+.cc-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin:13px 0;
+}
 
-    .card{
-        padding:14px;
-    }
+.cc-item{
+    background:#f8fafc;
+    border-radius:10px;
+    padding:9px;
+}
 
-    .invoice-paper{
-        padding:16px;
-    }
+.cc-item small{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+}
 
-    .inv-head{
-        flex-direction:column;
-    }
+.cc-item b{
+    font-size:12px;
+}
 
-    .bill-grid{
-    grid-template-columns:1fr !important;
-    gap:12px !important;
-  }
+.cc-actions{
+    display:flex;
+    gap:8px;
+}
 
-    .summary{
-        width:100%;
-    }
-  }
+.cc-actions button{
+    flex:1;
+}
 
+/* MODAL */
 
-  
+.modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.58);
+    z-index:100;
+    display:none;
+    padding:20px;
+    overflow:auto;
+}
 
-/* PRINT - A4 EXACT PREVIEW */
-@page{
-    size:A4;
+.modal-backdrop.show{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+}
+
+.modal{
+    width:min(1050px,100%);
+    background:#fff;
+    border-radius:22px;
+    box-shadow:0 25px 80px rgba(0,0,0,.25);
+    margin:15px auto;
+}
+
+.modal-head{
+    padding:17px 20px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    background:#fff;
+    border-radius:22px 22px 0 0;
+    z-index:2;
+}
+
+.modal-head h3{
     margin:0;
 }
 
-@media print{
+.close{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    background:#f1f5f9;
+    font-size:20px;
+}
 
-    html,
-    body{
-        width:210mm;
-        min-height:297mm;
-        margin:0 !important;
-        padding:0 !important;
-        background:#fff !important;
+.modal-body{
+    padding:20px;
+}
+
+/* FORM */
+
+.form-section{
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:14px;
+}
+
+.form-section h4{
+    margin:0 0 13px;
+    font-size:14px;
+    color:#1e40af;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.field label{
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    color:#64748b;
+    margin-bottom:5px;
+}
+
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    padding:10px 11px;
+    border:1px solid #dce3ed;
+    border-radius:9px;
+    outline:none;
+    background:#fff;
+}
+
+.field textarea{
+    min-height:72px;
+    resize:vertical;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.modal-foot{
+    display:flex;
+    justify-content:flex-end;
+    gap:9px;
+    padding:15px 20px;
+    border-top:1px solid var(--border);
+}
+
+/* DETAILS */
+
+.details-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:11px;
+}
+
+.detail{
+    background:#f8fafc;
+    border-radius:12px;
+    padding:11px;
+}
+
+.detail small{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.detail b{
+    display:block;
+    margin-top:4px;
+    font-size:13px;
+    word-break:break-word;
+}
+
+.detail.full{
+    grid-column:1/-1;
+}
+
+.detail-title{
+    grid-column:1/-1;
+    font-size:13px;
+    font-weight:800;
+    color:#1d4ed8;
+    padding-top:7px;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:300;
+    background:#172033;
+    color:#fff;
+    padding:13px 16px;
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    display:none;
+}
+
+.toast.show{
+    display:block;
+}
+
+/* LOADING */
+
+.loading{
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,.7);
+    z-index:250;
+    display:none;
+    place-items:center;
+}
+
+.loading.show{
+    display:grid;
+}
+
+.spinner{
+    width:38px;
+    height:38px;
+    border:4px solid #dbeafe;
+    border-top-color:#2563eb;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.note{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:8px;
+}
+
+/* TABLET */
+
+@media(max-width:900px){
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
     }
 
-  #previewContent .bill-grid{
-    display:grid !important;
-    grid-template-columns:48% 48% !important;
-    column-gap:4% !important;
-    row-gap:0 !important;
-    width:100% !important;
-    margin:16px 0 !important;
-    box-sizing:border-box !important;
-}
-
-#previewContent .bill-box{
-    width:100% !important;
-    box-sizing:border-box !important;
-    padding:14px !important;
-    border:1px solid #999 !important;
-    border-radius:6px !important;
-    font-size:15px !important;
-    line-height:1.6 !important;
-}
-
-#previewContent .bill-box .small{
-    font-size:15px !important;
-    line-height:1.6 !important;
-}
-
-#previewContent .bill-box b{
-    font-size:17px !important;
-    font-weight:800 !important;
-  }
-
-  #previewContent .inv-head{
-    display:flex !important;
-    flex-direction:row !important;
-    justify-content:space-between !important;
-    align-items:flex-start !important;
-}
-
-    body *{
-        visibility:hidden !important;
+    .form-grid{
+        grid-template-columns:repeat(2,1fr);
     }
 
-    #previewModal,
-    #previewModal *{
-        visibility:visible !important;
+    .details-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:650px){
+
+    .topbar{
+        padding:11px 13px;
     }
 
-    #previewModal{
-        position:absolute !important;
-        left:0 !important;
-        top:0 !important;
-        width:210mm !important;
-        min-height:297mm !important;
-        margin:0 !important;
-        padding:0 !important;
-        display:block !important;
-        background:#fff !important;
-        overflow:visible !important;
+    .container{
+        padding:14px;
     }
 
-    #previewModal .modal-box{
-        width:210mm !important;
-        min-height:297mm !important;
-        max-width:none !important;
-        margin:0 !important;
-        padding:0 !important;
-        border:0 !important;
-        border-radius:0 !important;
-        box-shadow:none !important;
-        background:#fff !important;
+    .useremail{
+        display:none;
     }
 
-    #previewModal .no-print{
-        display:none !important;
+    .brand h1{
+        font-size:16px;
     }
 
-    #previewContent{
-        width:210mm !important;
-        min-height:297mm !important;
-        margin:0 !important;
-        padding:0 !important;
+    .brand small{
+        font-size:10px;
     }
 
-    #previewContent .invoice-paper{
-        width:210mm !important;
-        min-height:297mm !important;
-        max-width:none !important;
-        margin:0 !important;
-        padding:10mm !important;
-        box-sizing:border-box !important;
-        box-shadow:none !important;
-        border:0 !important;
-      
+    .actions{
+        align-items:flex-start;
     }
 
+    .page-title h2{
+        font-size:20px;
+    }
 
+    .actions .btn{
+        padding:9px 11px;
+    }
 
-  #previewContent .inv-table{
-    width:100% !important;
-    height:auto !important;
-    table-layout:auto !important;
-    border-collapse:collapse !important;
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+        gap:9px;
+    }
 
-    page-break-before:auto !important;
-    page-break-after:auto !important;
+    .stat{
+        padding:13px;
+    }
 
-    break-before:auto !important;
-    break-after:auto !important;
+    .stat .value{
+        font-size:22px;
+    }
+
+    .toolbar{
+        padding:10px;
+    }
+
+    .search{
+        min-width:100%;
+    }
+
+    .toolbar select{
+        flex:1;
+        min-width:0;
+    }
+
+    .table-card{
+        display:none;
+    }
+
+    .mobile-list{
+        display:block;
+    }
+
+    .form-grid,
+    .details-grid{
+        grid-template-columns:1fr;
+    }
+
+    .modal-backdrop{
+        padding:8px;
+    }
+
+    .modal{
+        margin:4px auto;
+        border-radius:17px;
+    }
+
+    .modal-head{
+        border-radius:17px 17px 0 0;
+    }
+
+    .modal-body{
+        padding:12px;
+    }
+
+    .form-section{
+        padding:12px;
+    }
+
+    .modal-foot{
+        padding:12px;
+    }
+
+    .detail.full{
+        grid-column:auto;
+    }
 }
-
-#previewContent .inv-table thead{
-    display:table-header-group !important;
-}
-
-#previewContent .inv-table tbody{
-    display:table-row-group !important;
-}
-
-#previewContent .inv-table tr{
-    height:auto !important;
-
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-}
-
-#previewContent .inv-table td,
-#previewContent .inv-table th{
-    height:auto !important;
-    min-height:0 !important;
-    white-space:normal !important;
-    overflow-wrap:break-word !important;
-    vertical-align:top !important;
-}
-
-#previewContent .inv-table td,
-#previewContent .inv-table th{
-    height:auto !important;
-    min-height:0 !important;
-    white-space:normal !important;
-    overflow-wrap:break-word !important;
-    vertical-align:top !important;
-}
-
-#previewContent .bill-box{
-    height:auto !important;
-    min-height:0 !important;
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-}
-
-#previewContent .summary{
-    height:auto !important;
-    min-height:0 !important;
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-}
-
-#previewContent .sign{
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-  }
-
-  #previewContent .summary{
-    page-break-before:auto !important;
-    break-before:auto !important;
-
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-}
-
-#previewContent .sign{
-    page-break-before:auto !important;
-    break-before:auto !important;
-
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-  }
-  
-  /* A4 PRINT - INVOICE HEADER */
-#previewContent .inv-head{
-    display:grid !important;
-    grid-template-columns:60% 40% !important;
-    align-items:stretch !important;
-    position:relative !important;
-    gap:0 !important;
-    width:100% !important;
-    box-sizing:border-box !important;
-  }
-
-
-  #previewContent .inv-head > div:first-child{
-    width:60% !important;
-    padding-right:15px !important;
-    box-sizing:border-box !important;
-}
-
-#previewContent .inv-head .inv-meta{
-    width:40% !important;
-    padding-left:15px !important;
-    box-sizing:border-box !important;
-    position:relative !important;
-      }
-
-/* Curve divider in A4 PDF */
-#previewContent .inv-head .inv-meta::before{
-    content:"" !important;
-    position:absolute !important;
-    left:0 !important;
-    top:-10px !important;
-    width:18px !important;
-    height:calc(100% + 20px) !important;
-    border-left:3px solid #111827 !important;
-    border-radius:50% !important;
-    transform:skewX(-8deg) !important;
-    pointer-events:none !important;
-}
-
-/* Center decoration */
-#previewContent .inv-head .inv-meta::after{
-    content:"✦" !important;
-    position:absolute !important;
-    left:-13px !important;
-    top:38% !important;
-    width:22px !important;
-    height:22px !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    font-size:14px !important;
-    font-weight:900 !important;
-    color:#111827 !important;
-    background:#fff !important;
-}
-  #previewContent .small{
-    font-size:14px !important;
-    line-height:1.5 !important;
-}
-
-#previewContent .meta-row{
-    font-size:14px !important;
-    line-height:1.5 !important;
-  }
-  #previewContent .company{
-    font-size:30px !important;
-    font-weight:900 !important;
-    line-height:1.2 !important;
-  }
-  }
-
-  
 </style>
 </head>
 
 <body>
 
+<div class="app">
+
 <header class="topbar">
 
-    <div class="brand">
+<div class="top-inner">
 
-        <div class="brand-icon">☀</div>
+<div class="brand">
 
-        <div>
-            <h1>Solar GST Invoice</h1>
-            <p>M/S CHAKRABORTY ELECTRICALS</p>
-        </div>
+<div class="logo">
+☀️
+</div>
 
-    </div>
+<div>
+<h1>Solar Consumer Database</h1>
+<small>Vendor • Connection Management</small>
+</div>
 
-    <button class="menu-btn" onclick="toggleSidebar()">
-        ☰ Menu
-    </button>
+</div>
+
+<div class="userbox">
+
+<span
+class="useremail"
+id="userEmail">
+Checking login...
+</span>
+
+<button
+class="logout"
+id="logoutBtn">
+Logout
+</button>
+
+</div>
+
+</div>
 
 </header>
 
 
-<div class="layout">
+<main class="container">
 
-<aside class="sidebar" id="sidebar">
+<div class="actions">
 
-<nav class="nav">
+<div class="page-title">
 
-<button class="active"
-onclick="showSection('dashboard',this)">
-▣ Dashboard
-</button>
+<h2>
+Consumer Management
+</h2>
 
-<button
-onclick="showSection('invoiceSection',this)">
-▤ Create Invoice
-</button>
-
-<button
-onclick="showSection('productsSection',this)">
-▦ Products
-</button>
-
-<button
-onclick="showSection('historySection',this)">
-◷ Invoice History
-</button>
-
-<button
-onclick="showSection('settingsSection',this)">
-⚙ Settings
-</button>
-
-</nav>
-
-</aside>
-
-
-<main class="content">
-
-
-<!-- DASHBOARD -->
-
-<section id="dashboard" class="section active">
-
-<div class="card">
-
-<h2>Solar Invoice Dashboard</h2>
-
-<p class="muted">
-Create GST invoices, manage solar products and keep
-invoice records in this browser.
+<p>
+Domestic, Commercial, Agriculture, Bulk & other solar connections
 </p>
 
 </div>
 
+<button
+class="btn btn-primary"
+id="addBtn">
 
-<div class="kpis">
+＋ Add Consumer
 
-<div class="kpi">
+</button>
 
-<span class="muted">
-Total Invoices
+</div>
+
+
+<!-- STATISTICS -->
+
+<section class="stats">
+
+<div class="stat">
+
+<div class="stat-top">
+
+<span class="label">
+Total Consumers
 </span>
 
-<b id="kpiInvoices">
+<span class="stat-icon">
+👥
+</span>
+
+</div>
+
+<div
+class="value"
+id="totalCount">
 0
-</b>
+</div>
 
 </div>
 
 
-<div class="kpi">
+<div class="stat">
 
-<span class="muted">
-Products
+<div class="stat-top">
+
+<span class="label">
+Active
 </span>
 
-<b id="kpiProducts">
+<span class="stat-icon">
+🟢
+</span>
+
+</div>
+
+<div
+class="value"
+id="activeCount">
 0
-</b>
+</div>
 
 </div>
 
 
-<div class="kpi">
+<div class="stat">
 
-<span class="muted">
-This FY Sales
+<div class="stat-top">
+
+<span class="label">
+Pending
 </span>
 
-<b id="kpiSales">
-₹0.00
-</b>
+<span class="stat-icon">
+⏳
+</span>
+
+</div>
+
+<div
+class="value"
+id="pendingCount">
+0
+</div>
 
 </div>
 
 
-<div class="kpi">
+<div class="stat">
 
-<span class="muted">
-Next Invoice
+<div class="stat-top">
+
+<span class="label">
+Installed
 </span>
 
-<b id="kpiNext">
-SOLAR/—
-</b>
+<span class="stat-icon">
+⚡
+</span>
 
+</div>
+
+<div
+class="value"
+id="installedCount">
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-top">
+
+<span class="label">
+Total Capacity
+</span>
+
+<span class="stat-icon">
+☀️
+</span>
+
+</div>
+
+<div
+class="value"
+id="capacityCount">
+0 kW
 </div>
 
 </div>
@@ -1103,682 +953,111 @@ SOLAR/—
 </section>
 
 
+<!-- SEARCH -->
 
-<!-- CREATE INVOICE -->
+<section class="toolbar">
 
-<section id="invoiceSection" class="section">
+<div class="search">
 
-
-<div class="card">
-
-<h2>Create GST Invoice</h2>
-
-
-<div class="grid">
-
-
-<div class="col-3">
-
-<label>
-Invoice Date
-</label>
+<span>
+🔍
+</span>
 
 <input
-type="date"
-id="invoiceDate"
-onchange="updateInvoiceNo()">
+id="searchInput"
+placeholder="Search name, mobile, consumer no., application no.">
 
 </div>
 
 
-<div class="col-3">
-
-<label>
-Invoice Number
-</label>
-
-<input
-id="invoiceNo"
-readonly>
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-Financial Year
-</label>
-
-<input
-id="financialYear"
-readonly>
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-Place of Supply
-</label>
-
-<input
-id="placeSupply"
-value="West Bengal">
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- SELLER -->
-
-<div class="card">
-
-<h3>Seller Details</h3>
-
-
-<div class="grid">
-
-
-<div class="col-6">
-
-<label>
-Business Name
-</label>
-
-<input
-id="sellerName"
-value="M/S CHAKRABORTY ELECTRICALS">
-
-</div>
-
-
-<div class="col-6">
-
-<label>
-GSTIN
-</label>
-
-<input
-id="sellerGST"
-value="0000022765">
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-Address
-</label>
-
-<textarea id="sellerAddress">Dhupguri Hospital Para, Bairatiguri, Jalpaiguri, West Bengal 735210</textarea>
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-PAN
-</label>
-
-<input
-id="sellerPAN"
-placeholder="Enter PAN">
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-Mobile
-</label>
-
-<input
-id="sellerMobile"
-placeholder="Enter mobile number">
-
-</div>
-
-  <div class="col-4">
-
-<label>
-Email
-</label>
-
-<input
-type="email"
-id="sellerEmail"
-placeholder="Enter Email">
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-TAN Number
-</label>
-
-<input
-id="sellerTAN"
-placeholder="Enter TAN Number">
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- CONSUMER -->
-
-<div class="card">
-
-<h3>
-Consumer / Bill To
-</h3>
-
-
-<div class="grid">
-
-
-<div class="col-4">
-
-<label>
-Consumer Name *
-</label>
-
-<input
-id="customerName"
-placeholder="Consumer name">
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-Consumer Mobile
-</label>
-
-<input
-id="customerMobile"
-placeholder="Mobile number">
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-Consumer GSTIN
-</label>
-
-<input
-id="customerGSTIN"
-placeholder="If applicable">
-
-</div>
-
-
-<div class="col-6">
-
-<label>
-Billing Address
-</label>
-
-<textarea
-id="customerAddress"
-placeholder="Full consumer address"></textarea>
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-State
-</label>
-
-<input
-id="customerState"
-value="West Bengal">
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-State Code
-</label>
-
-<input
-id="stateCode"
-value="19">
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- ITEMS -->
-
-<div class="card">
-
-<h3>
-Add Items to Invoice
-</h3>
-
-
-<div class="grid">
-
-
-<div class="col-4">
-
-<label>
-Select Product
-</label>
-
-<select
-id="productSelect"
-onchange="loadProduct()">
+<select id="typeFilter">
 
 <option value="">
--- Select product --
+All Connection Types
+</option>
+
+<option>
+Domestic
+</option>
+
+<option>
+Commercial
+</option>
+
+<option>
+Agriculture
+</option>
+
+<option>
+Bulk
+</option>
+
+<option>
+Industrial
+</option>
+
+<option>
+Other
 </option>
 
 </select>
 
-</div>
 
+<select id="statusFilter">
 
-<div class="col-2">
+<option value="">
+All Status
+</option>
 
-<label>
-Qty
-</label>
+<option>
+Pending
+</option>
 
-<input
-type="number"
-id="itemQty"
-min="0.01"
-step="0.01"
-value="1">
+<option>
+Applied
+</option>
 
-</div>
+<option>
+Inspection
+</option>
 
+<option>
+Approved
+</option>
 
-<div class="col-2">
+<option>
+Installed
+</option>
 
-<label>
-Rate (₹)
-</label>
+<option>
+Active
+</option>
 
-<input
-type="number"
-id="itemRate"
-min="0"
-step="0.01">
+<option>
+Completed
+</option>
 
-</div>
+<option>
+Cancelled
+</option>
 
-
-<div class="col-2">
-
-<label>
-Discount (₹)
-</label>
-
-<input
-type="number"
-id="itemDiscount"
-min="0"
-step="0.01"
-value="0">
-
-</div>
-
-
-<div class="col-2">
-
-<label>
-GST %
-</label>
-
-<input
-type="number"
-id="itemGST"
-min="0"
-step="0.01"
-value="12">
-
-</div>
-
-
-<div class="col-12">
-
-<label>
-Description
-</label>
-
-<input
-id="itemDescription"
-placeholder="Panel / inverter / installation etc.">
-
-</div>
-
-
-<div class="col-12 actions">
-
-<button
-class="btn btn-primary"
-onclick="addItem()">
-
-＋ Add Item
-
-</button>
+</select>
 
 
 <button
 class="btn btn-light"
-onclick="clearItemForm()">
+id="refreshBtn">
 
-Clear
-
-</button>
-
-</div>
-
-</div>
-
-
-<div
-class="table-wrap"
-style="margin-top:15px">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>#</th>
-<th>Product / Description</th>
-<th>HSN</th>
-<th class="num">Qty</th>
-<th class="num">Rate</th>
-<th class="num">Disc.</th>
-<th class="num">Taxable</th>
-<th class="num">GST</th>
-<th class="num">Total</th>
-<th></th>
-
-</tr>
-
-</thead>
-
-
-<tbody id="itemTable"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-
-
-<!-- OPTIONS -->
-
-<div class="card">
-
-<h3>
-Invoice Options
-</h3>
-
-
-<div class="grid">
-
-
-<div class="col-4">
-
-<label>
-Payment Mode
-</label>
-
-<select id="paymentMode">
-
-<option>Bank Transfer</option>
-<option>UPI</option>
-<option>Cash</option>
-<option>Cheque</option>
-<option>Other</option>
-
-</select>
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-Bank / UPI Reference
-</label>
-
-<input
-id="paymentRef"
-placeholder="Optional">
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-Reverse Charge
-</label>
-
-<select id="reverseCharge">
-
-<option>No</option>
-<option>Yes</option>
-
-</select>
-
-</div>
-
-
-<div class="col-12">
-
-<label>
-Notes / Terms
-</label>
-
-<textarea id="invoiceNotes">Goods once sold will be subject to applicable terms and conditions. This is a computer-generated invoice.</textarea>
-
-</div>
-
-</div>
-
-
-<div class="actions">
-
-<button
-class="btn btn-success"
-onclick="saveInvoice()">
-
-✓ Save Invoice
+↻ Refresh
 
 </button>
-
-<button
-class="btn btn-primary no-print"
-onclick="previewInvoice()">
-
-▣ Preview & Print
-
-</button>
-
-
-<button
-class="btn btn-light"
-onclick="newInvoice()">
-
-＋ New Invoice
-
-</button>
-
-</div>
-
-</div>
 
 </section>
 
 
+<!-- DESKTOP TABLE -->
 
-<!-- PRODUCTS -->
-
-<section id="productsSection" class="section">
-
-
-<div class="card">
-
-<h2>
-Product Master
-</h2>
-
-<p class="muted">
-Add your solar products here. Products can later be
-selected directly while creating an invoice.
-</p>
-
-
-<div class="grid">
-
-
-<div class="col-4">
-
-<label>
-Product Name *
-</label>
-
-<input
-id="pName"
-placeholder="e.g. Solar PV Module">
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-HSN/SAC
-</label>
-
-<input
-id="pHSN"
-placeholder="HSN">
-
-</div>
-
-
-<div class="col-2">
-
-<label>
-Unit
-</label>
-
-<input
-id="pUnit"
-value="Nos">
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-Default GST %
-</label>
-
-<input
-type="number"
-id="pGST"
-value="12"
-step="0.01">
-
-</div>
-
-
-<div class="col-4">
-
-<label>
-Default Rate ₹
-</label>
-
-<input
-type="number"
-id="pRate"
-value="0"
-step="0.01">
-
-</div>
-
-
-<div class="col-8">
-
-<label>
-Description
-</label>
-
-<input
-id="pDesc"
-placeholder="Product description">
-
-</div>
-
-
-<div class="col-12 actions">
-
-<button
-class="btn btn-primary"
-onclick="saveProduct()">
-
-＋ Save Product
-
-</button>
-
-
-<button
-class="btn btn-light"
-onclick="clearProductForm()">
-
-Clear
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<div class="card">
+<section class="table-card">
 
 <div class="table-wrap">
 
@@ -1788,209 +1067,66 @@ Clear
 
 <tr>
 
-<th>Product</th>
-<th>HSN</th>
-<th>Unit</th>
-<th>Rate</th>
-<th>GST</th>
-<th>Description</th>
-<th>Action</th>
+<th>
+Consumer
+</th>
+
+<th>
+Type
+</th>
+
+<th>
+Capacity
+</th>
+
+<th>
+Consumer No.
+</th>
+
+<th>
+Payment
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Last Updated
+</th>
+
+<th>
+Action
+</th>
 
 </tr>
 
 </thead>
 
-<tbody id="productTable"></tbody>
+<tbody id="tableBody">
+</tbody>
 
 </table>
 
 </div>
-
-</div>
-
-</section>
-
-
-
-<!-- HISTORY -->
-
-<section id="historySection" class="section">
-
-
-<div class="card">
-
-<h2>
-Invoice History
-</h2>
-
-
-<div class="actions">
-
-<button
-class="btn btn-light"
-onclick="exportData()">
-
-Export Backup
-
-</button>
-
-
-<button
-class="btn btn-danger"
-onclick="clearAllData()">
-
-Clear All Local Data
-
-</button>
-
-</div>
-
 
 <div
-class="table-wrap"
-style="margin-top:15px">
+class="empty"
+id="tableEmpty">
 
-<table>
-
-<thead>
-
-<tr>
-
-<th>Invoice No.</th>
-<th>Date</th>
-<th>Consumer</th>
-<th class="num">Amount</th>
-<th>Action</th>
-
-</tr>
-
-</thead>
-
-<tbody id="historyTable"></tbody>
-
-</table>
-
-</div>
+No consumer data found.
 
 </div>
 
 </section>
 
 
+<!-- MOBILE -->
 
-<!-- SETTINGS -->
-
-<section id="settingsSection" class="section">
-
-
-<div class="card">
-
-<h2>
-Business Settings
-</h2>
-
-<p class="muted">
-Update your business information here.
-</p>
-
-
-<div class="grid">
-
-
-<div class="col-6">
-
-<label>
-Business Name
-</label>
-
-<input id="setName">
-
-</div>
-
-
-<div class="col-6">
-
-<label>
-GSTIN
-</label>
-
-<input id="setGST">
-
-</div>
-
-
-<div class="col-6">
-
-<label>
-Address
-</label>
-
-<textarea id="setAddress"></textarea>
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-PAN
-</label>
-
-<input id="setPAN">
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-Mobile
-</label>
-
-<input id="setMobile">
-
-</div>
-  <div class="col-3">
-
-<label>
-Email
-</label>
-
-<input
-type="email"
-id="setEmail"
-placeholder="Enter Email">
-
-</div>
-
-
-<div class="col-3">
-
-<label>
-TAN Number
-</label>
-
-<input
-id="setTAN"
-placeholder="Enter TAN Number">
-
-</div>
-
-</div>
-
-
-<button
-class="btn btn-primary"
-onclick="saveSettings()">
-
-Save Settings
-
-</button>
-
-</div>
-
+<section
+class="mobile-list"
+id="mobileList">
 </section>
-
 
 </main>
 
@@ -1998,3078 +1134,2805 @@ Save Settings
 
 
 
-<!-- PREVIEW MODAL -->
+<!-- ADD / EDIT MODAL -->
 
 <div
-class="modal"
-id="previewModal">
+class="modal-backdrop"
+id="formModal">
 
-<div class="modal-box">
+<div class="modal">
+
+<div class="modal-head">
+
+<h3 id="formTitle">
+Add Consumer
+</h3>
 
 <button
 class="close"
-onclick="closePreview()">
-
-✕
-
+data-close="formModal">
+×
 </button>
 
+</div>
 
-<div
-class="actions no-print"
-style="margin-bottom:12px">
+
+<form id="consumerForm">
+
+<div class="modal-body">
+
+<input
+type="hidden"
+id="docId">
+
+
+<!-- CONSUMER -->
+
+<div class="form-section">
+
+<h4>
+👤 Consumer Information
+</h4>
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Consumer Name *
+</label>
+
+<input
+id="consumerName"
+required>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Father / Husband Name
+</label>
+
+<input
+id="guardianName">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Mobile No. *
+</label>
+
+<input
+id="mobile"
+required>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Alternate Mobile
+</label>
+
+<input
+id="altMobile">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Email
+</label>
+
+<input
+id="email"
+type="email">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Aadhaar / ID Reference
+</label>
+
+<input
+id="idReference">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Consumer Number
+</label>
+
+<input
+id="consumerNumber">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Customer Type *
+</label>
+
+<select
+id="customerType"
+required>
+
+<option>
+Domestic
+</option>
+
+<option>
+Commercial
+</option>
+
+<option>
+Agriculture
+</option>
+
+<option>
+Bulk
+</option>
+
+<option>
+Industrial
+</option>
+
+<option>
+Other
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Tariff Category
+</label>
+
+<input
+id="tariffCategory">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ADDRESS -->
+
+<div class="form-section">
+
+<h4>
+📍 Address
+</h4>
+
+<div class="form-grid">
+
+
+<div class="field full">
+
+<label>
+Full Address
+</label>
+
+<textarea id="address"></textarea>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Village / Town
+</label>
+
+<input id="village">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Post Office
+</label>
+
+<input id="postOffice">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Police Station
+</label>
+
+<input id="policeStation">
+
+</div>
+
+
+<div class="field">
+
+<label>
+District
+</label>
+
+<input id="district">
+
+</div>
+
+
+<div class="field">
+
+<label>
+State
+</label>
+
+<input
+id="state"
+value="West Bengal">
+
+</div>
+
+
+<div class="field">
+
+<label>
+PIN
+</label>
+
+<input id="pin">
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Solar Site Address
+</label>
+
+<textarea id="siteAddress"></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- CONNECTION -->
+
+<div class="form-section">
+
+<h4>
+⚡ Connection & Application
+</h4>
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Connection Type
+</label>
+
+<select id="connectionType">
+
+<option>
+Domestic
+</option>
+
+<option>
+Commercial
+</option>
+
+<option>
+Agriculture
+</option>
+
+<option>
+Bulk
+</option>
+
+<option>
+Industrial
+</option>
+
+<option>
+Other
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Phase
+</label>
+
+<select id="phase">
+
+<option>
+1 Phase
+</option>
+
+<option>
+3 Phase
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Existing Load (kW)
+</label>
+
+<input
+id="existingLoad"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Proposed Solar Capacity (kW)
+</label>
+
+<input
+id="solarCapacity"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Sanctioned Load (kW)
+</label>
+
+<input
+id="sanctionedLoad"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Application Number
+</label>
+
+<input id="applicationNumber">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Application Date
+</label>
+
+<input
+id="applicationDate"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Connection Date
+</label>
+
+<input
+id="connectionDate"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Meter Number
+</label>
+
+<input id="meterNumber">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Status
+</label>
+
+<select id="status">
+
+<option>
+Pending
+</option>
+
+<option>
+Applied
+</option>
+
+<option>
+Inspection
+</option>
+
+<option>
+Approved
+</option>
+
+<option>
+Installed
+</option>
+
+<option>
+Active
+</option>
+
+<option>
+Completed
+</option>
+
+<option>
+Cancelled
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- SOLAR -->
+
+<div class="form-section">
+
+<h4>
+☀️ Solar System
+</h4>
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Panel Make
+</label>
+
+<input id="panelMake">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Panel Model
+</label>
+
+<input id="panelModel">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Number of Panels
+</label>
+
+<input
+id="panelCount"
+type="number">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Inverter Make
+</label>
+
+<input id="inverterMake">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Inverter Model
+</label>
+
+<input id="inverterModel">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Inverter Capacity (kW)
+</label>
+
+<input
+id="inverterCapacity"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Structure Type
+</label>
+
+<input id="structureType">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Battery
+</label>
+
+<select id="batteryRequired">
+
+<option>
+No
+</option>
+
+<option>
+Yes
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Battery Details
+</label>
+
+<input id="batteryDetails">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Installation Date
+</label>
+
+<input
+id="installationDate"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Commissioning Date
+</label>
+
+<input
+id="commissioningDate"
+type="date">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- FINANCE -->
+
+<div class="form-section">
+
+<h4>
+💰 Financial
+</h4>
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Total Project Cost (₹)
+</label>
+
+<input
+id="totalCost"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Advance (₹)
+</label>
+
+<input
+id="advance"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Paid Amount (₹)
+</label>
+
+<input
+id="paidAmount"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Remaining Amount (₹)
+</label>
+
+<input
+id="remainingAmount"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Subsidy (₹)
+</label>
+
+<input
+id="subsidy"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Subsidy Status
+</label>
+
+<select id="subsidyStatus">
+
+<option>
+Not Applicable
+</option>
+
+<option>
+Pending
+</option>
+
+<option>
+Applied
+</option>
+
+<option>
+Received
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Payment Mode
+</label>
+
+<select id="paymentMode">
+
+<option>
+Cash
+</option>
+
+<option>
+UPI
+</option>
+
+<option>
+Bank Transfer
+</option>
+
+<option>
+Cheque
+</option>
+
+<option>
+Other
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Last Payment Date
+</label>
+
+<input
+id="lastPaymentDate"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+UTR / Transaction Number
+</label>
+
+<input id="utrNumber">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- NET METER -->
+
+<div class="form-section">
+
+<h4>
+🔌 Net Meter
+</h4>
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Net Meter Required
+</label>
+
+<select id="netMeterRequired">
+
+<option>
+Yes
+</option>
+
+<option>
+No
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Net Meter Application Date
+</label>
+
+<input
+id="netMeterApplicationDate"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Inspection Date
+</label>
+
+<input
+id="inspectionDate"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Inspection Status
+</label>
+
+<select id="inspectionStatus">
+
+<option>
+Pending
+</option>
+
+<option>
+Scheduled
+</option>
+
+<option>
+Passed
+</option>
+
+<option>
+Failed
+</option>
+
+<option>
+Not Required
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Meter Installation Date
+</label>
+
+<input
+id="meterInstallationDate"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Net Meter Number
+</label>
+
+<input id="netMeterNumber">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Agreement Status
+</label>
+
+<select id="agreementStatus">
+
+<option>
+Pending
+</option>
+
+<option>
+Submitted
+</option>
+
+<option>
+Approved
+</option>
+
+<option>
+Not Required
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Synchronization Date
+</label>
+
+<input
+id="syncDate"
+type="date">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- WARRANTY -->
+
+<div class="form-section">
+
+<h4>
+🛠️ Warranty / AMC / Remarks
+</h4>
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Warranty Start
+</label>
+
+<input
+id="warrantyStart"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Warranty End
+</label>
+
+<input
+id="warrantyEnd"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+AMC Start
+</label>
+
+<input
+id="amcStart"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+AMC End
+</label>
+
+<input
+id="amcEnd"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Last Service
+</label>
+
+<input
+id="lastService"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Next Service
+</label>
+
+<input
+id="nextService"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Assigned Staff
+</label>
+
+<input id="assignedStaff">
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Remarks
+</label>
+
+<textarea id="remarks"></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="note">
+
+Documents/photo upload can be added later with Firebase Storage.
+
+</div>
+
+</div>
+
+
+<div class="modal-foot">
+
+<button
+type="button"
+class="btn btn-light"
+data-close="formModal">
+
+Cancel
+
+</button>
 
 <button
 class="btn btn-primary"
-onclick="printPreview()">
+type="submit">
 
-🖨 Print / Save PDF
+💾 Save Consumer
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+
+<!-- DETAILS MODAL -->
+
+<div
+class="modal-backdrop"
+id="detailsModal">
+
+<div class="modal">
+
+<div class="modal-head">
+
+<h3>
+Consumer Details
+</h3>
+
+<button
+class="close"
+data-close="detailsModal">
+
+×
 
 </button>
 
 </div>
 
 
-<div id="previewContent"></div>
+<div class="modal-body">
 
+<div id="detailsContent">
 </div>
 
 </div>
 
 
+<div class="modal-foot">
+
+<button
+class="btn btn-light"
+data-close="detailsModal">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- LOADING -->
+
+<div
+class="loading"
+id="loading">
+
+<div class="spinner">
+</div>
+
+</div>
+
+
+<!-- TOAST -->
 
 <div
 class="toast"
-id="toast"></div>
+id="toast">
+</div>
 
 
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 
 <script>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
-    authDomain: "chakraborty-ele-login.firebaseapp.com",
-    projectId: "chakraborty-ele-login",
-    storageBucket: "chakraborty-ele-login.firebasestorage.app",
-    messagingSenderId: "414542805581",
-    appId: "1:414542805581:web:cfd13593767abbb51cba04"
+/* ==========================================
+   FIREBASE CONFIG
+========================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyBzsxNsxx3RwN94Sxxz_dRQwMbll6Cg10",
+
+    authDomain:
+    "chakraborty-ele-login.firebaseapp.com",
+
+    projectId:
+    "chakraborty-ele-login",
+
+    storageBucket:
+    "chakraborty-ele-login.firebasestorage.app",
+
+    messagingSenderId:
+    "414542805581",
+
+    appId:
+    "1:414542805581:web:cfd13593767abbb51cba04"
+
 };
+
 
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
-const auth = firebase.auth();
 
-  
+const auth =
+firebase.auth();
 
-const KEY = {
-
-products:"solar_products_v1",
-
-invoices:"solar_invoices_v1",
-
-settings:"solar_settings_v1"
-
-};
-
-  let products = [];
-  let editingProductId = null;
-let invoices = [];
-let settings = {};
-
-let items = [];
-  let editingInvoiceId = null;
+const db =
+firebase.firestore();
 
 
+/*
+Firestore collection name
+*/
 
-  const defaultSettings = {
-    name:"M/S CHAKRABORTY ELECTRICALS",
-    gst:"",
-    address:"",
-    pan:"",
-    mobile:"",
-    email:"",
-    tan:""
-};
+const COLLECTION =
+"solar_consumers";
 
 
-settings = {
-    ...defaultSettings,
-    ...settings
-};
+let allData = [];
+
+let unsubscribe = null;
 
 
+/* ==========================================
+   HELPERS
+========================================== */
 
-function money(n){
+const $ =
+id => document.getElementById(id);
+
+
+function showLoading(value){
+
+    $("loading")
+    .classList
+    .toggle("show",value);
+
+}
+
+
+function toast(message){
+
+    $("toast").textContent =
+    message;
+
+    $("toast")
+    .classList
+    .add("show");
+
+    setTimeout(()=>{
+
+        $("toast")
+        .classList
+        .remove("show");
+
+    },2500);
+
+}
+
+
+function esc(value){
+
+    return String(value ?? "")
+    .replace(/[&<>"']/g,m=>({
+
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+
+    }[m]));
+
+}
+
+
+function money(value){
 
     return "₹" +
-        Number(n || 0).toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits:2,
-                maximumFractionDigits:2
-            }
-        );
+    Number(value || 0)
+    .toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits:2
+        }
+    );
 
 }
 
 
+function dateFmt(value){
 
-function todayISO(){
+    if(!value)
+        return "—";
 
-    return new Date()
-        .toISOString()
-        .slice(0,10);
-
-}
-
-
-
-function fyFor(dateStr){
+    if(value.toDate)
+        return value
+        .toDate()
+        .toLocaleDateString("en-IN");
 
     const d =
-        new Date(dateStr + "T00:00:00");
+    new Date(value);
 
-    const y =
-        d.getFullYear();
+    return isNaN(d)
+        ? "—"
+        : d.toLocaleDateString("en-IN");
 
-    const m =
-        d.getMonth() + 1;
+}
 
-    if(m >= 4){
 
-        return `${y}-${y+1}`;
+function statusClass(status){
+
+    if(
+        [
+            "Active",
+            "Installed",
+            "Completed",
+            "Approved"
+        ].includes(status)
+    )
+        return "b-green";
+
+    if(
+        [
+            "Pending",
+            "Inspection",
+            "Applied"
+        ].includes(status)
+    )
+        return "b-orange";
+
+    if(status==="Cancelled")
+        return "b-red";
+
+    return "b-blue";
+
+}
+
+
+/* ==========================================
+   AUTH
+========================================== */
+
+auth.onAuthStateChanged(user=>{
+
+    if(!user){
+
+        location.href =
+        "login.html";
+
+        return;
 
     }
 
-    return `${y-1}-${y}`;
+    $("userEmail")
+    .textContent =
+    user.email ||
+    "Logged in";
 
-}
-
-
-
-function serialFor(dateStr){
-
-    const fy =
-        fyFor(dateStr);
-
-    const nums =
-        invoices
-        .filter(x => x.fy === fy)
-        .map(x => Number(x.serial) || 0);
-
-    return (
-        nums.length
-        ? Math.max(...nums)
-        : 0
-    ) + 1;
-
-}
-
-
-
-function makeInvoiceNo(dateStr){
-
-    return (
-        "SOLAR/" +
-        fyFor(dateStr) +
-        "/" +
-        String(
-            serialFor(dateStr)
-        ).padStart(2,"0")
-    );
-
-}
-
-
-
-function showToast(msg){
-
-    const t =
-        document.getElementById("toast");
-
-    t.textContent = msg;
-
-    t.style.display = "block";
-
-    setTimeout(
-        () => {
-            t.style.display = "none";
-        },
-        2200
-    );
-
-}
-
-
-  async function loadProducts(){
-
-    const snap = await db
-        .collection("solar_product")
-        .get();
-
-    products = snap.docs.map(doc => {
-
-    const data = doc.data() || {};
-
-    return {
-        id: doc.id,
-        ...data,
-        desc: data.desc ?? data.description ?? ""
-    };
+    listenData();
 
 });
-}
 
 
-async function loadInvoices(){
+/* ==========================================
+   LOAD FIRESTORE
+========================================== */
 
-    const snap = await db
-        .collection("solar_invoice")
-        .get();
+function listenData(){
 
-    invoices = snap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
-}
+    if(unsubscribe)
+        unsubscribe();
 
 
-async function loadSettings(){
+    unsubscribe =
+    db.collection(COLLECTION)
 
-    const doc = await db
-        .collection("solar_settings")
-        .doc("business")
-        .get();
+    .orderBy(
+        "updatedAt",
+        "desc"
+    )
 
-    if(doc.exists){
+    .onSnapshot(
 
-        settings = {
-            ...defaultSettings,
-            ...doc.data()
-        };
+        snapshot=>{
 
-    }else{
-
-        settings = {
-            ...defaultSettings
-        };
-
-    }
-}
-
-async function loadAllFirebaseData(){
-
-    try{
-
-        console.log("Loading products...");
-        await loadProducts();
-        console.log("Products loaded:", products.length);
-
-        console.log("Loading invoices...");
-        await loadInvoices();
-        console.log("Invoices loaded:", invoices.length);
-
-        console.log("Loading settings...");
-        await loadSettings();
-        console.log("Settings loaded:", settings);
-
-        applySettings();
-        updateInvoiceNo();
-        refreshAll();
-
-    }catch(error){
-
-        console.error("FIREBASE LOAD ERROR:", error);
-
-        showToast(
-            "Firebase load failed: " +
-            (error.code || error.message || "Unknown error")
-        );
-
-    }
-
-  }
-
-
-
-function showSection(id,btn){
-
-    document
-        .querySelectorAll(".section")
-        .forEach(
-            s => s.classList.remove("active")
-        );
-
-    document
-        .getElementById(id)
-        .classList.add("active");
-
-
-    document
-        .querySelectorAll(".nav button")
-        .forEach(
-            b => b.classList.remove("active")
-        );
-
-
-    if(btn){
-
-        btn.classList.add("active");
-
-    }
-
-
-    refreshAll();
-
-}
-
-
-
-function toggleSidebar(){
-
-    const s =
-        document.getElementById("sidebar");
-
-    s.style.display =
-        s.style.display === "block"
-        ? "none"
-        : "block";
-
-}
-
-
-
-function updateInvoiceNo(){
-
-    const d =
-        document.getElementById("invoiceDate").value
-        || todayISO();
-
-
-    document.getElementById(
-        "financialYear"
-    ).value = fyFor(d);
-
-
-    document.getElementById(
-        "invoiceNo"
-    ).value = makeInvoiceNo(d);
-
-}
-
-
-
-async function init(){
-
-    document.getElementById(
-        "invoiceDate"
-    ).value = todayISO();
-
-    auth.onAuthStateChanged(async (user) => {
-
-        if(!user){
-            showToast("Please login first");
-            return;
-        }
-
-        console.log("Logged in:", user.email);
-
-        await loadAllFirebaseData();
-
-    });
-
-  }
-
-
-function applySettings(){
-
-    // Invoice Seller Information
-    document.getElementById(
-        "sellerName"
-    ).value = settings.name;
-
-    document.getElementById(
-        "sellerGST"
-    ).value = settings.gst;
-
-    document.getElementById(
-        "sellerAddress"
-    ).value = settings.address;
-
-    document.getElementById(
-        "sellerPAN"
-    ).value = settings.pan;
-
-    document.getElementById(
-        "sellerMobile"
-    ).value = settings.mobile;
-
-    document.getElementById(
-        "sellerEmail"
-    ).value = settings.email || "";
-
-    document.getElementById(
-        "sellerTAN"
-    ).value = settings.tan || "";
-
-
-    // Settings Page
-    document.getElementById(
-        "setName"
-    ).value = settings.name;
-
-    document.getElementById(
-        "setGST"
-    ).value = settings.gst;
-
-    document.getElementById(
-        "setAddress"
-    ).value = settings.address;
-
-    document.getElementById(
-        "setPAN"
-    ).value = settings.pan;
-
-    document.getElementById(
-        "setMobile"
-    ).value = settings.mobile;
-
-    document.getElementById(
-        "setEmail"
-    ).value = settings.email || "";
-
-    document.getElementById(
-        "setTAN"
-    ).value = settings.tan || "";
-
-  }
-
-
-
-async function saveSettings(){
-    settings = {
-        name: document.getElementById("setName").value.trim(),
-        gst: document.getElementById("setGST").value.trim(),
-        address: document.getElementById("setAddress").value.trim(),
-        pan: document.getElementById("setPAN").value.trim(),
-        mobile: document.getElementById("setMobile").value.trim(),
-
-        email: document.getElementById("setEmail").value.trim(),
-        tan: document.getElementById("setTAN").value.trim()
-    };
-
-    try{
-        await db
-            .collection("solar_settings")
-            .doc("business")
-            .set(settings, {merge:true});
-
-        await loadAllFirebaseData();
-
-        showToast("Settings saved & data refreshed");
-
-    }catch(error){
-
-        console.error("Settings save failed:", error);
-
-        showToast(
-            "Settings save failed: " +
-            (error.code || "permission/error")
-        );
-    }
-  }
-
-function clearProductForm() {
-
-    document.getElementById("pName").value = "";
-    document.getElementById("pHSN").value = "";
-    document.getElementById("pUnit").value = "Nos";
-    document.getElementById("pGST").value = "";
-    document.getElementById("pRate").value = "";
-    document.getElementById("pDesc").value = "";
-
-    editingProductId = null;
-
-    const saveBtn =
-        document.querySelector(
-            'button[onclick="saveProduct()"]'
-        );
-
-    if (saveBtn) {
-        saveBtn.innerHTML = "＋ Save Product";
-    }
-  }
-
-
-  function editProduct(id) {
-
-    const product = products.find(p => p.id === id);
-
-    if (!product) {
-        showToast("Product not found");
-        return;
-    }
-
-    document.getElementById("pName").value = product.name || "";
-    document.getElementById("pHSN").value = product.hsn || "";
-    document.getElementById("pUnit").value = product.unit || "Nos";
-    document.getElementById("pGST").value = product.gst ?? "";
-    document.getElementById("pRate").value = product.rate ?? "";
-
-    document.getElementById("pDesc").value =
-        product.desc ?? product.description ?? "";
-
-    editingProductId = id;
-
-    const saveBtn =
-        document.querySelector(
-            'button[onclick="saveProduct()"]'
-        );
-
-    if (saveBtn) {
-        saveBtn.innerHTML = "✓ Update Product";
-    }
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-async function deleteProduct(id){
-    if(!confirm("Delete this product?")) return;
-
-    try{
-        await db.collection("solar_product").doc(id).delete();
-        products = products.filter(p => p.id !== id);
-
-await loadAllFirebaseData();
-
-showToast("Product deleted & data refreshed");
-    }catch(error){
-        console.error("Product delete failed:", error);
-        showToast("Delete failed: " + (error.code || "permission/error"));
-    }
-}
-
-function renderProducts(){
-
-    const tb =
-        document.getElementById(
-            "productTable"
-        );
-
-
-    if(!products.length){
-
-        tb.innerHTML =
-            `
-            <tr>
-                <td colspan="7" class="empty">
-                    No products added yet.
-                </td>
-            </tr>
-            `;
-
-        return;
-
-    }
-
-
-    tb.innerHTML =
-        products.map(
-            p => `
-
-            <tr>
-
-                <td>
-                    <b>${esc(p.name)}</b>
-                </td>
-
-                <td>${esc(p.hsn)}</td>
-
-                <td>${esc(p.unit)}</td>
-
-                <td>${money(p.rate)}</td>
-
-                <td>${p.gst}%</td>
-
-                <td>${esc(p.desc)}</td>
-
-                <td>
-                <button class="btn btn-primary"
-style="padding:6px 9px"
-onclick="editProduct('${p.id}')">
-Edit
-</button>
-
-                    <button
-                    class="btn btn-danger"
-                    style="padding:6px 9px"
-                    onclick="deleteProduct('${p.id}')">
-
-                    Delete
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-            `
-        )
-        .join("");
-
-}
-
-
-
-function renderProductSelect(){
-
-    const s =
-        document.getElementById(
-            "productSelect"
-        );
-
-
-    s.innerHTML =
-        `
-        <option value="">
-            -- Select product --
-        </option>
-        ` +
-        products.map(
-            p =>
-            `
-            <option value="${p.id}">
-                ${esc(p.name)}
-            </option>
-            `
-        ).join("");
-
-}
-
-
-
-function loadProduct(){
-
-    const p =
-        products.find(
-            x =>
-            x.id ===
-            document.getElementById(
-                "productSelect"
-            ).value
-        );
-
-
-    if(!p) return;
-
-
-    document.getElementById(
-        "itemRate"
-    ).value = p.rate;
-
-
-    document.getElementById(
-        "itemGST"
-    ).value = p.gst;
-
-
-    document.getElementById(
-        "itemDescription"
-    ).value = p.desc;
-
-}
-
-
-
-function addItem(){
-
-    const id =
-        document.getElementById(
-            "productSelect"
-        ).value;
-
-
-    const p =
-        products.find(
-            x => x.id === id
-        );
-
-
-    const name =
-        p
-        ? p.name
-        : (
-            document
-            .getElementById(
-                "itemDescription"
-            )
-            .value.trim()
-            || "Solar Item"
-        );
-
-
-    const qty =
-        Number(
-            document.getElementById(
-                "itemQty"
-            ).value
-        ) || 0;
-
-
-    const rate =
-        Number(
-            document.getElementById(
-                "itemRate"
-            ).value
-        ) || 0;
-
-
-    const disc =
-        Number(
-            document.getElementById(
-                "itemDiscount"
-            ).value
-        ) || 0;
-
-
-    const gst =
-        Number(
-            document.getElementById(
-                "itemGST"
-            ).value
-        ) || 0;
-
-
-    if(qty <= 0){
-
-        showToast(
-            "Enter valid quantity"
-        );
-
-        return;
-
-    }
-
-
-    if(rate < 0){
-
-        showToast(
-            "Enter valid rate"
-        );
-
-        return;
-
-    }
-
-
-    items.push({
-
-        id:Date.now().toString(),
-
-        name:name,
-
-        desc:
-            document
-            .getElementById(
-                "itemDescription"
-            )
-            .value.trim()
-            || name,
-
-        hsn:
-            p
-            ? p.hsn
-            : "",
-
-        unit:
-            p
-            ? p.unit
-            : "Nos",
-
-        qty:qty,
-
-        rate:rate,
-
-        disc:disc,
-
-        gst:gst
-
-    });
-
-
-    clearItemForm();
-
-    renderItems();
-
-}
-
-
-
-function clearItemForm(){
-
-    document.getElementById(
-        "productSelect"
-    ).value = "";
-
-    document.getElementById(
-        "itemQty"
-    ).value = 1;
-
-    document.getElementById(
-        "itemRate"
-    ).value = "";
-
-    document.getElementById(
-        "itemDiscount"
-    ).value = 0;
-
-    document.getElementById(
-        "itemGST"
-    ).value = 12;
-
-    document.getElementById(
-        "itemDescription"
-    ).value = "";
-
-}
-
-
-
-function deleteItem(id){
-
-    items =
-        items.filter(
-            i => i.id !== id
-        );
-
-    renderItems();
-
-}
-
-
-
-function calc(){
-
-    let subtotal = 0;
-
-    let discount = 0;
-
-    let taxable = 0;
-
-    let tax = 0;
-
-
-    items.forEach(i => {
-
-        const gross =
-            i.qty * i.rate;
-
-
-        subtotal += gross;
-
-        discount += i.disc;
-
-
-        const tx =
-            Math.max(
-                0,
-                gross - i.disc
+            allData =
+            snapshot.docs.map(
+                doc=>({
+                    id:doc.id,
+                    ...doc.data()
+                })
             );
 
+            render();
 
-        taxable += tx;
-
-        tax +=
-            tx * i.gst / 100;
-
-    });
-
-
-    return {
-
-        subtotal,
-
-        discount,
-
-        taxable,
-
-        tax,
-
-        total:
-            taxable + tax
-
-    };
-
-}
-
-
-
-function renderItems(){
-
-    const tb =
-        document.getElementById(
-            "itemTable"
-        );
-
-
-    if(!items.length){
-
-        tb.innerHTML =
-            `
-            <tr>
-
-                <td
-                colspan="10"
-                class="empty">
-
-                    No items added.
-                    Add solar products above.
-
-                </td>
-
-            </tr>
-            `;
-
-        return;
-
-    }
-
-
-    tb.innerHTML =
-        items.map(
-            (i,n) => {
-
-                const tx =
-                    Math.max(
-                        0,
-                        i.qty*i.rate-i.disc
-                    );
-
-
-                const tax =
-                    tx*i.gst/100;
-
-
-                return `
-
-                <tr>
-
-                    <td>
-                        ${n+1}
-                    </td>
-
-                    <td>
-
-                        <b>
-                            ${esc(i.name)}
-                        </b>
-
-                        <br>
-
-                        <span class="muted">
-                            ${esc(i.desc)}
-                        </span>
-
-                    </td>
-
-                    <td>
-                        ${esc(i.hsn)}
-                    </td>
-
-                    <td class="num">
-                        ${i.qty}
-                        ${esc(i.unit)}
-                    </td>
-
-                    <td class="num">
-                        ${money(i.rate)}
-                    </td>
-
-                    <td class="num">
-                        ${money(i.disc)}
-                    </td>
-
-                    <td class="num">
-                        ${money(tx)}
-                    </td>
-
-                    <td class="num">
-                        ${i.gst}%
-                    </td>
-
-                    <td class="num">
-                        ${money(tx+tax)}
-                    </td>
-
-                    <td>
-
-                        <button
-                        class="btn btn-danger"
-                        style="padding:5px 8px"
-                        onclick="deleteItem('${i.id}')">
-
-                        ×
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-                `;
-
-            }
-        ).join("");
-
-}
-
-
-
-function getForm(){
-
-    const d =
-        document.getElementById(
-            "invoiceDate"
-        ).value || todayISO();
-
-
-    return {
-
-        date:d,
-
-        no:
-            document
-            .getElementById(
-                "invoiceNo"
-            ).value,
-
-        fy:
-            fyFor(d),
-
-        serial:
-            serialFor(d),
-
-
-        seller:{
-
-            name:
-                document
-                .getElementById(
-                    "sellerName"
-                ).value,
-
-            gst:
-                document
-                .getElementById(
-                    "sellerGST"
-                ).value,
-
-            address:
-                document
-                .getElementById(
-                    "sellerAddress"
-                ).value,
-
-            pan:
-                document
-                .getElementById(
-                    "sellerPAN"
-                ).value,
-
-            mobile:
-                document
-                .getElementById(
-                    "sellerMobile"
-                ).value,
-      email:
-        document
-        .getElementById(
-            "sellerEmail"
-        ).value,
-
-    tan:
-        document
-        .getElementById(
-            "sellerTAN"
-        ).value
+            showLoading(false);
 
         },
 
+        error=>{
 
-        customer:{
+            showLoading(false);
 
-            name:
-                document
-                .getElementById(
-                    "customerName"
-                ).value,
+            console.error(error);
 
-            mobile:
-                document
-                .getElementById(
-                    "customerMobile"
-                ).value,
+            toast(
+                "Data load failed: " +
+                error.message
+            );
 
-            gstin:
-                document
-                .getElementById(
-                    "customerGSTIN"
-                ).value,
-
-            address:
-                document
-                .getElementById(
-                    "customerAddress"
-                ).value,
-
-            state:
-                document
-                .getElementById(
-                    "customerState"
-                ).value,
-
-            stateCode:
-                document
-                .getElementById(
-                    "stateCode"
-                ).value
-
-        },
-
-
-        place:
-            document
-            .getElementById(
-                "placeSupply"
-            ).value,
-
-
-        payment:
-            document
-            .getElementById(
-                "paymentMode"
-            ).value,
-
-
-        ref:
-            document
-            .getElementById(
-                "paymentRef"
-            ).value,
-
-
-        reverse:
-            document
-            .getElementById(
-                "reverseCharge"
-            ).value,
-
-
-        notes:
-            document
-            .getElementById(
-                "invoiceNotes"
-            ).value,
-
-
-        items:
-            JSON.parse(
-                JSON.stringify(items)
-            ),
-
-
-        totals:
-            calc()
-
-    };
-
-}
-
-
-
-async function saveInvoice(){
-
-    const f = getForm();
-
-    if(!f.customer.name){
-        showToast("Consumer name is required");
-        return;
-    }
-
-    if(!f.items.length){
-        showToast("Add at least one item");
-        return;
-    }
-
-    try{
-
-        const invoiceData = {
-            ...f,
-            savedAt:
-                firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        /* =========================
-           EDIT MODE
-        ========================= */
-
-        if(editingInvoiceId){
-
-            // IMPORTANT:
-            // Keep original invoice number
-            const oldInvoice =
-                invoices.find(
-                    x => x.id === editingInvoiceId
-                );
-
-            if(oldInvoice){
-
-                invoiceData.no = oldInvoice.no;
-                invoiceData.serial = oldInvoice.serial;
-                invoiceData.fy = oldInvoice.fy;
-
-            }
-
-            await db
-                .collection("solar_invoice")
-                .doc(editingInvoiceId)
-                .update(invoiceData);
-
-  await loadAllFirebaseData();
-
-            showToast("Invoice updated successfully");
-
-            editingInvoiceId = null;
-
-            document.querySelector(
-                '[onclick="saveInvoice()"]'
-            ).textContent = "✓ Save Invoice";
-
-            
-
-            return;
         }
 
-        /* =========================
-           NEW INVOICE
-        ========================= */
+    );
 
-        const existing =
-            invoices.find(
-                x => x.no === f.no
-            );
+}
 
-        if(existing){
-            showToast(
-                "This invoice number already exists"
-            );
-            return;
+
+/* ==========================================
+   RENDER
+========================================== */
+
+function render(){
+
+    const q =
+    $("searchInput")
+    .value
+    .trim()
+    .toLowerCase();
+
+    const type =
+    $("typeFilter").value;
+
+    const status =
+    $("statusFilter").value;
+
+
+    const data =
+    allData.filter(x=>{
+
+        const hay = [
+
+            x.consumerName,
+            x.mobile,
+            x.consumerNumber,
+            x.applicationNumber,
+            x.meterNumber,
+            x.email
+
+        ]
+        .join(" ")
+        .toLowerCase();
+
+
+        return (
+
+            (!q ||
+            hay.includes(q))
+
+            &&
+
+            (!type ||
+            x.customerType===type ||
+            x.connectionType===type)
+
+            &&
+
+            (!status ||
+            x.status===status)
+
+        );
+
+    });
+
+
+    /* STATS */
+
+    $("totalCount")
+    .textContent =
+    allData.length;
+
+
+    $("activeCount")
+    .textContent =
+    allData.filter(
+        x=>x.status==="Active"
+    ).length;
+
+
+    $("pendingCount")
+    .textContent =
+    allData.filter(
+        x=>x.status==="Pending"
+    ).length;
+
+
+    $("installedCount")
+    .textContent =
+    allData.filter(
+        x=>[
+            "Installed",
+            "Active",
+            "Completed"
+        ].includes(x.status)
+    ).length;
+
+
+    const capacity =
+    allData.reduce(
+        (total,x)=>
+        total +
+        Number(x.solarCapacity || 0),
+        0
+    );
+
+
+    $("capacityCount")
+    .textContent =
+    capacity.toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits:2
         }
-
-        const ref =
-            await db
-            .collection("solar_invoice")
-            .add(invoiceData);
-
-        invoices.push({
-            id: ref.id,
-            ...f,
-            savedAt: new Date().toISOString()
-        });
-
-        await loadAllFirebaseData();
-
-        showToast("Invoice saved successfully");
-
-    }catch(error){
-
-        console.error(error);
-
-        showToast(
-            "Invoice save failed"
-        );
-    }
-}
+    ) + " kW";
 
 
-  function editInvoice(id){
+    /* DESKTOP */
 
-    const invoice =
-        invoices.find(
-            x => x.id === id
-        );
-
-    if(!invoice){
-        showToast("Invoice not found");
-        return;
-    }
-
-    /* =========================
-       SET EDIT MODE
-    ========================= */
-
-    editingInvoiceId = id;
-
-    /* =========================
-       BASIC DETAILS
-    ========================= */
-
-    document.getElementById("invoiceDate").value =
-        invoice.date || "";
-
-    document.getElementById("invoiceNo").value =
-        invoice.no || "";
-
-    document.getElementById("financialYear").value =
-        invoice.fy || "";
+    $("tableBody")
+    .innerHTML =
+    data.map(row).join("");
 
 
-    /* =========================
-       SELLER
-    ========================= */
-
-    document.getElementById("sellerName").value =
-        invoice.seller?.name || "";
-
-    document.getElementById("sellerGST").value =
-        invoice.seller?.gst || "";
-
-    document.getElementById("sellerAddress").value =
-        invoice.seller?.address || "";
-
-    document.getElementById("sellerPAN").value =
-        invoice.seller?.pan || "";
-
-    document.getElementById("sellerMobile").value =
-        invoice.seller?.mobile || "";
-    document.getElementById("sellerEmail").value =
-    invoice.seller?.email || "";
-
-document.getElementById("sellerTAN").value =
-    invoice.seller?.tan || "";
+    $("tableEmpty")
+    .style.display =
+    data.length
+    ? "none"
+    : "block";
 
 
-    /* =========================
-       CUSTOMER
-    ========================= */
+    /* MOBILE */
 
-    document.getElementById("customerName").value =
-        invoice.customer?.name || "";
-
-    document.getElementById("customerMobile").value =
-        invoice.customer?.mobile || "";
-
-    document.getElementById("customerGSTIN").value =
-        invoice.customer?.gstin || "";
-
-    document.getElementById("customerAddress").value =
-        invoice.customer?.address || "";
-
-    document.getElementById("customerState").value =
-        invoice.customer?.state || "";
-
-    document.getElementById("stateCode").value =
-        invoice.customer?.stateCode || "";
-
-
-    /* =========================
-       OTHER OPTIONS
-    ========================= */
-
-    document.getElementById("placeSupply").value =
-        invoice.place || "";
-
-    document.getElementById("paymentMode").value =
-        invoice.payment || "";
-
-    document.getElementById("paymentRef").value =
-        invoice.ref || "";
-
-    document.getElementById("reverseCharge").value =
-        invoice.reverse || "No";
-
-    document.getElementById("invoiceNotes").value =
-        invoice.notes || "";
-
-
-    /* =========================
-       ITEMS
-    ========================= */
-
-    items =
-        JSON.parse(
-            JSON.stringify(
-                invoice.items || []
-            )
-        );
-
-    renderItems();
-
-
-    /* =========================
-       CHANGE BUTTON
-    ========================= */
-
-    const saveBtn =
-        document.querySelector(
-            '[onclick="saveInvoice()"]'
-        );
-
-    if(saveBtn){
-        saveBtn.textContent =
-            "✓ Update Invoice";
-    }
-
-
-    /* =========================
-       OPEN CREATE INVOICE
-    ========================= */
-
-    const invoiceButton =
-        document.querySelector(
-            '[onclick*="invoiceSection"]'
-        );
-
-    showSection(
-        "invoiceSection",
-        invoiceButton
-    );
-
-
-    showToast(
-        "Invoice loaded for editing"
-    );
+    $("mobileList")
+    .innerHTML =
+    data.length
+    ? data.map(card).join("")
+    : '<div class="empty">No consumer data found.</div>';
 
 }
 
-function newInvoice(){
 
-  editingInvoiceId = null;
+/* ==========================================
+   DESKTOP ROW
+========================================== */
 
-  const saveBtn =
-    document.querySelector(
-        '[onclick="saveInvoice()"]'
-    );
-
-if(saveBtn){
-    saveBtn.textContent =
-        "✓ Save Invoice";
-}
-
-    items = [];
-
-
-    document.getElementById(
-        "customerName"
-    ).value = "";
-
-
-    document.getElementById(
-        "customerMobile"
-    ).value = "";
-
-
-    document.getElementById(
-        "customerGSTIN"
-    ).value = "";
-
-
-    document.getElementById(
-        "customerAddress"
-    ).value = "";
-
-
-    document.getElementById(
-        "paymentRef"
-    ).value = "";
-
-
-    document.getElementById(
-        "invoiceDate"
-    ).value = todayISO();
-
-
-    updateInvoiceNo();
-
-    renderItems();
-
-    showToast(
-        "New invoice ready"
-    );
-
-}
-
-
-
-function previewInvoice(){
-
-    const f =
-        getForm();
-
-
-    if(!f.items.length){
-
-        showToast(
-            "Add items before preview"
-        );
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "previewContent"
-    ).innerHTML =
-        invoiceHTML(f);
-
-
-    document.getElementById(
-        "previewModal"
-    ).style.display = "flex";
-
-}
-
-  function printPreview(){
-
-    const invoice =
-        document.getElementById("previewContent");
-
-    if(!invoice || !invoice.innerHTML.trim()){
-        showToast("Open invoice preview first");
-        return;
-    }
-
-    const iframe = document.createElement("iframe");
-
-    iframe.style.position = "fixed";
-    iframe.style.width = "1px";
-    iframe.style.height = "1px";
-    iframe.style.border = "0";
-    iframe.style.left = "-9999px";
-
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow.document;
-
-    /* সব মূল CSS copy হবে */
-    const styles =
-        Array.from(document.querySelectorAll("style"))
-        .map(s => s.outerHTML)
-        .join("");
-
-    doc.open();
-
-    doc.write(`
-<!DOCTYPE html>
-<html>
-<head>
-
-<meta charset="UTF-8">
-
-${styles}
-
-<style>
-
-@page{
-    size:A4;
-    margin:0;
-}
-
-html,body{
-    margin:0 !important;
-    padding:0 !important;
-    width:210mm !important;
-    min-height:297mm !important;
-    background:white !important;
-}
-
-#printArea{
-    width:210mm !important;
-    margin:0 !important;
-    padding:0 !important;
-    visibility:visible !important;
-}
-
-#printArea .invoice-paper{
-    width:210mm !important;
-    min-height:0 !important;
-    max-width:none !important;
-    margin:0 !important;
-    padding:7mm !important;
-    box-sizing:border-box !important;
-    background:white !important;
-    box-shadow:none !important;
-  }
-  #printArea .invoice-paper{
-    page-break-before:auto !important;
-    page-break-after:auto !important;
-    break-before:auto !important;
-    break-after:auto !important;
-}
-  
-#printArea .company{
-    font-size:27px !important;
-    font-weight:900 !important;
-    line-height:1.2 !important;
-}
-
-#printArea .inv-head .small{
-    font-size:14px !important;
-    line-height:1.5 !important;
-}
-
-#printArea .inv-head .inv-title{
-    font-size:30px !important;
-    font-weight:900 !important;
-    line-height:1.2 !important;
-}
-#printArea .inv-head{
-    display:grid !important;
-    grid-template-columns:60% 40% !important;
-    align-items:stretch !important;
-    gap:0 !important;
-    width:100% !important;
-    box-sizing:border-box !important;
-    position:relative !important;
-}
-#printArea .inv-head > div:first-child{
-    display:flex !important;
-    flex-direction:column !important;
-    justify-content:space-between !important;
-    height:100% !important;
-    box-sizing:border-box !important;
-}
-
-#printArea .inv-head .inv-meta{
-    height:100% !important;
-}
-
-#printArea .inv-head > div:first-child{
-    width:100% !important;
-    padding-right:15px !important;
-    box-sizing:border-box !important;
-    white-space:nowrap !important;
-}
-
-#printArea .inv-head .inv-meta{
-    width:100% !important;
-    padding-left:15px !important;
-    box-sizing:border-box !important;
-    position:relative !important;
-    text-align:center !important;
-}
-
-#printArea .inv-head .inv-title{
-    text-align:center !important;
-    font-size:28px !important;
-    font-weight:900 !important;
-    white-space:nowrap !important;
-}
-/* ===== PDF COMPACT TABLE ===== */
-
-#printArea .inv-table{
-    width:100% !important;
-    table-layout:auto !important;
-    border-collapse:collapse !important;
-}
-
-  /* ===== MULTI PAGE A4 TABLE ===== */
-
-#printArea .inv-table{
-    page-break-before:auto !important;
-    page-break-after:auto !important;
-
-    break-before:auto !important;
-    break-after:auto !important;
-}
-
-#printArea .inv-table thead{
-    display:table-header-group !important;
-}
-
-#printArea .inv-table tbody{
-    display:table-row-group !important;
-}
-
-#printArea .inv-table tr{
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-}
-
-#printArea .inv-table td,
-#printArea .inv-table th{
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-}
-
-/* Description gets the maximum useful space */
-#printArea .inv-table th:nth-child(2),
-#printArea .inv-table td:nth-child(2){
-    width:34% !important;
-    white-space:normal !important;
-    overflow-wrap:break-word !important;
-    word-break:normal !important;
-}
-
-/* Other columns take only required space */
-#printArea .inv-table th:nth-child(1),
-#printArea .inv-table td:nth-child(1){
-    width:3% !important;
-    white-space:nowrap !important;
-}
-
-#printArea .inv-table th:nth-child(3),
-#printArea .inv-table td:nth-child(3){
-    width:7% !important;
-    white-space:nowrap !important;
-}
-
-#printArea .inv-table th:nth-child(4),
-#printArea .inv-table td:nth-child(4){
-    width:6% !important;
-    white-space:nowrap !important;
-}
-
-#printArea .inv-table th:nth-child(5),
-#printArea .inv-table td:nth-child(5){
-    width:11% !important;
-    white-space:nowrap !important;
-}
-
-#printArea .inv-table th:nth-child(6),
-#printArea .inv-table td:nth-child(6){
-    width:10% !important;
-    white-space:nowrap !important;
-}
-
-#printArea .inv-table th:nth-child(7),
-#printArea .inv-table td:nth-child(7){
-    width:11% !important;
-    white-space:nowrap !important;
-}
-
-#printArea .inv-table th:nth-child(8),
-#printArea .inv-table td:nth-child(8){
-    width:5% !important;
-    white-space:nowrap !important;
-}
-
-#printArea .inv-table th:nth-child(9),
-#printArea .inv-table td:nth-child(9){
-    width:13% !important;
-    white-space:nowrap !important;
-}
-
-/* Table text */
-#printArea .inv-table th,
-#printArea .inv-table td{
-    padding:3px 3px !important;
-    font-size:8.5px !important;
-    line-height:1.1 !important;
-    height:auto !important;
-    min-height:0 !important;
-    vertical-align:top !important;
-}
-
-/* Description text */
-#printArea .inv-table td:nth-child(2){
-    font-size:9px !important;
-    line-height:1.12 !important;
-}
-
-/* Product name inside Description */
-#printArea .inv-table td:nth-child(2) b{
-    font-size:9px !important;
-}
-
-/* Header */
-#printArea .inv-table th{
-    font-size:8.5px !important;
-    font-weight:800 !important;
-    white-space:nowrap !important;
-}
-
-body *{
-    visibility:visible !important;
-}
-
-  
-
-  #printArea .bill-grid{
-    display:grid !important;
-    grid-template-columns:48% 48% !important;
-    column-gap:4% !important;
-    row-gap:0 !important;
-    width:100% !important;
-    margin:16px 0 !important;
-    box-sizing:border-box !important;
-  }
-
-  #printArea .bill-box{
-    width:100% !important;
-    box-sizing:border-box !important;
-    padding:14px !important;
-    border:1px solid #999 !important;
-    border-radius:6px !important;
-    font-size:15px !important;
-    line-height:1.6 !important;
-}
-
-#printArea .bill-box .small{
-    font-size:15px !important;
-    line-height:1.6 !important;
-}
-
-#printArea .bill-box b{
-    font-size:17px !important;
-    font-weight:800 !important;
-}
-
-
-  
-</style>
-
-</head>
-
-<body>
-
-<div id="printArea">
-${invoice.innerHTML}
-</div>
-
-</body>
-</html>
-    `);
-
-    doc.close();
-
-    setTimeout(() => {
-
-        iframe.contentWindow.focus();
-
-        iframe.contentWindow.print();
-
-        setTimeout(() => {
-            iframe.remove();
-        }, 2000);
-
-    }, 1000);
-  }
-
-
-
-function closePreview(){
-
-    document.getElementById(
-        "previewModal"
-    ).style.display = "none";
-
-}
-
-
-
-function formatDate(s){
-
-    const [y,m,d] =
-        s.split("-");
-
-    return `${d}.${m}.${y}`;
-
-}
-
-
-
-function amountWords(n){
-
-    n =
-        Math.round(
-            Number(n)
-        );
-
-
-    if(n === 0){
-
-        return "Zero Rupees Only";
-
-    }
-
-
-    const ones = [
-
-        "",
-        "One",
-        "Two",
-        "Three",
-        "Four",
-        "Five",
-        "Six",
-        "Seven",
-        "Eight",
-        "Nine",
-        "Ten",
-        "Eleven",
-        "Twelve",
-        "Thirteen",
-        "Fourteen",
-        "Fifteen",
-        "Sixteen",
-        "Seventeen",
-        "Eighteen",
-        "Nineteen"
-
-    ];
-
-
-    const tens = [
-
-        "",
-        "",
-        "Twenty",
-        "Thirty",
-        "Forty",
-        "Fifty",
-        "Sixty",
-        "Seventy",
-        "Eighty",
-        "Ninety"
-
-    ];
-
-
-    function under100(x){
-
-        return x < 20
-
-            ? ones[x]
-
-            : tens[
-                Math.floor(x/10)
-            ] +
-            (
-                x%10
-                ? " " + ones[x%10]
-                : ""
-            );
-
-    }
-
-
-    function under1000(x){
-
-        return x < 100
-
-            ? under100(x)
-
-            : ones[
-                Math.floor(x/100)
-            ] +
-            " Hundred" +
-            (
-                x%100
-                ? " " +
-                  under100(x%100)
-                : ""
-            );
-
-    }
-
-
-    let parts = [];
-
-
-    let crore =
-        Math.floor(
-            n / 10000000
-        );
-
-    n %= 10000000;
-
-
-    let lakh =
-        Math.floor(
-            n / 100000
-        );
-
-    n %= 100000;
-
-
-    let thousand =
-        Math.floor(
-            n / 1000
-        );
-
-    n %= 1000;
-
-
-    if(crore){
-
-        parts.push(
-            under1000(crore) +
-            " Crore"
-        );
-
-    }
-
-
-    if(lakh){
-
-        parts.push(
-            under100(lakh) +
-            " Lakh"
-        );
-
-    }
-
-
-    if(thousand){
-
-        parts.push(
-            under100(thousand) +
-            " Thousand"
-        );
-
-    }
-
-
-    if(n){
-
-        parts.push(
-            under1000(n)
-        );
-
-    }
-
-
-    return (
-        parts.join(" ") +
-        " Rupees Only"
-    );
-
-}
-
-
-
-function invoiceHTML(f){
-
-    const t =
-        f.totals;
-
-
-    const sameState =
-        (
-            f.customer.state || ""
-        ).toLowerCase()
-        === "west bengal";
-
-
-    const cgst =
-        sameState
-        ? t.tax / 2
-        : 0;
-
-
-    const sgst =
-        sameState
-        ? t.tax / 2
-        : 0;
-
-
-    const igst =
-        sameState
-        ? 0
-        : t.tax;
-
+function row(x){
 
     return `
 
-    <div class="invoice-paper">
+<tr>
 
+<td>
 
-        <div class="inv-head">
+<div class="consumer">
 
-
-            <div>
-
-                <div class="company">
-
-                    ${esc(
-                        f.seller.name
-                    )}
-
-                </div>
-
-
-  <div class="small">
-
-    ${esc(
-        f.seller.address
-    ).replace(
-        /\n/g,
-        "<br>"
-    )}
-
-    <br>
-
-    <b>GSTIN:</b>
-    ${esc(
-        f.seller.gst
-    )}
-
-    ${
-        f.seller.pan
-        ?
-        ` |
-        <b>PAN:</b>
-        ${esc(
-            f.seller.pan
-        )}`
-        :
-        ""
-    }
-
-    <br>
-
-    ${
-        f.seller.mobile
-        ?
-        `Mobile:
-        ${esc(
-            f.seller.mobile
-        )}`
-        :
-        ""
-    }
-    <br>
-
-    ${
-        f.seller.email
-        ?
-        ` |
-        Email:
-        ${esc(
-            f.seller.email
-        )}`
-        :
-        ""
-    }
-    
-
-    ${
-        f.seller.tan
-        ?
-        `<br>
-        <b>TAN:</b>
-        ${esc(
-            f.seller.tan
-        )}`
-        :
-        ""
-    }
+${esc(
+    x.consumerName ||
+    "Unnamed"
+)}
 
 </div>
 
-            </div>
+<div class="sub">
 
+${esc(x.mobile || "")}
 
-            <div class="inv-meta">
+${x.email
+    ? " • " + esc(x.email)
+    : ""
+}
 
-                <div class="inv-title">
-                    TAX INVOICE
-                </div>
+</div>
 
-
-                <div class="meta-row">
-
-                    <span>
-                        Invoice No.
-                    </span>
-
-                    <b>
-                        ${esc(f.no)}
-                    </b>
-
-                </div>
-
-
-                <div class="meta-row">
-
-                    <span>
-                        Date
-                    </span>
-
-                    <b>
-                        ${formatDate(f.date)}
-                    </b>
-
-                </div>
-
-
-                <div class="meta-row">
-
-                    <span>
-                        Financial Year
-                    </span>
-
-                    <b>
-                        ${esc(f.fy)}
-                    </b>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="bill-grid">
-
-
-            <div class="bill-box">
-
-                <b>
-                    Bill To
-                </b>
-
-
-                <div
-                class="small"
-                style="margin-top:6px">
-
-                    <b>
-                        ${esc(
-                            f.customer.name
-                        )}
-                    </b>
-
-                    <br>
-
-                    ${esc(
-                        f.customer.address
-                    ).replace(
-                        /\n/g,
-                        "<br>"
-                    )}
-
-                    <br>
-
-                    Mobile:
-                    ${esc(
-                        f.customer.mobile ||
-                        "-"
-                    )}
-
-                    <br>
-
-                    GSTIN:
-                    ${esc(
-                        f.customer.gstin ||
-                        "Unregistered"
-                    )}
-
-                    <br>
-
-                    State:
-                    ${esc(
-                        f.customer.state ||
-                        "-"
-                    )}
-
-                    (
-                    ${esc(
-                        f.customer.stateCode ||
-                        "-"
-                    )}
-                    )
-
-                </div>
-
-            </div>
-
-
-
-            <div class="bill-box">
-
-                <b>
-                    Invoice Details
-                </b>
-
-
-                <div
-                class="small"
-                style="margin-top:6px">
-
-                    Place of Supply:
-                    <b>
-                        ${esc(
-                            f.place || "-"
-                        )}
-                    </b>
-
-                    <br>
-
-                    Payment Mode:
-                    ${esc(
-                        f.payment
-                    )}
-
-                    <br>
-
-                    Payment Ref:
-                    ${esc(
-                        f.ref || "-"
-                    )}
-
-                    <br>
-
-                    Reverse Charge:
-                    ${esc(
-                        f.reverse
-                    )}
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <table class="inv-table">
-
-
-            <thead>
-
-                <tr>
-
-                    <th>#</th>
-
-                    <th>
-                        Description
-                    </th>
-
-                    <th>
-                        HSN/SAC
-                    </th>
-
-                    <th>
-                        Qty
-                    </th>
-
-                    <th>
-                        Rate
-                    </th>
-
-                    <th>
-                        Discount
-                    </th>
-
-                    <th>
-                        Taxable
-                    </th>
-
-                    <th>
-                        GST
-                    </th>
-
-                    <th>
-                        Amount
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-            ${
-                f.items.map(
-                    (i,n) => {
-
-                        const tx =
-                            Math.max(
-                                0,
-                                i.qty*i.rate-i.disc
-                            );
-
-
-                        const tax =
-                            tx*i.gst/100;
-
-
-                        return `
-
-                        <tr>
-
-                            <td>
-                                ${n+1}
-                            </td>
+</td>
 
 
 <td>
-    <b>${esc(i.name)}</b>
-    ${
-        i.desc && i.desc !== i.name
-        ? `<br>${esc(i.desc)}`
-        : ""
-    }
+
+<span class="badge b-blue">
+
+${esc(
+    x.customerType ||
+    x.connectionType ||
+    "—"
+)}
+
+</span>
+
 </td>
 
-                            <td>
-                                ${esc(i.hsn)}
-                            </td>
 
-                            <td>
-                                ${i.qty}
-                                ${esc(i.unit)}
-                            </td>
+<td>
 
-                            <td>
-                                ${money(i.rate)}
-                            </td>
+<b>
 
-                            <td>
-                                ${money(i.disc)}
-                            </td>
+${esc(
+    x.solarCapacity || 0
+)} kW
 
-                            <td>
-                                ${money(tx)}
-                            </td>
+</b>
 
-                            <td>
-                                ${i.gst}%
-                            </td>
+<div class="sub">
 
-                            <td>
-                                ${money(tx+tax)}
-                            </td>
+${esc(
+    x.phase || ""
+)}
 
-                        </tr>
+</div>
 
-                        `;
+</td>
 
-                    }
-                ).join("")
-            }
 
-            </tbody>
+<td>
 
-        </table>
+${esc(
+    x.consumerNumber ||
+    "—"
+)}
 
+</td>
 
 
-        <div class="summary">
+<td>
 
+${money(x.paidAmount)}
 
-            <div class="sumrow">
+<div class="sub">
 
-                <span>
-                    Subtotal
-                </span>
+Balance
+${money(x.remainingAmount)}
 
-                <b>
-                    ${money(t.subtotal)}
-                </b>
+</div>
 
-            </div>
+</td>
 
 
-            <div class="sumrow">
+<td>
 
-                <span>
-                    Discount
-                </span>
+<span class="badge ${statusClass(x.status)}">
 
-                <b>
-                    − ${money(t.discount)}
-                </b>
+${esc(
+    x.status ||
+    "Pending"
+)}
 
-            </div>
+</span>
 
+</td>
 
-            <div class="sumrow">
 
-                <span>
-                    Taxable Amount
-                </span>
+<td>
 
-                <b>
-                    ${money(t.taxable)}
-                </b>
+${dateFmt(x.updatedAt)}
 
-            </div>
+</td>
 
 
-            ${
-                cgst
-                ?
-                `
+<td>
 
-                <div class="sumrow">
+<div class="row-actions">
 
-                    <span>
-                        CGST
-                    </span>
+<button
+class="icon-btn"
+onclick="viewDetails('${x.id}')">
 
-                    <b>
-                        ${money(cgst)}
-                    </b>
+👁
 
-                </div>
-
-
-                <div class="sumrow">
-
-                    <span>
-                        SGST
-                    </span>
-
-                    <b>
-                        ${money(sgst)}
-                    </b>
-
-                </div>
-
-                `
-                :
-                ""
-            }
-
-
-            ${
-                igst
-                ?
-                `
-
-                <div class="sumrow">
-
-                    <span>
-                        IGST
-                    </span>
-
-                    <b>
-                        ${money(igst)}
-                    </b>
-
-                </div>
-
-                `
-                :
-                ""
-            }
-
-
-            <div class="sumrow grand">
-
-                <span>
-                    Grand Total
-                </span>
-
-                <b>
-                    ${money(t.total)}
-                </b>
-
-            </div>
-
-        </div>
-
-
-
-        <div
-style="
-margin-top:18px;
-border:1.5px solid #777;
-border-radius:5px;
-padding:9px;
-font-size:12px;
-">
-
-            <b>
-                Amount in Words:
-            </b>
-
-            ${amountWords(t.total)}
-
-        </div>
-
-
-
-        <div
-        style="
-        margin-top:12px;
-        font-size:11px;
-        ">
-
-            <b>
-                Notes / Terms:
-            </b>
-
-            <br>
-
-            ${esc(
-                f.notes
-            ).replace(
-                /\n/g,
-                "<br>"
-            )}
-
-        </div>
-
-
-
-        <div class="sign">
-
-            <div class="signbox">
-
-                Customer Signature
-
-            </div>
-
-
-            <div class="signbox">
-
-                For
-                ${esc(
-                    f.seller.name
-                )}
-
-                <br>
-                <br>
-
-                Authorised Signatory
-
-            </div>
-
-        </div>
-
-
-    </div>
-
-    `;
-
-}
-
-
-
-function renderHistory(){
-
-    const tb =
-        document.getElementById(
-            "historyTable"
-        );
-
-
-    if(!invoices.length){
-
-        tb.innerHTML =
-            `
-            <tr>
-
-                <td
-                colspan="5"
-                class="empty">
-
-                    No invoices saved yet.
-
-                </td>
-
-            </tr>
-            `;
-
-        return;
-
-    }
-
-
-    tb.innerHTML =
-        [...invoices]
-        .reverse()
-        .map(
-            x => `
-
-            <tr>
-
-                <td>
-
-                    <span class="badge">
-
-                        ${esc(x.no)}
-
-                    </span>
-
-                </td>
-
-
-                <td>
-                    ${formatDate(x.date)}
-                </td>
-
-
-                <td>
-                    ${esc(
-                        x.customer.name
-                    )}
-                </td>
-
-
-                <td class="num">
-
-                    ${money(
-                        x.totals.total
-                    )}
-
-                </td>
-
-
-                <td>
-
-                    <button
-                    class="btn btn-primary"
-                    style="padding:6px 9px"
-                    onclick="viewSaved('${x.no}')">
-
-                        View
-
-                    </button>
-
-  <button
-class="btn btn-primary"
-style="padding:5px 8px"
-onclick="editInvoice('${x.id}')">
-Edit
 </button>
 
 
-                    <button
-                    class="btn btn-danger"
-                    style="padding:6px 9px"
-                    onclick="deleteInvoice('${x.no}')">
+<button
+class="icon-btn"
+onclick="editConsumer('${x.id}')">
 
-                        Delete
+✏
 
-                    </button>
+</button>
 
-                </td>
 
-            </tr>
+<button
+class="icon-btn"
+onclick="deleteConsumer('${x.id}')">
 
-            `
-        )
-        .join("");
+🗑
+
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+`;
 
 }
 
 
+/* ==========================================
+   MOBILE CARD
+========================================== */
 
-function viewSaved(no){
+function card(x){
+
+    return `
+
+<div class="consumer-card">
+
+<div class="cc-head">
+
+<div>
+
+<div class="cc-name">
+
+${esc(
+    x.consumerName ||
+    "Unnamed"
+)}
+
+</div>
+
+<div class="cc-meta">
+
+${esc(
+    x.customerType ||
+    "—"
+)}
+
+•
+
+${esc(
+    x.mobile ||
+    "—"
+)}
+
+</div>
+
+</div>
+
+
+<span
+class="badge ${statusClass(x.status)}">
+
+${esc(
+    x.status ||
+    "Pending"
+)}
+
+</span>
+
+</div>
+
+
+<div class="cc-grid">
+
+
+<div class="cc-item">
+
+<small>
+Solar Capacity
+</small>
+
+<b>
+
+${esc(
+    x.solarCapacity || 0
+)} kW
+
+</b>
+
+</div>
+
+
+<div class="cc-item">
+
+<small>
+Consumer No.
+</small>
+
+<b>
+
+${esc(
+    x.consumerNumber ||
+    "—"
+)}
+
+</b>
+
+</div>
+
+
+<div class="cc-item">
+
+<small>
+Paid
+</small>
+
+<b>
+
+${money(
+    x.paidAmount
+)}
+
+</b>
+
+</div>
+
+
+<div class="cc-item">
+
+<small>
+Balance
+</small>
+
+<b>
+
+${money(
+    x.remainingAmount
+)}
+
+</b>
+
+</div>
+
+</div>
+
+
+<div class="cc-actions">
+
+<button
+class="btn btn-light"
+onclick="viewDetails('${x.id}')">
+
+👁 Details
+
+</button>
+
+
+<button
+class="btn btn-light"
+onclick="editConsumer('${x.id}')">
+
+✏ Edit
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================
+   OPEN ADD FORM
+========================================== */
+
+$("addBtn").onclick =
+()=>openForm();
+
+
+$("refreshBtn").onclick =
+()=>{
+
+    showLoading(true);
+
+    listenData();
+
+};
+
+
+[
+    "searchInput",
+    "typeFilter",
+    "statusFilter"
+]
+.forEach(id=>{
+
+    $(id)
+    .addEventListener(
+        "input",
+        render
+    );
+
+});
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+$("logoutBtn").onclick =
+()=>{
+
+    auth.signOut()
+    .then(()=>{
+
+        location.href =
+        "login.html";
+
+    });
+
+};
+
+
+/* ==========================================
+   FORM FIELD LIST
+========================================== */
+
+const formFields = [
+
+    "consumerName",
+    "guardianName",
+    "mobile",
+    "altMobile",
+    "email",
+    "idReference",
+    "consumerNumber",
+    "customerType",
+    "tariffCategory",
+
+    "address",
+    "village",
+    "postOffice",
+    "policeStation",
+    "district",
+    "state",
+    "pin",
+    "siteAddress",
+
+    "connectionType",
+    "phase",
+    "existingLoad",
+    "solarCapacity",
+    "sanctionedLoad",
+    "applicationNumber",
+    "applicationDate",
+    "connectionDate",
+    "meterNumber",
+    "status",
+
+    "panelMake",
+    "panelModel",
+    "panelCount",
+    "inverterMake",
+    "inverterModel",
+    "inverterCapacity",
+    "structureType",
+    "batteryRequired",
+    "batteryDetails",
+    "installationDate",
+    "commissioningDate",
+
+    "totalCost",
+    "advance",
+    "paidAmount",
+    "remainingAmount",
+    "subsidy",
+    "subsidyStatus",
+    "paymentMode",
+    "lastPaymentDate",
+    "utrNumber",
+
+    "netMeterRequired",
+    "netMeterApplicationDate",
+    "inspectionDate",
+    "inspectionStatus",
+    "meterInstallationDate",
+    "netMeterNumber",
+    "agreementStatus",
+    "syncDate",
+
+    "warrantyStart",
+    "warrantyEnd",
+    "amcStart",
+    "amcEnd",
+    "lastService",
+    "nextService",
+    "assignedStaff",
+    "remarks"
+
+];
+
+
+/* ==========================================
+   OPEN FORM
+========================================== */
+
+function openForm(data=null){
+
+    $("consumerForm")
+    .reset();
+
+    $("docId")
+    .value="";
+
+
+    $("state")
+    .value="West Bengal";
+
+
+    $("formTitle")
+    .textContent =
+    data
+    ? "Edit Consumer"
+    : "Add Consumer";
+
+
+    if(data){
+
+        $("docId")
+        .value =
+        data.id;
+
+
+        formFields.forEach(id=>{
+
+            if(
+                data[id] !==
+                undefined
+            ){
+
+                $(id)
+                .value =
+                data[id];
+
+            }
+
+        });
+
+    }
+
+
+    $("formModal")
+    .classList
+    .add("show");
+
+}
+
+
+/* ==========================================
+   CLOSE MODAL
+========================================== */
+
+function closeModal(id){
+
+    $(id)
+    .classList
+    .remove("show");
+
+}
+
+
+document
+.querySelectorAll("[data-close]")
+.forEach(button=>{
+
+    button.onclick =
+    ()=>closeModal(
+        button.dataset.close
+    );
+
+});
+
+
+document
+.querySelectorAll(".modal-backdrop")
+.forEach(modal=>{
+
+    modal.addEventListener(
+        "click",
+        e=>{
+
+            if(
+                e.target ===
+                modal
+            ){
+
+                modal
+                .classList
+                .remove("show");
+
+            }
+
+        }
+    );
+
+});
+
+
+/* ==========================================
+   SAVE
+========================================== */
+
+$("consumerForm")
+.onsubmit =
+async e=>{
+
+    e.preventDefault();
+
+
+    const user =
+    auth.currentUser;
+
+
+    if(!user)
+        return;
+
+
+    const data={};
+
+
+    formFields.forEach(id=>{
+
+        data[id] =
+        $(id)
+        .value
+        .trim();
+
+    });
+
+
+    /* NUMBER FIELDS */
+
+    [
+
+        "existingLoad",
+        "solarCapacity",
+        "sanctionedLoad",
+        "panelCount",
+        "inverterCapacity",
+        "totalCost",
+        "advance",
+        "paidAmount",
+        "remainingAmount",
+        "subsidy"
+
+    ]
+    .forEach(id=>{
+
+        data[id] =
+        Number(
+            $(id).value || 0
+        );
+
+    });
+
+
+    /* AUTOMATIC BALANCE */
+
+    if(
+        data.totalCost ||
+        data.paidAmount
+    ){
+
+        data.remainingAmount =
+        Math.max(
+            0,
+            Number(data.totalCost || 0)
+            -
+            Number(data.paidAmount || 0)
+        );
+
+    }
+
+
+    data.updatedAt =
+    firebase.firestore
+    .FieldValue
+    .serverTimestamp();
+
+
+    data.updatedBy =
+    user.email || "";
+
+
+    try{
+
+        showLoading(true);
+
+
+        const docId =
+        $("docId").value;
+
+
+        if(docId){
+
+            await db
+            .collection(COLLECTION)
+            .doc(docId)
+            .update(data);
+
+            toast(
+                "Consumer updated successfully"
+            );
+
+        }
+
+        else{
+
+            data.createdAt =
+            firebase.firestore
+            .FieldValue
+            .serverTimestamp();
+
+
+            data.createdBy =
+            user.email || "";
+
+
+            await db
+            .collection(COLLECTION)
+            .add(data);
+
+
+            toast(
+                "Consumer added successfully"
+            );
+
+        }
+
+
+        closeModal(
+            "formModal"
+        );
+
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        toast(
+            "Save failed: " +
+            error.message
+        );
+
+    }
+
+    finally{
+
+        showLoading(false);
+
+    }
+
+};
+
+
+/* ==========================================
+   DETAILS
+========================================== */
+
+window.viewDetails =
+id=>{
 
     const x =
-        invoices.find(
-            i => i.no === no
+    allData.find(
+        a=>a.id===id
+    );
+
+
+    if(!x)
+        return;
+
+
+    const sections=[
+
+
+[
+"👤 Consumer Information",
+
+[
+
+["Name",x.consumerName],
+
+["Father / Husband",
+x.guardianName],
+
+["Mobile",
+x.mobile],
+
+["Alternate Mobile",
+x.altMobile],
+
+["Email",
+x.email],
+
+["ID Reference",
+x.idReference],
+
+["Consumer No.",
+x.consumerNumber],
+
+["Customer Type",
+x.customerType],
+
+["Tariff",
+x.tariffCategory]
+
+]
+
+],
+
+
+
+[
+"📍 Address",
+
+[
+
+["Full Address",
+x.address,
+"full"],
+
+["Village / Town",
+x.village],
+
+["Post Office",
+x.postOffice],
+
+["Police Station",
+x.policeStation],
+
+["District",
+x.district],
+
+["State",
+x.state],
+
+["PIN",
+x.pin],
+
+["Site Address",
+x.siteAddress,
+"full"]
+
+]
+
+],
+
+
+
+[
+"⚡ Connection",
+
+[
+
+["Connection Type",
+x.connectionType],
+
+["Phase",
+x.phase],
+
+["Existing Load",
+(x.existingLoad || 0)
++ " kW"],
+
+["Solar Capacity",
+(x.solarCapacity || 0)
++ " kW"],
+
+["Sanctioned Load",
+(x.sanctionedLoad || 0)
++ " kW"],
+
+["Application No.",
+x.applicationNumber],
+
+["Application Date",
+dateFmt(
+    x.applicationDate
+)],
+
+["Connection Date",
+dateFmt(
+    x.connectionDate
+)],
+
+["Meter No.",
+x.meterNumber],
+
+["Status",
+x.status]
+
+]
+
+],
+
+
+
+[
+"☀️ Solar System",
+
+[
+
+["Panel Make",
+x.panelMake],
+
+["Panel Model",
+x.panelModel],
+
+["Panels",
+x.panelCount],
+
+["Inverter Make",
+x.inverterMake],
+
+["Inverter Model",
+x.inverterModel],
+
+["Inverter Capacity",
+(x.inverterCapacity || 0)
++ " kW"],
+
+["Structure",
+x.structureType],
+
+["Battery",
+x.batteryRequired],
+
+["Battery Details",
+x.batteryDetails],
+
+["Installation",
+dateFmt(
+    x.installationDate
+)],
+
+["Commissioning",
+dateFmt(
+    x.commissioningDate
+)]
+
+]
+
+],
+
+
+
+[
+"💰 Financial",
+
+[
+
+["Project Cost",
+money(x.totalCost)],
+
+["Advance",
+money(x.advance)],
+
+["Paid",
+money(x.paidAmount)],
+
+["Remaining",
+money(x.remainingAmount)],
+
+["Subsidy",
+money(x.subsidy)],
+
+["Subsidy Status",
+x.subsidyStatus],
+
+["Payment Mode",
+x.paymentMode],
+
+["Last Payment",
+dateFmt(
+    x.lastPaymentDate
+)],
+
+["UTR",
+x.utrNumber]
+
+]
+
+],
+
+
+
+[
+"🔌 Net Meter",
+
+[
+
+["Required",
+x.netMeterRequired],
+
+["Application",
+dateFmt(
+    x.netMeterApplicationDate
+)],
+
+["Inspection",
+dateFmt(
+    x.inspectionDate
+)],
+
+["Inspection Status",
+x.inspectionStatus],
+
+["Meter Installation",
+dateFmt(
+    x.meterInstallationDate
+)],
+
+["Net Meter No.",
+x.netMeterNumber],
+
+["Agreement",
+x.agreementStatus],
+
+["Synchronization",
+dateFmt(
+    x.syncDate
+)]
+
+]
+
+],
+
+
+
+[
+"🛠️ Warranty / AMC",
+
+[
+
+["Warranty Start",
+dateFmt(
+    x.warrantyStart
+)],
+
+["Warranty End",
+dateFmt(
+    x.warrantyEnd
+)],
+
+["AMC Start",
+dateFmt(
+    x.amcStart
+)],
+
+["AMC End",
+dateFmt(
+    x.amcEnd
+)],
+
+["Last Service",
+dateFmt(
+    x.lastService
+)],
+
+["Next Service",
+dateFmt(
+    x.nextService
+)],
+
+["Assigned Staff",
+x.assignedStaff],
+
+["Remarks",
+x.remarks,
+"full"]
+
+]
+
+]
+
+];
+
+
+    $("detailsContent")
+    .innerHTML =
+
+    sections.map(
+        section=>`
+
+<div class="form-section">
+
+<div class="details-grid">
+
+<div class="detail-title">
+
+${section[0]}
+
+</div>
+
+
+${section[1].map(
+    item=>`
+
+<div
+class="detail ${item[2] || ""}">
+
+<small>
+
+${esc(item[0])}
+
+</small>
+
+<b>
+
+${esc(
+    item[1] ?? "—"
+)}
+
+</b>
+
+</div>
+
+`
+).join("")}
+
+</div>
+
+</div>
+
+`
+).join("");
+
+
+    $("detailsModal")
+    .classList
+    .add("show");
+
+};
+
+
+/* ==========================================
+   EDIT
+========================================== */
+
+window.editConsumer =
+id=>{
+
+    const x =
+    allData.find(
+        a=>a.id===id
+    );
+
+
+    if(x)
+        openForm(x);
+
+};
+
+
+/* ==========================================
+   DELETE
+========================================== */
+
+window.deleteConsumer =
+async id=>{
+
+    const user =
+    auth.currentUser;
+
+
+    if(!user)
+        return;
+
+
+    /*
+    UI protection.
+    Firestore Rules remain
+    the real security layer.
+    */
+
+    if(
+        (user.email || "")
+        .toLowerCase()
+        !==
+        "dhananjayboragari@gmail.com"
+    ){
+
+        toast(
+            "Only admin can delete data"
         );
 
+        return;
 
-    if(!x) return;
-
-
-    document.getElementById(
-        "previewContent"
-    ).innerHTML =
-        invoiceHTML(x);
-
-
-    document.getElementById(
-        "previewModal"
-    ).style.display = "flex";
-
-}
-
-
-
-async function deleteInvoice(no){
-    if(!confirm("Delete this invoice record?")) return;
-
-    try{
-        const snap = await db.collection("solar_invoice").where("no","==",no).get();
-
-        if(snap.empty){
-            showToast("Invoice not found");
-            return;
-        }
-
-        const batch = db.batch();
-        snap.forEach(doc => batch.delete(doc.ref));
-        await batch.commit();
-
-        invoices = invoices.filter(x => x.no !== no);
-        refreshAll();
-        showToast("Invoice deleted");
-    }catch(error){
-        console.error("Invoice delete failed:", error);
-        showToast("Delete failed: " + (error.code || "permission/error"));
     }
-}
-
-function updateKPIs(){
-
-    document.getElementById(
-        "kpiInvoices"
-    ).textContent =
-        invoices.length;
 
 
-    document.getElementById(
-        "kpiProducts"
-    ).textContent =
-        products.length;
+    const x =
+    allData.find(
+        a=>a.id===id
+    );
 
 
-    const fy =
-        fyFor(todayISO());
+    if(!x)
+        return;
 
 
-    const sales =
-        invoices
-        .filter(
-            x => x.fy === fy
+    if(
+        !confirm(
+            `Delete ${
+                x.consumerName ||
+                "this consumer"
+            } permanently?`
         )
-        .reduce(
-            (a,x) =>
-                a +
-                Number(
-                    x.totals.total || 0
-                ),
-            0
-        );
+    )
+        return;
 
-
-    document.getElementById(
-        "kpiSales"
-    ).textContent =
-        money(sales);
-
-
-    document.getElementById(
-        "kpiNext"
-    ).textContent =
-        makeInvoiceNo(
-            todayISO()
-        );
-
-}
-
-
-
-function exportData(){
-
-    const data = {
-
-        settings,
-
-        products,
-
-        invoices,
-
-        exportedAt:
-            new Date().toISOString()
-
-    };
-
-
-    const blob =
-        new Blob(
-            [
-                JSON.stringify(
-                    data,
-                    null,
-                    2
-                )
-            ],
-            {
-                type:
-                "application/json"
-            }
-        );
-
-
-    const a =
-        document.createElement("a");
-
-
-    a.href =
-        URL.createObjectURL(blob);
-
-
-    a.download =
-        "solar-invoice-backup.json";
-
-
-    a.click();
-
-
-    URL.revokeObjectURL(
-        a.href
-    );
-
-}
-
-
-
-async function clearAllData(){
-    if(!confirm("Delete all products and invoices from Firebase?")) return;
 
     try{
-        const [productSnap, invoiceSnap] = await Promise.all([
-            db.collection("solar_product").get(),
-            db.collection("solar_invoice").get()
-        ]);
 
-        const batch = db.batch();
-        productSnap.forEach(doc => batch.delete(doc.ref));
-        invoiceSnap.forEach(doc => batch.delete(doc.ref));
-        await batch.commit();
-
-        products = [];
-        invoices = [];
-        refreshAll();
-        updateInvoiceNo();
-        showToast("All Firebase data cleared");
-    }catch(error){
-        console.error("Clear failed:", error);
-        showToast("Clear failed: " + (error.code || "permission/error"));
-    }
-}
-
-function refreshAll(){
-
-    renderProducts();
-
-    renderProductSelect();
-
-    renderItems();
-
-    renderHistory();
-
-    updateKPIs();
-
-}
+        showLoading(true);
 
 
-
-function esc(v){
-
-    return String(
-        v ?? ""
-    ).replace(
-        /[&<>"']/g,
-        m =>
-        ({
-            "&":"&amp;",
-            "<":"&lt;",
-            ">":"&gt;",
-            '"':"&quot;",
-            "'":"&#039;"
-        }[m])
-    );
-
-}
+        await db
+        .collection(COLLECTION)
+        .doc(id)
+        .delete();
 
 
+        toast(
+            "Consumer deleted"
+        );
 
-window.addEventListener(
-    "load",
-    init
-);
-
-
-  async function saveProduct() {
-
-    const name = document.getElementById("pName").value.trim();
-    const hsn = document.getElementById("pHSN").value.trim();
-    const unit = document.getElementById("pUnit").value.trim() || "Nos";
-    const gst = Number(document.getElementById("pGST").value);
-    const rate = Number(document.getElementById("pRate").value);
-    const desc = document.getElementById("pDesc").value.trim();
-
-    if (!name) {
-        showToast("Product name required");
-        return;
     }
 
-    if (gst < 0 || rate < 0) {
-        showToast("GST/Rate cannot be negative");
-        return;
+    catch(error){
+
+        console.error(error);
+
+        toast(
+            "Delete failed: " +
+            error.message
+        );
+
     }
 
-    try {
+    finally{
 
-        const productData = {
-            name: name,
-            hsn: hsn,
-            unit: unit,
-            gst: gst,
-            rate: rate,
-            desc: desc,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
+        showLoading(false);
 
-        // EDIT PRODUCT
-        if (editingProductId) {
+    }
 
-            await db.collection("solar_product")
-                .doc(editingProductId)
-                .update(productData);
+};
 
-            showToast("Product updated successfully");
-
-        }
-
-        // NEW PRODUCT
-        else {
-
-            productData.createdAt =
-                firebase.firestore.FieldValue.serverTimestamp();
-
-            await db.collection("solar_product")
-                .add(productData);
-
-            showToast("Product saved successfully");
-        }
-
-        clearProductForm();
-
-        editingProductId = null;
-
-        await loadProducts();
-
-        refreshAll();
-
-    } catch (error) {
-
-    console.error("PRODUCT SAVE ERROR:", error);
-
-    alert(
-        "Product Save/Update Failed\n\n" +
-        "Error Code: " + (error.code || "unknown") +
-        "\n\nError Message:\n" +
-        (error.message || error)
-    );
-
-  }
-  }
-
-  
-
-  
 </script>
 
 </body>
