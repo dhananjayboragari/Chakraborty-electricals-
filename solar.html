@@ -3257,6 +3257,7 @@ async function saveInvoice(){
 
 editingInvoiceId = null;
 
+// Update করার পর পুরো Create Invoice form reset হবে
 newInvoice();
 
 showToast("Invoice updated successfully");
@@ -3458,23 +3459,32 @@ document.getElementById("sellerTAN").value =
 
 function newInvoice(){
 
+    // Edit mode বন্ধ
     editingInvoiceId = null;
 
+    // Save button আবার Save Invoice
     const saveBtn =
         document.querySelector(
             '[onclick="saveInvoice()"]'
         );
 
     if(saveBtn){
-        saveBtn.textContent =
-            "✓ Save Invoice";
+        saveBtn.textContent = "✓ Save Invoice";
     }
 
-    // Clear added items
+
+    // =========================
+    // ADDED ITEMS CLEAR
+    // =========================
+
     items = [];
     renderItems();
 
-    // Invoice details
+
+    // =========================
+    // INVOICE DETAILS RESET
+    // =========================
+
     document.getElementById("invoiceDate").value =
         todayISO();
 
@@ -3487,7 +3497,11 @@ function newInvoice(){
     document.getElementById("placeSupply").value =
         "West Bengal";
 
-    // Consumer / Bill To
+
+    // =========================
+    // CUSTOMER / BILL TO CLEAR
+    // =========================
+
     document.getElementById("customerName").value =
         "";
 
@@ -3506,9 +3520,13 @@ function newInvoice(){
     document.getElementById("stateCode").value =
         "19";
 
-    // Payment / Other Options
+
+    // =========================
+    // PAYMENT RESET
+    // =========================
+
     document.getElementById("paymentMode").value =
-        "";
+        "Bank Transfer";
 
     document.getElementById("paymentRef").value =
         "";
@@ -3516,16 +3534,34 @@ function newInvoice(){
     document.getElementById("reverseCharge").value =
         "No";
 
-    document.getElementById("invoiceNotes").value =
-        "";
 
-    // Clear Add Item form
+    // =========================
+    // NOTES
+    // =========================
+    // IMPORTANT:
+    // Notes clear করা হবে না.
+
+
+    // =========================
+    // ADD ITEM FORM CLEAR
+    // =========================
+
     clearItemForm();
 
-    // Generate new invoice number
+
+    // =========================
+    // NEW INVOICE NUMBER
+    // =========================
+
     updateInvoiceNo();
 
+
+    // =========================
+    // MESSAGE
+    // =========================
+
     showToast("New invoice ready");
+
 }
 
 
