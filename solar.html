@@ -3255,17 +3255,13 @@ async function saveInvoice(){
 
   await loadAllFirebaseData();
 
-            showToast("Invoice updated successfully");
-            await init();
-            editingInvoiceId = null;
+editingInvoiceId = null;
 
-            document.querySelector(
-                '[onclick="saveInvoice()"]'
-            ).textContent = "✓ Save Invoice";
+newInvoice();
 
-            
+showToast("Invoice updated successfully");
 
-            return;
+return;
         }
 
         /* =========================
@@ -3462,59 +3458,74 @@ document.getElementById("sellerTAN").value =
 
 function newInvoice(){
 
-  editingInvoiceId = null;
+    editingInvoiceId = null;
 
-  const saveBtn =
-    document.querySelector(
-        '[onclick="saveInvoice()"]'
-    );
+    const saveBtn =
+        document.querySelector(
+            '[onclick="saveInvoice()"]'
+        );
 
-if(saveBtn){
-    saveBtn.textContent =
-        "✓ Save Invoice";
-}
+    if(saveBtn){
+        saveBtn.textContent =
+            "✓ Save Invoice";
+    }
 
+    // Clear added items
     items = [];
-
-
-    document.getElementById(
-        "customerName"
-    ).value = "";
-
-
-    document.getElementById(
-        "customerMobile"
-    ).value = "";
-
-
-    document.getElementById(
-        "customerGSTIN"
-    ).value = "";
-
-
-    document.getElementById(
-        "customerAddress"
-    ).value = "";
-
-
-    document.getElementById(
-        "paymentRef"
-    ).value = "";
-
-
-    document.getElementById(
-        "invoiceDate"
-    ).value = todayISO();
-
-
-    updateInvoiceNo();
-
     renderItems();
 
-    showToast(
-        "New invoice ready"
-    );
+    // Invoice details
+    document.getElementById("invoiceDate").value =
+        todayISO();
 
+    document.getElementById("invoiceNo").value =
+        "";
+
+    document.getElementById("financialYear").value =
+        "";
+
+    document.getElementById("placeSupply").value =
+        "West Bengal";
+
+    // Consumer / Bill To
+    document.getElementById("customerName").value =
+        "";
+
+    document.getElementById("customerMobile").value =
+        "";
+
+    document.getElementById("customerGSTIN").value =
+        "";
+
+    document.getElementById("customerAddress").value =
+        "";
+
+    document.getElementById("customerState").value =
+        "West Bengal";
+
+    document.getElementById("stateCode").value =
+        "19";
+
+    // Payment / Other Options
+    document.getElementById("paymentMode").value =
+        "";
+
+    document.getElementById("paymentRef").value =
+        "";
+
+    document.getElementById("reverseCharge").value =
+        "No";
+
+    document.getElementById("invoiceNotes").value =
+        "";
+
+    // Clear Add Item form
+    clearItemForm();
+
+    // Generate new invoice number
+    updateInvoiceNo();
+
+    showToast("New invoice ready");
 }
 
 
