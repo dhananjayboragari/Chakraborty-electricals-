@@ -262,35 +262,98 @@ flatpickr("#from",{dateFormat:"Y-m-d"});
 flatpickr("#to",{dateFormat:"Y-m-d"});
 },500);
 
-const SHEET_URL="https://opensheet.elk.sh/1L86gZufZn66SPMcEl5FkY9PwmpKGettvUVUeQESZHRY/Form%20Responses%201";
+const SHEET_URL="https://opensheet.elk.sh/1wMugQJcNtt-JwUqU9--VSwDTcUmrBaK0AaU1KyDKP0g/Form%20Responses%201";
 
 let data=[],filteredData=[],headers=[],DATE_COL="";
 
-fetch(SHEET_URL)
-.then(r=>r.json())
-.then(d=>{
-data=d;
-headers=Object.keys(d[0]);
 
-DATE_COL=headers.find(h=>
-h.toLowerCase().includes("date") ||
-h.toLowerCase().includes("disconnection")
-) || headers[0];
+  // ===== GOOGLE SHEET HEADER + DATA AUTO LOAD =====
 
-table.querySelector("thead").innerHTML =
-"<tr>"+headers.map(h=>`<th>${removeBangla(h)}</th>`).join("")+"</tr>";
+const HEADER_URL =
+"https://docs.google.com/spreadsheets/d/1wMugQJcNtt-JwUqU9--VSwDTcUmrBaK0AaU1KyDKP0g/gviz/tq?tqx=out:json&gid=272573349";
 
-headers.forEach(h=>{
-let o=document.createElement("option");
-o.value=h;
-o.text=removeBangla(h);
-sumCol.appendChild(o);
-});
+function loadSheetData(){
 
-  filteredData = data;
-render(data);
-update(data);
-});
+  // ===== GET REAL HEADER FROM GOOGLE SHEET =====
+  fetch(HEADER_URL)
+  .then(r => r.text())
+  .then(text => {
+
+    let jsonText = text.substring(
+      text.indexOf("{"),
+      text.lastIndexOf("}") + 1
+    );
+
+    let sheetJSON = JSON.parse(jsonText);
+
+    // Google Sheet-এর আসল Header
+    headers = sheetJSON.table.cols.map(col =>
+      col.label || ""
+    ).filter(h => h !== "");
+
+    // ===== GET DATA =====
+    return fetch(SHEET_URL)
+      .then(r => r.json())
+      .then(d => {
+
+        data = d.filter(row =>
+          Object.keys(row).length > 0
+        );
+
+        if(data.length === 0){
+          return;
+        }
+
+        // ===== DATE COLUMN AUTO DETECT =====
+        DATE_COL = headers.find(h =>
+          h.toLowerCase().includes("date") ||
+          h.toLowerCase().includes("disconnection")
+        ) || headers[0];
+
+        // ===== SUM COLUMN AUTO UPDATE =====
+        let oldSumColumn = sumCol.value;
+
+        sumCol.innerHTML =
+          '<option value="">Select Column</option>';
+
+        headers.forEach(h => {
+
+          let o = document.createElement("option");
+
+          o.value = h;
+          o.textContent = removeBangla(h);
+
+          sumCol.appendChild(o);
+
+        });
+
+        // আগের selected Sum Column থাকলে সেটা রাখবে
+        if(headers.includes(oldSumColumn)){
+          sumCol.value = oldSumColumn;
+        }
+
+        // ===== FILTER + TABLE UPDATE =====
+        filter();
+
+      });
+
+  })
+  .catch(err => {
+    console.log("Sheet update error:", err);
+  });
+}
+
+
+// প্রথমবার Load
+loadSheetData();
+
+
+// প্রতি 30 second-এ Google Sheet check করবে
+setInterval(() => {
+
+  loadSheetData();
+
+}, 30000);
 
 function removeBangla(text){
 return text.replace(/[\u0980-\u09FF]/g,'').trim();
@@ -316,15 +379,31 @@ return `${y}-${m}-${d2}`;
 }
 
 function render(d){
-table.querySelector("tbody").innerHTML =
-d.map(r=>"<tr>"+headers.map(h=>{
-let val = removeBangla(r[h]||"");
-if(val.startsWith("http")){
-return `<td><a href="${val}" target="_blank">View</a></td>`;
-}
-return `<td>${val}</td>`;
-}).join("")+"</tr>").join("");
-}
+
+  // ===== DYNAMIC HEADER =====
+  table.querySelector("thead").innerHTML =
+    "<tr>" +
+    headers.map(h => `<th>${removeBangla(h)}</th>`).join("") +
+    "</tr>";
+
+  // ===== DYNAMIC DATA =====
+  table.querySelector("tbody").innerHTML =
+    d.map(r =>
+      "<tr>" +
+      headers.map(h => {
+
+        let val = removeBangla(r[h] || "");
+
+        if(val.startsWith("http")){
+          return `<td><a href="${val}" target="_blank">View</a></td>`;
+        }
+
+        return `<td>${val}</td>`;
+
+      }).join("") +
+      "</tr>"
+    ).join("");
+  }
 
 document.querySelectorAll("input,select").forEach(el=>{
 el.addEventListener("input",filter);
