@@ -2726,6 +2726,41 @@ auth.onAuthStateChanged(function(user){
 
         </table>
 
+      <!-- ================================
+     MONTHLY REMARKS
+================================ -->
+
+<div
+    id="monthlyRemarksSection"
+    style="
+        margin-top:18px;
+    "
+>
+
+    <div
+        style="
+            text-align:center;
+            font-size:16px;
+            font-weight:700;
+            margin-bottom:8px;
+            color:#333;
+        "
+    >
+        REMARKS
+    </div>
+
+    <div
+        id="monthlyRemarksCards"
+        style="
+            display:grid;
+            grid-template-columns:repeat(2, minmax(0, 1fr));
+            gap:10px;
+        "
+    ></div>
+
+</div>
+      
+
     </div>
 
 </div>
@@ -6741,6 +6776,193 @@ const record =
         `;
 
     }
+
+  /* ================================
+   MONTHLY REMARKS CARDS
+   AUTO LOAD WITH DAY WISE TABLE
+================================ */
+
+const remarksContainer =
+    document.getElementById("monthlyRemarksCards");
+
+if(remarksContainer){
+
+    remarksContainer.innerHTML = "";
+
+    const staffRemarksMap = {};
+
+    attendance.forEach(record => {
+
+        if(
+            !record.date ||
+            !record.date.startsWith(month)
+        ){
+            return;
+        }
+
+        const remark =
+            String(record.remarks || "").trim();
+
+        if(!remark){
+            return;
+        }
+
+        const employee =
+            employees.find(
+                e => e.id === record.employeeId
+            );
+
+        if(!employee){
+            return;
+        }
+
+        if(!staffRemarksMap[record.employeeId]){
+
+            staffRemarksMap[record.employeeId] = {
+
+                name:
+                    employee.name ||
+                    record.employeeId,
+
+                remarks: []
+
+            };
+
+        }
+
+        staffRemarksMap[
+            record.employeeId
+        ].remarks.push({
+
+            date: record.date,
+            remark: remark
+
+        });
+
+    });
+
+
+    const staffRemarkList =
+        employees
+        .filter(
+            employee =>
+                staffRemarksMap[employee.id]
+        )
+        .map(
+            employee =>
+                staffRemarksMap[employee.id]
+        );
+
+
+    if(staffRemarkList.length === 0){
+
+        remarksContainer.innerHTML = `
+
+            <div
+                style="
+                    grid-column:1 / -1;
+                    text-align:center;
+                    padding:12px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                    color:#777;
+                    background:#fafafa;
+                "
+            >
+                No remarks found for this month
+            </div>
+
+        `;
+
+    }
+
+
+    staffRemarkList.forEach(staff => {
+
+        staff.remarks.sort(
+            (a,b) =>
+                a.date.localeCompare(b.date)
+        );
+
+
+        let remarksHTML = "";
+
+
+        staff.remarks.forEach(item => {
+
+            const parts =
+                item.date.split("-");
+
+            const formattedDate =
+                parts.length === 3
+                ? `${parts[2]}-${parts[1]}-${parts[0]}`
+                : item.date;
+
+
+            remarksHTML += `
+
+                <div
+                    style="
+                        padding:4px 0;
+                        border-bottom:1px solid #eeeeee;
+                        font-size:12px;
+                        line-height:1.4;
+                    "
+                >
+
+                    <b>
+                        ${formattedDate}
+                    </b>
+
+                    <span>
+                        — ${item.remark}
+                    </span>
+
+                </div>
+
+            `;
+
+        });
+
+
+        remarksContainer.insertAdjacentHTML(
+            "beforeend",
+            `
+
+            <div
+                style="
+                    border:1px solid #bfc5cc;
+                    border-radius:8px;
+                    background:#fff;
+                    padding:9px 11px;
+                    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+                    box-sizing:border-box;
+                "
+            >
+
+                <div
+                    style="
+                        font-size:13px;
+                        font-weight:700;
+                        color:#222;
+                        margin-bottom:5px;
+                    "
+                >
+                    ${staff.name}
+                </div>
+
+                <div>
+                    ${remarksHTML}
+                </div>
+
+            </div>
+
+            `
+        );
+
+    });
+
+}
 
 }
 
