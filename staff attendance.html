@@ -7391,6 +7391,322 @@ async function downloadDayWisePDF(){
     });
 
 
+  /* =========================
+   REMARKS SECTION
+   ONLY STAFF WITH REMARKS
+========================= */
+
+const staffRemarksMap = {};
+
+
+/* =========================
+   COLLECT MONTHLY REMARKS
+========================= */
+
+attendance.forEach(record => {
+
+    if(
+        !record.date ||
+        !record.date.startsWith(month) ||
+        !record.remarks ||
+        !String(record.remarks).trim()
+    ){
+        return;
+    }
+
+
+    const employee =
+        employees.find(
+            e => e.id === record.employeeId
+        );
+
+
+    if(!employee){
+        return;
+    }
+
+
+    if(!staffRemarksMap[record.employeeId]){
+
+        staffRemarksMap[record.employeeId] = {
+
+            name:
+                employee.name ||
+                record.employeeId,
+
+            remarks: []
+
+        };
+
+    }
+
+
+    staffRemarksMap[
+        record.employeeId
+    ].remarks.push({
+
+        date:
+            record.date,
+
+        remark:
+            String(
+                record.remarks
+            ).trim()
+
+    });
+
+});
+
+
+/* =========================
+   SORT REMARKS BY DATE
+========================= */
+
+Object.values(
+    staffRemarksMap
+).forEach(staff => {
+
+    staff.remarks.sort(
+        (a,b) =>
+            a.date.localeCompare(b.date)
+    );
+
+});
+
+
+/* =========================
+   CREATE STAFF LIST
+   SAME EMPLOYEE ORDER
+========================= */
+
+const staffRemarkList =
+    employees
+    .filter(
+        e =>
+            staffRemarksMap[e.id]
+    )
+    .map(
+        e =>
+            staffRemarksMap[e.id]
+    );
+
+
+/* =========================
+   REMARKS SECTION
+========================= */
+
+if(staffRemarkList.length > 0){
+
+    let remarksY =
+        (doc.lastAutoTable?.finalY || 29) + 7;
+
+
+    const pageWidth =
+        doc.internal.pageSize.getWidth();
+
+    const pageHeight =
+        doc.internal.pageSize.getHeight();
+
+    const cardX = 7;
+
+    const cardWidth =
+        pageWidth - 14;
+
+    const cardPadding = 3;
+
+    const nameHeight = 6;
+
+    const remarkFontSize = 7;
+
+
+    /* =========================
+       REMARKS TITLE
+    ========================= */
+
+    if(
+        remarksY >
+        pageHeight - 25
+    ){
+
+        doc.addPage();
+
+        addHeader();
+
+        remarksY = 30;
+
+    }
+
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.setFontSize(10);
+
+    doc.text(
+        "REMARKS",
+        pageWidth / 2,
+        remarksY,
+        {
+            align:"center"
+        }
+    );
+
+
+    remarksY += 5;
+
+
+    /* =========================
+       STAFF REMARK CARDS
+    ========================= */
+
+    staffRemarkList.forEach(
+        staff => {
+
+            const remarkLines = [];
+
+
+            staff.remarks.forEach(
+                item => {
+
+                    const dateParts =
+                        item.date.split("-");
+
+                    const formattedDate =
+                        dateParts.length === 3
+                        ? `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
+                        : item.date;
+
+
+                    const text =
+                        `${formattedDate} — ${item.remark}`;
+
+
+                    const lines =
+                        doc.splitTextToSize(
+                            text,
+                            cardWidth -
+                            (cardPadding * 2)
+                        );
+
+
+                    lines.forEach(
+                        line =>
+                            remarkLines.push(line)
+                    );
+
+                }
+            );
+
+
+            const lineHeight = 4;
+
+            const cardHeight =
+                cardPadding +
+                nameHeight +
+                2 +
+                (remarkLines.length * lineHeight) +
+                cardPadding;
+
+
+            /* =========================
+               PAGE BREAK
+            ========================= */
+
+            if(
+                remarksY + cardHeight >
+                pageHeight - 15
+            ){
+
+                doc.addPage();
+
+                addHeader();
+
+                remarksY = 30;
+
+            }
+
+
+            /* =========================
+               CARD BORDER
+            ========================= */
+
+            doc.setDrawColor(60);
+
+            doc.setLineWidth(0.35);
+
+            doc.rect(
+                cardX,
+                remarksY,
+                cardWidth,
+                cardHeight
+            );
+
+
+            /* =========================
+               STAFF NAME
+            ========================= */
+
+            doc.setFont(
+                "helvetica",
+                "bold"
+            );
+
+            doc.setFontSize(8.5);
+
+            doc.text(
+                staff.name,
+                cardX + cardPadding,
+                remarksY + cardPadding + 2
+            );
+
+
+            /* =========================
+               REMARK LINES
+            ========================= */
+
+            doc.setFont(
+                "helvetica",
+                "normal"
+            );
+
+            doc.setFontSize(
+                remarkFontSize
+            );
+
+
+            let lineY =
+                remarksY +
+                cardPadding +
+                nameHeight +
+                2;
+
+
+            remarkLines.forEach(
+                line => {
+
+                    doc.text(
+                        line,
+                        cardX + cardPadding,
+                        lineY
+                    );
+
+                    lineY += lineHeight;
+
+                }
+            );
+
+
+            remarksY +=
+                cardHeight + 4;
+
+        }
+    );
+
+}
+
+
     /* =========================
        FINAL FOOTER
     ========================= */
