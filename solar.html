@@ -983,6 +983,65 @@ th{
   }
   }
 
+  /* BANK DETAILS + SUMMARY */
+.summary-bank-row{
+    display:grid;
+    grid-template-columns:48% 48%;
+    column-gap:4%;
+    width:100%;
+    margin-top:12px;
+    align-items:stretch;
+    box-sizing:border-box;
+}
+
+.bank-details-pdf{
+    width:100%;
+    border:1px solid #777;
+    border-radius:5px;
+    box-sizing:border-box;
+    font-size:10px;
+    line-height:1.25;
+    overflow:hidden;
+}
+
+.bank-title{
+    text-align:center;
+    font-size:16px;
+    font-weight:800;
+    padding:7px 8px;
+    border-bottom:1px solid #777;
+}
+
+.bank-line{
+    display:flex;
+    align-items:center;
+    min-height:28px;
+    padding:5px 8px;
+    border-bottom:1px solid #aaa;
+    box-sizing:border-box;
+}
+
+.bank-line:last-child{
+    border-bottom:0;
+}
+
+.bank-line b{
+    width:105px;
+    flex-shrink:0;
+    font-weight:800;
+}
+
+.bank-line span{
+    flex:1;
+    font-weight:600;
+    word-break:break-word;
+}
+
+.summary-bank-row .summary{
+    width:100%;
+    margin-left:0;
+    margin-top:0;
+}
   
 </style>
 </head>
@@ -1995,6 +2054,50 @@ placeholder="Enter TAN Number">
 
 </div>
 
+
+
+<!-- BANK DETAILS -->
+<div class="col-12">
+    <h3 style="margin-top:15px;">
+        Bank Details
+    </h3>
+</div>
+
+<div class="col-4">
+    <label>Bank Name</label>
+    <input
+        id="setBankName"
+        placeholder="Enter Bank Name">
+</div>
+
+<div class="col-4">
+    <label>Branch Name</label>
+    <input
+        id="setBankBranch"
+        placeholder="Enter Branch Name">
+</div>
+
+<div class="col-4">
+    <label>Account Name</label>
+    <input
+        id="setBankAccountName"
+        placeholder="Enter Account Name">
+</div>
+
+<div class="col-6">
+    <label>A/C Number</label>
+    <input
+        id="setBankAccountNo"
+        placeholder="Enter Account Number">
+</div>
+
+<div class="col-6">
+    <label>IFSC Code</label>
+    <input
+        id="setBankIFSC"
+        placeholder="Enter IFSC Code">
+</div>
+
 </div>
 
 
@@ -2111,7 +2214,13 @@ let items = [];
     pan:"",
     mobile:"",
     email:"",
-    tan:""
+    tan:"",
+
+    bankName:"",
+    bankBranch:"",
+    bankAccountName:"",
+    bankAccountNo:"",
+    bankIFSC:""
 };
 
 
@@ -2464,6 +2573,25 @@ function applySettings(){
     document.getElementById(
         "setTAN"
     ).value = settings.tan || "";
+  document.getElementById(
+    "setBankName"
+).value = settings.bankName || "";
+
+document.getElementById(
+    "setBankBranch"
+).value = settings.bankBranch || "";
+
+document.getElementById(
+    "setBankAccountName"
+).value = settings.bankAccountName || "";
+
+document.getElementById(
+    "setBankAccountNo"
+).value = settings.bankAccountNo || "";
+
+document.getElementById(
+    "setBankIFSC"
+).value = settings.bankIFSC || "";
 
   }
 
@@ -2478,7 +2606,13 @@ async function saveSettings(){
         mobile: document.getElementById("setMobile").value.trim(),
 
         email: document.getElementById("setEmail").value.trim(),
-        tan: document.getElementById("setTAN").value.trim()
+        tan: document.getElementById("setTAN").value.trim(),
+
+      bankName: document.getElementById("setBankName").value.trim(),
+    bankBranch: document.getElementById("setBankBranch").value.trim(),
+    bankAccountName: document.getElementById("setBankAccountName").value.trim(),
+    bankAccountNo: document.getElementById("setBankAccountNo").value.trim(),
+    bankIFSC: document.getElementById("setBankIFSC").value.trim()
     };
 
     try{
@@ -4543,10 +4677,45 @@ function invoiceHTML(f){
 
         </table>
 
+<div class="summary-bank-row">
+
+    <!-- BANK DETAILS -->
+    <div class="bank-details-pdf">
+
+        <div class="bank-title">
+            Bank Details
+        </div>
+
+        <div class="bank-line">
+            <b>Bank Name</b>
+            <span>${esc(settings.bankName || "")}</span>
+        </div>
+
+        <div class="bank-line">
+            <b>Branch Name</b>
+            <span>${esc(settings.bankBranch || "")}</span>
+        </div>
+
+        <div class="bank-line">
+            <b>Name</b>
+            <span>${esc(settings.bankAccountName || "")}</span>
+        </div>
+
+        <div class="bank-line">
+            <b>A/C No</b>
+            <span>${esc(settings.bankAccountNo || "")}</span>
+        </div>
+
+        <div class="bank-line">
+            <b>IFSC</b>
+            <span>${esc(settings.bankIFSC || "")}</span>
+        </div>
+
+    </div>
 
 
-        <div class="summary">
-
+    <!-- AMOUNT SUMMARY -->
+    <div class="summary">
 
             <div class="sumrow">
 
@@ -4660,7 +4829,8 @@ function invoiceHTML(f){
 
         </div>
 
-
+</div>
+  </div>
 
         <div
 style="
