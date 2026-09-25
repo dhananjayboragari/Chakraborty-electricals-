@@ -1112,6 +1112,63 @@ th{
     }
 
   }
+
+  /* ===== FINAL A4 COMMON LEFT-RIGHT MARGIN ===== */
+
+#printArea{
+    width:210mm !important;
+    min-width:210mm !important;
+    margin:0 !important;
+    padding:0 !important;
+    box-sizing:border-box !important;
+}
+
+#printArea .invoice-paper{
+    width:190mm !important;
+    min-width:190mm !important;
+    max-width:190mm !important;
+
+    margin-left:10mm !important;
+    margin-right:10mm !important;
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+
+    padding-left:0 !important;
+    padding-right:0 !important;
+
+    box-sizing:border-box !important;
+}
+
+/* সব প্রধান section একই left-right boundary */
+
+#printArea .invoice-paper > .inv-head,
+#printArea .invoice-paper > .bill-grid,
+#printArea .invoice-paper > .inv-table,
+#printArea .invoice-paper > .summary-bank-row,
+#printArea .invoice-paper > div[style*="Amount in Words"],
+#printArea .invoice-paper > div[style*="Notes / Terms"],
+#printArea .invoice-paper > .sign{
+    width:190mm !important;
+    max-width:190mm !important;
+
+    margin-left:0 !important;
+    margin-right:0 !important;
+
+    box-sizing:border-box !important;
+}
+
+/* Signature right side */
+
+#printArea .sign{
+    display:flex !important;
+    justify-content:flex-end !important;
+    align-items:flex-start !important;
+}
+
+#printArea .signbox{
+    margin-left:auto !important;
+    box-sizing:border-box !important;
+      }
   
 </style>
 </head>
@@ -3867,44 +3924,44 @@ html,body{
     min-height:297mm !important;
     background:white !important;
 }
-/* SAME A4 LEFT-RIGHT MARGIN FOR ALL CONTENT */
 
-#printArea .invoice-paper{
-    padding-left:10mm !important;
-    padding-right:10mm !important;
-    box-sizing:border-box !important;
-}
 
-/* Amount in Words */
-#printArea .invoice-paper > div[style*="Amount in Words"]{
-    width:100% !important;
+
+  /* ===== FINAL COMMON A4 CONTENT BOUNDARY ===== */
+
+#printArea .invoice-paper > .inv-head,
+#printArea .invoice-paper > .bill-grid,
+#printArea .invoice-paper > .inv-table,
+#printArea .invoice-paper > .summary-bank-row,
+#printArea .invoice-paper > div[style*="Amount in Words"],
+#printArea .invoice-paper > div[style*="Notes / Terms"],
+#printArea .invoice-paper > .sign{
+    width:190mm !important;
+    max-width:190mm !important;
     margin-left:0 !important;
     margin-right:0 !important;
     box-sizing:border-box !important;
 }
 
-/* Notes / Terms */
-#printArea .invoice-paper > div[style*="Notes / Terms"]{
+#printArea .summary-bank-row .summary{
     width:100% !important;
+    max-width:none !important;
     margin-left:0 !important;
     margin-right:0 !important;
     box-sizing:border-box !important;
 }
 
-/* Signature */
 #printArea .sign{
-    width:100% !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
     padding-left:0 !important;
     padding-right:0 !important;
     display:flex !important;
     justify-content:flex-end !important;
     align-items:flex-start !important;
-    box-sizing:border-box !important;
 }
 
 #printArea .signbox{
+    margin-left:auto !important;
+    margin-right:0 !important;
     box-sizing:border-box !important;
 }
 
@@ -3916,19 +3973,21 @@ html,body{
 }
 
 #printArea .invoice-paper{
-    width:210mm !important;
-    min-height:0 !important;
-    max-width:none !important;
-    margin:0 !important;
+    width:190mm !important;
+    min-width:190mm !important;
+    max-width:190mm !important;
+
+    margin-left:auto !important;
+    margin-right:auto !important;
+    margin-top:0 !important;
+    margin-bottom:0 !important;
 
     padding-top:7mm !important;
     padding-bottom:7mm !important;
-
-    padding-left:10mm !important;
-    padding-right:10mm !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
 
     box-sizing:border-box !important;
-
     background:white !important;
     box-shadow:none !important;
   }
@@ -4960,9 +5019,7 @@ function invoiceHTML(f){
             </div>
 
         </div>
-
 </div>
-  </div>
 
         <div
 style="
@@ -4970,7 +5027,7 @@ style="
 margin-right:0;
 width:100%;
 box-sizing:border-box;
-margin-top:0px;
+margin-top:6px;
 border:1.5px solid #777;
 border-radius:5px;
 padding:9px;
