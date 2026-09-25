@@ -578,8 +578,8 @@ th{
 
 .sign{
     display:flex;
-    justify-content:space-between;
-    margin-top:55px;
+    justify-content:flex-end;
+    width:100%;
 }
 
 .signbox{
@@ -1055,6 +1055,56 @@ th{
     flex-direction:column;
     justify-content:space-between;
 }
+
+  /* ================================
+   A4 PDF - BOTTOM ALIGNMENT FIX
+   Amount Words + Notes + Signature
+   Same left/right margin as header
+================================ */
+
+@media print{
+
+    #previewContent .invoice-paper{
+        padding-left:10mm !important;
+        padding-right:10mm !important;
+        box-sizing:border-box !important;
+    }
+
+    /* Amount in Words */
+    #previewContent .invoice-paper > div[style*="Amount in Words"]{
+        width:100% !important;
+        box-sizing:border-box !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+    }
+
+    /* Notes / Terms */
+    #previewContent .invoice-paper > div[style*="Notes / Terms"]{
+        width:100% !important;
+        box-sizing:border-box !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+    }
+
+    /* Signature area */
+    #previewContent .sign{
+        width:100% !important;
+        box-sizing:border-box !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+        padding-left:0 !important;
+        padding-right:0 !important;
+
+        display:flex !important;
+        justify-content:space-between !important;
+        align-items:flex-start !important;
+    }
+
+    #previewContent .signbox{
+        box-sizing:border-box !important;
+    }
+
+  }
   
 </style>
 </head>
@@ -3810,6 +3860,46 @@ html,body{
     min-height:297mm !important;
     background:white !important;
 }
+/* SAME A4 LEFT-RIGHT MARGIN FOR ALL CONTENT */
+
+#printArea .invoice-paper{
+    padding-left:10mm !important;
+    padding-right:10mm !important;
+    box-sizing:border-box !important;
+}
+
+/* Amount in Words */
+#printArea .invoice-paper > div[style*="Amount in Words"]{
+    width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    box-sizing:border-box !important;
+}
+
+/* Notes / Terms */
+#printArea .invoice-paper > div[style*="Notes / Terms"]{
+    width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    box-sizing:border-box !important;
+}
+
+/* Signature */
+#printArea .sign{
+    width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+    display:flex !important;
+    justify-content:space-between !important;
+    align-items:flex-start !important;
+    box-sizing:border-box !important;
+}
+
+#printArea .signbox{
+    box-sizing:border-box !important;
+}
 
 #printArea{
     width:210mm !important;
@@ -4887,29 +4977,18 @@ font-size:12px;
 
 
         <div class="sign">
+    <div class="signbox seller-sign">
+        For
+        ${esc(
+            f.seller.name
+        )}
 
-            <div class="signbox">
+        <br>
+        <br>
 
-                Customer Signature
-
-            </div>
-
-
-            <div class="signbox">
-
-                For
-                ${esc(
-                    f.seller.name
-                )}
-
-                <br>
-                <br>
-
-                Authorised Signatory
-
-            </div>
-
-        </div>
+        Authorised Signatory
+    </div>
+</div>
 
 
     </div>
