@@ -990,7 +990,7 @@ th{
     column-gap:4%;
     width:100%;
     margin-top:12px;
-    align-items:start;
+    align-items:stretch;
     box-sizing:border-box;
 }
 
@@ -1045,16 +1045,16 @@ th{
 
 .summary-bank-row .summary{
     width:100% !important;
-    height:auto !important;
-    min-height:0 !important;
+    height:100% !important;
+    min-height:100% !important;
     margin-left:0 !important;
     margin-top:0 !important;
     box-sizing:border-box;
 
     display:flex;
     flex-direction:column;
-    justify-content:flex-start !important;
-  }
+    justify-content:space-between;
+}
   
 </style>
 </head>
@@ -4846,7 +4846,7 @@ function invoiceHTML(f){
 
         <div
 style="
-margin-top:1px;
+margin-top:4px;
 border:1.5px solid #777;
 border-radius:5px;
 padding:9px;
