@@ -3920,11 +3920,34 @@ html,body{
     min-height:0 !important;
     max-width:none !important;
     margin:0 !important;
-    padding:10mm !important;
+
+    padding-top:7mm !important;
+    padding-bottom:7mm !important;
+
+    padding-left:10mm !important;
+    padding-right:10mm !important;
+
     box-sizing:border-box !important;
+
     background:white !important;
     box-shadow:none !important;
   }
+
+  /* ===== SAME LEFT & RIGHT ALIGNMENT ===== */
+
+#printArea .invoice-paper > .inv-head,
+#printArea .invoice-paper > .bill-grid,
+#printArea .invoice-paper > .inv-table,
+#printArea .invoice-paper > .summary-bank-row,
+#printArea .invoice-paper > div[style*="Amount in Words"],
+#printArea .invoice-paper > div[style*="Notes / Terms"]{
+    width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  
   #printArea .invoice-paper{
     page-break-before:auto !important;
     page-break-after:auto !important;
