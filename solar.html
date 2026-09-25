@@ -578,10 +578,12 @@ th{
 
 .sign{
     display:flex;
-    justify-content:flex-end;
+    justify-content:flex-end !important;
+    align-items:flex-start;
     width:100%;
-  text-align:right;
-  margin-top:57px;
+    margin-top:57px;
+    text-align:center;
+    box-sizing:border-box;
 }
 
 .signbox{
@@ -590,7 +592,9 @@ th{
     border-top:1px solid #777;
     padding-top:7px;
     font-size:11px;
-}
+    box-sizing:border-box;
+    margin-left:auto;
+  }
 
 .modal{
     position:fixed;
@@ -1098,12 +1102,13 @@ th{
         padding-right:0 !important;
 
         display:flex !important;
-        justify-content:space-between !important;
+        justify-content:flex-end !important;
         align-items:flex-start !important;
     }
 
     #previewContent .signbox{
         box-sizing:border-box !important;
+      margin-left:auto !important;
     }
 
   }
@@ -3894,10 +3899,9 @@ html,body{
     padding-left:0 !important;
     padding-right:0 !important;
     display:flex !important;
-    justify-content:space-between !important;
+    justify-content:flex-end !important;
     align-items:flex-start !important;
     box-sizing:border-box !important;
-    text-align:right;
 }
 
 #printArea .signbox{
