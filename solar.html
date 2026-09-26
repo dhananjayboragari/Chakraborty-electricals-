@@ -1169,6 +1169,54 @@ th{
     margin-left:auto !important;
     box-sizing:border-box !important;
       }
+
+
+  /* ================================
+   GST TAX BREAKUP TABLE
+================================ */
+
+.gst-breakup-pdf{
+    width:100%;
+    margin-top:8px;
+    box-sizing:border-box;
+    border:1px solid #777;
+    overflow:hidden;
+}
+
+.gst-breakup-pdf table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    font-size:10px;
+}
+
+.gst-breakup-pdf th,
+.gst-breakup-pdf td{
+    border:1px solid #777;
+    padding:5px 6px;
+    text-align:center;
+    vertical-align:middle;
+    box-sizing:border-box;
+}
+
+.gst-breakup-pdf th{
+    font-weight:800;
+    line-height:1.15;
+}
+
+.gst-breakup-pdf td.num{
+    text-align:right;
+}
+
+.gst-breakup-pdf .gst-total-row td{
+    font-weight:800;
+}
+
+  /* GST TAX BREAKUP - ALL TEXT CENTER */
+.gst-breakup-pdf table th,
+.gst-breakup-pdf table td{
+    text-align:center !important;
+}
   
 </style>
 </head>
@@ -4237,7 +4285,169 @@ body *{
     font-weight:800 !important;
   }
 
+/* ===== PDF SUMMARY HEIGHT FIX ===== */
 
+#printArea .summary-bank-row{
+    align-items:start !important;
+}
+
+/* Summary box নিজে আর bank table-এর height follow করবে না */
+#printArea .summary-bank-row .summary{
+    height:auto !important;
+    min-height:0 !important;
+    display:block !important;
+    justify-content:initial !important;
+}
+
+/* Subtotal, Discount, Taxable, CGST, SGST */
+#printArea .summary .sumrow{
+    padding:0 !important;
+    margin:0 !important;
+    min-height:0 !important;
+    height:auto !important;
+    line-height:1.05 !important;
+    font-size:11px !important;
+}
+
+/* Amount values */
+#printArea .summary .sumrow b{
+    font-size:11px !important;
+    line-height:1.05 !important;
+}
+
+/* Grand Total */
+#printArea .summary .sumrow.grand{
+    padding-top:3px !important;
+    margin-top:2px !important;
+    min-height:0 !important;
+    height:auto !important;
+    line-height:1.1 !important;
+    font-size:14px !important;
+}
+
+/* Grand Total amount */
+#printArea .summary .sumrow.grand b{
+    font-size:14px !important;
+    line-height:1.1 !important;
+  }
+
+  /* ===== PDF BOTTOM TABLE COMPACT ===== */
+
+#printArea .summary-bank-row{
+    gap:8px !important;
+}
+
+/* Bank Details table */
+#printArea .bank-details-pdf{
+    padding:5px !important;
+}
+
+#printArea .bank-details-pdf .bank-title{
+    padding:4px 6px !important;
+    line-height:1.1 !important;
+}
+
+#printArea .bank-details-pdf .bank-line{
+    padding:2px 5px !important;
+    min-height:0 !important;
+    line-height:1.15 !important;
+}
+
+/* Subtotal / Discount / Taxable / CGST / SGST / Grand Total */
+#printArea .summary{
+    padding:4px !important;
+}
+
+#printArea .summary .sumrow{
+    padding:2px 5px !important;
+    min-height:0 !important;
+    line-height:1.15 !important;
+}
+
+/* GST TAX BREAKUP */
+#printArea .gst-breakup-pdf{
+    margin-top:5px !important;
+    font-size:9px !important;
+}
+
+#printArea .gst-breakup-pdf > div{
+    padding:4px !important;
+    line-height:1.1 !important;
+}
+
+#printArea .gst-breakup-pdf table th,
+#printArea .gst-breakup-pdf table td{
+    padding:3px 4px !important;
+    line-height:1.1 !important;
+}
+
+/* ===== BANK DETAILS - EQUAL ROW HEIGHT ===== */
+
+#printArea .bank-details-pdf .bank-line,
+#printArea .bank-line{
+    height:22px !important;
+    min-height:22px !important;
+    max-height:22px !important;
+    padding:0 6px !important;
+    margin:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    box-sizing:border-box !important;
+    line-height:1 !important;
+    flex:none !important;
+}
+
+#printArea .bank-line:last-child{
+    height:22px !important;
+    min-height:22px !important;
+    max-height:22px !important;
+    padding:0 6px !important;
+}
+
+#printArea .bank-line b,
+#printArea .bank-line span{
+    line-height:1 !important;
+}
+
+/* ===== GST TAX BREAKUP - COMPACT HEIGHT ===== */
+
+#printArea .gst-breakup-pdf{
+    margin-top:4px !important;
+    font-size:8.5px !important;
+}
+
+#printArea .gst-breakup-pdf > div{
+    padding:3px 5px !important;
+    line-height:1 !important;
+}
+
+/* সব GST table row একই compact height */
+#printArea .gst-breakup-pdf table tr{
+    height:18px !important;
+}
+
+#printArea .gst-breakup-pdf table th,
+#printArea .gst-breakup-pdf table td{
+    height:18px !important;
+    min-height:18px !important;
+    padding:2px 3px !important;
+    line-height:1 !important;
+    box-sizing:border-box !important;
+    vertical-align:middle !important;
+}
+
+/* Header row একটু compact */
+#printArea .gst-breakup-pdf table thead th{
+    padding:2px 3px !important;
+    line-height:1 !important;
+}
+
+/* Total row-ও একই height */
+#printArea .gst-breakup-pdf table tbody tr:last-child td{
+    height:18px !important;
+    min-height:18px !important;
+    padding:2px 3px !important;
+}
   
 </style>
 
@@ -5041,6 +5251,464 @@ font-size:12px;
             ${amountWords(t.total)}
 
         </div>
+
+
+
+${(() => {
+
+    const taxGroups = {};
+
+    (f.items || []).forEach(i => {
+
+        const gross =
+            Number(i.qty || 0) *
+            Number(i.rate || 0);
+
+        const taxable =
+            Math.max(
+                0,
+                gross - Number(i.disc || 0)
+            );
+
+        const gstRate =
+            Number(i.gst || 0);
+
+        const tax =
+            taxable * gstRate / 100;
+
+        const hsn =
+            i.hsn || "-";
+
+        const key =
+            hsn + "_" + gstRate;
+
+        if (!taxGroups[key]) {
+
+            taxGroups[key] = {
+                hsn: hsn,
+                gst: gstRate,
+                taxable: 0,
+                tax: 0
+            };
+
+        }
+
+        taxGroups[key].taxable += taxable;
+        taxGroups[key].tax += tax;
+
+    });
+
+
+    const groups =
+        Object.values(taxGroups);
+
+
+    const totalTax =
+        groups.reduce(
+            (sum, g) =>
+                sum + g.tax,
+            0
+        );
+
+
+    const totalTaxable =
+        groups.reduce(
+            (sum, g) =>
+                sum + g.taxable,
+            0
+        );
+
+
+    return `
+
+    <div
+        class="gst-breakup-pdf"
+        style="
+            width:100%;
+            box-sizing:border-box;
+            margin-top:8px;
+            border:1.5px solid #777;
+            border-radius:5px;
+            overflow:hidden;
+            font-size:10px;
+        "
+    >
+
+        <!-- GST / TAX BREAKUP HEADING -->
+
+        <div
+            style="
+                padding:6px;
+                text-align:center;
+                font-size:12px;
+                font-weight:800;
+                border-bottom:1px solid #777;
+            "
+        >
+            GST / TAX BREAKUP
+        </div>
+
+
+        <table
+            style="
+                width:100%;
+                border-collapse:collapse;
+                table-layout:fixed;
+            "
+        >
+
+  <colgroup>
+    <col style="width:15%;">
+    <col style="width:17%;">
+    <col style="width:11%;">
+    <col style="width:11%;">
+    <col style="width:11%;">
+    <col style="width:11%;">
+    <col style="width:24%;">
+</colgroup>
+
+            <thead>
+
+                <!-- MAIN HEADER ROW -->
+
+                <tr>
+
+                    <th
+                        rowspan="2"
+                        style="
+                            width:15%;
+                            border-right:1px solid #777;
+                            border-bottom:1px solid #777;
+                            padding:5px;
+                            text-align:center;
+                        "
+                    >
+                        HSN/SAC
+                    </th>
+
+
+                    <th
+                        rowspan="2"
+                        style="
+                            width:17%;
+                            border-right:1px solid #777;
+                            border-bottom:1px solid #777;
+                            padding:5px;
+                            text-align:center;
+                        "
+                    >
+                        Taxable<br>
+                        Value
+                    </th>
+
+
+                    <th
+                        colspan="2"
+                        style="
+                            width:22%;
+                            border-right:1px solid #777;
+                            border-bottom:1px solid #777;
+                            padding:5px;
+                            text-align:center;
+                        "
+                    >
+                        CGST
+                    </th>
+
+
+                    <th
+                        colspan="2"
+                        style="
+                            width:22%;
+                            border-right:1px solid #777;
+                            border-bottom:1px solid #777;
+                            padding:5px;
+                            text-align:center;
+                        "
+                    >
+                        SGST/UTGST
+                    </th>
+
+
+                    <th
+                        rowspan="2"
+                        style="
+                            width:24%;
+                            border-bottom:1px solid #777;
+                            padding:5px;
+                            text-align:center;
+                        "
+                    >
+                        Total<br>
+                        Tax Amount
+                    </th>
+
+                </tr>
+
+
+                <!-- SUB HEADER ROW -->
+
+                <tr>
+
+                    <th
+                        style="
+                            border-right:1px solid #777;
+                            border-bottom:1px solid #777;
+                            padding:4px;
+                            text-align:center;
+                        "
+                    >
+                        Rate
+                    </th>
+
+                    <th
+                        style="
+                            border-right:1px solid #777;
+                            border-bottom:1px solid #777;
+                            padding:4px;
+                            text-align:center;
+                        "
+                    >
+                        Amount
+                    </th>
+
+
+                    <th
+                        style="
+                            border-right:1px solid #777;
+                            border-bottom:1px solid #777;
+                            padding:4px;
+                            text-align:center;
+                        "
+                    >
+                        Rate
+                    </th>
+
+                    <th
+                        style="
+                            border-right:1px solid #777;
+                            border-bottom:1px solid #777;
+                            padding:4px;
+                            text-align:center;
+                        "
+                    >
+                        Amount
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                ${
+                    groups.map(g => {
+
+                        const halfRate =
+                            Number(g.gst || 0) / 2;
+
+                        const cgst =
+                            g.tax / 2;
+
+                        const sgst =
+                            g.tax / 2;
+
+                        return `
+
+                        <tr>
+
+                            <td
+                                style="
+                                    border-right:1px solid #777;
+                                    border-bottom:1px solid #aaa;
+                                    padding:5px;
+                                    text-align:center;
+                                "
+                            >
+                                ${esc(g.hsn)}
+                            </td>
+
+
+                            <td
+                                style="
+                                    border-right:1px solid #777;
+                                    border-bottom:1px solid #aaa;
+                                    padding:5px;
+                                    text-align:right;
+                                "
+                            >
+                                ${money(g.taxable)}
+                            </td>
+
+
+                            <td
+                                style="
+                                    border-right:1px solid #777;
+                                    border-bottom:1px solid #aaa;
+                                    padding:5px;
+                                    text-align:center;
+                                "
+                            >
+                                ${halfRate}%
+                            </td>
+
+
+                            <td
+                                style="
+                                    border-right:1px solid #777;
+                                    border-bottom:1px solid #aaa;
+                                    padding:5px;
+                                    text-align:right;
+                                "
+                            >
+                                ${money(cgst)}
+                            </td>
+
+
+                            <td
+                                style="
+                                    border-right:1px solid #777;
+                                    border-bottom:1px solid #aaa;
+                                    padding:5px;
+                                    text-align:center;
+                                "
+                            >
+                                ${halfRate}%
+                            </td>
+
+
+                            <td
+                                style="
+                                    border-right:1px solid #777;
+                                    border-bottom:1px solid #aaa;
+                                    padding:5px;
+                                    text-align:right;
+                                "
+                            >
+                                ${money(sgst)}
+                            </td>
+
+
+                            <td
+                                style="
+                                    border-bottom:1px solid #aaa;
+                                    padding:5px;
+                                    text-align:right;
+                                "
+                            >
+                                ${money(g.tax)}
+                            </td>
+
+                        </tr>
+
+                        `;
+
+                    }).join("")
+                }
+
+
+                <!-- TOTAL ROW -->
+
+                <tr>
+
+                    <td
+                        style="
+                            border-right:1px solid #777;
+                            padding:6px;
+                            text-align:right;
+                            font-weight:800;
+                        "
+                    >
+                        Total
+                    </td>
+
+
+                    <td
+                        style="
+                            border-right:1px solid #777;
+                            padding:6px;
+                            text-align:right;
+                            font-weight:800;
+                        "
+                    >
+                        ${money(totalTaxable)}
+                    </td>
+
+
+                    <td
+                        colspan="2"
+                        style="
+                            border-right:1px solid #777;
+                            padding:6px;
+                            text-align:right;
+                            font-weight:800;
+                        "
+                    >
+                        ${money(totalTax / 2)}
+                    </td>
+
+
+                    <td
+                        colspan="2"
+                        style="
+                            border-right:1px solid #777;
+                            padding:6px;
+                            text-align:right;
+                            font-weight:800;
+                        "
+                    >
+                        ${money(totalTax / 2)}
+                    </td>
+
+
+                    <td
+                        style="
+                            padding:6px;
+                            text-align:right;
+                            font-weight:800;
+                        "
+                    >
+                        ${money(totalTax)}
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div
+        style="
+            width:100%;
+            box-sizing:border-box;
+            margin-top:6px;
+            border:1.5px solid #777;
+            border-radius:5px;
+            padding:7px;
+            font-size:11px;
+        "
+    >
+
+        <b>
+            Tax Amount in Words:
+        </b>
+
+        ${amountWords(totalTax)}
+
+    </div>
+
+    `;
+})()}
+
+
+
+
+
+  
 
 
 
