@@ -420,11 +420,32 @@ function toggleMore(){
 
   
 window.onload = function(){
+
   let email = localStorage.getItem("user");
+  let password = localStorage.getItem("password");
+
   if(email){
     document.getElementById("email").value = email;
     document.getElementById("remember").checked = true;
   }
+
+  if(password){
+    document.getElementById("password").value = password;
+  }
+
+  // 🔥 Restore cooldown after refresh
+  const resendBtn = document.getElementById("resend");
+  let lastTime = localStorage.getItem("resendTime");
+
+  if(lastTime){
+    let diff = Math.floor((Date.now() - lastTime)/1000);
+
+    if(diff < 60){
+      resendBtn.style.display="block";
+      startCooldown(resendBtn,60-diff);
+    }
+  }
+        }
 
   // 🔥 Restore cooldown after refresh
   const resendBtn = document.getElementById("resend");
@@ -479,10 +500,19 @@ window.login = async function(){
     }
 
     if(document.getElementById("remember").checked){
-      localStorage.setItem("user",email);
-    }else{
-      localStorage.removeItem("user");
-    }
+
+  // Save email
+  localStorage.setItem("user", email);
+
+  // Save password
+  localStorage.setItem("password", password);
+
+}else{
+
+  // Remove saved login information
+  localStorage.removeItem("user");
+  localStorage.removeItem("password");
+  }
 
     msg.innerHTML="✅ Login Success";
     msg.style.color="green";
