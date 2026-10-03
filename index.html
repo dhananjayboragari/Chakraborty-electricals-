@@ -419,46 +419,52 @@ function toggleMore(){
 
 
   
-window.onload = function(){
+window.addEventListener("load", function(){
 
-  let email = localStorage.getItem("user");
-  let password = localStorage.getItem("password");
+  // =========================
+  // REMEMBER LOGIN DATA
+  // =========================
 
-  if(email){
-    document.getElementById("email").value = email;
+  const savedEmail = localStorage.getItem("user");
+  const savedPassword = localStorage.getItem("password");
+
+  if(savedEmail){
+
+    document.getElementById("email").value = savedEmail;
     document.getElementById("remember").checked = true;
+
   }
 
-  if(password){
-    document.getElementById("password").value = password;
+  if(savedPassword){
+
+    document.getElementById("password").value = savedPassword;
+
   }
 
-  // 🔥 Restore cooldown after refresh
+
+  // =========================
+  // RESTORE RESEND COOLDOWN
+  // =========================
+
   const resendBtn = document.getElementById("resend");
-  let lastTime = localStorage.getItem("resendTime");
+  const lastTime = localStorage.getItem("resendTime");
 
   if(lastTime){
-    let diff = Math.floor((Date.now() - lastTime)/1000);
+
+    const diff = Math.floor(
+      (Date.now() - Number(lastTime)) / 1000
+    );
 
     if(diff < 60){
-      resendBtn.style.display="block";
-      startCooldown(resendBtn,60-diff);
-    }
-  }
-        }
 
-  // 🔥 Restore cooldown after refresh
-  const resendBtn = document.getElementById("resend");
-  let lastTime = localStorage.getItem("resendTime");
+      resendBtn.style.display = "block";
+      startCooldown(resendBtn, 60 - diff);
 
-  if(lastTime){
-    let diff = Math.floor((Date.now() - lastTime)/1000);
-    if(diff < 60){
-      resendBtn.style.display="block";
-      startCooldown(resendBtn,60-diff);
     }
+
   }
-}
+
+});
 
 document.addEventListener("keydown", function(e){
   if(e.key==="Enter"){ login(); }
@@ -516,7 +522,7 @@ window.login = async function(){
 
     msg.innerHTML="✅ Login Success";
     msg.style.color="green";
-    setTimeout(()=>location.href="home.html",1000);
+    setTimeout(()=>location.href="index.html",1000);
 
   }catch(e){
     let customMsg = "Login failed. Please try again.";
@@ -634,6 +640,59 @@ window.addEventListener("load", () => {
   inputs.forEach(input => {
     updateInputColor(input);
   });
+});
+
+
+  
+  // =========================
+// SAVE EMAIL + PASSWORD WHILE TYPING
+// =========================
+
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const rememberBox = document.getElementById("remember");
+
+emailInput.addEventListener("input", function(){
+
+  if(rememberBox.checked){
+
+    localStorage.setItem("user", this.value);
+
+  }
+
+});
+
+
+passwordInput.addEventListener("input", function(){
+
+  if(rememberBox.checked){
+
+    localStorage.setItem("password", this.value);
+
+  }
+
+});
+
+
+rememberBox.addEventListener("change", function(){
+
+  if(this.checked){
+
+    if(emailInput.value.trim() !== ""){
+      localStorage.setItem("user", emailInput.value);
+    }
+
+    if(passwordInput.value !== ""){
+      localStorage.setItem("password", passwordInput.value);
+    }
+
+  }else{
+
+    localStorage.removeItem("user");
+    localStorage.removeItem("password");
+
+  }
+
 });
   
 </script>
