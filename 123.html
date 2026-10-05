@@ -2,980 +2,1116 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solar Consumer Payment Management</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Solar Consumer Payment</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
 
 :root{
-  --primary:#2563eb;
-  --primary2:#4f46e5;
-  --green:#16a34a;
-  --orange:#f59e0b;
-  --red:#dc2626;
-  --dark:#0f172a;
-  --text:#1e293b;
-  --muted:#64748b;
-  --bg:#f1f5f9;
-  --card:#fff;
-  --border:#e2e8f0;
-  --shadow:0 12px 35px rgba(15,23,42,.08);
+    --blue:#2563eb;
+    --blue2:#4f46e5;
+    --green:#16a34a;
+    --orange:#f59e0b;
+    --red:#dc2626;
+    --dark:#0f172a;
+    --text:#1e293b;
+    --muted:#64748b;
+    --bg:#f1f5f9;
+    --border:#e2e8f0;
+    --white:#fff;
+    --shadow:0 12px 35px rgba(15,23,42,.08);
 }
 
 body{
-  margin:0;
-  font-family:Inter,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
+    margin:0;
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
 }
 
-button,input,select,textarea{
-  font:inherit;
+button,
+input,
+select,
+textarea{
+    font:inherit;
 }
 
 button{
-  cursor:pointer;
-}
-
-.app{
-  min-height:100vh;
+    cursor:pointer;
 }
 
 /* ================= TOPBAR ================= */
 
 .topbar{
-  height:72px;
-  background:linear-gradient(135deg,#0f172a,#1e3a8a);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 28px;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 5px 20px rgba(0,0,0,.15);
+    height:72px;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
 }
 
 .brand{
-  display:flex;
-  align-items:center;
-  gap:13px;
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
 
 .brand-icon{
-  width:42px;
-  height:42px;
-  border-radius:13px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#facc15,#f97316);
-  font-size:22px;
+    width:43px;
+    height:43px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#facc15,#f97316);
+    font-size:23px;
 }
 
 .brand h1{
-  font-size:18px;
-  margin:0;
+    margin:0;
+    font-size:18px;
 }
 
 .brand small{
-  opacity:.7;
-  font-size:11px;
+    font-size:11px;
+    opacity:.7;
 }
 
 .top-right{
-  display:flex;
-  align-items:center;
-  gap:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
 .user-pill{
-  padding:9px 14px;
-  border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.08);
-  border-radius:30px;
-  font-size:12px;
+    padding:9px 14px;
+    border-radius:30px;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.18);
+    font-size:11px;
 }
 
 .logout{
-  border:0;
-  background:#ef4444;
-  color:white;
-  padding:9px 15px;
-  border-radius:9px;
-  font-weight:700;
+    border:0;
+    background:#ef4444;
+    color:white;
+    padding:9px 15px;
+    border-radius:9px;
+    font-weight:700;
 }
 
 /* ================= MAIN ================= */
 
 .main{
-  max-width:1500px;
-  margin:auto;
-  padding:25px;
+    max-width:1500px;
+    margin:auto;
+    padding:25px;
 }
 
 .page-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin-bottom:22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:22px;
 }
 
 .page-head h2{
-  margin:0 0 5px;
-  font-size:25px;
+    margin:0 0 5px;
+    font-size:25px;
 }
 
 .page-head p{
-  margin:0;
-  color:var(--muted);
-  font-size:13px;
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
 }
 
 .primary-btn{
-  border:0;
-  color:white;
-  background:linear-gradient(135deg,var(--primary),var(--primary2));
-  padding:12px 18px;
-  border-radius:11px;
-  font-weight:700;
-  box-shadow:0 8px 18px rgba(37,99,235,.25);
-}
-
-.primary-btn:hover{
-  transform:translateY(-1px);
+    border:0;
+    color:white;
+    background:linear-gradient(135deg,var(--blue),var(--blue2));
+    padding:12px 18px;
+    border-radius:11px;
+    font-weight:700;
+    box-shadow:0 8px 18px rgba(37,99,235,.25);
 }
 
 /* ================= STATS ================= */
 
 .stats{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:16px;
-  margin-bottom:22px;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:16px;
+    margin-bottom:22px;
 }
 
 .stat{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:17px;
-  padding:19px;
-  box-shadow:var(--shadow);
-  position:relative;
-  overflow:hidden;
-}
-
-.stat:after{
-  content:"";
-  position:absolute;
-  width:80px;
-  height:80px;
-  border-radius:50%;
-  right:-25px;
-  top:-25px;
-  background:rgba(37,99,235,.07);
+    background:white;
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:18px;
+    box-shadow:var(--shadow);
 }
 
 .stat-icon{
-  width:39px;
-  height:39px;
-  border-radius:11px;
-  display:grid;
-  place-items:center;
-  margin-bottom:12px;
-  background:#eff6ff;
-  color:#2563eb;
+    width:40px;
+    height:40px;
+    border-radius:11px;
+    display:grid;
+    place-items:center;
+    background:#eff6ff;
+    color:#2563eb;
+    margin-bottom:12px;
 }
 
 .stat:nth-child(2) .stat-icon{
-  background:#ecfdf5;
-  color:#16a34a;
+    background:#f5f3ff;
+    color:#7c3aed;
 }
 
 .stat:nth-child(3) .stat-icon{
-  background:#fff7ed;
-  color:#ea580c;
+    background:#ecfdf5;
+    color:#16a34a;
 }
 
 .stat:nth-child(4) .stat-icon{
-  background:#f5f3ff;
-  color:#7c3aed;
+    background:#fff7ed;
+    color:#ea580c;
 }
 
 .stat:nth-child(5) .stat-icon{
-  background:#fef2f2;
-  color:#dc2626;
+    background:#fef2f2;
+    color:#dc2626;
 }
 
 .stat-value{
-  font-size:22px;
-  font-weight:800;
+    font-size:21px;
+    font-weight:800;
 }
 
 .stat-label{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:5px;
+    color:var(--muted);
+    font-size:11px;
+    margin-top:5px;
 }
 
 /* ================= TOOLBAR ================= */
 
 .toolbar{
-  background:white;
-  border:1px solid var(--border);
-  padding:15px;
-  border-radius:15px;
-  display:flex;
-  gap:10px;
-  margin-bottom:18px;
-  box-shadow:0 5px 18px rgba(15,23,42,.04);
+    background:white;
+    border:1px solid var(--border);
+    padding:14px;
+    border-radius:15px;
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
 }
 
 .search{
-  flex:1;
-  position:relative;
+    flex:1;
+    position:relative;
 }
 
 .search input{
-  width:100%;
-  padding:12px 14px 12px 40px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  outline:none;
+    width:100%;
+    height:43px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:0 14px 0 40px;
+    outline:none;
 }
 
 .search span{
-  position:absolute;
-  left:14px;
-  top:12px;
-  color:#94a3b8;
+    position:absolute;
+    left:14px;
+    top:12px;
+    color:#94a3b8;
 }
 
 .toolbar select{
-  border:1px solid var(--border);
-  padding:0 12px;
-  border-radius:10px;
-  background:white;
-  color:var(--text);
+    height:43px;
+    padding:0 12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:white;
 }
 
 /* ================= TABLE ================= */
 
 .table-card{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:17px;
-  overflow:hidden;
-  box-shadow:var(--shadow);
+    background:white;
+    border:1px solid var(--border);
+    border-radius:17px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
 }
 
 table{
-  width:100%;
-  border-collapse:collapse;
+    width:100%;
+    border-collapse:collapse;
 }
 
 th{
-  background:#f8fafc;
-  padding:14px 13px;
-  text-align:left;
-  font-size:11px;
-  color:#64748b;
-  text-transform:uppercase;
-  letter-spacing:.4px;
+    background:#f8fafc;
+    color:#64748b;
+    text-transform:uppercase;
+    font-size:10px;
+    padding:14px 12px;
+    text-align:left;
 }
 
 td{
-  padding:14px 13px;
-  border-top:1px solid #eef2f7;
-  font-size:12px;
+    padding:13px 12px;
+    border-top:1px solid #eef2f7;
+    font-size:12px;
 }
 
 .consumer{
-  display:flex;
-  align-items:center;
-  gap:10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
 .avatar{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#dbeafe,#e0e7ff);
-  color:#1d4ed8;
-  font-weight:800;
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#dbeafe,#e0e7ff);
+    color:#1d4ed8;
+    font-weight:800;
 }
 
 .consumer strong{
-  display:block;
-  font-size:12px;
+    display:block;
 }
 
 .consumer small{
-  color:#94a3b8;
+    color:#94a3b8;
 }
 
 .mode{
-  display:inline-flex;
-  padding:5px 8px;
-  border-radius:20px;
-  font-size:10px;
-  font-weight:700;
+    display:inline-flex;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:700;
 }
 
 .mode.cash{
-  background:#ecfdf5;
-  color:#15803d;
+    background:#ecfdf5;
+    color:#15803d;
 }
 
 .mode.loan{
-  background:#eff6ff;
-  color:#1d4ed8;
+    background:#eff6ff;
+    color:#1d4ed8;
 }
 
 .amount{
-  font-weight:800;
+    font-weight:800;
 }
 
 .progress{
-  width:100px;
-  height:7px;
-  background:#e2e8f0;
-  border-radius:10px;
-  overflow:hidden;
+    width:95px;
+    height:7px;
+    background:#e2e8f0;
+    border-radius:10px;
+    overflow:hidden;
 }
 
 .progress span{
-  display:block;
-  height:100%;
-  background:linear-gradient(90deg,#2563eb,#16a34a);
-  border-radius:10px;
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg,#2563eb,#16a34a);
 }
 
 .action-btn{
-  border:0;
-  width:33px;
-  height:33px;
-  border-radius:9px;
-  background:#f1f5f9;
-  color:#475569;
-  margin-right:3px;
+    border:0;
+    width:33px;
+    height:33px;
+    border-radius:9px;
+    background:#f1f5f9;
+    margin-right:3px;
 }
 
 .action-btn:hover{
-  background:#dbeafe;
-  color:#1d4ed8;
+    background:#dbeafe;
 }
 
 .action-btn.delete:hover{
-  background:#fee2e2;
-  color:#dc2626;
-}
-
-/* ================= MODAL ================= */
-
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(15,23,42,.65);
-  backdrop-filter:blur(5px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:500;
-}
-
-.modal-bg.show{
-  display:flex;
-}
-
-.modal{
-  width:min(1050px,100%);
-  max-height:92vh;
-  overflow:auto;
-  background:white;
-  border-radius:22px;
-  box-shadow:0 30px 80px rgba(0,0,0,.25);
-}
-
-.modal-head{
-  padding:20px 24px;
-  background:linear-gradient(135deg,#0f172a,#1e40af);
-  color:white;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:5;
-}
-
-.modal-head h3{
-  margin:0;
-}
-
-.close{
-  width:36px;
-  height:36px;
-  border:0;
-  border-radius:10px;
-  background:rgba(255,255,255,.12);
-  color:white;
-  font-size:20px;
-}
-
-.form{
-  padding:24px;
-}
-
-.section{
-  margin-bottom:25px;
-}
-
-.section-title{
-  font-size:14px;
-  font-weight:800;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:13px;
-}
-
-.section-title span{
-  width:7px;
-  height:20px;
-  border-radius:5px;
-  background:linear-gradient(#2563eb,#4f46e5);
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:13px;
-}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.field.full{
-  grid-column:1/-1;
-}
-
-.field label{
-  font-size:11px;
-  font-weight:700;
-  color:#475569;
-}
-
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  border:1px solid var(--border);
-  padding:11px 12px;
-  border-radius:10px;
-  outline:none;
-  background:white;
-}
-
-.field textarea{
-  resize:vertical;
-  min-height:75px;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus{
-  border-color:#60a5fa;
-  box-shadow:0 0 0 3px rgba(37,99,235,.08);
-}
-
-/* payment cards */
-
-.payment-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-
-.payment-card{
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:14px;
-  background:#f8fafc;
-}
-
-.payment-card h4{
-  margin:0 0 10px;
-  font-size:12px;
-}
-
-.payment-card .percent{
-  color:#2563eb;
-  font-weight:800;
-}
-
-.payment-card input{
-  margin-top:7px;
-}
-
-/* bank */
-
-.bank-box{
-  border:1px solid #bfdbfe;
-  background:#eff6ff;
-  border-radius:15px;
-  padding:15px;
-  margin-top:12px;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.modal-footer{
-  padding:16px 24px;
-  border-top:1px solid var(--border);
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  position:sticky;
-  bottom:0;
-  background:white;
-}
-
-.secondary-btn{
-  border:1px solid var(--border);
-  background:white;
-  padding:11px 18px;
-  border-radius:10px;
-  font-weight:700;
-}
-
-/* ================= DETAILS ================= */
-
-.detail-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-  padding:20px;
-}
-
-.detail-box{
-  border:1px solid var(--border);
-  border-radius:15px;
-  padding:16px;
-}
-
-.detail-box h4{
-  margin:0 0 14px;
-}
-
-.detail-row{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px dashed #e2e8f0;
-  font-size:12px;
-}
-
-.detail-row:last-child{
-  border:0;
-}
-
-.detail-row span:first-child{
-  color:var(--muted);
-}
-
-.milestone{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:11px;
-  background:#f8fafc;
-  border-radius:11px;
-  margin-bottom:8px;
-}
-
-.milestone-icon{
-  width:32px;
-  height:32px;
-  border-radius:9px;
-  display:grid;
-  place-items:center;
-  background:#dbeafe;
-  color:#2563eb;
-}
-
-.paid{
-  color:#16a34a;
-  font-weight:800;
-}
-
-.pending{
-  color:#f59e0b;
-  font-weight:800;
-}
-
-/* ================= TOAST ================= */
-
-.toast{
-  position:fixed;
-  right:22px;
-  bottom:22px;
-  min-width:260px;
-  background:#0f172a;
-  color:white;
-  padding:14px 17px;
-  border-radius:12px;
-  box-shadow:0 15px 35px rgba(0,0,0,.2);
-  transform:translateY(120px);
-  opacity:0;
-  transition:.3s;
-  z-index:1000;
-  font-size:13px;
-}
-
-.toast.show{
-  transform:translateY(0);
-  opacity:1;
-}
-
-.toast.success{
-  border-left:4px solid #22c55e;
-}
-
-.toast.error{
-  border-left:4px solid #ef4444;
+    background:#fee2e2;
 }
 
 /* ================= EMPTY ================= */
 
 .empty{
-  padding:50px 20px;
-  text-align:center;
-  color:#94a3b8;
+    padding:50px 20px;
+    text-align:center;
+    color:#94a3b8;
 }
 
-.empty div{
-  font-size:38px;
-  margin-bottom:8px;
+.empty-icon{
+    font-size:40px;
+}
+
+/* ================= MODAL ================= */
+
+.modal-bg{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.68);
+    backdrop-filter:blur(5px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:500;
+}
+
+.modal-bg.show{
+    display:flex;
+}
+
+.modal{
+    width:min(1050px,100%);
+    max-height:93vh;
+    overflow:auto;
+    background:white;
+    border-radius:22px;
+    box-shadow:0 30px 80px rgba(0,0,0,.25);
+}
+
+.modal-head{
+    padding:19px 23px;
+    background:linear-gradient(135deg,#0f172a,#1e40af);
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:5;
+}
+
+.modal-head h3{
+    margin:0;
+    font-size:17px;
+}
+
+.close{
+    width:36px;
+    height:36px;
+    border:0;
+    border-radius:10px;
+    background:rgba(255,255,255,.12);
+    color:white;
+    font-size:21px;
+}
+
+.form{
+    padding:23px;
+}
+
+.section{
+    margin-bottom:25px;
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:13px;
+}
+
+.section-title span{
+    width:7px;
+    height:19px;
+    border-radius:5px;
+    background:linear-gradient(#2563eb,#4f46e5);
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:13px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+.field label{
+    font-size:11px;
+    font-weight:700;
+    color:#475569;
+}
+
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    border:1px solid var(--border);
+    padding:11px 12px;
+    border-radius:10px;
+    outline:none;
+}
+
+.field textarea{
+    min-height:75px;
+    resize:vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+    border-color:#60a5fa;
+    box-shadow:0 0 0 3px rgba(37,99,235,.08);
+}
+
+/* PAYMENT TYPE */
+
+.payment-type{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.type-option{
+    border:2px solid var(--border);
+    border-radius:15px;
+    padding:15px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.type-option:hover{
+    border-color:#93c5fd;
+}
+
+.type-option.active{
+    border-color:#2563eb;
+    background:#eff6ff;
+}
+
+.type-option input{
+    display:none;
+}
+
+.type-title{
+    font-weight:800;
+}
+
+.type-desc{
+    margin-top:5px;
+    color:#64748b;
+    font-size:10px;
+}
+
+/* PAYMENT CARDS */
+
+.payment-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.payment-grid.cash-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.payment-card{
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:15px;
+    background:#f8fafc;
+}
+
+.payment-card h4{
+    margin:0 0 4px;
+    font-size:12px;
+}
+
+.percent{
+    color:#2563eb;
+}
+
+.calculated{
+    color:#64748b;
+    font-size:10px;
+    margin-bottom:9px;
+}
+
+.payment-card input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:9px;
+    margin-top:7px;
+    background:white;
+}
+
+/* BANK */
+
+.bank-box{
+    margin-top:14px;
+    border:1px solid #bfdbfe;
+    background:#eff6ff;
+    border-radius:15px;
+    padding:15px;
+}
+
+/* FOOTER */
+
+.modal-footer{
+    padding:15px 23px;
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    position:sticky;
+    bottom:0;
+    background:white;
+}
+
+.secondary-btn{
+    border:1px solid var(--border);
+    background:white;
+    padding:11px 18px;
+    border-radius:10px;
+    font-weight:700;
+}
+
+/* ================= DETAILS ================= */
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    padding:20px;
+}
+
+.detail-box{
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:16px;
+}
+
+.detail-box h4{
+    margin:0 0 13px;
+}
+
+.detail-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:8px 0;
+    border-bottom:1px dashed #e2e8f0;
+    font-size:12px;
+}
+
+.detail-row:last-child{
+    border-bottom:0;
+}
+
+.detail-row span:first-child{
+    color:#64748b;
+}
+
+.milestone{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px;
+    background:#f8fafc;
+    border-radius:11px;
+    margin-bottom:8px;
+}
+
+.milestone-icon{
+    width:33px;
+    height:33px;
+    display:grid;
+    place-items:center;
+    border-radius:9px;
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.paid{
+    color:#16a34a;
+}
+
+.pending{
+    color:#dc2626;
+}
+
+/* ================= TOAST ================= */
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    min-width:260px;
+    background:#0f172a;
+    color:white;
+    padding:14px 17px;
+    border-radius:12px;
+    opacity:0;
+    transform:translateY(100px);
+    transition:.3s;
+    z-index:1000;
+    font-size:12px;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.toast.success{
+    border-left:4px solid #22c55e;
+}
+
+.toast.error{
+    border-left:4px solid #ef4444;
+}
+
+.hidden{
+    display:none!important;
 }
 
 /* ================= MOBILE ================= */
 
 @media(max-width:1000px){
-  .stats{
-    grid-template-columns:repeat(3,1fr);
-  }
 
-  .payment-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
 
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-  }
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .payment-grid{
+        grid-template-columns:1fr 1fr;
+    }
 }
 
 @media(max-width:700px){
 
-  .topbar{
-    height:auto;
-    min-height:64px;
-    padding:10px 14px;
-  }
+    .topbar{
+        min-height:64px;
+        height:auto;
+        padding:10px 14px;
+    }
 
-  .brand h1{
-    font-size:14px;
-  }
+    .brand h1{
+        font-size:14px;
+    }
 
-  .brand small{
-    display:none;
-  }
+    .brand small,
+    .user-pill{
+        display:none;
+    }
 
-  .user-pill{
-    display:none;
-  }
+    .main{
+        padding:15px;
+    }
 
-  .main{
-    padding:15px;
-  }
+    .page-head{
+        align-items:flex-start;
+    }
 
-  .page-head{
-    align-items:flex-start;
-  }
+    .page-head h2{
+        font-size:20px;
+    }
 
-  .page-head h2{
-    font-size:20px;
-  }
+    .page-head p{
+        font-size:11px;
+    }
 
-  .stats{
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-  }
+    .stats{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
 
-  .stat{
-    padding:14px;
-  }
+    .stat{
+        padding:14px;
+    }
 
-  .stat-value{
-    font-size:18px;
-  }
+    .stat-value{
+        font-size:17px;
+    }
 
-  .toolbar{
-    flex-direction:column;
-  }
+    .toolbar{
+        flex-direction:column;
+    }
 
-  .toolbar select{
-    min-height:42px;
-  }
+    .toolbar select{
+        width:100%;
+    }
 
-  /* desktop table hidden */
-  .table-card{
-    background:transparent;
-    border:0;
-    box-shadow:none;
-    overflow:visible;
-  }
+    /* MOBILE CARD TABLE */
 
-  table,
-  thead,
-  tbody,
-  tr,
-  td{
-    display:block;
-  }
+    .table-card{
+        background:transparent;
+        border:0;
+        box-shadow:none;
+        overflow:visible;
+    }
 
-  thead{
-    display:none;
-  }
+    table,
+    thead,
+    tbody,
+    tr,
+    td{
+        display:block;
+    }
 
-  tr{
-    background:white;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:13px;
-    margin-bottom:12px;
-    box-shadow:0 7px 20px rgba(15,23,42,.06);
-  }
+    thead{
+        display:none;
+    }
 
-  td{
-    border:0;
-    padding:6px 0;
-  }
+    tr{
+        background:white;
+        border:1px solid var(--border);
+        border-radius:16px;
+        padding:13px;
+        margin-bottom:12px;
+        box-shadow:0 7px 20px rgba(15,23,42,.06);
+    }
 
-  td:before{
-    content:attr(data-label);
-    display:block;
-    color:#94a3b8;
-    font-size:9px;
-    text-transform:uppercase;
-    margin-bottom:3px;
-    font-weight:700;
-  }
+    td{
+        border:0;
+        padding:6px 0;
+    }
 
-  td:first-child:before{
-    display:none;
-  }
+    td:before{
+        content:attr(data-label);
+        display:block;
+        color:#94a3b8;
+        font-size:9px;
+        text-transform:uppercase;
+        margin-bottom:3px;
+        font-weight:700;
+    }
 
-  .consumer{
-    margin-bottom:5px;
-  }
+    td:first-child:before{
+        display:none;
+    }
 
-  .detail-grid{
-    grid-template-columns:1fr;
-    padding:15px;
-  }
+    .grid{
+        grid-template-columns:1fr;
+    }
 
-  .grid{
-    grid-template-columns:1fr;
-  }
+    .field.full{
+        grid-column:auto;
+    }
 
-  .field.full{
-    grid-column:auto;
-  }
+    .payment-grid,
+    .payment-grid.cash-grid{
+        grid-template-columns:1fr 1fr;
+    }
 
-  .payment-grid{
-    grid-template-columns:1fr 1fr;
-  }
+    .payment-type{
+        grid-template-columns:1fr;
+    }
 
-  .modal-bg{
-    padding:0;
-    align-items:flex-end;
-  }
+    .detail-grid{
+        grid-template-columns:1fr;
+        padding:15px;
+    }
 
-  .modal{
-    width:100%;
-    max-height:96vh;
-    border-radius:22px 22px 0 0;
-  }
+    .modal-bg{
+        padding:0;
+        align-items:flex-end;
+    }
 
-  .form{
-    padding:17px;
-  }
+    .modal{
+        width:100%;
+        max-height:96vh;
+        border-radius:22px 22px 0 0;
+    }
 
-  .modal-footer{
-    padding:12px 17px;
-  }
+    .form{
+        padding:17px;
+    }
+
+    .modal-footer{
+        padding:12px 17px;
+    }
 }
 
 @media(max-width:400px){
-  .stats{
-    grid-template-columns:1fr 1fr;
-  }
 
-  .payment-grid{
-    grid-template-columns:1fr;
-  }
+    .payment-grid,
+    .payment-grid.cash-grid{
+        grid-template-columns:1fr;
+    }
 
-  .page-head .primary-btn{
-    padding:10px 12px;
-    font-size:11px;
-  }
+    .page-head .primary-btn{
+        padding:10px 12px;
+        font-size:11px;
+    }
 }
+
 </style>
 </head>
+
 
 <body>
 
 <div class="app">
 
 <header class="topbar">
-  <div class="brand">
-    <div class="brand-icon">☀</div>
-    <div>
-      <h1>Solar Consumer Payment</h1>
-      <small>Chakraborty Electricals</small>
-    </div>
-  </div>
 
-  <div class="top-right">
-    <div class="user-pill" id="userEmail">Checking login...</div>
-    <button class="logout" id="logoutBtn">Logout</button>
-  </div>
+    <div class="brand">
+
+        <div class="brand-icon">☀</div>
+
+        <div>
+            <h1>Solar Consumer Payment</h1>
+            <small>M/S. Chakraborty Electricals</small>
+        </div>
+
+    </div>
+
+    <div class="top-right">
+
+        <div class="user-pill" id="userEmail">
+            Checking login...
+        </div>
+
+        <button class="logout" id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
+
 </header>
+
 
 <main class="main">
 
-  <div class="page-head">
-    <div>
-      <h2>Consumer Payment Dashboard</h2>
-      <p>Manage solar consumer payments, bank loans and collection milestones.</p>
+    <div class="page-head">
+
+        <div>
+
+            <h2>Consumer Payment Dashboard</h2>
+
+            <p>
+                Solar estimate, installment and bank loan management
+            </p>
+
+        </div>
+
+        <button class="primary-btn" id="addBtn">
+            ＋ Add Consumer
+        </button>
+
     </div>
 
-    <button class="primary-btn" id="addBtn">
-      ＋ Add Consumer
-    </button>
-  </div>
 
-  <!-- STATS -->
+    <!-- ================= STATS ================= -->
 
-  <section class="stats">
+    <section class="stats">
 
-    <div class="stat">
-      <div class="stat-icon">👥</div>
-      <div class="stat-value" id="totalConsumers">0</div>
-      <div class="stat-label">Total Consumers</div>
+        <div class="stat">
+
+            <div class="stat-icon">👥</div>
+
+            <div class="stat-value" id="totalConsumers">
+                0
+            </div>
+
+            <div class="stat-label">
+                Total Consumers
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">📋</div>
+
+            <div class="stat-value" id="totalEstimate">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Estimate
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">✓</div>
+
+            <div class="stat-value" id="totalReceived">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Received
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">🏦</div>
+
+            <div class="stat-value" id="totalLoan">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Loan Amount
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">⏳</div>
+
+            <div class="stat-value" id="totalDue">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Due
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <div class="toolbar">
+
+        <div class="search">
+
+            <span>🔎</span>
+
+            <input
+                id="searchInput"
+                placeholder="Search consumer, mobile or ID..."
+            >
+
+        </div>
+
+
+        <select id="modeFilter">
+
+            <option value="">
+                All Payment Types
+            </option>
+
+            <option value="Cash">
+                Cash
+            </option>
+
+            <option value="Bank Loan">
+                Bank Loan
+            </option>
+
+        </select>
+
+
+        <select id="statusFilter">
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Paid">
+                Fully Paid
+            </option>
+
+            <option value="Due">
+                Payment Due
+            </option>
+
+        </select>
+
     </div>
 
-    <div class="stat">
-      <div class="stat-icon">💰</div>
-      <div class="stat-value" id="totalProject">₹0</div>
-      <div class="stat-label">Total Project Value</div>
+
+    <!-- ================= TABLE ================= -->
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Consumer</th>
+                    <th>Solar</th>
+                    <th>Estimate</th>
+                    <th>Payment</th>
+                    <th>Received</th>
+                    <th>Progress</th>
+                    <th>Due</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="consumerTable"></tbody>
+
+        </table>
+
+
+        <div class="empty" id="emptyState">
+
+            <div class="empty-icon">☀️</div>
+
+            <strong>No Consumer Found</strong>
+
+            <p>Add your first solar consumer.</p>
+
+        </div>
+
     </div>
-
-    <div class="stat">
-      <div class="stat-icon">✓</div>
-      <div class="stat-value" id="totalReceived">₹0</div>
-      <div class="stat-label">Total Received</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-icon">🏦</div>
-      <div class="stat-value" id="loanReceived">₹0</div>
-      <div class="stat-label">Bank Loan Received</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-icon">⏳</div>
-      <div class="stat-value" id="totalDue">₹0</div>
-      <div class="stat-label">Total Due</div>
-    </div>
-
-  </section>
-
-  <!-- SEARCH -->
-
-  <div class="toolbar">
-
-    <div class="search">
-      <span>🔎</span>
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Search consumer name, mobile, ID..."
-      >
-    </div>
-
-    <select id="modeFilter">
-      <option value="">All Payment Modes</option>
-      <option value="Cash">Cash Payment</option>
-      <option value="Bank Loan">Bank Loan</option>
-    </select>
-
-    <select id="statusFilter">
-      <option value="">All Status</option>
-      <option value="Paid">Fully Paid</option>
-      <option value="Due">Payment Due</option>
-    </select>
-
-  </div>
-
-  <!-- TABLE -->
-
-  <div class="table-card">
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>Consumer</th>
-          <th>Solar</th>
-          <th>Total Amount</th>
-          <th>Payment Mode</th>
-          <th>Received</th>
-          <th>Progress</th>
-          <th>Due</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <tbody id="consumerTable">
-      </tbody>
-
-    </table>
-
-    <div class="empty" id="emptyState">
-      <div>☀️</div>
-      <strong>No consumer found</strong>
-      <p>Add your first solar consumer.</p>
-    </div>
-
-  </div>
 
 </main>
+
 </div>
 
 
@@ -987,225 +1123,543 @@ td{
 
 <div class="modal">
 
-  <div class="modal-head">
-    <h3 id="modalTitle">Add Solar Consumer</h3>
-    <button class="close" id="closeForm">×</button>
-  </div>
+    <div class="modal-head">
 
-  <form class="form" id="consumerForm">
+        <h3 id="modalTitle">
+            Add Solar Consumer
+        </h3>
 
-    <input type="hidden" id="editId">
-
-    <!-- CONSUMER -->
-
-    <div class="section">
-
-      <div class="section-title">
-        <span></span>
-        Consumer Information
-      </div>
-
-      <div class="grid">
-
-        <div class="field">
-          <label>Consumer Name *</label>
-          <input id="consumerName" required>
-        </div>
-
-        <div class="field">
-          <label>Mobile Number *</label>
-          <input id="mobile" type="tel" required>
-        </div>
-
-        <div class="field">
-          <label>Consumer ID</label>
-          <input id="consumerId" placeholder="Example: CE-2026-001">
-        </div>
-
-        <div class="field full">
-          <label>Address</label>
-          <textarea id="address"></textarea>
-        </div>
-
-      </div>
+        <button class="close" id="closeForm">
+            ×
+        </button>
 
     </div>
 
 
-    <!-- SOLAR -->
+    <form class="form" id="consumerForm">
 
-    <div class="section">
+        <input type="hidden" id="editId">
 
-      <div class="section-title">
-        <span></span>
-        Solar Project Details
-      </div>
 
-      <div class="grid">
+        <!-- CONSUMER -->
 
-        <div class="field">
-          <label>Solar Capacity (kW)</label>
-          <input id="solarCapacity" type="number" step="0.01" placeholder="5">
+        <div class="section">
+
+            <div class="section-title">
+                <span></span>
+                Consumer Information
+            </div>
+
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>
+                        Consumer Name *
+                    </label>
+
+                    <input
+                        id="consumerName"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Mobile Number *
+                    </label>
+
+                    <input
+                        id="mobile"
+                        type="tel"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Consumer ID
+                    </label>
+
+                    <input
+                        id="consumerId"
+                        placeholder="CE-2026-001"
+                    >
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>
+                        Address
+                    </label>
+
+                    <textarea id="address"></textarea>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="field">
-          <label>Panel Details</label>
-          <input id="panelDetails" placeholder="Example: Tata TOPCon 590W">
+
+        <!-- SOLAR -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <span></span>
+                Solar Project Details
+            </div>
+
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>
+                        Solar Capacity (kW)
+                    </label>
+
+                    <input
+                        id="solarCapacity"
+                        type="number"
+                        step="0.01"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Panel Details
+                    </label>
+
+                    <input
+                        id="panelDetails"
+                        placeholder="Tata TOPCon 590W"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Inverter Details
+                    </label>
+
+                    <input
+                        id="inverterDetails"
+                        placeholder="5kW On Grid"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Total Estimate Cost *
+                    </label>
+
+                    <input
+                        id="totalAmount"
+                        type="number"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="field">
-          <label>Inverter Details</label>
-          <input id="inverterDetails" placeholder="Example: 5kW On Grid">
+
+        <!-- PAYMENT TYPE -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <span></span>
+                Payment Type
+            </div>
+
+
+            <div class="payment-type">
+
+                <label
+                    class="type-option active"
+                    id="cashOption"
+                >
+
+                    <input
+                        type="radio"
+                        name="paymentType"
+                        value="Cash"
+                        checked
+                    >
+
+                    <div class="type-title">
+                        💵 Cash Payment
+                    </div>
+
+                    <div class="type-desc">
+                        60% + 40%
+                    </div>
+
+                </label>
+
+
+                <label
+                    class="type-option"
+                    id="loanOption"
+                >
+
+                    <input
+                        type="radio"
+                        name="paymentType"
+                        value="Bank Loan"
+                    >
+
+                    <div class="type-title">
+                        🏦 Bank Loan
+                    </div>
+
+                    <div class="type-desc">
+                        60% + 30% + 10%
+                    </div>
+
+                </label>
+
+            </div>
+
+
+            <!-- BANK DETAILS -->
+
+            <div
+                class="bank-box hidden"
+                id="bankBox"
+            >
+
+                <div class="section-title">
+                    🏦 Bank Loan Details
+                </div>
+
+
+                <div class="grid">
+
+                    <div class="field">
+
+                        <label>
+                            Bank Name
+                        </label>
+
+                        <input id="bankName">
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Loan Amount
+                        </label>
+
+                        <input
+                            id="loanAmount"
+                            type="number"
+                            min="0"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Loan Applied Date
+                        </label>
+
+                        <input
+                            id="loanAppliedDate"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Loan Sanction Date
+                        </label>
+
+                        <input
+                            id="loanSanctionDate"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Loan Reference No.
+                        </label>
+
+                        <input id="loanReference">
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="field">
-          <label>Total Project Amount *</label>
-          <input id="totalAmount" type="number" min="0" required>
+
+        <!-- PAYMENT SCHEDULE -->
+
+        <div class="section">
+
+            <div class="section-title">
+
+                <span></span>
+
+                Payment Schedule
+
+            </div>
+
+
+            <!-- CASH -->
+
+            <div id="cashPayments">
+
+                <div class="payment-grid cash-grid">
+
+                    <div class="payment-card">
+
+                        <h4>
+                            1st Payment
+                            <span class="percent">60%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="cashP1Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="cashP1Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="cashP1Date"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="payment-card">
+
+                        <h4>
+                            2nd Payment
+                            <span class="percent">40%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="cashP2Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="cashP2Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="cashP2Date"
+                            type="date"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BANK -->
+
+            <div
+                id="loanPayments"
+                class="hidden"
+            >
+
+                <div class="payment-grid">
+
+                    <div class="payment-card">
+
+                        <h4>
+                            1st Payment
+                            <span class="percent">60%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="loanP1Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="loanP1Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="loanP1Date"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="payment-card">
+
+                        <h4>
+                            2nd Payment
+                            <span class="percent">30%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="loanP2Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="loanP2Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="loanP2Date"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="payment-card">
+
+                        <h4>
+                            3rd Payment
+                            <span class="percent">10%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="loanP3Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="loanP3Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="loanP3Date"
+                            type="date"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <p style="
+                font-size:10px;
+                color:#64748b;
+                margin-top:10px;
+            ">
+                Calculated amount is based on Total Estimate Cost.
+                Actual Amount can be changed if the received amount is different.
+            </p>
+
         </div>
 
-      </div>
+
+        <!-- NOTES -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <span></span>
+                Notes
+            </div>
+
+            <div class="field">
+
+                <textarea
+                    id="notes"
+                    placeholder="Payment or installation remarks..."
+                ></textarea>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <div class="modal-footer">
+
+        <button
+            class="secondary-btn"
+            id="cancelForm"
+        >
+            Cancel
+        </button>
+
+        <button
+            class="primary-btn"
+            id="saveBtn"
+        >
+            Save Consumer
+        </button>
 
     </div>
-
-
-    <!-- PAYMENT MODE -->
-
-    <div class="section">
-
-      <div class="section-title">
-        <span></span>
-        Payment Method
-      </div>
-
-      <div class="grid">
-
-        <div class="field">
-          <label>Payment Type *</label>
-
-          <select id="paymentMode" required>
-            <option value="Cash">Cash Payment</option>
-            <option value="Bank Loan">Bank Loan</option>
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <!-- BANK -->
-
-      <div class="bank-box hidden" id="bankBox">
-
-        <div class="section-title">
-          🏦 Bank Loan Details
-        </div>
-
-        <div class="grid">
-
-          <div class="field">
-            <label>Bank Name</label>
-            <input id="bankName">
-          </div>
-
-          <div class="field">
-            <label>Loan Amount</label>
-            <input id="loanAmount" type="number" min="0">
-          </div>
-
-          <div class="field">
-            <label>Loan Applied Date</label>
-            <input id="loanAppliedDate" type="date">
-          </div>
-
-          <div class="field">
-            <label>Loan Sanction Date</label>
-            <input id="loanSanctionDate" type="date">
-          </div>
-
-          <div class="field">
-            <label>Loan Account / Reference</label>
-            <input id="loanReference">
-          </div>
-
-          <div class="field">
-            <label>Initial Bank Received</label>
-            <input id="initialBankReceived" type="number" min="0">
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- MILESTONES -->
-
-    <div class="section">
-
-      <div class="section-title">
-        <span></span>
-        Payment Milestones
-      </div>
-
-      <div class="payment-grid">
-
-        <div class="payment-card">
-          <h4>1st Payment <span class="percent">60%</span></h4>
-          <input id="p1Amount" type="number" placeholder="Amount">
-          <input id="p1Date" type="date">
-        </div>
-
-        <div class="payment-card">
-          <h4>2nd Payment <span class="percent">20%</span></h4>
-          <input id="p2Amount" type="number" placeholder="Amount">
-          <input id="p2Date" type="date">
-        </div>
-
-        <div class="payment-card">
-          <h4>3rd Payment <span class="percent">10%</span></h4>
-          <input id="p3Amount" type="number" placeholder="Amount">
-          <input id="p3Date" type="date">
-        </div>
-
-        <div class="payment-card">
-          <h4>Final Payment <span class="percent">10%</span></h4>
-          <input id="p4Amount" type="number" placeholder="Amount">
-          <input id="p4Date" type="date">
-        </div>
-
-      </div>
-
-      <p style="font-size:11px;color:#64748b;margin-top:10px">
-        Amount can be manually adjusted when the actual received amount differs from the percentage.
-      </p>
-
-    </div>
-
-
-    <!-- NOTES -->
-
-    <div class="section">
-
-      <div class="section-title">
-        <span></span>
-        Additional Notes
-      </div>
-
-      <div class="field">
-        <textarea id="notes" placeholder="Payment remarks, installation notes, etc."></textarea>
-      </div>
-
-    </div>
-
-  </form>
-
-  <div class="modal-footer">
-    <button class="secondary-btn" id="cancelForm">Cancel</button>
-    <button class="primary-btn" id="saveBtn">Save Consumer</button>
-  </div>
 
 </div>
+
 </div>
 
 
@@ -1217,14 +1671,29 @@ td{
 
 <div class="modal">
 
-  <div class="modal-head">
-    <h3>Consumer Payment Details</h3>
-    <button class="close" id="closeDetails">×</button>
-  </div>
+    <div class="modal-head">
 
-  <div class="detail-grid" id="detailsContent"></div>
+        <h3>
+            Consumer Payment Details
+        </h3>
+
+        <button
+            class="close"
+            id="closeDetails"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div
+        class="detail-grid"
+        id="detailsContent"
+    ></div>
 
 </div>
+
 </div>
 
 
@@ -1238,166 +1707,188 @@ td{
 <script type="module">
 
 import {
-  initializeApp
+    initializeApp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
+    getAuth,
+    onAuthStateChanged,
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-  serverTimestamp
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-/* ================= FIREBASE CONFIG ================= */
+/* ================= FIREBASE ================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
-  authDomain: "chakraborty-ele-login.firebaseapp.com",
-  projectId: "chakraborty-ele-login",
-  storageBucket: "chakraborty-ele-login.firebasestorage.app",
-  messagingSenderId: "414542805581",
-  appId: "1:414542805581:web:cfd13593767abbb51cba04"
+
+    apiKey:
+    "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+
+    authDomain:
+    "chakraborty-ele-login.firebaseapp.com",
+
+    projectId:
+    "chakraborty-ele-login",
+
+    storageBucket:
+    "chakraborty-ele-login.firebasestorage.app",
+
+    messagingSenderId:
+    "414542805581",
+
+    appId:
+    "1:414542805581:web:cfd13593767abbb51cba04"
+
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
-const COLLECTION = "solar_consumer_payment";
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+const db =
+    getFirestore(app);
+
+
+const COLLECTION =
+    "solar_consumer_payment";
+
 
 let consumers = [];
 let currentUser = null;
 
 
-/* ================= ELEMENTS ================= */
+/* ================= HELPERS ================= */
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+    document.getElementById(id);
 
-const formModal = $("formModal");
-const detailsModal = $("detailsModal");
+
+function num(v){
+    return Number(v || 0);
+}
+
+
+function money(v){
+
+    return "₹" +
+        num(v).toLocaleString("en-IN");
+
+}
+
+
+function esc(v){
+
+    return String(v ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
 
 
 /* ================= AUTH ================= */
 
-onAuthStateChanged(auth, async user => {
+onAuthStateChanged(
+    auth,
+    async user => {
 
-  if(!user){
+        if(!user){
 
-    location.href = "index.html";
-    return;
-  }
+            location.href =
+                "index.html";
 
-  currentUser = user;
+            return;
 
-  $("userEmail").textContent = user.email || "Logged in";
+        }
 
-  await loadConsumers();
+        currentUser = user;
 
-});
+        $("userEmail").textContent =
+            user.email || "Logged in";
+
+        await loadConsumers();
+
+    }
+);
 
 
-/* ================= LOAD DATA ================= */
+/* ================= LOAD ================= */
 
 async function loadConsumers(){
 
-  try{
+    try{
 
-    const snapshot = await getDocs(
-      collection(db,COLLECTION)
-    );
+        const snap =
+            await getDocs(
+                collection(
+                    db,
+                    COLLECTION
+                )
+            );
 
-    consumers = [];
+        consumers = [];
 
-    snapshot.forEach(item => {
+        snap.forEach(item => {
 
-      consumers.push({
-        id:item.id,
-        ...item.data()
-      });
+            consumers.push({
 
-    });
+                id:item.id,
+                ...item.data()
 
-    render();
+            });
 
-  }catch(error){
+        });
 
-    console.error(error);
+        render();
 
-    toast(
-      "Data load failed: " + error.message,
-      "error"
-    );
+    }catch(error){
 
-  }
+        console.error(error);
 
-}
+        toast(
+            "Data load failed: " +
+            error.message,
+            "error"
+        );
 
-
-/* ================= FORMAT ================= */
-
-function money(value){
-
-  return "₹" + Number(value || 0)
-    .toLocaleString("en-IN");
-
-}
-
-function num(value){
-
-  return Number(value || 0);
-
-}
-
-function esc(value){
-
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+    }
 
 }
 
 
-/* ================= CALCULATE ================= */
+/* ================= RECEIVED ================= */
 
 function getReceived(c){
 
-  const p = c.payments || {};
+    const p =
+        c.payments || {};
 
-  return (
-    num(p.first?.amount) +
-    num(p.second?.amount) +
-    num(p.third?.amount) +
-    num(p.final?.amount)
-  );
+    return (
 
-}
+        num(p.cashFirst?.amount) +
+        num(p.cashSecond?.amount) +
 
-function getProgress(c){
+        num(p.loanFirst?.amount) +
+        num(p.loanSecond?.amount) +
+        num(p.loanThird?.amount)
 
-  const total = num(c.totalAmount);
-
-  if(!total) return 0;
-
-  return Math.min(
-    100,
-    Math.round(
-      getReceived(c) / total * 100
-    )
-  );
+    );
 
 }
 
@@ -1406,161 +1897,294 @@ function getProgress(c){
 
 function render(){
 
-  const search =
-    $("searchInput").value
-      .toLowerCase()
-      .trim();
+    const search =
+        $("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
 
-  const mode =
-    $("modeFilter").value;
+    const mode =
+        $("modeFilter").value;
 
-  const status =
-    $("statusFilter").value;
-
-  let list = consumers.filter(c => {
-
-    const text = `
-      ${c.consumerName || ""}
-      ${c.mobile || ""}
-      ${c.consumerId || ""}
-      ${c.address || ""}
-    `.toLowerCase();
-
-    if(search && !text.includes(search))
-      return false;
-
-    if(mode && c.paymentMode !== mode)
-      return false;
-
-    const due =
-      num(c.totalAmount) - getReceived(c);
-
-    if(status === "Paid" && due > 0)
-      return false;
-
-    if(status === "Due" && due <= 0)
-      return false;
-
-    return true;
-
-  });
-
-  const tbody = $("consumerTable");
-
-  tbody.innerHTML = "";
-
-  $("emptyState").style.display =
-    list.length ? "none" : "block";
+    const status =
+        $("statusFilter").value;
 
 
-  list.forEach(c => {
+    const list =
+        consumers.filter(c => {
 
-    const received = getReceived(c);
-    const total = num(c.totalAmount);
-    const due = Math.max(0,total-received);
-    const progress = getProgress(c);
+            const text = `
 
-    const tr = document.createElement("tr");
+                ${c.consumerName || ""}
 
-    tr.innerHTML = `
+                ${c.mobile || ""}
 
-      <td data-label="Consumer">
+                ${c.consumerId || ""}
 
-        <div class="consumer">
+                ${c.address || ""}
 
-          <div class="avatar">
-            ${esc(
-              (c.consumerName || "C")
-              .charAt(0)
-              .toUpperCase()
-            )}
-          </div>
-
-          <div>
-            <strong>${esc(c.consumerName || "-")}</strong>
-            <small>
-              ${esc(c.mobile || "-")}
-              ${c.consumerId ? " • "+esc(c.consumerId) : ""}
-            </small>
-          </div>
-
-        </div>
-
-      </td>
-
-      <td data-label="Solar">
-        <strong>${esc(c.solarCapacity || "-")} kW</strong>
-        <br>
-        <small>${esc(c.panelDetails || "Solar Project")}</small>
-      </td>
-
-      <td data-label="Total Amount">
-        <span class="amount">${money(total)}</span>
-      </td>
-
-      <td data-label="Payment Mode">
-
-        <span class="mode ${c.paymentMode === "Cash" ? "cash":"loan"}">
-          ${c.paymentMode === "Cash" ? "💵 Cash":"🏦 Bank Loan"}
-        </span>
-
-      </td>
-
-      <td data-label="Received">
-        <span class="amount">${money(received)}</span>
-      </td>
-
-      <td data-label="Progress">
-
-        <div class="progress">
-          <span style="width:${progress}%"></span>
-        </div>
-
-        <small>${progress}%</small>
-
-      </td>
-
-      <td data-label="Due">
-
-        <strong style="color:${due > 0 ? "#dc2626":"#16a34a"}">
-          ${money(due)}
-        </strong>
-
-      </td>
-
-      <td data-label="Action">
-
-        <button
-          class="action-btn"
-          title="View"
-          onclick="window.viewConsumer('${c.id}')">
-          👁
-        </button>
-
-        <button
-          class="action-btn"
-          title="Edit"
-          onclick="window.editConsumer('${c.id}')">
-          ✏
-        </button>
-
-        <button
-          class="action-btn delete"
-          title="Delete"
-          onclick="window.deleteConsumer('${c.id}')">
-          🗑
-        </button>
-
-      </td>
-
-    `;
-
-    tbody.appendChild(tr);
-
-  });
+            `.toLowerCase();
 
 
-  updateStats();
+            if(
+                search &&
+                !text.includes(search)
+            )
+                return false;
+
+
+            if(
+                mode &&
+                c.paymentType !== mode
+            )
+                return false;
+
+
+            const due =
+                num(c.totalEstimate) -
+                getReceived(c);
+
+
+            if(
+                status === "Paid" &&
+                due > 0
+            )
+                return false;
+
+
+            if(
+                status === "Due" &&
+                due <= 0
+            )
+                return false;
+
+
+            return true;
+
+        });
+
+
+    const tbody =
+        $("consumerTable");
+
+    tbody.innerHTML = "";
+
+
+    $("emptyState").style.display =
+        list.length
+        ? "none"
+        : "block";
+
+
+    list.forEach(c => {
+
+        const total =
+            num(c.totalEstimate);
+
+        const received =
+            getReceived(c);
+
+        const due =
+            Math.max(
+                0,
+                total - received
+            );
+
+        const progress =
+            total
+            ? Math.min(
+                100,
+                Math.round(
+                    received / total * 100
+                )
+            )
+            : 0;
+
+
+        const tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+            <td data-label="Consumer">
+
+                <div class="consumer">
+
+                    <div class="avatar">
+
+                        ${esc(
+                            (c.consumerName || "C")
+                            .charAt(0)
+                            .toUpperCase()
+                        )}
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            ${esc(
+                                c.consumerName || "-"
+                            )}
+                        </strong>
+
+                        <small>
+                            ${esc(
+                                c.mobile || "-"
+                            )}
+
+                            ${
+                                c.consumerId
+                                ? " • " +
+                                  esc(c.consumerId)
+                                : ""
+                            }
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </td>
+
+
+            <td data-label="Solar">
+
+                <strong>
+                    ${esc(
+                        c.solarCapacity || "-"
+                    )} kW
+                </strong>
+
+                <br>
+
+                <small>
+                    ${esc(
+                        c.panelDetails ||
+                        "Solar Project"
+                    )}
+                </small>
+
+            </td>
+
+
+            <td data-label="Estimate">
+
+                <span class="amount">
+                    ${money(total)}
+                </span>
+
+            </td>
+
+
+            <td data-label="Payment">
+
+                <span class="mode ${
+                    c.paymentType === "Cash"
+                    ? "cash"
+                    : "loan"
+                }">
+
+                    ${
+                        c.paymentType === "Cash"
+                        ? "💵 Cash"
+                        : "🏦 Bank Loan"
+                    }
+
+                </span>
+
+            </td>
+
+
+            <td data-label="Received">
+
+                <span class="amount">
+                    ${money(received)}
+                </span>
+
+            </td>
+
+
+            <td data-label="Progress">
+
+                <div class="progress">
+
+                    <span
+                        style="
+                            width:${progress}%
+                        "
+                    ></span>
+
+                </div>
+
+                <small>
+                    ${progress}%
+                </small>
+
+            </td>
+
+
+            <td data-label="Due">
+
+                <strong
+                    style="
+                        color:${
+                            due > 0
+                            ? "#dc2626"
+                            : "#16a34a"
+                        }
+                    "
+                >
+                    ${money(due)}
+                </strong>
+
+            </td>
+
+
+            <td data-label="Action">
+
+                <button
+                    class="action-btn"
+                    onclick="
+                        window.viewConsumer('${c.id}')
+                    "
+                >
+                    👁
+                </button>
+
+
+                <button
+                    class="action-btn"
+                    onclick="
+                        window.editConsumer('${c.id}')
+                    "
+                >
+                    ✏
+                </button>
+
+
+                <button
+                    class="action-btn delete"
+                    onclick="
+                        window.deleteConsumer('${c.id}')
+                    "
+                >
+                    🗑
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(tr);
+
+    });
+
+
+    updateStats();
 
 }
 
@@ -1569,60 +2193,224 @@ function render(){
 
 function updateStats(){
 
-  let totalProject = 0;
-  let received = 0;
-  let loanReceived = 0;
+    let estimate = 0;
+    let received = 0;
+    let loan = 0;
 
-  consumers.forEach(c => {
 
-    totalProject += num(c.totalAmount);
+    consumers.forEach(c => {
 
-    received += getReceived(c);
+        estimate +=
+            num(c.totalEstimate);
 
-    if(c.paymentMode === "Bank Loan"){
+        received +=
+            getReceived(c);
 
-      loanReceived +=
-        num(c.loan?.initialBankReceived) +
-        num(c.loan?.receivedAmount);
+        if(
+            c.paymentType ===
+            "Bank Loan"
+        ){
 
-    }
+            loan +=
+                num(c.loan?.loanAmount);
 
-  });
+        }
 
-  const due =
-    Math.max(0,totalProject-received);
+    });
 
-  $("totalConsumers").textContent =
-    consumers.length;
 
-  $("totalProject").textContent =
-    money(totalProject);
+    const due =
+        Math.max(
+            0,
+            estimate - received
+        );
 
-  $("totalReceived").textContent =
-    money(received);
 
-  $("loanReceived").textContent =
-    money(loanReceived);
+    $("totalConsumers").textContent =
+        consumers.length;
 
-  $("totalDue").textContent =
-    money(due);
+    $("totalEstimate").textContent =
+        money(estimate);
+
+    $("totalReceived").textContent =
+        money(received);
+
+    $("totalLoan").textContent =
+        money(loan);
+
+    $("totalDue").textContent =
+        money(due);
 
 }
 
 
-/* ================= OPEN ADD ================= */
+/* ================= PAYMENT TYPE ================= */
+
+document
+.querySelectorAll(
+    'input[name="paymentType"]'
+)
+.forEach(radio => {
+
+    radio.addEventListener(
+        "change",
+        changePaymentType
+    );
+
+});
+
+
+function getPaymentType(){
+
+    return document
+        .querySelector(
+            'input[name="paymentType"]:checked'
+        )
+        ?.value || "Cash";
+
+}
+
+
+function changePaymentType(){
+
+    const type =
+        getPaymentType();
+
+
+    $("cashOption")
+        .classList.toggle(
+            "active",
+            type === "Cash"
+        );
+
+    $("loanOption")
+        .classList.toggle(
+            "active",
+            type === "Bank Loan"
+        );
+
+
+    $("cashPayments")
+        .classList.toggle(
+            "hidden",
+            type !== "Cash"
+        );
+
+
+    $("loanPayments")
+        .classList.toggle(
+            "hidden",
+            type !== "Bank Loan"
+        );
+
+
+    $("bankBox")
+        .classList.toggle(
+            "hidden",
+            type !== "Bank Loan"
+        );
+
+}
+
+
+/* ================= AUTO CALCULATE ================= */
+
+$("totalAmount")
+.addEventListener(
+    "input",
+    calculatePercentages
+);
+
+
+function calculatePercentages(){
+
+    const total =
+        num(
+            $("totalAmount").value
+        );
+
+
+    $("cashP1Calculated")
+        .textContent =
+        "Calculated: " +
+        money(total * .60);
+
+
+    $("cashP2Calculated")
+        .textContent =
+        "Calculated: " +
+        money(total * .40);
+
+
+    $("loanP1Calculated")
+        .textContent =
+        "Calculated: " +
+        money(total * .60);
+
+
+    $("loanP2Calculated")
+        .textContent =
+        "Calculated: " +
+        money(total * .30);
+
+
+    $("loanP3Calculated")
+        .textContent =
+        "Calculated: " +
+        money(total * .10);
+
+
+    /*
+       নতুন record হলে
+       actual amount automatically
+       calculated amount হবে।
+    */
+
+    if(!$("editId").value){
+
+        if(
+            getPaymentType() ===
+            "Cash"
+        ){
+
+            $("cashP1Amount").value =
+                Math.round(total*.60);
+
+            $("cashP2Amount").value =
+                Math.round(total*.40);
+
+        }else{
+
+            $("loanP1Amount").value =
+                Math.round(total*.60);
+
+            $("loanP2Amount").value =
+                Math.round(total*.30);
+
+            $("loanP3Amount").value =
+                Math.round(total*.10);
+
+        }
+
+    }
+
+}
+
+
+/* ================= ADD ================= */
 
 $("addBtn").onclick = () => {
 
-  resetForm();
+    resetForm();
 
-  $("modalTitle").textContent =
-    "Add Solar Consumer";
+    $("modalTitle").textContent =
+        "Add Solar Consumer";
 
-  $("saveBtn").textContent =
-    "Save Consumer";
+    $("saveBtn").textContent =
+        "Save Consumer";
 
-  formModal.classList.add("show");
+    $("formModal")
+        .classList.add("show");
 
 };
 
@@ -1631,654 +2419,1043 @@ $("addBtn").onclick = () => {
 
 function resetForm(){
 
-  $("consumerForm").reset();
+    $("consumerForm").reset();
 
-  $("editId").value = "";
+    $("editId").value = "";
 
-  $("paymentMode").value = "Cash";
+    document
+        .querySelector(
+            'input[name="paymentType"][value="Cash"]'
+        )
+        .checked = true;
 
-  $("bankBox").classList.add("hidden");
+    changePaymentType();
 
-  $("p1Amount").value = "";
-  $("p2Amount").value = "";
-  $("p3Amount").value = "";
-  $("p4Amount").value = "";
+    calculatePercentages();
 
 }
 
 
-/* ================= PAYMENT MODE ================= */
-
-$("paymentMode").onchange = () => {
-
-  $("bankBox")
-    .classList.toggle(
-      "hidden",
-      $("paymentMode").value !== "Bank Loan"
-    );
-
-};
-
-
-/* ================= AUTO AMOUNT ================= */
-
-$("totalAmount").addEventListener("input", () => {
-
-  const total = num($("totalAmount").value);
-
-  if(!$("editId").value){
-
-    $("p1Amount").value =
-      Math.round(total * .60);
-
-    $("p2Amount").value =
-      Math.round(total * .20);
-
-    $("p3Amount").value =
-      Math.round(total * .10);
-
-    $("p4Amount").value =
-      Math.round(total * .10);
-
-  }
-
-});
-
-
 /* ================= SAVE ================= */
 
-$("saveBtn").onclick = async () => {
+$("saveBtn").onclick =
+async () => {
 
-  const form = $("consumerForm");
-
-  if(!form.reportValidity())
-    return;
-
-  const total = num($("totalAmount").value);
-
-  const data = {
-
-    consumerName:
-      $("consumerName").value.trim(),
-
-    mobile:
-      $("mobile").value.trim(),
-
-    consumerId:
-      $("consumerId").value.trim(),
-
-    address:
-      $("address").value.trim(),
-
-    solarCapacity:
-      $("solarCapacity").value,
-
-    panelDetails:
-      $("panelDetails").value.trim(),
-
-    inverterDetails:
-      $("inverterDetails").value.trim(),
-
-    totalAmount:total,
-
-    paymentMode:
-      $("paymentMode").value,
-
-    loan:{
-      bankName:
-        $("bankName").value.trim(),
-
-      loanAmount:
-        num($("loanAmount").value),
-
-      loanAppliedDate:
-        $("loanAppliedDate").value,
-
-      loanSanctionDate:
-        $("loanSanctionDate").value,
-
-      loanReference:
-        $("loanReference").value.trim(),
-
-      initialBankReceived:
-        num($("initialBankReceived").value)
-    },
-
-    payments:{
-
-      first:{
-        percentage:60,
-        amount:num($("p1Amount").value),
-        date:$("p1Date").value
-      },
-
-      second:{
-        percentage:20,
-        amount:num($("p2Amount").value),
-        date:$("p2Date").value
-      },
-
-      third:{
-        percentage:10,
-        amount:num($("p3Amount").value),
-        date:$("p3Date").value
-      },
-
-      final:{
-        percentage:10,
-        amount:num($("p4Amount").value),
-        date:$("p4Date").value
-      }
-
-    },
-
-    notes:
-      $("notes").value.trim(),
-
-    updatedAt:
-      serverTimestamp()
-
-  };
+    const form =
+        $("consumerForm");
 
 
-  try{
-
-    $("saveBtn").disabled = true;
-    $("saveBtn").textContent = "Saving...";
-
-
-    const editId =
-      $("editId").value;
+    if(
+        !form.reportValidity()
+    )
+        return;
 
 
-    if(editId){
+    const type =
+        getPaymentType();
 
-      await updateDoc(
-        doc(db,COLLECTION,editId),
-        data
-      );
 
-      toast(
-        "Consumer updated successfully",
-        "success"
-      );
+    const data = {
 
-    }else{
+        consumerName:
+            $("consumerName")
+            .value.trim(),
 
-      data.createdAt =
-        serverTimestamp();
+        mobile:
+            $("mobile")
+            .value.trim(),
 
-      data.createdBy =
-        currentUser?.email || "";
+        consumerId:
+            $("consumerId")
+            .value.trim(),
 
-      await addDoc(
-        collection(db,COLLECTION),
-        data
-      );
+        address:
+            $("address")
+            .value.trim(),
 
-      toast(
-        "Consumer saved successfully",
-        "success"
-      );
+        solarCapacity:
+            $("solarCapacity")
+            .value,
+
+        panelDetails:
+            $("panelDetails")
+            .value.trim(),
+
+        inverterDetails:
+            $("inverterDetails")
+            .value.trim(),
+
+        totalEstimate:
+            num(
+                $("totalAmount").value
+            ),
+
+        paymentType:type,
+
+
+        loan:
+        type === "Bank Loan"
+        ? {
+
+            bankName:
+                $("bankName")
+                .value.trim(),
+
+            loanAmount:
+                num(
+                    $("loanAmount").value
+                ),
+
+            loanAppliedDate:
+                $("loanAppliedDate")
+                .value,
+
+            loanSanctionDate:
+                $("loanSanctionDate")
+                .value,
+
+            loanReference:
+                $("loanReference")
+                .value.trim()
+
+        }
+        : null,
+
+
+        payments:
+        type === "Cash"
+        ? {
+
+            cashFirst:{
+                percentage:60,
+                amount:
+                    num(
+                        $("cashP1Amount")
+                        .value
+                    ),
+                date:
+                    $("cashP1Date")
+                    .value
+            },
+
+            cashSecond:{
+                percentage:40,
+                amount:
+                    num(
+                        $("cashP2Amount")
+                        .value
+                    ),
+                date:
+                    $("cashP2Date")
+                    .value
+            }
+
+        }
+        : {
+
+            loanFirst:{
+                percentage:60,
+                amount:
+                    num(
+                        $("loanP1Amount")
+                        .value
+                    ),
+                date:
+                    $("loanP1Date")
+                    .value
+            },
+
+            loanSecond:{
+                percentage:30,
+                amount:
+                    num(
+                        $("loanP2Amount")
+                        .value
+                    ),
+                date:
+                    $("loanP2Date")
+                    .value
+            },
+
+            loanThird:{
+                percentage:10,
+                amount:
+                    num(
+                        $("loanP3Amount")
+                        .value
+                    ),
+                date:
+                    $("loanP3Date")
+                    .value
+            }
+
+        },
+
+
+        notes:
+            $("notes")
+            .value.trim(),
+
+        updatedAt:
+            serverTimestamp()
+
+    };
+
+
+    try{
+
+        $("saveBtn").disabled = true;
+
+        $("saveBtn").textContent =
+            "Saving...";
+
+
+        const editId =
+            $("editId").value;
+
+
+        if(editId){
+
+            await updateDoc(
+
+                doc(
+                    db,
+                    COLLECTION,
+                    editId
+                ),
+
+                data
+
+            );
+
+
+            toast(
+                "Consumer updated successfully",
+                "success"
+            );
+
+        }else{
+
+            data.createdAt =
+                serverTimestamp();
+
+            data.createdBy =
+                currentUser?.email || "";
+
+
+            await addDoc(
+
+                collection(
+                    db,
+                    COLLECTION
+                ),
+
+                data
+
+            );
+
+
+            toast(
+                "Consumer saved successfully",
+                "success"
+            );
+
+        }
+
+
+        $("formModal")
+            .classList.remove("show");
+
+
+        await loadConsumers();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "Save failed: " +
+            error.message,
+            "error"
+        );
+
+    }finally{
+
+        $("saveBtn").disabled =
+            false;
+
+        $("saveBtn").textContent =
+            $("editId").value
+            ? "Update Consumer"
+            : "Save Consumer";
 
     }
-
-
-    formModal.classList.remove("show");
-
-    await loadConsumers();
-
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      "Save failed: " + error.message,
-      "error"
-    );
-
-  }finally{
-
-    $("saveBtn").disabled = false;
-
-    $("saveBtn").textContent =
-      editId ? "Update Consumer":"Save Consumer";
-
-  }
 
 };
 
 
 /* ================= EDIT ================= */
 
-window.editConsumer = function(id){
+window.editConsumer =
+function(id){
 
-  const c =
-    consumers.find(x => x.id === id);
+    const c =
+        consumers.find(
+            x => x.id === id
+        );
 
-  if(!c) return;
-
-  $("editId").value = id;
-
-  $("consumerName").value =
-    c.consumerName || "";
-
-  $("mobile").value =
-    c.mobile || "";
-
-  $("consumerId").value =
-    c.consumerId || "";
-
-  $("address").value =
-    c.address || "";
-
-  $("solarCapacity").value =
-    c.solarCapacity || "";
-
-  $("panelDetails").value =
-    c.panelDetails || "";
-
-  $("inverterDetails").value =
-    c.inverterDetails || "";
-
-  $("totalAmount").value =
-    c.totalAmount || "";
-
-  $("paymentMode").value =
-    c.paymentMode || "Cash";
-
-  $("bankBox").classList.toggle(
-    "hidden",
-    c.paymentMode !== "Bank Loan"
-  );
+    if(!c)
+        return;
 
 
-  const loan = c.loan || {};
-
-  $("bankName").value =
-    loan.bankName || "";
-
-  $("loanAmount").value =
-    loan.loanAmount || "";
-
-  $("loanAppliedDate").value =
-    loan.loanAppliedDate || "";
-
-  $("loanSanctionDate").value =
-    loan.loanSanctionDate || "";
-
-  $("loanReference").value =
-    loan.loanReference || "";
-
-  $("initialBankReceived").value =
-    loan.initialBankReceived || "";
+    resetForm();
 
 
-  const p = c.payments || {};
-
-  $("p1Amount").value =
-    p.first?.amount || "";
-
-  $("p1Date").value =
-    p.first?.date || "";
-
-  $("p2Amount").value =
-    p.second?.amount || "";
-
-  $("p2Date").value =
-    p.second?.date || "";
-
-  $("p3Amount").value =
-    p.third?.amount || "";
-
-  $("p3Date").value =
-    p.third?.date || "";
-
-  $("p4Amount").value =
-    p.final?.amount || "";
-
-  $("p4Date").value =
-    p.final?.date || "";
-
-  $("notes").value =
-    c.notes || "";
+    $("editId").value =
+        id;
 
 
-  $("modalTitle").textContent =
-    "Edit Solar Consumer";
+    $("consumerName").value =
+        c.consumerName || "";
 
-  $("saveBtn").textContent =
-    "Update Consumer";
+    $("mobile").value =
+        c.mobile || "";
 
-  formModal.classList.add("show");
+    $("consumerId").value =
+        c.consumerId || "";
+
+    $("address").value =
+        c.address || "";
+
+    $("solarCapacity").value =
+        c.solarCapacity || "";
+
+    $("panelDetails").value =
+        c.panelDetails || "";
+
+    $("inverterDetails").value =
+        c.inverterDetails || "";
+
+    $("totalAmount").value =
+        c.totalEstimate || "";
+
+
+    const type =
+        c.paymentType || "Cash";
+
+
+    document
+        .querySelector(
+            `input[name="paymentType"][value="${type}"]`
+        )
+        .checked = true;
+
+
+    changePaymentType();
+
+
+    /* BANK */
+
+    if(type === "Bank Loan"){
+
+        $("bankName").value =
+            c.loan?.bankName || "";
+
+        $("loanAmount").value =
+            c.loan?.loanAmount || "";
+
+        $("loanAppliedDate").value =
+            c.loan?.loanAppliedDate || "";
+
+        $("loanSanctionDate").value =
+            c.loan?.loanSanctionDate || "";
+
+        $("loanReference").value =
+            c.loan?.loanReference || "";
+
+    }
+
+
+    /* PAYMENTS */
+
+    const p =
+        c.payments || {};
+
+
+    if(type === "Cash"){
+
+        $("cashP1Amount").value =
+            p.cashFirst?.amount || "";
+
+        $("cashP1Date").value =
+            p.cashFirst?.date || "";
+
+        $("cashP2Amount").value =
+            p.cashSecond?.amount || "";
+
+        $("cashP2Date").value =
+            p.cashSecond?.date || "";
+
+    }else{
+
+        $("loanP1Amount").value =
+            p.loanFirst?.amount || "";
+
+        $("loanP1Date").value =
+            p.loanFirst?.date || "";
+
+        $("loanP2Amount").value =
+            p.loanSecond?.amount || "";
+
+        $("loanP2Date").value =
+            p.loanSecond?.date || "";
+
+        $("loanP3Amount").value =
+            p.loanThird?.amount || "";
+
+        $("loanP3Date").value =
+            p.loanThird?.date || "";
+
+    }
+
+
+    $("notes").value =
+        c.notes || "";
+
+
+    calculatePercentages();
+
+
+    $("modalTitle").textContent =
+        "Edit Solar Consumer";
+
+
+    $("saveBtn").textContent =
+        "Update Consumer";
+
+
+    $("formModal")
+        .classList.add("show");
 
 };
 
 
 /* ================= VIEW ================= */
 
-window.viewConsumer = function(id){
+window.viewConsumer =
+function(id){
 
-  const c =
-    consumers.find(x => x.id === id);
+    const c =
+        consumers.find(
+            x => x.id === id
+        );
 
-  if(!c) return;
-
-  const received = getReceived(c);
-  const due =
-    Math.max(0,num(c.totalAmount)-received);
-
-  const p = c.payments || {};
-
-  $("detailsContent").innerHTML = `
-
-    <div class="detail-box">
-
-      <h4>👤 Consumer Information</h4>
-
-      <div class="detail-row">
-        <span>Name</span>
-        <strong>${esc(c.consumerName || "-")}</strong>
-      </div>
-
-      <div class="detail-row">
-        <span>Mobile</span>
-        <strong>${esc(c.mobile || "-")}</strong>
-      </div>
-
-      <div class="detail-row">
-        <span>Consumer ID</span>
-        <strong>${esc(c.consumerId || "-")}</strong>
-      </div>
-
-      <div class="detail-row">
-        <span>Address</span>
-        <strong>${esc(c.address || "-")}</strong>
-      </div>
-
-      <div class="detail-row">
-        <span>Solar Capacity</span>
-        <strong>${esc(c.solarCapacity || "-")} kW</strong>
-      </div>
-
-    </div>
+    if(!c)
+        return;
 
 
-    <div class="detail-box">
+    const total =
+        num(c.totalEstimate);
 
-      <h4>💰 Financial Summary</h4>
+    const received =
+        getReceived(c);
 
-      <div class="detail-row">
-        <span>Total Project</span>
-        <strong>${money(c.totalAmount)}</strong>
-      </div>
-
-      <div class="detail-row">
-        <span>Total Received</span>
-        <strong class="paid">${money(received)}</strong>
-      </div>
-
-      <div class="detail-row">
-        <span>Total Due</span>
-        <strong class="${due ? "pending":"paid"}">
-          ${money(due)}
-        </strong>
-      </div>
-
-      <div class="detail-row">
-        <span>Payment Mode</span>
-        <strong>${esc(c.paymentMode || "-")}</strong>
-      </div>
-
-    </div>
+    const due =
+        Math.max(
+            0,
+            total - received
+        );
 
 
-    <div class="detail-box">
-
-      <h4>📊 Payment Milestones</h4>
-
-      ${milestone(
-        "1st Payment",
-        "60%",
-        p.first
-      )}
-
-      ${milestone(
-        "2nd Payment",
-        "20%",
-        p.second
-      )}
-
-      ${milestone(
-        "3rd Payment",
-        "10%",
-        p.third
-      )}
-
-      ${milestone(
-        "Final Payment",
-        "10%",
-        p.final
-      )}
-
-    </div>
+    let paymentHTML = "";
 
 
-    <div class="detail-box">
+    if(c.paymentType === "Cash"){
 
-      <h4>🏦 Bank Loan</h4>
+        paymentHTML =
 
-      ${
-        c.paymentMode === "Bank Loan"
-        ?
-        `
-        <div class="detail-row">
-          <span>Bank</span>
-          <strong>${esc(c.loan?.bankName || "-")}</strong>
+            milestone(
+                "1st Payment",
+                "60%",
+                c.payments?.cashFirst
+            )
+
+            +
+
+            milestone(
+                "2nd Payment",
+                "40%",
+                c.payments?.cashSecond
+            );
+
+    }else{
+
+        paymentHTML =
+
+            milestone(
+                "1st Payment",
+                "60%",
+                c.payments?.loanFirst
+            )
+
+            +
+
+            milestone(
+                "2nd Payment",
+                "30%",
+                c.payments?.loanSecond
+            )
+
+            +
+
+            milestone(
+                "3rd Payment",
+                "10%",
+                c.payments?.loanThird
+            );
+
+    }
+
+
+    $("detailsContent").innerHTML = `
+
+        <div class="detail-box">
+
+            <h4>
+                👤 Consumer Information
+            </h4>
+
+
+            <div class="detail-row">
+
+                <span>Name</span>
+
+                <strong>
+                    ${esc(
+                        c.consumerName || "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>Mobile</span>
+
+                <strong>
+                    ${esc(
+                        c.mobile || "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>Consumer ID</span>
+
+                <strong>
+                    ${esc(
+                        c.consumerId || "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>Address</span>
+
+                <strong>
+                    ${esc(
+                        c.address || "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>Solar Capacity</span>
+
+                <strong>
+                    ${esc(
+                        c.solarCapacity || "-"
+                    )} kW
+                </strong>
+
+            </div>
+
         </div>
 
-        <div class="detail-row">
-          <span>Loan Amount</span>
-          <strong>${money(c.loan?.loanAmount)}</strong>
+
+        <div class="detail-box">
+
+            <h4>
+                💰 Financial Summary
+            </h4>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Total Estimate
+                </span>
+
+                <strong>
+                    ${money(total)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Total Received
+                </span>
+
+                <strong class="paid">
+                    ${money(received)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Total Due
+                </span>
+
+                <strong
+                    class="${
+                        due
+                        ? "pending"
+                        : "paid"
+                    }"
+                >
+                    ${money(due)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Payment Type
+                </span>
+
+                <strong>
+                    ${esc(
+                        c.paymentType || "-"
+                    )}
+                </strong>
+
+            </div>
+
         </div>
 
-        <div class="detail-row">
-          <span>Sanction Date</span>
-          <strong>${esc(c.loan?.loanSanctionDate || "-")}</strong>
+
+        <div class="detail-box">
+
+            <h4>
+                📊 Payment Schedule
+            </h4>
+
+            ${paymentHTML}
+
         </div>
 
-        <div class="detail-row">
-          <span>Bank Received</span>
-          <strong class="paid">
-            ${money(
-              num(c.loan?.initialBankReceived) +
-              num(c.loan?.receivedAmount)
-            )}
-          </strong>
+
+        <div class="detail-box">
+
+            <h4>
+                ${
+                    c.paymentType ===
+                    "Bank Loan"
+                    ? "🏦 Bank Loan Details"
+                    : "💵 Cash Payment"
+                }
+            </h4>
+
+
+            ${
+                c.paymentType === "Bank Loan"
+
+                ?
+
+                `
+
+                <div class="detail-row">
+
+                    <span>
+                        Bank Name
+                    </span>
+
+                    <strong>
+                        ${esc(
+                            c.loan?.bankName || "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Loan Amount
+                    </span>
+
+                    <strong>
+                        ${money(
+                            c.loan?.loanAmount
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Sanction Date
+                    </span>
+
+                    <strong>
+                        ${esc(
+                            c.loan?.loanSanctionDate || "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Reference
+                    </span>
+
+                    <strong>
+                        ${esc(
+                            c.loan?.loanReference || "-"
+                        )}
+                    </strong>
+
+                </div>
+
+                `
+
+                :
+
+                `
+
+                <div
+                    style="
+                        color:#64748b;
+                        font-size:12px;
+                    "
+                >
+                    Cash payment plan:
+                    60% + 40%
+                </div>
+
+                `
+
+            }
+
         </div>
 
-        <div class="detail-row">
-          <span>Reference</span>
-          <strong>${esc(c.loan?.loanReference || "-")}</strong>
-        </div>
-        `
-        :
-        `
-        <div style="color:#64748b;font-size:12px">
-          This consumer is marked as Cash Payment.
-        </div>
-        `
-      }
+    `;
 
-    </div>
 
-  `;
-
-  detailsModal.classList.add("show");
+    $("detailsModal")
+        .classList.add("show");
 
 };
 
 
-function milestone(title,percent,data){
+/* ================= MILESTONE ================= */
 
-  const amount =
-    num(data?.amount);
+function milestone(
+    title,
+    percent,
+    data
+){
 
-  const date =
-    data?.date || "";
+    const amount =
+        num(data?.amount);
 
-  return `
+    const date =
+        data?.date || "";
 
-    <div class="milestone">
 
-      <div class="milestone-icon">
-        ✓
-      </div>
+    return `
 
-      <div style="flex:1">
+        <div class="milestone">
 
-        <strong>
-          ${title}
-          <span style="color:#2563eb">
-            ${percent}
-          </span>
-        </strong>
+            <div class="milestone-icon">
 
-        <br>
+                ${
+                    amount
+                    ? "✓"
+                    : "○"
+                }
 
-        <small>
-          ${date || "Date not entered"}
-        </small>
+            </div>
 
-      </div>
 
-      <strong class="${amount ? "paid":"pending"}">
-        ${money(amount)}
-      </strong>
+            <div style="flex:1">
 
-    </div>
+                <strong>
 
-  `;
+                    ${title}
+
+                    <span
+                        style="
+                            color:#2563eb;
+                        "
+                    >
+                        ${percent}
+                    </span>
+
+                </strong>
+
+                <br>
+
+                <small>
+                    ${
+                        date
+                        ? esc(date)
+                        : "Date not entered"
+                    }
+                </small>
+
+            </div>
+
+
+            <strong
+                class="${
+                    amount
+                    ? "paid"
+                    : "pending"
+                }"
+            >
+                ${money(amount)}
+            </strong>
+
+        </div>
+
+    `;
 
 }
 
 
 /* ================= DELETE ================= */
 
-window.deleteConsumer = async function(id){
+window.deleteConsumer =
+async function(id){
 
-  const c =
-    consumers.find(x => x.id === id);
+    const c =
+        consumers.find(
+            x => x.id === id
+        );
 
-  if(!c) return;
+    if(!c)
+        return;
 
-  const ok =
-    confirm(
-      `Delete ${c.consumerName || "this consumer"}?`
-    );
 
-  if(!ok) return;
+    const ok =
+        confirm(
+            "Delete " +
+            (c.consumerName || "this consumer") +
+            "?"
+        );
 
-  try{
 
-    await deleteDoc(
-      doc(db,COLLECTION,id)
-    );
+    if(!ok)
+        return;
 
-    toast(
-      "Consumer deleted",
-      "success"
-    );
 
-    await loadConsumers();
+    try{
 
-  }catch(error){
+        await deleteDoc(
 
-    console.error(error);
+            doc(
+                db,
+                COLLECTION,
+                id
+            )
 
-    toast(
-      "Delete failed: " + error.message,
-      "error"
-    );
+        );
 
-  }
+
+        toast(
+            "Consumer deleted",
+            "success"
+        );
+
+
+        await loadConsumers();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "Delete failed: " +
+            error.message,
+            "error"
+        );
+
+    }
 
 };
 
 
 /* ================= SEARCH ================= */
 
-$("searchInput").oninput = render;
-$("modeFilter").onchange = render;
-$("statusFilter").onchange = render;
+$("searchInput")
+.addEventListener(
+    "input",
+    render
+);
+
+$("modeFilter")
+.addEventListener(
+    "change",
+    render
+);
+
+$("statusFilter")
+.addEventListener(
+    "change",
+    render
+);
 
 
 /* ================= CLOSE ================= */
 
-$("closeForm").onclick = () =>
-  formModal.classList.remove("show");
-
-$("cancelForm").onclick = () =>
-  formModal.classList.remove("show");
-
-$("closeDetails").onclick = () =>
-  detailsModal.classList.remove("show");
+$("closeForm").onclick =
+() =>
+    $("formModal")
+    .classList.remove("show");
 
 
-formModal.addEventListener("click",e => {
+$("cancelForm").onclick =
+() =>
+    $("formModal")
+    .classList.remove("show");
 
-  if(e.target === formModal)
-    formModal.classList.remove("show");
 
-});
+$("closeDetails").onclick =
+() =>
+    $("detailsModal")
+    .classList.remove("show");
 
-detailsModal.addEventListener("click",e => {
 
-  if(e.target === detailsModal)
-    detailsModal.classList.remove("show");
+$("formModal")
+.addEventListener(
+    "click",
+    e => {
 
-});
+        if(
+            e.target ===
+            $("formModal")
+        ){
+
+            $("formModal")
+            .classList
+            .remove("show");
+
+        }
+
+    }
+);
+
+
+$("detailsModal")
+.addEventListener(
+    "click",
+    e => {
+
+        if(
+            e.target ===
+            $("detailsModal")
+        ){
+
+            $("detailsModal")
+            .classList
+            .remove("show");
+
+        }
+
+    }
+);
 
 
 /* ================= LOGOUT ================= */
 
-$("logoutBtn").onclick = async () => {
+$("logoutBtn").onclick =
+async () => {
 
-  try{
+    try{
 
-    await signOut(auth);
+        await signOut(auth);
 
-    location.href = "index.html";
+        location.href =
+            "index.html";
 
-  }catch(error){
+    }catch(error){
 
-    toast(
-      error.message,
-      "error"
-    );
+        toast(
+            error.message,
+            "error"
+        );
 
-  }
+    }
 
 };
 
 
 /* ================= TOAST ================= */
 
-function toast(message,type="success"){
+function toast(
+    message,
+    type="success"
+){
 
-  const el = $("toast");
+    const el =
+        $("toast");
 
-  el.textContent = message;
 
-  el.className =
-    "toast show " + type;
+    el.textContent =
+        message;
 
-  setTimeout(() => {
 
-    el.classList.remove("show");
+    el.className =
+        "toast show " +
+        type;
 
-  },3500);
+
+    setTimeout(
+        () => {
+
+            el.classList
+                .remove("show");
+
+        },
+        3500
+    );
 
 }
 
