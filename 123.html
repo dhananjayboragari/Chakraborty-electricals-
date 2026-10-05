@@ -672,20 +672,48 @@ td{
 
 /* ================= TOAST ================= */
 
-.toast{
+
+  .toast{
     position:fixed;
-    right:20px;
-    bottom:20px;
-    min-width:260px;
+    top:20px;
+    left:50%;
+    right:auto;
+    bottom:auto;
+
+    min-width:300px;
+    max-width:90%;
+    
     background:#0f172a;
     color:white;
-    padding:14px 17px;
+
+    padding:15px 20px;
     border-radius:12px;
+
     opacity:0;
-    transform:translateY(100px);
+
+    transform:translate(-50%,-30px);
+
     transition:.3s;
-    z-index:1000;
-    font-size:12px;
+
+    z-index:10000;
+
+    font-size:13px;
+    text-align:center;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+.toast.success{
+    border-left:4px solid #22c55e;
+}
+
+.toast.error{
+    border-left:4px solid #ef4444;
 }
 
 .toast.show{
@@ -2309,6 +2337,9 @@ function changePaymentType(){
             "hidden",
             type !== "Bank Loan"
         );
+  /* AUTO CALCULATE WHEN PAYMENT TYPE CHANGES */
+
+calculatePercentages();
 
 }
 
@@ -2323,6 +2354,17 @@ $("totalAmount")
 
 
 function calculatePercentages(){
+
+  /* LOAN AMOUNT = 90% OF TOTAL ESTIMATE */
+
+if(
+    $("loanAmount")
+){
+
+    $("loanAmount").value =
+        Math.round(total * 0.90);
+
+}
 
     const total =
         num(
@@ -2366,35 +2408,37 @@ function calculatePercentages(){
        calculated amount হবে।
     */
 
-    if(!$("editId").value){
+    
 
-        if(
-            getPaymentType() ===
-            "Cash"
-        ){
+    if(
+    getPaymentType() ===
+    "Cash"
+){
 
-            $("cashP1Amount").value =
-                Math.round(total*.60);
+    $("cashP1Amount").value =
+        Math.round(total * 0.60);
 
-            $("cashP2Amount").value =
-                Math.round(total*.40);
+    $("cashP2Amount").value =
+        Math.round(total * 0.40);
 
-        }else{
+}else{
 
-            $("loanP1Amount").value =
-                Math.round(total*.60);
+    $("loanAmount").value =
+        Math.round(total * 0.90);
 
-            $("loanP2Amount").value =
-                Math.round(total*.30);
+    $("loanP1Amount").value =
+        Math.round(total * 0.60);
 
-            $("loanP3Amount").value =
-                Math.round(total*.10);
+    $("loanP2Amount").value =
+        Math.round(total * 0.30);
 
-        }
-
-    }
+    $("loanP3Amount").value =
+        Math.round(total * 0.10);
 
 }
+  }
+
+
 
 
 /* ================= ADD ================= */
@@ -3454,7 +3498,7 @@ function toast(
                 .remove("show");
 
         },
-        3500
+        20000
     );
 
 }
