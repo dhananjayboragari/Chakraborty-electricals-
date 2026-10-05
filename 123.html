@@ -2355,78 +2355,65 @@ $("totalAmount")
 
 function calculatePercentages(){
 
-
     const total =
         num(
             $("totalAmount").value
         );
 
-
-    $("cashP1Calculated")
-        .textContent =
+    $("cashP1Calculated").textContent =
         "Calculated: " +
-        money(total * .60);
+        money(total * 0.60);
 
-
-    $("cashP2Calculated")
-        .textContent =
+    $("cashP2Calculated").textContent =
         "Calculated: " +
-        money(total * .40);
+        money(total * 0.40);
 
-
-    $("loanP1Calculated")
-        .textContent =
+    $("loanP1Calculated").textContent =
         "Calculated: " +
-        money(total * .60);
+        money(total * 0.60);
 
-
-    $("loanP2Calculated")
-        .textContent =
+    $("loanP2Calculated").textContent =
         "Calculated: " +
-        money(total * .30);
+        money(total * 0.30);
 
-
-    $("loanP3Calculated")
-        .textContent =
+    $("loanP3Calculated").textContent =
         "Calculated: " +
-        money(total * .10);
+        money(total * 0.10);
 
 
-    /*
-       নতুন record হলে
-       actual amount automatically
-       calculated amount হবে।
-    */
+    /* EDIT হলে Database-এর পুরনো amount পরিবর্তন হবে না */
 
-    
+    if($("editId").value){
+        return;
+    }
 
-    if(
-    getPaymentType() ===
-    "Cash"
-){
 
-    $("cashP1Amount").value =
-        Math.round(total * 0.60);
+    /* NEW Consumer হলে automatic calculation */
 
-    $("cashP2Amount").value =
-        Math.round(total * 0.40);
+    if(getPaymentType() === "Cash"){
 
-}else{
+        $("cashP1Amount").value =
+            Math.round(total * 0.60);
 
-    $("loanAmount").value =
-        Math.round(total * 0.90);
+        $("cashP2Amount").value =
+            Math.round(total * 0.40);
 
-    $("loanP1Amount").value =
-        Math.round(total * 0.60);
+    }else{
 
-    $("loanP2Amount").value =
-        Math.round(total * 0.30);
+        $("loanAmount").value =
+            Math.round(total * 0.90);
 
-    $("loanP3Amount").value =
-        Math.round(total * 0.10);
+        $("loanP1Amount").value =
+            Math.round(total * 0.60);
 
+        $("loanP2Amount").value =
+            Math.round(total * 0.30);
+
+        $("loanP3Amount").value =
+            Math.round(total * 0.10);
+
+    }
 }
-  }
 
 
 
