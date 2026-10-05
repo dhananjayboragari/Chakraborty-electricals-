@@ -3,762 +3,847 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar Consumer Payment Management</title>
 
-<title>Solar Consumer Database</title>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 :root{
-    --bg:#f4f7fb;
-    --card:#ffffff;
-    --text:#172033;
-    --muted:#697386;
-    --primary:#2563eb;
-    --primary2:#0ea5e9;
-    --green:#16a34a;
-    --orange:#f59e0b;
-    --red:#dc2626;
-    --border:#e5eaf2;
-    --shadow:0 12px 35px rgba(15,23,42,.08);
+  --primary:#2563eb;
+  --primary2:#4f46e5;
+  --green:#16a34a;
+  --orange:#f59e0b;
+  --red:#dc2626;
+  --dark:#0f172a;
+  --text:#1e293b;
+  --muted:#64748b;
+  --bg:#f1f5f9;
+  --card:#fff;
+  --border:#e2e8f0;
+  --shadow:0 12px 35px rgba(15,23,42,.08);
 }
 
 body{
-    margin:0;
-    font-family:Inter,Segoe UI,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
 
-button,
-input,
-select,
-textarea{
-    font:inherit;
+button,input,select,textarea{
+  font:inherit;
 }
 
 button{
-    cursor:pointer;
-    border:0;
+  cursor:pointer;
 }
 
-/* TOP BAR */
+.app{
+  min-height:100vh;
+}
+
+/* ================= TOPBAR ================= */
 
 .topbar{
-    position:sticky;
-    top:0;
-    z-index:30;
-    padding:14px 22px;
-    color:#fff;
-    background:
-        linear-gradient(
-            135deg,
-            #0f3b91,
-            #1677d2 55%,
-            #10b981
-        );
-    box-shadow:0 8px 25px rgba(15,23,42,.16);
-}
-
-.top-inner{
-    max-width:1450px;
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:15px;
+  height:72px;
+  background:linear-gradient(135deg,#0f172a,#1e3a8a);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 5px 20px rgba(0,0,0,.15);
 }
 
 .brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
+  display:flex;
+  align-items:center;
+  gap:13px;
 }
 
-.logo{
-    width:46px;
-    height:46px;
-    border-radius:14px;
-    background:rgba(255,255,255,.16);
-    display:grid;
-    place-items:center;
-    font-size:25px;
-    border:1px solid rgba(255,255,255,.25);
+.brand-icon{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#facc15,#f97316);
+  font-size:22px;
 }
 
 .brand h1{
-    font-size:19px;
-    margin:0;
+  font-size:18px;
+  margin:0;
 }
 
 .brand small{
-    opacity:.82;
+  opacity:.7;
+  font-size:11px;
 }
 
-.userbox{
-    display:flex;
-    align-items:center;
-    gap:10px;
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
-.useremail{
-    font-size:13px;
-    opacity:.9;
+.user-pill{
+  padding:9px 14px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);
+  border-radius:30px;
+  font-size:12px;
 }
 
 .logout{
-    padding:9px 13px;
-    border-radius:10px;
-    background:rgba(255,255,255,.14);
-    color:#fff;
-    border:1px solid rgba(255,255,255,.25);
+  border:0;
+  background:#ef4444;
+  color:white;
+  padding:9px 15px;
+  border-radius:9px;
+  font-weight:700;
 }
 
-/* MAIN */
+/* ================= MAIN ================= */
 
-.container{
-    max-width:1450px;
-    margin:auto;
-    padding:22px;
+.main{
+  max-width:1500px;
+  margin:auto;
+  padding:25px;
 }
 
-.actions{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-    margin-bottom:18px;
+.page-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:22px;
 }
 
-.page-title h2{
-    margin:0 0 4px;
-    font-size:25px;
+.page-head h2{
+  margin:0 0 5px;
+  font-size:25px;
 }
 
-.page-title p{
-    margin:0;
-    color:var(--muted);
-    font-size:13px;
+.page-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
 }
 
-/* BUTTON */
-
-.btn{
-    padding:11px 15px;
-    border-radius:11px;
-    font-weight:700;
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
+.primary-btn{
+  border:0;
+  color:white;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  padding:12px 18px;
+  border-radius:11px;
+  font-weight:700;
+  box-shadow:0 8px 18px rgba(37,99,235,.25);
 }
 
-.btn-primary{
-    color:#fff;
-    background:linear-gradient(
-        135deg,
-        var(--primary),
-        var(--primary2)
-    );
-    box-shadow:0 7px 18px rgba(37,99,235,.22);
+.primary-btn:hover{
+  transform:translateY(-1px);
 }
 
-.btn-light{
-    background:#fff;
-    border:1px solid var(--border);
-    color:var(--text);
-}
-
-.btn-danger{
-    background:#fee2e2;
-    color:#b91c1c;
-}
-
-/* STATS */
+/* ================= STATS ================= */
 
 .stats{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:14px;
-    margin-bottom:18px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:16px;
+  margin-bottom:22px;
 }
 
 .stat{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:17px;
-    box-shadow:var(--shadow);
+  background:white;
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:19px;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
 }
 
-.stat-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+.stat:after{
+  content:"";
+  position:absolute;
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  right:-25px;
+  top:-25px;
+  background:rgba(37,99,235,.07);
 }
 
 .stat-icon{
-    font-size:23px;
+  width:39px;
+  height:39px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  margin-bottom:12px;
+  background:#eff6ff;
+  color:#2563eb;
 }
 
-.stat .label{
-    color:var(--muted);
-    font-size:12px;
+.stat:nth-child(2) .stat-icon{
+  background:#ecfdf5;
+  color:#16a34a;
 }
 
-.stat .value{
-    font-size:26px;
-    font-weight:800;
-    margin-top:6px;
+.stat:nth-child(3) .stat-icon{
+  background:#fff7ed;
+  color:#ea580c;
 }
 
-/* TOOLBAR */
+.stat:nth-child(4) .stat-icon{
+  background:#f5f3ff;
+  color:#7c3aed;
+}
+
+.stat:nth-child(5) .stat-icon{
+  background:#fef2f2;
+  color:#dc2626;
+}
+
+.stat-value{
+  font-size:22px;
+  font-weight:800;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+/* ================= TOOLBAR ================= */
 
 .toolbar{
-    background:#fff;
-    border:1px solid var(--border);
-    padding:13px;
-    border-radius:16px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-bottom:14px;
-    box-shadow:var(--shadow);
+  background:white;
+  border:1px solid var(--border);
+  padding:15px;
+  border-radius:15px;
+  display:flex;
+  gap:10px;
+  margin-bottom:18px;
+  box-shadow:0 5px 18px rgba(15,23,42,.04);
 }
 
 .search{
-    flex:1;
-    min-width:230px;
-    position:relative;
+  flex:1;
+  position:relative;
 }
 
 .search input{
-    width:100%;
-    padding:11px 13px 11px 38px;
-    border:1px solid var(--border);
-    border-radius:11px;
-    outline:none;
+  width:100%;
+  padding:12px 14px 12px 40px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  outline:none;
 }
 
 .search span{
-    position:absolute;
-    left:13px;
-    top:9px;
+  position:absolute;
+  left:14px;
+  top:12px;
+  color:#94a3b8;
 }
 
 .toolbar select{
-    min-width:155px;
-    padding:10px;
-    border:1px solid var(--border);
-    border-radius:11px;
-    background:#fff;
-    outline:none;
+  border:1px solid var(--border);
+  padding:0 12px;
+  border-radius:10px;
+  background:white;
+  color:var(--text);
 }
 
-/* TABLE */
+/* ================= TABLE ================= */
 
 .table-card{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:18px;
-    box-shadow:var(--shadow);
-    overflow:hidden;
-}
-
-.table-wrap{
-    overflow:auto;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:17px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
 }
 
 table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:1050px;
-}
-
-th,
-td{
-    padding:13px 14px;
-    border-bottom:1px solid #edf0f5;
-    text-align:left;
-    font-size:13px;
-    white-space:nowrap;
+  width:100%;
+  border-collapse:collapse;
 }
 
 th{
-    background:#f8fafc;
-    color:#596579;
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:.4px;
+  background:#f8fafc;
+  padding:14px 13px;
+  text-align:left;
+  font-size:11px;
+  color:#64748b;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+}
+
+td{
+  padding:14px 13px;
+  border-top:1px solid #eef2f7;
+  font-size:12px;
 }
 
 .consumer{
-    font-weight:750;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-.sub{
-    font-size:11px;
-    color:var(--muted);
-    margin-top:3px;
+.avatar{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#dbeafe,#e0e7ff);
+  color:#1d4ed8;
+  font-weight:800;
 }
 
-/* BADGES */
-
-.badge{
-    display:inline-flex;
-    padding:5px 8px;
-    border-radius:999px;
-    font-size:11px;
-    font-weight:750;
+.consumer strong{
+  display:block;
+  font-size:12px;
 }
 
-.b-blue{
-    background:#dbeafe;
-    color:#1d4ed8;
+.consumer small{
+  color:#94a3b8;
 }
 
-.b-green{
-    background:#dcfce7;
-    color:#15803d;
+.mode{
+  display:inline-flex;
+  padding:5px 8px;
+  border-radius:20px;
+  font-size:10px;
+  font-weight:700;
 }
 
-.b-orange{
-    background:#fef3c7;
-    color:#b45309;
+.mode.cash{
+  background:#ecfdf5;
+  color:#15803d;
 }
 
-.b-red{
-    background:#fee2e2;
-    color:#b91c1c;
+.mode.loan{
+  background:#eff6ff;
+  color:#1d4ed8;
 }
 
-.b-gray{
-    background:#f1f5f9;
-    color:#475569;
+.amount{
+  font-weight:800;
 }
 
-/* ACTION */
-
-.row-actions{
-    display:flex;
-    gap:6px;
+.progress{
+  width:100px;
+  height:7px;
+  background:#e2e8f0;
+  border-radius:10px;
+  overflow:hidden;
 }
 
-.icon-btn{
-    width:32px;
-    height:32px;
-    border-radius:9px;
-    background:#f1f5f9;
-    color:#334155;
+.progress span{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,#2563eb,#16a34a);
+  border-radius:10px;
 }
 
-.icon-btn:hover{
-    background:#e2e8f0;
+.action-btn{
+  border:0;
+  width:33px;
+  height:33px;
+  border-radius:9px;
+  background:#f1f5f9;
+  color:#475569;
+  margin-right:3px;
 }
 
-/* EMPTY */
-
-.empty{
-    padding:45px;
-    text-align:center;
-    color:var(--muted);
+.action-btn:hover{
+  background:#dbeafe;
+  color:#1d4ed8;
 }
 
-/* MOBILE */
-
-.mobile-list{
-    display:none;
+.action-btn.delete:hover{
+  background:#fee2e2;
+  color:#dc2626;
 }
 
-.consumer-card{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:15px;
-    box-shadow:var(--shadow);
-    margin-bottom:11px;
+/* ================= MODAL ================= */
+
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.65);
+  backdrop-filter:blur(5px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:500;
 }
 
-.cc-head{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.cc-name{
-    font-weight:800;
-}
-
-.cc-meta{
-    color:var(--muted);
-    font-size:12px;
-    margin-top:4px;
-}
-
-.cc-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:9px;
-    margin:13px 0;
-}
-
-.cc-item{
-    background:#f8fafc;
-    border-radius:10px;
-    padding:9px;
-}
-
-.cc-item small{
-    display:block;
-    color:var(--muted);
-    font-size:10px;
-}
-
-.cc-item b{
-    font-size:12px;
-}
-
-.cc-actions{
-    display:flex;
-    gap:8px;
-}
-
-.cc-actions button{
-    flex:1;
-}
-
-/* MODAL */
-
-.modal-backdrop{
-    position:fixed;
-    inset:0;
-    background:rgba(15,23,42,.58);
-    z-index:100;
-    display:none;
-    padding:20px;
-    overflow:auto;
-}
-
-.modal-backdrop.show{
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
+.modal-bg.show{
+  display:flex;
 }
 
 .modal{
-    width:min(1050px,100%);
-    background:#fff;
-    border-radius:22px;
-    box-shadow:0 25px 80px rgba(0,0,0,.25);
-    margin:15px auto;
+  width:min(1050px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:white;
+  border-radius:22px;
+  box-shadow:0 30px 80px rgba(0,0,0,.25);
 }
 
 .modal-head{
-    padding:17px 20px;
-    border-bottom:1px solid var(--border);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    position:sticky;
-    top:0;
-    background:#fff;
-    border-radius:22px 22px 0 0;
-    z-index:2;
+  padding:20px 24px;
+  background:linear-gradient(135deg,#0f172a,#1e40af);
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:5;
 }
 
 .modal-head h3{
-    margin:0;
+  margin:0;
 }
 
 .close{
-    width:36px;
-    height:36px;
-    border-radius:10px;
-    background:#f1f5f9;
-    font-size:20px;
+  width:36px;
+  height:36px;
+  border:0;
+  border-radius:10px;
+  background:rgba(255,255,255,.12);
+  color:white;
+  font-size:20px;
 }
 
-.modal-body{
-    padding:20px;
+.form{
+  padding:24px;
 }
 
-/* FORM */
-
-.form-section{
-    border:1px solid var(--border);
-    border-radius:15px;
-    padding:15px;
-    margin-bottom:14px;
+.section{
+  margin-bottom:25px;
 }
 
-.form-section h4{
-    margin:0 0 13px;
-    font-size:14px;
-    color:#1e40af;
+.section-title{
+  font-size:14px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:13px;
 }
 
-.form-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
+.section-title span{
+  width:7px;
+  height:20px;
+  border-radius:5px;
+  background:linear-gradient(#2563eb,#4f46e5);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:13px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1/-1;
 }
 
 .field label{
-    display:block;
-    font-size:11px;
-    font-weight:700;
-    color:#64748b;
-    margin-bottom:5px;
+  font-size:11px;
+  font-weight:700;
+  color:#475569;
 }
 
 .field input,
 .field select,
 .field textarea{
-    width:100%;
-    padding:10px 11px;
-    border:1px solid #dce3ed;
-    border-radius:9px;
-    outline:none;
-    background:#fff;
+  width:100%;
+  border:1px solid var(--border);
+  padding:11px 12px;
+  border-radius:10px;
+  outline:none;
+  background:white;
 }
 
 .field textarea{
-    min-height:72px;
-    resize:vertical;
+  resize:vertical;
+  min-height:75px;
 }
 
-.full{
-    grid-column:1/-1;
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:#60a5fa;
+  box-shadow:0 0 0 3px rgba(37,99,235,.08);
 }
 
-.modal-foot{
-    display:flex;
-    justify-content:flex-end;
-    gap:9px;
-    padding:15px 20px;
-    border-top:1px solid var(--border);
+/* payment cards */
+
+.payment-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
 }
 
-/* DETAILS */
-
-.details-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:11px;
+.payment-card{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  background:#f8fafc;
 }
 
-.detail{
-    background:#f8fafc;
-    border-radius:12px;
-    padding:11px;
+.payment-card h4{
+  margin:0 0 10px;
+  font-size:12px;
 }
 
-.detail small{
-    display:block;
-    color:var(--muted);
-    font-size:10px;
+.payment-card .percent{
+  color:#2563eb;
+  font-weight:800;
 }
 
-.detail b{
-    display:block;
-    margin-top:4px;
-    font-size:13px;
-    word-break:break-word;
+.payment-card input{
+  margin-top:7px;
 }
 
-.detail.full{
-    grid-column:1/-1;
+/* bank */
+
+.bank-box{
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  border-radius:15px;
+  padding:15px;
+  margin-top:12px;
 }
 
-.detail-title{
-    grid-column:1/-1;
-    font-size:13px;
-    font-weight:800;
-    color:#1d4ed8;
-    padding-top:7px;
+.hidden{
+  display:none!important;
 }
 
-/* TOAST */
+.modal-footer{
+  padding:16px 24px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  position:sticky;
+  bottom:0;
+  background:white;
+}
+
+.secondary-btn{
+  border:1px solid var(--border);
+  background:white;
+  padding:11px 18px;
+  border-radius:10px;
+  font-weight:700;
+}
+
+/* ================= DETAILS ================= */
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  padding:20px;
+}
+
+.detail-box{
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:16px;
+}
+
+.detail-box h4{
+  margin:0 0 14px;
+}
+
+.detail-row{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px dashed #e2e8f0;
+  font-size:12px;
+}
+
+.detail-row:last-child{
+  border:0;
+}
+
+.detail-row span:first-child{
+  color:var(--muted);
+}
+
+.milestone{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  background:#f8fafc;
+  border-radius:11px;
+  margin-bottom:8px;
+}
+
+.milestone-icon{
+  width:32px;
+  height:32px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:#dbeafe;
+  color:#2563eb;
+}
+
+.paid{
+  color:#16a34a;
+  font-weight:800;
+}
+
+.pending{
+  color:#f59e0b;
+  font-weight:800;
+}
+
+/* ================= TOAST ================= */
 
 .toast{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    z-index:300;
-    background:#172033;
-    color:#fff;
-    padding:13px 16px;
-    border-radius:12px;
-    box-shadow:var(--shadow);
-    display:none;
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  min-width:260px;
+  background:#0f172a;
+  color:white;
+  padding:14px 17px;
+  border-radius:12px;
+  box-shadow:0 15px 35px rgba(0,0,0,.2);
+  transform:translateY(120px);
+  opacity:0;
+  transition:.3s;
+  z-index:1000;
+  font-size:13px;
 }
 
 .toast.show{
-    display:block;
+  transform:translateY(0);
+  opacity:1;
 }
 
-/* LOADING */
+.toast.success{
+  border-left:4px solid #22c55e;
+}
 
-.loading{
-    position:fixed;
-    inset:0;
-    background:rgba(255,255,255,.7);
-    z-index:250;
+.toast.error{
+  border-left:4px solid #ef4444;
+}
+
+/* ================= EMPTY ================= */
+
+.empty{
+  padding:50px 20px;
+  text-align:center;
+  color:#94a3b8;
+}
+
+.empty div{
+  font-size:38px;
+  margin-bottom:8px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:1000px){
+  .stats{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .payment-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:700px){
+
+  .topbar{
+    height:auto;
+    min-height:64px;
+    padding:10px 14px;
+  }
+
+  .brand h1{
+    font-size:14px;
+  }
+
+  .brand small{
     display:none;
-    place-items:center;
+  }
+
+  .user-pill{
+    display:none;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  .page-head{
+    align-items:flex-start;
+  }
+
+  .page-head h2{
+    font-size:20px;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .stat{
+    padding:14px;
+  }
+
+  .stat-value{
+    font-size:18px;
+  }
+
+  .toolbar{
+    flex-direction:column;
+  }
+
+  .toolbar select{
+    min-height:42px;
+  }
+
+  /* desktop table hidden */
+  .table-card{
+    background:transparent;
+    border:0;
+    box-shadow:none;
+    overflow:visible;
+  }
+
+  table,
+  thead,
+  tbody,
+  tr,
+  td{
+    display:block;
+  }
+
+  thead{
+    display:none;
+  }
+
+  tr{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:13px;
+    margin-bottom:12px;
+    box-shadow:0 7px 20px rgba(15,23,42,.06);
+  }
+
+  td{
+    border:0;
+    padding:6px 0;
+  }
+
+  td:before{
+    content:attr(data-label);
+    display:block;
+    color:#94a3b8;
+    font-size:9px;
+    text-transform:uppercase;
+    margin-bottom:3px;
+    font-weight:700;
+  }
+
+  td:first-child:before{
+    display:none;
+  }
+
+  .consumer{
+    margin-bottom:5px;
+  }
+
+  .detail-grid{
+    grid-template-columns:1fr;
+    padding:15px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .field.full{
+    grid-column:auto;
+  }
+
+  .payment-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .modal-bg{
+    padding:0;
+    align-items:flex-end;
+  }
+
+  .modal{
+    width:100%;
+    max-height:96vh;
+    border-radius:22px 22px 0 0;
+  }
+
+  .form{
+    padding:17px;
+  }
+
+  .modal-footer{
+    padding:12px 17px;
+  }
 }
 
-.loading.show{
-    display:grid;
-}
+@media(max-width:400px){
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
 
-.spinner{
-    width:38px;
-    height:38px;
-    border:4px solid #dbeafe;
-    border-top-color:#2563eb;
-    border-radius:50%;
-    animation:spin .7s linear infinite;
-}
+  .payment-grid{
+    grid-template-columns:1fr;
+  }
 
-@keyframes spin{
-    to{
-        transform:rotate(360deg);
-    }
-}
-
-.note{
+  .page-head .primary-btn{
+    padding:10px 12px;
     font-size:11px;
-    color:var(--muted);
-    margin-top:8px;
-}
-
-/* TABLET */
-
-@media(max-width:900px){
-
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .form-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .details-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-/* MOBILE */
-
-@media(max-width:650px){
-
-    .topbar{
-        padding:11px 13px;
-    }
-
-    .container{
-        padding:14px;
-    }
-
-    .useremail{
-        display:none;
-    }
-
-    .brand h1{
-        font-size:16px;
-    }
-
-    .brand small{
-        font-size:10px;
-    }
-
-    .actions{
-        align-items:flex-start;
-    }
-
-    .page-title h2{
-        font-size:20px;
-    }
-
-    .actions .btn{
-        padding:9px 11px;
-    }
-
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-        gap:9px;
-    }
-
-    .stat{
-        padding:13px;
-    }
-
-    .stat .value{
-        font-size:22px;
-    }
-
-    .toolbar{
-        padding:10px;
-    }
-
-    .search{
-        min-width:100%;
-    }
-
-    .toolbar select{
-        flex:1;
-        min-width:0;
-    }
-
-    .table-card{
-        display:none;
-    }
-
-    .mobile-list{
-        display:block;
-    }
-
-    .form-grid,
-    .details-grid{
-        grid-template-columns:1fr;
-    }
-
-    .modal-backdrop{
-        padding:8px;
-    }
-
-    .modal{
-        margin:4px auto;
-        border-radius:17px;
-    }
-
-    .modal-head{
-        border-radius:17px 17px 0 0;
-    }
-
-    .modal-body{
-        padding:12px;
-    }
-
-    .form-section{
-        padding:12px;
-    }
-
-    .modal-foot{
-        padding:12px;
-    }
-
-    .detail.full{
-        grid-column:auto;
-    }
+  }
 }
 </style>
 </head>
@@ -768,3168 +853,1434 @@ th{
 <div class="app">
 
 <header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">☀</div>
+    <div>
+      <h1>Solar Consumer Payment</h1>
+      <small>Chakraborty Electricals</small>
+    </div>
+  </div>
 
-<div class="top-inner">
-
-<div class="brand">
-
-<div class="logo">
-☀️
-</div>
-
-<div>
-<h1>Solar Consumer Database</h1>
-<small>Vendor • Connection Management</small>
-</div>
-
-</div>
-
-<div class="userbox">
-
-<span
-class="useremail"
-id="userEmail">
-Checking login...
-</span>
-
-<button
-class="logout"
-id="logoutBtn">
-Logout
-</button>
-
-</div>
-
-</div>
-
+  <div class="top-right">
+    <div class="user-pill" id="userEmail">Checking login...</div>
+    <button class="logout" id="logoutBtn">Logout</button>
+  </div>
 </header>
 
-
-<main class="container">
-
-<div class="actions">
-
-<div class="page-title">
-
-<h2>
-Consumer Management
-</h2>
-
-<p>
-Domestic, Commercial, Agriculture, Bulk & other solar connections
-</p>
-
-</div>
-
-<button
-class="btn btn-primary"
-id="addBtn">
-
-＋ Add Consumer
-
-</button>
-
-</div>
-
-
-<!-- STATISTICS -->
-
-<section class="stats">
-
-<div class="stat">
-
-<div class="stat-top">
-
-<span class="label">
-Total Consumers
-</span>
-
-<span class="stat-icon">
-👥
-</span>
-
-</div>
-
-<div
-class="value"
-id="totalCount">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-top">
-
-<span class="label">
-Active
-</span>
-
-<span class="stat-icon">
-🟢
-</span>
-
-</div>
-
-<div
-class="value"
-id="activeCount">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-top">
-
-<span class="label">
-Pending
-</span>
-
-<span class="stat-icon">
-⏳
-</span>
-
-</div>
-
-<div
-class="value"
-id="pendingCount">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-top">
-
-<span class="label">
-Installed
-</span>
-
-<span class="stat-icon">
-⚡
-</span>
-
-</div>
-
-<div
-class="value"
-id="installedCount">
-0
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-top">
-
-<span class="label">
-Total Capacity
-</span>
-
-<span class="stat-icon">
-☀️
-</span>
-
-</div>
-
-<div
-class="value"
-id="capacityCount">
-0 kW
-</div>
-
-</div>
-
-</section>
-
-
-<!-- SEARCH -->
-
-<section class="toolbar">
-
-<div class="search">
-
-<span>
-🔍
-</span>
-
-<input
-id="searchInput"
-placeholder="Search name, mobile, consumer no., application no.">
-
-</div>
-
-
-<select id="typeFilter">
-
-<option value="">
-All Connection Types
-</option>
-
-<option>
-Domestic
-</option>
-
-<option>
-Commercial
-</option>
-
-<option>
-Agriculture
-</option>
-
-<option>
-Bulk
-</option>
-
-<option>
-Industrial
-</option>
-
-<option>
-Other
-</option>
-
-</select>
-
-
-<select id="statusFilter">
-
-<option value="">
-All Status
-</option>
-
-<option>
-Pending
-</option>
-
-<option>
-Applied
-</option>
-
-<option>
-Inspection
-</option>
-
-<option>
-Approved
-</option>
-
-<option>
-Installed
-</option>
-
-<option>
-Active
-</option>
-
-<option>
-Completed
-</option>
-
-<option>
-Cancelled
-</option>
-
-</select>
-
-
-<button
-class="btn btn-light"
-id="refreshBtn">
-
-↻ Refresh
-
-</button>
-
-</section>
-
-
-<!-- DESKTOP TABLE -->
-
-<section class="table-card">
-
-<div class="table-wrap">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>
-Consumer
-</th>
-
-<th>
-Type
-</th>
-
-<th>
-Capacity
-</th>
-
-<th>
-Consumer No.
-</th>
-
-<th>
-Payment
-</th>
-
-<th>
-Status
-</th>
-
-<th>
-Last Updated
-</th>
-
-<th>
-Action
-</th>
-
-</tr>
-
-</thead>
-
-<tbody id="tableBody">
-</tbody>
-
-</table>
-
-</div>
-
-<div
-class="empty"
-id="tableEmpty">
-
-No consumer data found.
-
-</div>
-
-</section>
-
-
-<!-- MOBILE -->
-
-<section
-class="mobile-list"
-id="mobileList">
-</section>
+<main class="main">
+
+  <div class="page-head">
+    <div>
+      <h2>Consumer Payment Dashboard</h2>
+      <p>Manage solar consumer payments, bank loans and collection milestones.</p>
+    </div>
+
+    <button class="primary-btn" id="addBtn">
+      ＋ Add Consumer
+    </button>
+  </div>
+
+  <!-- STATS -->
+
+  <section class="stats">
+
+    <div class="stat">
+      <div class="stat-icon">👥</div>
+      <div class="stat-value" id="totalConsumers">0</div>
+      <div class="stat-label">Total Consumers</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">💰</div>
+      <div class="stat-value" id="totalProject">₹0</div>
+      <div class="stat-label">Total Project Value</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">✓</div>
+      <div class="stat-value" id="totalReceived">₹0</div>
+      <div class="stat-label">Total Received</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">🏦</div>
+      <div class="stat-value" id="loanReceived">₹0</div>
+      <div class="stat-label">Bank Loan Received</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-value" id="totalDue">₹0</div>
+      <div class="stat-label">Total Due</div>
+    </div>
+
+  </section>
+
+  <!-- SEARCH -->
+
+  <div class="toolbar">
+
+    <div class="search">
+      <span>🔎</span>
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="Search consumer name, mobile, ID..."
+      >
+    </div>
+
+    <select id="modeFilter">
+      <option value="">All Payment Modes</option>
+      <option value="Cash">Cash Payment</option>
+      <option value="Bank Loan">Bank Loan</option>
+    </select>
+
+    <select id="statusFilter">
+      <option value="">All Status</option>
+      <option value="Paid">Fully Paid</option>
+      <option value="Due">Payment Due</option>
+    </select>
+
+  </div>
+
+  <!-- TABLE -->
+
+  <div class="table-card">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Consumer</th>
+          <th>Solar</th>
+          <th>Total Amount</th>
+          <th>Payment Mode</th>
+          <th>Received</th>
+          <th>Progress</th>
+          <th>Due</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="consumerTable">
+      </tbody>
+
+    </table>
+
+    <div class="empty" id="emptyState">
+      <div>☀️</div>
+      <strong>No consumer found</strong>
+      <p>Add your first solar consumer.</p>
+    </div>
+
+  </div>
 
 </main>
-
 </div>
 
 
+<!-- ======================================================
+     ADD / EDIT MODAL
+====================================================== -->
 
-<!-- ADD / EDIT MODAL -->
-
-<div
-class="modal-backdrop"
-id="formModal">
+<div class="modal-bg" id="formModal">
 
 <div class="modal">
 
-<div class="modal-head">
+  <div class="modal-head">
+    <h3 id="modalTitle">Add Solar Consumer</h3>
+    <button class="close" id="closeForm">×</button>
+  </div>
 
-<h3 id="formTitle">
-Add Consumer
-</h3>
+  <form class="form" id="consumerForm">
 
-<button
-class="close"
-data-close="formModal">
-×
-</button>
+    <input type="hidden" id="editId">
 
-</div>
-
-
-<form id="consumerForm">
-
-<div class="modal-body">
-
-<input
-type="hidden"
-id="docId">
-
-
-<!-- CONSUMER -->
-
-<div class="form-section">
-
-<h4>
-👤 Consumer Information
-</h4>
-
-<div class="form-grid">
-
-
-<div class="field">
-
-<label>
-Consumer Name *
-</label>
-
-<input
-id="consumerName"
-required>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Father / Husband Name
-</label>
-
-<input
-id="guardianName">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Mobile No. *
-</label>
-
-<input
-id="mobile"
-required>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Alternate Mobile
-</label>
-
-<input
-id="altMobile">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Email
-</label>
-
-<input
-id="email"
-type="email">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Aadhaar / ID Reference
-</label>
-
-<input
-id="idReference">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Consumer Number
-</label>
-
-<input
-id="consumerNumber">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Customer Type *
-</label>
-
-<select
-id="customerType"
-required>
-
-<option>
-Domestic
-</option>
-
-<option>
-Commercial
-</option>
-
-<option>
-Agriculture
-</option>
-
-<option>
-Bulk
-</option>
-
-<option>
-Industrial
-</option>
-
-<option>
-Other
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Tariff Category
-</label>
-
-<input
-id="tariffCategory">
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- ADDRESS -->
-
-<div class="form-section">
-
-<h4>
-📍 Address
-</h4>
-
-<div class="form-grid">
-
-
-<div class="field full">
-
-<label>
-Full Address
-</label>
-
-<textarea id="address"></textarea>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Village / Town
-</label>
-
-<input id="village">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Post Office
-</label>
-
-<input id="postOffice">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Police Station
-</label>
-
-<input id="policeStation">
-
-</div>
-
-
-<div class="field">
-
-<label>
-District
-</label>
-
-<input id="district">
-
-</div>
-
-
-<div class="field">
-
-<label>
-State
-</label>
-
-<input
-id="state"
-value="West Bengal">
-
-</div>
-
-
-<div class="field">
-
-<label>
-PIN
-</label>
-
-<input id="pin">
-
-</div>
-
-
-<div class="field full">
-
-<label>
-Solar Site Address
-</label>
-
-<textarea id="siteAddress"></textarea>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- CONNECTION -->
-
-<div class="form-section">
-
-<h4>
-⚡ Connection & Application
-</h4>
-
-<div class="form-grid">
-
-
-<div class="field">
-
-<label>
-Connection Type
-</label>
-
-<select id="connectionType">
-
-<option>
-Domestic
-</option>
-
-<option>
-Commercial
-</option>
-
-<option>
-Agriculture
-</option>
-
-<option>
-Bulk
-</option>
-
-<option>
-Industrial
-</option>
-
-<option>
-Other
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Phase
-</label>
-
-<select id="phase">
-
-<option>
-1 Phase
-</option>
-
-<option>
-3 Phase
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Existing Load (kW)
-</label>
-
-<input
-id="existingLoad"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Proposed Solar Capacity (kW)
-</label>
-
-<input
-id="solarCapacity"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Sanctioned Load (kW)
-</label>
-
-<input
-id="sanctionedLoad"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Application Number
-</label>
-
-<input id="applicationNumber">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Application Date
-</label>
-
-<input
-id="applicationDate"
-type="date">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Connection Date
-</label>
-
-<input
-id="connectionDate"
-type="date">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Meter Number
-</label>
-
-<input id="meterNumber">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Status
-</label>
-
-<select id="status">
-
-<option>
-Pending
-</option>
-
-<option>
-Applied
-</option>
-
-<option>
-Inspection
-</option>
-
-<option>
-Approved
-</option>
-
-<option>
-Installed
-</option>
-
-<option>
-Active
-</option>
-
-<option>
-Completed
-</option>
-
-<option>
-Cancelled
-</option>
-
-</select>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- SOLAR -->
-
-<div class="form-section">
-
-<h4>
-☀️ Solar System
-</h4>
-
-<div class="form-grid">
-
-
-<div class="field">
-
-<label>
-Panel Make
-</label>
+    <!-- CONSUMER -->
 
-<input id="panelMake">
+    <div class="section">
 
-</div>
-
-
-<div class="field">
-
-<label>
-Panel Model
-</label>
-
-<input id="panelModel">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Number of Panels
-</label>
-
-<input
-id="panelCount"
-type="number">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Inverter Make
-</label>
-
-<input id="inverterMake">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Inverter Model
-</label>
-
-<input id="inverterModel">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Inverter Capacity (kW)
-</label>
-
-<input
-id="inverterCapacity"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Structure Type
-</label>
-
-<input id="structureType">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Battery
-</label>
-
-<select id="batteryRequired">
-
-<option>
-No
-</option>
-
-<option>
-Yes
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Battery Details
-</label>
-
-<input id="batteryDetails">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Installation Date
-</label>
-
-<input
-id="installationDate"
-type="date">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Commissioning Date
-</label>
-
-<input
-id="commissioningDate"
-type="date">
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- FINANCE -->
-
-<div class="form-section">
-
-<h4>
-💰 Financial
-</h4>
-
-<div class="form-grid">
-
-
-<div class="field">
-
-<label>
-Total Project Cost (₹)
-</label>
-
-<input
-id="totalCost"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Advance (₹)
-</label>
-
-<input
-id="advance"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Paid Amount (₹)
-</label>
-
-<input
-id="paidAmount"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Remaining Amount (₹)
-</label>
-
-<input
-id="remainingAmount"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Subsidy (₹)
-</label>
-
-<input
-id="subsidy"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Subsidy Status
-</label>
-
-<select id="subsidyStatus">
-
-<option>
-Not Applicable
-</option>
-
-<option>
-Pending
-</option>
-
-<option>
-Applied
-</option>
-
-<option>
-Received
-</option>
-
-</select>
-
-</div>
-
+      <div class="section-title">
+        <span></span>
+        Consumer Information
+      </div>
 
-<div class="field">
+      <div class="grid">
 
-<label>
-Payment Mode
-</label>
+        <div class="field">
+          <label>Consumer Name *</label>
+          <input id="consumerName" required>
+        </div>
 
-<select id="paymentMode">
+        <div class="field">
+          <label>Mobile Number *</label>
+          <input id="mobile" type="tel" required>
+        </div>
 
-<option>
-Cash
-</option>
+        <div class="field">
+          <label>Consumer ID</label>
+          <input id="consumerId" placeholder="Example: CE-2026-001">
+        </div>
 
-<option>
-UPI
-</option>
+        <div class="field full">
+          <label>Address</label>
+          <textarea id="address"></textarea>
+        </div>
 
-<option>
-Bank Transfer
-</option>
+      </div>
 
-<option>
-Cheque
-</option>
+    </div>
 
-<option>
-Other
-</option>
 
-</select>
+    <!-- SOLAR -->
 
-</div>
-
-
-<div class="field">
-
-<label>
-Last Payment Date
-</label>
-
-<input
-id="lastPaymentDate"
-type="date">
-
-</div>
-
-
-<div class="field">
-
-<label>
-UTR / Transaction Number
-</label>
-
-<input id="utrNumber">
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- NET METER -->
-
-<div class="form-section">
-
-<h4>
-🔌 Net Meter
-</h4>
-
-<div class="form-grid">
-
-
-<div class="field">
-
-<label>
-Net Meter Required
-</label>
-
-<select id="netMeterRequired">
-
-<option>
-Yes
-</option>
-
-<option>
-No
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Net Meter Application Date
-</label>
-
-<input
-id="netMeterApplicationDate"
-type="date">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Inspection Date
-</label>
-
-<input
-id="inspectionDate"
-type="date">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Inspection Status
-</label>
-
-<select id="inspectionStatus">
-
-<option>
-Pending
-</option>
-
-<option>
-Scheduled
-</option>
-
-<option>
-Passed
-</option>
-
-<option>
-Failed
-</option>
-
-<option>
-Not Required
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
+    <div class="section">
 
-<label>
-Meter Installation Date
-</label>
+      <div class="section-title">
+        <span></span>
+        Solar Project Details
+      </div>
 
-<input
-id="meterInstallationDate"
-type="date">
+      <div class="grid">
 
-</div>
-
-
-<div class="field">
-
-<label>
-Net Meter Number
-</label>
-
-<input id="netMeterNumber">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Agreement Status
-</label>
-
-<select id="agreementStatus">
-
-<option>
-Pending
-</option>
-
-<option>
-Submitted
-</option>
-
-<option>
-Approved
-</option>
-
-<option>
-Not Required
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Synchronization Date
-</label>
-
-<input
-id="syncDate"
-type="date">
-
-</div>
-
-</div>
-
-</div>
-
+        <div class="field">
+          <label>Solar Capacity (kW)</label>
+          <input id="solarCapacity" type="number" step="0.01" placeholder="5">
+        </div>
 
+        <div class="field">
+          <label>Panel Details</label>
+          <input id="panelDetails" placeholder="Example: Tata TOPCon 590W">
+        </div>
 
-<!-- WARRANTY -->
+        <div class="field">
+          <label>Inverter Details</label>
+          <input id="inverterDetails" placeholder="Example: 5kW On Grid">
+        </div>
 
-<div class="form-section">
+        <div class="field">
+          <label>Total Project Amount *</label>
+          <input id="totalAmount" type="number" min="0" required>
+        </div>
 
-<h4>
-🛠️ Warranty / AMC / Remarks
-</h4>
+      </div>
 
-<div class="form-grid">
+    </div>
 
 
-<div class="field">
+    <!-- PAYMENT MODE -->
 
-<label>
-Warranty Start
-</label>
+    <div class="section">
 
-<input
-id="warrantyStart"
-type="date">
+      <div class="section-title">
+        <span></span>
+        Payment Method
+      </div>
 
-</div>
-
-
-<div class="field">
-
-<label>
-Warranty End
-</label>
-
-<input
-id="warrantyEnd"
-type="date">
-
-</div>
-
-
-<div class="field">
-
-<label>
-AMC Start
-</label>
-
-<input
-id="amcStart"
-type="date">
-
-</div>
-
+      <div class="grid">
 
-<div class="field">
+        <div class="field">
+          <label>Payment Type *</label>
 
-<label>
-AMC End
-</label>
+          <select id="paymentMode" required>
+            <option value="Cash">Cash Payment</option>
+            <option value="Bank Loan">Bank Loan</option>
+          </select>
 
-<input
-id="amcEnd"
-type="date">
+        </div>
 
-</div>
-
-
-<div class="field">
+      </div>
 
-<label>
-Last Service
-</label>
 
-<input
-id="lastService"
-type="date">
+      <!-- BANK -->
 
-</div>
-
+      <div class="bank-box hidden" id="bankBox">
 
-<div class="field">
+        <div class="section-title">
+          🏦 Bank Loan Details
+        </div>
 
-<label>
-Next Service
-</label>
+        <div class="grid">
 
-<input
-id="nextService"
-type="date">
+          <div class="field">
+            <label>Bank Name</label>
+            <input id="bankName">
+          </div>
 
-</div>
+          <div class="field">
+            <label>Loan Amount</label>
+            <input id="loanAmount" type="number" min="0">
+          </div>
 
+          <div class="field">
+            <label>Loan Applied Date</label>
+            <input id="loanAppliedDate" type="date">
+          </div>
 
-<div class="field">
+          <div class="field">
+            <label>Loan Sanction Date</label>
+            <input id="loanSanctionDate" type="date">
+          </div>
 
-<label>
-Assigned Staff
-</label>
+          <div class="field">
+            <label>Loan Account / Reference</label>
+            <input id="loanReference">
+          </div>
 
-<input id="assignedStaff">
+          <div class="field">
+            <label>Initial Bank Received</label>
+            <input id="initialBankReceived" type="number" min="0">
+          </div>
 
-</div>
+        </div>
 
+      </div>
 
-<div class="field full">
+    </div>
 
-<label>
-Remarks
-</label>
 
-<textarea id="remarks"></textarea>
+    <!-- MILESTONES -->
 
-</div>
+    <div class="section">
 
-</div>
+      <div class="section-title">
+        <span></span>
+        Payment Milestones
+      </div>
 
-</div>
+      <div class="payment-grid">
 
+        <div class="payment-card">
+          <h4>1st Payment <span class="percent">60%</span></h4>
+          <input id="p1Amount" type="number" placeholder="Amount">
+          <input id="p1Date" type="date">
+        </div>
 
-<div class="note">
+        <div class="payment-card">
+          <h4>2nd Payment <span class="percent">20%</span></h4>
+          <input id="p2Amount" type="number" placeholder="Amount">
+          <input id="p2Date" type="date">
+        </div>
 
-Documents/photo upload can be added later with Firebase Storage.
+        <div class="payment-card">
+          <h4>3rd Payment <span class="percent">10%</span></h4>
+          <input id="p3Amount" type="number" placeholder="Amount">
+          <input id="p3Date" type="date">
+        </div>
 
-</div>
+        <div class="payment-card">
+          <h4>Final Payment <span class="percent">10%</span></h4>
+          <input id="p4Amount" type="number" placeholder="Amount">
+          <input id="p4Date" type="date">
+        </div>
 
-</div>
+      </div>
 
+      <p style="font-size:11px;color:#64748b;margin-top:10px">
+        Amount can be manually adjusted when the actual received amount differs from the percentage.
+      </p>
 
-<div class="modal-foot">
+    </div>
 
-<button
-type="button"
-class="btn btn-light"
-data-close="formModal">
 
-Cancel
+    <!-- NOTES -->
 
-</button>
+    <div class="section">
 
-<button
-class="btn btn-primary"
-type="submit">
+      <div class="section-title">
+        <span></span>
+        Additional Notes
+      </div>
 
-💾 Save Consumer
+      <div class="field">
+        <textarea id="notes" placeholder="Payment remarks, installation notes, etc."></textarea>
+      </div>
 
-</button>
+    </div>
 
-</div>
+  </form>
 
-</form>
+  <div class="modal-footer">
+    <button class="secondary-btn" id="cancelForm">Cancel</button>
+    <button class="primary-btn" id="saveBtn">Save Consumer</button>
+  </div>
 
 </div>
-
 </div>
-
 
 
-<!-- DETAILS MODAL -->
+<!-- ======================================================
+     DETAILS MODAL
+====================================================== -->
 
-<div
-class="modal-backdrop"
-id="detailsModal">
+<div class="modal-bg" id="detailsModal">
 
 <div class="modal">
 
-<div class="modal-head">
+  <div class="modal-head">
+    <h3>Consumer Payment Details</h3>
+    <button class="close" id="closeDetails">×</button>
+  </div>
 
-<h3>
-Consumer Details
-</h3>
+  <div class="detail-grid" id="detailsContent"></div>
 
-<button
-class="close"
-data-close="detailsModal">
-
-×
-
-</button>
-
+</div>
 </div>
 
 
-<div class="modal-body">
-
-<div id="detailsContent">
-</div>
-
-</div>
+<div class="toast" id="toast"></div>
 
 
-<div class="modal-foot">
+<!-- ======================================================
+     FIREBASE
+====================================================== -->
 
-<button
-class="btn btn-light"
-data-close="detailsModal">
+<script type="module">
 
-Close
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-</button>
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- LOADING -->
-
-<div
-class="loading"
-id="loading">
-
-<div class="spinner">
-</div>
-
-</div>
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-<!-- TOAST -->
-
-<div
-class="toast"
-id="toast">
-</div>
-
-
-
-<script>
-
-/* ==========================================
-   FIREBASE CONFIG
-========================================== */
+/* ================= FIREBASE CONFIG ================= */
 
 const firebaseConfig = {
-
-    apiKey:
-    "AIzaSyBzsxNsxx3RwN94Sxxz_dRQwMbll6Cg10",
-
-    authDomain:
-    "chakraborty-ele-login.firebaseapp.com",
-
-    projectId:
-    "chakraborty-ele-login",
-
-    storageBucket:
-    "chakraborty-ele-login.firebasestorage.app",
-
-    messagingSenderId:
-    "414542805581",
-
-    appId:
-    "1:414542805581:web:cfd13593767abbb51cba04"
-
+  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+  authDomain: "chakraborty-ele-login.firebaseapp.com",
+  projectId: "chakraborty-ele-login",
+  storageBucket: "chakraborty-ele-login.firebasestorage.app",
+  messagingSenderId: "414542805581",
+  appId: "1:414542805581:web:cfd13593767abbb51cba04"
 };
 
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-firebase.initializeApp(firebaseConfig);
+const COLLECTION = "solar_consumer_payment";
 
-
-const auth =
-firebase.auth();
-
-const db =
-firebase.firestore();
-
-
-/*
-Firestore collection name
-*/
-
-const COLLECTION =
-"solar_consumers";
+let consumers = [];
+let currentUser = null;
 
 
-let allData = [];
+/* ================= ELEMENTS ================= */
 
-let unsubscribe = null;
+const $ = id => document.getElementById(id);
 
-
-/* ==========================================
-   HELPERS
-========================================== */
-
-const $ =
-id => document.getElementById(id);
+const formModal = $("formModal");
+const detailsModal = $("detailsModal");
 
 
-function showLoading(value){
+/* ================= AUTH ================= */
 
-    $("loading")
-    .classList
-    .toggle("show",value);
+onAuthStateChanged(auth, async user => {
 
-}
+  if(!user){
 
+    location.href = "index.html";
+    return;
+  }
 
-function toast(message){
+  currentUser = user;
 
-    $("toast").textContent =
-    message;
+  $("userEmail").textContent = user.email || "Logged in";
 
-    $("toast")
-    .classList
-    .add("show");
+  await loadConsumers();
 
-    setTimeout(()=>{
-
-        $("toast")
-        .classList
-        .remove("show");
-
-    },2500);
-
-}
+});
 
 
-function esc(value){
+/* ================= LOAD DATA ================= */
 
-    return String(value ?? "")
-    .replace(/[&<>"']/g,m=>({
+async function loadConsumers(){
 
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
+  try{
 
-    }[m]));
+    const snapshot = await getDocs(
+      collection(db,COLLECTION)
+    );
+
+    consumers = [];
+
+    snapshot.forEach(item => {
+
+      consumers.push({
+        id:item.id,
+        ...item.data()
+      });
+
+    });
+
+    render();
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "Data load failed: " + error.message,
+      "error"
+    );
+
+  }
 
 }
 
+
+/* ================= FORMAT ================= */
 
 function money(value){
 
-    return "₹" +
-    Number(value || 0)
-    .toLocaleString(
-        "en-IN",
-        {
-            maximumFractionDigits:2
-        }
-    );
+  return "₹" + Number(value || 0)
+    .toLocaleString("en-IN");
+
+}
+
+function num(value){
+
+  return Number(value || 0);
+
+}
+
+function esc(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
 
-function dateFmt(value){
+/* ================= CALCULATE ================= */
 
-    if(!value)
-        return "—";
+function getReceived(c){
 
-    if(value.toDate)
-        return value
-        .toDate()
-        .toLocaleDateString("en-IN");
+  const p = c.payments || {};
 
-    const d =
-    new Date(value);
-
-    return isNaN(d)
-        ? "—"
-        : d.toLocaleDateString("en-IN");
+  return (
+    num(p.first?.amount) +
+    num(p.second?.amount) +
+    num(p.third?.amount) +
+    num(p.final?.amount)
+  );
 
 }
 
+function getProgress(c){
 
-function statusClass(status){
+  const total = num(c.totalAmount);
 
-    if(
-        [
-            "Active",
-            "Installed",
-            "Completed",
-            "Approved"
-        ].includes(status)
+  if(!total) return 0;
+
+  return Math.min(
+    100,
+    Math.round(
+      getReceived(c) / total * 100
     )
-        return "b-green";
-
-    if(
-        [
-            "Pending",
-            "Inspection",
-            "Applied"
-        ].includes(status)
-    )
-        return "b-orange";
-
-    if(status==="Cancelled")
-        return "b-red";
-
-    return "b-blue";
+  );
 
 }
 
 
-/* ==========================================
-   AUTH
-========================================== */
-
-auth.onAuthStateChanged(user=>{
-
-    console.log("AUTH STATE:", user);
-
-    if(!user){
-
-        location.replace("index.html");
-
-        return;
-    }
-
-    $("userEmail").textContent =
-    user.email || "Logged in";
-
-    listenData();
-
-});
-
-
-/* ==========================================
-   LOAD FIRESTORE
-========================================== */
-
-function listenData(){
-
-    if(unsubscribe)
-        unsubscribe();
-
-
-    unsubscribe =
-    db.collection(COLLECTION)
-
-    .orderBy(
-        "updatedAt",
-        "desc"
-    )
-
-    .onSnapshot(
-
-        snapshot=>{
-
-            allData =
-            snapshot.docs.map(
-                doc=>({
-                    id:doc.id,
-                    ...doc.data()
-                })
-            );
-
-            render();
-
-            showLoading(false);
-
-        },
-
-        error=>{
-
-            showLoading(false);
-
-            console.error(error);
-
-            toast(
-                "Data load failed: " +
-                error.message
-            );
-
-        }
-
-    );
-
-}
-
-
-/* ==========================================
-   RENDER
-========================================== */
+/* ================= RENDER ================= */
 
 function render(){
 
-    const q =
-    $("searchInput")
-    .value
-    .trim()
-    .toLowerCase();
+  const search =
+    $("searchInput").value
+      .toLowerCase()
+      .trim();
 
-    const type =
-    $("typeFilter").value;
+  const mode =
+    $("modeFilter").value;
 
-    const status =
+  const status =
     $("statusFilter").value;
 
+  let list = consumers.filter(c => {
 
-    const data =
-    allData.filter(x=>{
+    const text = `
+      ${c.consumerName || ""}
+      ${c.mobile || ""}
+      ${c.consumerId || ""}
+      ${c.address || ""}
+    `.toLowerCase();
 
-        const hay = [
+    if(search && !text.includes(search))
+      return false;
 
-            x.consumerName,
-            x.mobile,
-            x.consumerNumber,
-            x.applicationNumber,
-            x.meterNumber,
-            x.email
+    if(mode && c.paymentMode !== mode)
+      return false;
 
-        ]
-        .join(" ")
-        .toLowerCase();
+    const due =
+      num(c.totalAmount) - getReceived(c);
 
+    if(status === "Paid" && due > 0)
+      return false;
 
-        return (
+    if(status === "Due" && due <= 0)
+      return false;
 
-            (!q ||
-            hay.includes(q))
+    return true;
 
-            &&
+  });
 
-            (!type ||
-            x.customerType===type ||
-            x.connectionType===type)
+  const tbody = $("consumerTable");
 
-            &&
+  tbody.innerHTML = "";
 
-            (!status ||
-            x.status===status)
-
-        );
-
-    });
+  $("emptyState").style.display =
+    list.length ? "none" : "block";
 
 
-    /* STATS */
+  list.forEach(c => {
 
-    $("totalCount")
-    .textContent =
-    allData.length;
+    const received = getReceived(c);
+    const total = num(c.totalAmount);
+    const due = Math.max(0,total-received);
+    const progress = getProgress(c);
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+
+      <td data-label="Consumer">
+
+        <div class="consumer">
+
+          <div class="avatar">
+            ${esc(
+              (c.consumerName || "C")
+              .charAt(0)
+              .toUpperCase()
+            )}
+          </div>
+
+          <div>
+            <strong>${esc(c.consumerName || "-")}</strong>
+            <small>
+              ${esc(c.mobile || "-")}
+              ${c.consumerId ? " • "+esc(c.consumerId) : ""}
+            </small>
+          </div>
+
+        </div>
+
+      </td>
+
+      <td data-label="Solar">
+        <strong>${esc(c.solarCapacity || "-")} kW</strong>
+        <br>
+        <small>${esc(c.panelDetails || "Solar Project")}</small>
+      </td>
+
+      <td data-label="Total Amount">
+        <span class="amount">${money(total)}</span>
+      </td>
+
+      <td data-label="Payment Mode">
+
+        <span class="mode ${c.paymentMode === "Cash" ? "cash":"loan"}">
+          ${c.paymentMode === "Cash" ? "💵 Cash":"🏦 Bank Loan"}
+        </span>
+
+      </td>
+
+      <td data-label="Received">
+        <span class="amount">${money(received)}</span>
+      </td>
+
+      <td data-label="Progress">
+
+        <div class="progress">
+          <span style="width:${progress}%"></span>
+        </div>
+
+        <small>${progress}%</small>
+
+      </td>
+
+      <td data-label="Due">
+
+        <strong style="color:${due > 0 ? "#dc2626":"#16a34a"}">
+          ${money(due)}
+        </strong>
+
+      </td>
+
+      <td data-label="Action">
+
+        <button
+          class="action-btn"
+          title="View"
+          onclick="window.viewConsumer('${c.id}')">
+          👁
+        </button>
+
+        <button
+          class="action-btn"
+          title="Edit"
+          onclick="window.editConsumer('${c.id}')">
+          ✏
+        </button>
+
+        <button
+          class="action-btn delete"
+          title="Delete"
+          onclick="window.deleteConsumer('${c.id}')">
+          🗑
+        </button>
+
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
 
 
-    $("activeCount")
-    .textContent =
-    allData.filter(
-        x=>x.status==="Active"
-    ).length;
-
-
-    $("pendingCount")
-    .textContent =
-    allData.filter(
-        x=>x.status==="Pending"
-    ).length;
-
-
-    $("installedCount")
-    .textContent =
-    allData.filter(
-        x=>[
-            "Installed",
-            "Active",
-            "Completed"
-        ].includes(x.status)
-    ).length;
-
-
-    const capacity =
-    allData.reduce(
-        (total,x)=>
-        total +
-        Number(x.solarCapacity || 0),
-        0
-    );
-
-
-    $("capacityCount")
-    .textContent =
-    capacity.toLocaleString(
-        "en-IN",
-        {
-            maximumFractionDigits:2
-        }
-    ) + " kW";
-
-
-    /* DESKTOP */
-
-    $("tableBody")
-    .innerHTML =
-    data.map(row).join("");
-
-
-    $("tableEmpty")
-    .style.display =
-    data.length
-    ? "none"
-    : "block";
-
-
-    /* MOBILE */
-
-    $("mobileList")
-    .innerHTML =
-    data.length
-    ? data.map(card).join("")
-    : '<div class="empty">No consumer data found.</div>';
+  updateStats();
 
 }
 
 
-/* ==========================================
-   DESKTOP ROW
-========================================== */
+/* ================= STATS ================= */
 
-function row(x){
+function updateStats(){
 
-    return `
+  let totalProject = 0;
+  let received = 0;
+  let loanReceived = 0;
 
-<tr>
+  consumers.forEach(c => {
 
-<td>
+    totalProject += num(c.totalAmount);
 
-<div class="consumer">
+    received += getReceived(c);
 
-${esc(
-    x.consumerName ||
-    "Unnamed"
-)}
+    if(c.paymentMode === "Bank Loan"){
 
-</div>
+      loanReceived +=
+        num(c.loan?.initialBankReceived) +
+        num(c.loan?.receivedAmount);
 
-<div class="sub">
+    }
 
-${esc(x.mobile || "")}
+  });
 
-${x.email
-    ? " • " + esc(x.email)
-    : ""
-}
+  const due =
+    Math.max(0,totalProject-received);
 
-</div>
+  $("totalConsumers").textContent =
+    consumers.length;
 
-</td>
+  $("totalProject").textContent =
+    money(totalProject);
 
+  $("totalReceived").textContent =
+    money(received);
 
-<td>
+  $("loanReceived").textContent =
+    money(loanReceived);
 
-<span class="badge b-blue">
-
-${esc(
-    x.customerType ||
-    x.connectionType ||
-    "—"
-)}
-
-</span>
-
-</td>
-
-
-<td>
-
-<b>
-
-${esc(
-    x.solarCapacity || 0
-)} kW
-
-</b>
-
-<div class="sub">
-
-${esc(
-    x.phase || ""
-)}
-
-</div>
-
-</td>
-
-
-<td>
-
-${esc(
-    x.consumerNumber ||
-    "—"
-)}
-
-</td>
-
-
-<td>
-
-${money(x.paidAmount)}
-
-<div class="sub">
-
-Balance
-${money(x.remainingAmount)}
-
-</div>
-
-</td>
-
-
-<td>
-
-<span class="badge ${statusClass(x.status)}">
-
-${esc(
-    x.status ||
-    "Pending"
-)}
-
-</span>
-
-</td>
-
-
-<td>
-
-${dateFmt(x.updatedAt)}
-
-</td>
-
-
-<td>
-
-<div class="row-actions">
-
-<button
-class="icon-btn"
-onclick="viewDetails('${x.id}')">
-
-👁
-
-</button>
-
-
-<button
-class="icon-btn"
-onclick="editConsumer('${x.id}')">
-
-✏
-
-</button>
-
-
-<button
-class="icon-btn"
-onclick="deleteConsumer('${x.id}')">
-
-🗑
-
-</button>
-
-</div>
-
-</td>
-
-</tr>
-
-`;
+  $("totalDue").textContent =
+    money(due);
 
 }
 
 
-/* ==========================================
-   MOBILE CARD
-========================================== */
+/* ================= OPEN ADD ================= */
 
-function card(x){
+$("addBtn").onclick = () => {
 
-    return `
+  resetForm();
 
-<div class="consumer-card">
+  $("modalTitle").textContent =
+    "Add Solar Consumer";
 
-<div class="cc-head">
+  $("saveBtn").textContent =
+    "Save Consumer";
 
-<div>
-
-<div class="cc-name">
-
-${esc(
-    x.consumerName ||
-    "Unnamed"
-)}
-
-</div>
-
-<div class="cc-meta">
-
-${esc(
-    x.customerType ||
-    "—"
-)}
-
-•
-
-${esc(
-    x.mobile ||
-    "—"
-)}
-
-</div>
-
-</div>
-
-
-<span
-class="badge ${statusClass(x.status)}">
-
-${esc(
-    x.status ||
-    "Pending"
-)}
-
-</span>
-
-</div>
-
-
-<div class="cc-grid">
-
-
-<div class="cc-item">
-
-<small>
-Solar Capacity
-</small>
-
-<b>
-
-${esc(
-    x.solarCapacity || 0
-)} kW
-
-</b>
-
-</div>
-
-
-<div class="cc-item">
-
-<small>
-Consumer No.
-</small>
-
-<b>
-
-${esc(
-    x.consumerNumber ||
-    "—"
-)}
-
-</b>
-
-</div>
-
-
-<div class="cc-item">
-
-<small>
-Paid
-</small>
-
-<b>
-
-${money(
-    x.paidAmount
-)}
-
-</b>
-
-</div>
-
-
-<div class="cc-item">
-
-<small>
-Balance
-</small>
-
-<b>
-
-${money(
-    x.remainingAmount
-)}
-
-</b>
-
-</div>
-
-</div>
-
-
-<div class="cc-actions">
-
-<button
-class="btn btn-light"
-onclick="viewDetails('${x.id}')">
-
-👁 Details
-
-</button>
-
-
-<button
-class="btn btn-light"
-onclick="editConsumer('${x.id}')">
-
-✏ Edit
-
-</button>
-
-</div>
-
-</div>
-
-`;
-
-}
-
-
-/* ==========================================
-   OPEN ADD FORM
-========================================== */
-
-$("addBtn").onclick =
-()=>openForm();
-
-
-$("refreshBtn").onclick =
-()=>{
-
-    showLoading(true);
-
-    listenData();
+  formModal.classList.add("show");
 
 };
 
 
-[
-    "searchInput",
-    "typeFilter",
-    "statusFilter"
-]
-.forEach(id=>{
+/* ================= RESET ================= */
 
-    $(id)
-    .addEventListener(
-        "input",
-        render
+function resetForm(){
+
+  $("consumerForm").reset();
+
+  $("editId").value = "";
+
+  $("paymentMode").value = "Cash";
+
+  $("bankBox").classList.add("hidden");
+
+  $("p1Amount").value = "";
+  $("p2Amount").value = "";
+  $("p3Amount").value = "";
+  $("p4Amount").value = "";
+
+}
+
+
+/* ================= PAYMENT MODE ================= */
+
+$("paymentMode").onchange = () => {
+
+  $("bankBox")
+    .classList.toggle(
+      "hidden",
+      $("paymentMode").value !== "Bank Loan"
     );
+
+};
+
+
+/* ================= AUTO AMOUNT ================= */
+
+$("totalAmount").addEventListener("input", () => {
+
+  const total = num($("totalAmount").value);
+
+  if(!$("editId").value){
+
+    $("p1Amount").value =
+      Math.round(total * .60);
+
+    $("p2Amount").value =
+      Math.round(total * .20);
+
+    $("p3Amount").value =
+      Math.round(total * .10);
+
+    $("p4Amount").value =
+      Math.round(total * .10);
+
+  }
 
 });
 
 
-/* ==========================================
-   LOGOUT
-========================================== */
+/* ================= SAVE ================= */
 
-$("logoutBtn").onclick =
-()=>{
+$("saveBtn").onclick = async () => {
 
-    auth.signOut()
-    .then(()=>{
+  const form = $("consumerForm");
 
-        location.href =
-        "index.html";
+  if(!form.reportValidity())
+    return;
 
-    });
+  const total = num($("totalAmount").value);
 
-};
+  const data = {
 
+    consumerName:
+      $("consumerName").value.trim(),
 
-/* ==========================================
-   FORM FIELD LIST
-========================================== */
+    mobile:
+      $("mobile").value.trim(),
 
-const formFields = [
+    consumerId:
+      $("consumerId").value.trim(),
 
-    "consumerName",
-    "guardianName",
-    "mobile",
-    "altMobile",
-    "email",
-    "idReference",
-    "consumerNumber",
-    "customerType",
-    "tariffCategory",
+    address:
+      $("address").value.trim(),
 
-    "address",
-    "village",
-    "postOffice",
-    "policeStation",
-    "district",
-    "state",
-    "pin",
-    "siteAddress",
+    solarCapacity:
+      $("solarCapacity").value,
 
-    "connectionType",
-    "phase",
-    "existingLoad",
-    "solarCapacity",
-    "sanctionedLoad",
-    "applicationNumber",
-    "applicationDate",
-    "connectionDate",
-    "meterNumber",
-    "status",
+    panelDetails:
+      $("panelDetails").value.trim(),
 
-    "panelMake",
-    "panelModel",
-    "panelCount",
-    "inverterMake",
-    "inverterModel",
-    "inverterCapacity",
-    "structureType",
-    "batteryRequired",
-    "batteryDetails",
-    "installationDate",
-    "commissioningDate",
+    inverterDetails:
+      $("inverterDetails").value.trim(),
 
-    "totalCost",
-    "advance",
-    "paidAmount",
-    "remainingAmount",
-    "subsidy",
-    "subsidyStatus",
-    "paymentMode",
-    "lastPaymentDate",
-    "utrNumber",
+    totalAmount:total,
 
-    "netMeterRequired",
-    "netMeterApplicationDate",
-    "inspectionDate",
-    "inspectionStatus",
-    "meterInstallationDate",
-    "netMeterNumber",
-    "agreementStatus",
-    "syncDate",
+    paymentMode:
+      $("paymentMode").value,
 
-    "warrantyStart",
-    "warrantyEnd",
-    "amcStart",
-    "amcEnd",
-    "lastService",
-    "nextService",
-    "assignedStaff",
-    "remarks"
+    loan:{
+      bankName:
+        $("bankName").value.trim(),
 
-];
+      loanAmount:
+        num($("loanAmount").value),
 
+      loanAppliedDate:
+        $("loanAppliedDate").value,
 
-/* ==========================================
-   OPEN FORM
-========================================== */
+      loanSanctionDate:
+        $("loanSanctionDate").value,
 
-function openForm(data=null){
+      loanReference:
+        $("loanReference").value.trim(),
 
-    $("consumerForm")
-    .reset();
+      initialBankReceived:
+        num($("initialBankReceived").value)
+    },
 
-    $("docId")
-    .value="";
+    payments:{
+
+      first:{
+        percentage:60,
+        amount:num($("p1Amount").value),
+        date:$("p1Date").value
+      },
+
+      second:{
+        percentage:20,
+        amount:num($("p2Amount").value),
+        date:$("p2Date").value
+      },
+
+      third:{
+        percentage:10,
+        amount:num($("p3Amount").value),
+        date:$("p3Date").value
+      },
+
+      final:{
+        percentage:10,
+        amount:num($("p4Amount").value),
+        date:$("p4Date").value
+      }
+
+    },
+
+    notes:
+      $("notes").value.trim(),
+
+    updatedAt:
+      serverTimestamp()
+
+  };
 
 
-    $("state")
-    .value="West Bengal";
+  try{
+
+    $("saveBtn").disabled = true;
+    $("saveBtn").textContent = "Saving...";
 
 
-    $("formTitle")
-    .textContent =
-    data
-    ? "Edit Consumer"
-    : "Add Consumer";
+    const editId =
+      $("editId").value;
 
 
-    if(data){
+    if(editId){
 
-        $("docId")
-        .value =
-        data.id;
+      await updateDoc(
+        doc(db,COLLECTION,editId),
+        data
+      );
 
+      toast(
+        "Consumer updated successfully",
+        "success"
+      );
 
-        formFields.forEach(id=>{
+    }else{
 
-            if(
-                data[id] !==
-                undefined
-            ){
+      data.createdAt =
+        serverTimestamp();
 
-                $(id)
-                .value =
-                data[id];
+      data.createdBy =
+        currentUser?.email || "";
 
-            }
+      await addDoc(
+        collection(db,COLLECTION),
+        data
+      );
 
-        });
+      toast(
+        "Consumer saved successfully",
+        "success"
+      );
 
     }
 
 
-    $("formModal")
-    .classList
-    .add("show");
+    formModal.classList.remove("show");
+
+    await loadConsumers();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "Save failed: " + error.message,
+      "error"
+    );
+
+  }finally{
+
+    $("saveBtn").disabled = false;
+
+    $("saveBtn").textContent =
+      editId ? "Update Consumer":"Save Consumer";
+
+  }
+
+};
+
+
+/* ================= EDIT ================= */
+
+window.editConsumer = function(id){
+
+  const c =
+    consumers.find(x => x.id === id);
+
+  if(!c) return;
+
+  $("editId").value = id;
+
+  $("consumerName").value =
+    c.consumerName || "";
+
+  $("mobile").value =
+    c.mobile || "";
+
+  $("consumerId").value =
+    c.consumerId || "";
+
+  $("address").value =
+    c.address || "";
+
+  $("solarCapacity").value =
+    c.solarCapacity || "";
+
+  $("panelDetails").value =
+    c.panelDetails || "";
+
+  $("inverterDetails").value =
+    c.inverterDetails || "";
+
+  $("totalAmount").value =
+    c.totalAmount || "";
+
+  $("paymentMode").value =
+    c.paymentMode || "Cash";
+
+  $("bankBox").classList.toggle(
+    "hidden",
+    c.paymentMode !== "Bank Loan"
+  );
+
+
+  const loan = c.loan || {};
+
+  $("bankName").value =
+    loan.bankName || "";
+
+  $("loanAmount").value =
+    loan.loanAmount || "";
+
+  $("loanAppliedDate").value =
+    loan.loanAppliedDate || "";
+
+  $("loanSanctionDate").value =
+    loan.loanSanctionDate || "";
+
+  $("loanReference").value =
+    loan.loanReference || "";
+
+  $("initialBankReceived").value =
+    loan.initialBankReceived || "";
+
+
+  const p = c.payments || {};
+
+  $("p1Amount").value =
+    p.first?.amount || "";
+
+  $("p1Date").value =
+    p.first?.date || "";
+
+  $("p2Amount").value =
+    p.second?.amount || "";
+
+  $("p2Date").value =
+    p.second?.date || "";
+
+  $("p3Amount").value =
+    p.third?.amount || "";
+
+  $("p3Date").value =
+    p.third?.date || "";
+
+  $("p4Amount").value =
+    p.final?.amount || "";
+
+  $("p4Date").value =
+    p.final?.date || "";
+
+  $("notes").value =
+    c.notes || "";
+
+
+  $("modalTitle").textContent =
+    "Edit Solar Consumer";
+
+  $("saveBtn").textContent =
+    "Update Consumer";
+
+  formModal.classList.add("show");
+
+};
+
+
+/* ================= VIEW ================= */
+
+window.viewConsumer = function(id){
+
+  const c =
+    consumers.find(x => x.id === id);
+
+  if(!c) return;
+
+  const received = getReceived(c);
+  const due =
+    Math.max(0,num(c.totalAmount)-received);
+
+  const p = c.payments || {};
+
+  $("detailsContent").innerHTML = `
+
+    <div class="detail-box">
+
+      <h4>👤 Consumer Information</h4>
+
+      <div class="detail-row">
+        <span>Name</span>
+        <strong>${esc(c.consumerName || "-")}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Mobile</span>
+        <strong>${esc(c.mobile || "-")}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Consumer ID</span>
+        <strong>${esc(c.consumerId || "-")}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Address</span>
+        <strong>${esc(c.address || "-")}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Solar Capacity</span>
+        <strong>${esc(c.solarCapacity || "-")} kW</strong>
+      </div>
+
+    </div>
+
+
+    <div class="detail-box">
+
+      <h4>💰 Financial Summary</h4>
+
+      <div class="detail-row">
+        <span>Total Project</span>
+        <strong>${money(c.totalAmount)}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Total Received</span>
+        <strong class="paid">${money(received)}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Total Due</span>
+        <strong class="${due ? "pending":"paid"}">
+          ${money(due)}
+        </strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Payment Mode</span>
+        <strong>${esc(c.paymentMode || "-")}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="detail-box">
+
+      <h4>📊 Payment Milestones</h4>
+
+      ${milestone(
+        "1st Payment",
+        "60%",
+        p.first
+      )}
+
+      ${milestone(
+        "2nd Payment",
+        "20%",
+        p.second
+      )}
+
+      ${milestone(
+        "3rd Payment",
+        "10%",
+        p.third
+      )}
+
+      ${milestone(
+        "Final Payment",
+        "10%",
+        p.final
+      )}
+
+    </div>
+
+
+    <div class="detail-box">
+
+      <h4>🏦 Bank Loan</h4>
+
+      ${
+        c.paymentMode === "Bank Loan"
+        ?
+        `
+        <div class="detail-row">
+          <span>Bank</span>
+          <strong>${esc(c.loan?.bankName || "-")}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Loan Amount</span>
+          <strong>${money(c.loan?.loanAmount)}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Sanction Date</span>
+          <strong>${esc(c.loan?.loanSanctionDate || "-")}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Bank Received</span>
+          <strong class="paid">
+            ${money(
+              num(c.loan?.initialBankReceived) +
+              num(c.loan?.receivedAmount)
+            )}
+          </strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Reference</span>
+          <strong>${esc(c.loan?.loanReference || "-")}</strong>
+        </div>
+        `
+        :
+        `
+        <div style="color:#64748b;font-size:12px">
+          This consumer is marked as Cash Payment.
+        </div>
+        `
+      }
+
+    </div>
+
+  `;
+
+  detailsModal.classList.add("show");
+
+};
+
+
+function milestone(title,percent,data){
+
+  const amount =
+    num(data?.amount);
+
+  const date =
+    data?.date || "";
+
+  return `
+
+    <div class="milestone">
+
+      <div class="milestone-icon">
+        ✓
+      </div>
+
+      <div style="flex:1">
+
+        <strong>
+          ${title}
+          <span style="color:#2563eb">
+            ${percent}
+          </span>
+        </strong>
+
+        <br>
+
+        <small>
+          ${date || "Date not entered"}
+        </small>
+
+      </div>
+
+      <strong class="${amount ? "paid":"pending"}">
+        ${money(amount)}
+      </strong>
+
+    </div>
+
+  `;
 
 }
 
 
-/* ==========================================
-   CLOSE MODAL
-========================================== */
+/* ================= DELETE ================= */
 
-function closeModal(id){
+window.deleteConsumer = async function(id){
 
-    $(id)
-    .classList
-    .remove("show");
+  const c =
+    consumers.find(x => x.id === id);
+
+  if(!c) return;
+
+  const ok =
+    confirm(
+      `Delete ${c.consumerName || "this consumer"}?`
+    );
+
+  if(!ok) return;
+
+  try{
+
+    await deleteDoc(
+      doc(db,COLLECTION,id)
+    );
+
+    toast(
+      "Consumer deleted",
+      "success"
+    );
+
+    await loadConsumers();
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "Delete failed: " + error.message,
+      "error"
+    );
+
+  }
+
+};
+
+
+/* ================= SEARCH ================= */
+
+$("searchInput").oninput = render;
+$("modeFilter").onchange = render;
+$("statusFilter").onchange = render;
+
+
+/* ================= CLOSE ================= */
+
+$("closeForm").onclick = () =>
+  formModal.classList.remove("show");
+
+$("cancelForm").onclick = () =>
+  formModal.classList.remove("show");
+
+$("closeDetails").onclick = () =>
+  detailsModal.classList.remove("show");
+
+
+formModal.addEventListener("click",e => {
+
+  if(e.target === formModal)
+    formModal.classList.remove("show");
+
+});
+
+detailsModal.addEventListener("click",e => {
+
+  if(e.target === detailsModal)
+    detailsModal.classList.remove("show");
+
+});
+
+
+/* ================= LOGOUT ================= */
+
+$("logoutBtn").onclick = async () => {
+
+  try{
+
+    await signOut(auth);
+
+    location.href = "index.html";
+
+  }catch(error){
+
+    toast(
+      error.message,
+      "error"
+    );
+
+  }
+
+};
+
+
+/* ================= TOAST ================= */
+
+function toast(message,type="success"){
+
+  const el = $("toast");
+
+  el.textContent = message;
+
+  el.className =
+    "toast show " + type;
+
+  setTimeout(() => {
+
+    el.classList.remove("show");
+
+  },3500);
 
 }
-
-
-document
-.querySelectorAll("[data-close]")
-.forEach(button=>{
-
-    button.onclick =
-    ()=>closeModal(
-        button.dataset.close
-    );
-
-});
-
-
-document
-.querySelectorAll(".modal-backdrop")
-.forEach(modal=>{
-
-    modal.addEventListener(
-        "click",
-        e=>{
-
-            if(
-                e.target ===
-                modal
-            ){
-
-                modal
-                .classList
-                .remove("show");
-
-            }
-
-        }
-    );
-
-});
-
-
-/* ==========================================
-   SAVE
-========================================== */
-
-$("consumerForm")
-.onsubmit =
-async e=>{
-
-    e.preventDefault();
-
-
-    const user =
-    auth.currentUser;
-
-
-    if(!user)
-        return;
-
-
-    const data={};
-
-
-    formFields.forEach(id=>{
-
-        data[id] =
-        $(id)
-        .value
-        .trim();
-
-    });
-
-
-    /* NUMBER FIELDS */
-
-    [
-
-        "existingLoad",
-        "solarCapacity",
-        "sanctionedLoad",
-        "panelCount",
-        "inverterCapacity",
-        "totalCost",
-        "advance",
-        "paidAmount",
-        "remainingAmount",
-        "subsidy"
-
-    ]
-    .forEach(id=>{
-
-        data[id] =
-        Number(
-            $(id).value || 0
-        );
-
-    });
-
-
-    /* AUTOMATIC BALANCE */
-
-    if(
-        data.totalCost ||
-        data.paidAmount
-    ){
-
-        data.remainingAmount =
-        Math.max(
-            0,
-            Number(data.totalCost || 0)
-            -
-            Number(data.paidAmount || 0)
-        );
-
-    }
-
-
-    data.updatedAt =
-    firebase.firestore
-    .FieldValue
-    .serverTimestamp();
-
-
-    data.updatedBy =
-    user.email || "";
-
-
-    try{
-
-        showLoading(true);
-
-
-        const docId =
-        $("docId").value;
-
-
-        if(docId){
-
-            await db
-            .collection(COLLECTION)
-            .doc(docId)
-            .update(data);
-
-            toast(
-                "Consumer updated successfully"
-            );
-
-        }
-
-        else{
-
-            data.createdAt =
-            firebase.firestore
-            .FieldValue
-            .serverTimestamp();
-
-
-            data.createdBy =
-            user.email || "";
-
-
-            await db
-            .collection(COLLECTION)
-            .add(data);
-
-
-            toast(
-                "Consumer added successfully"
-            );
-
-        }
-
-
-        closeModal(
-            "formModal"
-        );
-
-
-    }
-
-    catch(error){
-
-        console.error(error);
-
-        toast(
-            "Save failed: " +
-            error.message
-        );
-
-    }
-
-    finally{
-
-        showLoading(false);
-
-    }
-
-};
-
-
-/* ==========================================
-   DETAILS
-========================================== */
-
-window.viewDetails =
-id=>{
-
-    const x =
-    allData.find(
-        a=>a.id===id
-    );
-
-
-    if(!x)
-        return;
-
-
-    const sections=[
-
-
-[
-"👤 Consumer Information",
-
-[
-
-["Name",x.consumerName],
-
-["Father / Husband",
-x.guardianName],
-
-["Mobile",
-x.mobile],
-
-["Alternate Mobile",
-x.altMobile],
-
-["Email",
-x.email],
-
-["ID Reference",
-x.idReference],
-
-["Consumer No.",
-x.consumerNumber],
-
-["Customer Type",
-x.customerType],
-
-["Tariff",
-x.tariffCategory]
-
-]
-
-],
-
-
-
-[
-"📍 Address",
-
-[
-
-["Full Address",
-x.address,
-"full"],
-
-["Village / Town",
-x.village],
-
-["Post Office",
-x.postOffice],
-
-["Police Station",
-x.policeStation],
-
-["District",
-x.district],
-
-["State",
-x.state],
-
-["PIN",
-x.pin],
-
-["Site Address",
-x.siteAddress,
-"full"]
-
-]
-
-],
-
-
-
-[
-"⚡ Connection",
-
-[
-
-["Connection Type",
-x.connectionType],
-
-["Phase",
-x.phase],
-
-["Existing Load",
-(x.existingLoad || 0)
-+ " kW"],
-
-["Solar Capacity",
-(x.solarCapacity || 0)
-+ " kW"],
-
-["Sanctioned Load",
-(x.sanctionedLoad || 0)
-+ " kW"],
-
-["Application No.",
-x.applicationNumber],
-
-["Application Date",
-dateFmt(
-    x.applicationDate
-)],
-
-["Connection Date",
-dateFmt(
-    x.connectionDate
-)],
-
-["Meter No.",
-x.meterNumber],
-
-["Status",
-x.status]
-
-]
-
-],
-
-
-
-[
-"☀️ Solar System",
-
-[
-
-["Panel Make",
-x.panelMake],
-
-["Panel Model",
-x.panelModel],
-
-["Panels",
-x.panelCount],
-
-["Inverter Make",
-x.inverterMake],
-
-["Inverter Model",
-x.inverterModel],
-
-["Inverter Capacity",
-(x.inverterCapacity || 0)
-+ " kW"],
-
-["Structure",
-x.structureType],
-
-["Battery",
-x.batteryRequired],
-
-["Battery Details",
-x.batteryDetails],
-
-["Installation",
-dateFmt(
-    x.installationDate
-)],
-
-["Commissioning",
-dateFmt(
-    x.commissioningDate
-)]
-
-]
-
-],
-
-
-
-[
-"💰 Financial",
-
-[
-
-["Project Cost",
-money(x.totalCost)],
-
-["Advance",
-money(x.advance)],
-
-["Paid",
-money(x.paidAmount)],
-
-["Remaining",
-money(x.remainingAmount)],
-
-["Subsidy",
-money(x.subsidy)],
-
-["Subsidy Status",
-x.subsidyStatus],
-
-["Payment Mode",
-x.paymentMode],
-
-["Last Payment",
-dateFmt(
-    x.lastPaymentDate
-)],
-
-["UTR",
-x.utrNumber]
-
-]
-
-],
-
-
-
-[
-"🔌 Net Meter",
-
-[
-
-["Required",
-x.netMeterRequired],
-
-["Application",
-dateFmt(
-    x.netMeterApplicationDate
-)],
-
-["Inspection",
-dateFmt(
-    x.inspectionDate
-)],
-
-["Inspection Status",
-x.inspectionStatus],
-
-["Meter Installation",
-dateFmt(
-    x.meterInstallationDate
-)],
-
-["Net Meter No.",
-x.netMeterNumber],
-
-["Agreement",
-x.agreementStatus],
-
-["Synchronization",
-dateFmt(
-    x.syncDate
-)]
-
-]
-
-],
-
-
-
-[
-"🛠️ Warranty / AMC",
-
-[
-
-["Warranty Start",
-dateFmt(
-    x.warrantyStart
-)],
-
-["Warranty End",
-dateFmt(
-    x.warrantyEnd
-)],
-
-["AMC Start",
-dateFmt(
-    x.amcStart
-)],
-
-["AMC End",
-dateFmt(
-    x.amcEnd
-)],
-
-["Last Service",
-dateFmt(
-    x.lastService
-)],
-
-["Next Service",
-dateFmt(
-    x.nextService
-)],
-
-["Assigned Staff",
-x.assignedStaff],
-
-["Remarks",
-x.remarks,
-"full"]
-
-]
-
-]
-
-];
-
-
-    $("detailsContent")
-    .innerHTML =
-
-    sections.map(
-        section=>`
-
-<div class="form-section">
-
-<div class="details-grid">
-
-<div class="detail-title">
-
-${section[0]}
-
-</div>
-
-
-${section[1].map(
-    item=>`
-
-<div
-class="detail ${item[2] || ""}">
-
-<small>
-
-${esc(item[0])}
-
-</small>
-
-<b>
-
-${esc(
-    item[1] ?? "—"
-)}
-
-</b>
-
-</div>
-
-`
-).join("")}
-
-</div>
-
-</div>
-
-`
-).join("");
-
-
-    $("detailsModal")
-    .classList
-    .add("show");
-
-};
-
-
-/* ==========================================
-   EDIT
-========================================== */
-
-window.editConsumer =
-id=>{
-
-    const x =
-    allData.find(
-        a=>a.id===id
-    );
-
-
-    if(x)
-        openForm(x);
-
-};
-
-
-/* ==========================================
-   DELETE
-========================================== */
-
-window.deleteConsumer =
-async id=>{
-
-    const user =
-    auth.currentUser;
-
-
-    if(!user)
-        return;
-
-
-    /*
-    UI protection.
-    Firestore Rules remain
-    the real security layer.
-    */
-
-    if(
-        (user.email || "")
-        .toLowerCase()
-        !==
-        "dhananjayboragari@gmail.com"
-    ){
-
-        toast(
-            "Only admin can delete data"
-        );
-
-        return;
-
-    }
-
-
-    const x =
-    allData.find(
-        a=>a.id===id
-    );
-
-
-    if(!x)
-        return;
-
-
-    if(
-        !confirm(
-            `Delete ${
-                x.consumerName ||
-                "this consumer"
-            } permanently?`
-        )
-    )
-        return;
-
-
-    try{
-
-        showLoading(true);
-
-
-        await db
-        .collection(COLLECTION)
-        .doc(id)
-        .delete();
-
-
-        toast(
-            "Consumer deleted"
-        );
-
-    }
-
-    catch(error){
-
-        console.error(error);
-
-        toast(
-            "Delete failed: " +
-            error.message
-        );
-
-    }
-
-    finally{
-
-        showLoading(false);
-
-    }
-
-};
 
 </script>
 
