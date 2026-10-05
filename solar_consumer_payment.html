@@ -1876,12 +1876,32 @@ async function loadConsumers(){
 
             consumers.push({
 
-                id:item.id,
+                id: item.id,
                 ...item.data()
 
             });
 
         });
+
+
+        /* ================= NEWEST CONSUMER FIRST ================= */
+
+        consumers.sort((a, b) => {
+
+            const aTime =
+                a.createdAt?.toMillis
+                ? a.createdAt.toMillis()
+                : 0;
+
+            const bTime =
+                b.createdAt?.toMillis
+                ? b.createdAt.toMillis()
+                : 0;
+
+            return bTime - aTime;
+
+        });
+
 
         render();
 
