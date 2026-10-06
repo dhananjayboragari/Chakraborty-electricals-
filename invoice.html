@@ -2989,18 +2989,21 @@ async function loadFinancialYears(){
   });
 
   [...years]
-    .sort()
-    .reverse()
-    .forEach(fy=>{
+  .sort((a, b) => {
+    const yearA = parseInt(a.split("-")[0]);
+    const yearB = parseInt(b.split("-")[0]);
+    return yearB - yearA;
+  })
+  .forEach(fy => {
 
-      const op = document.createElement("option");
+    const op = document.createElement("option");
 
-      op.value = fy;
-      op.textContent = fy;
+    op.value = fy;
+    op.textContent = fy;
 
-      fySelect.appendChild(op);
+    fySelect.appendChild(op);
 
-    });
+  });
   if (fySelect.tomselect) {
     fySelect.tomselect.destroy();
 }
