@@ -580,6 +580,138 @@ overflow:hidden;
 }
 
 
+
+  /* ===== HIDDEN ACCOUNT ACCESS BUTTON ===== */
+
+#hiddenAccessBtn{
+  position:fixed;
+  bottom:14px;
+  right:14px;
+
+  width:42px;
+  height:42px;
+
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.22);
+
+  background:rgba(255,255,255,.10);
+  color:rgba(255,255,255,.65);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:21px;
+  cursor:pointer;
+
+  opacity:.65;
+  z-index:99999;
+
+  transition:.3s;
+}
+
+#hiddenAccessBtn:hover{
+  opacity:1;
+  transform:scale(1.08);
+}
+
+
+/* ===== AUTHORIZED ACCESS POPUP ===== */
+
+#authorizedPopup{
+  position:fixed;
+  inset:0;
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(10px);
+
+  z-index:200001;
+}
+
+.authorizedBox{
+  width:280px;
+  padding:25px 20px;
+
+  border-radius:20px;
+
+  background:rgba(20,30,40,.95);
+
+  border:1px solid rgba(0,255,204,.35);
+
+  box-shadow:
+    0 0 30px rgba(0,255,204,.25);
+
+  text-align:center;
+  color:white;
+}
+
+.authorizedBox h3{
+  margin:0 0 8px;
+  font-size:19px;
+}
+
+.authorizedBox p{
+  margin:0 0 15px;
+  font-size:13px;
+  opacity:.75;
+}
+
+#accessCodeInput{
+  width:100%;
+  box-sizing:border-box;
+
+  padding:12px;
+
+  border:none;
+  outline:none;
+
+  border-radius:10px;
+
+  text-align:center;
+  font-size:18px;
+  letter-spacing:4px;
+}
+
+#verifyAccessBtn{
+  width:100%;
+  margin-top:12px;
+
+  padding:11px;
+
+  border:none;
+  border-radius:10px;
+
+  background:linear-gradient(135deg,#00ffcc,#0077ff);
+
+  color:white;
+  font-weight:bold;
+
+  cursor:pointer;
+}
+
+#closeAuthorizedBtn{
+  margin-top:8px;
+
+  background:transparent;
+  color:white;
+
+  border:1px solid rgba(255,255,255,.15);
+
+  cursor:pointer;
+}
+
+#accessError{
+  display:none;
+
+  margin-top:10px;
+
+  color:#ff6b6b;
+  font-size:12px;
+}
     
                   
 </style>
@@ -735,6 +867,46 @@ overflow:hidden;
   </a>
   
 </div>
+
+
+  <!-- HIDDEN AUTHORIZED ACCESS BUTTON -->
+<button id="hiddenAccessBtn" title="System">
+  ⚙️
+</button>
+
+<!-- AUTHORIZED ACCESS POPUP -->
+<div id="authorizedPopup">
+
+  <div class="authorizedBox">
+
+    <h3>🔐 Authorized Access</h3>
+
+    <p>Enter Access Code</p>
+
+    <input
+      type="password"
+      id="accessCodeInput"
+      inputmode="numeric"
+      maxlength="6"
+      placeholder="••••••"
+    >
+
+    <button id="verifyAccessBtn">
+      VERIFY
+    </button>
+
+    <button id="closeAuthorizedBtn">
+      CANCEL
+    </button>
+
+    <div id="accessError">
+      ❌ Incorrect Access Code
+    </div>
+
+  </div>
+
+</div>
+  
 
 
 <!-- LOADER -->
@@ -1194,7 +1366,138 @@ window.addEventListener("load", () => {
 });
 
 
-  
+  /* =========================================
+   HIDDEN 3-CLICK AUTHORIZED ACCESS
+   Access Code: 501520
+========================================= */
+
+let hiddenClickCount = 0;
+let hiddenClickTimer = null;
+
+const hiddenAccessBtn =
+  document.getElementById("hiddenAccessBtn");
+
+const authorizedPopup =
+  document.getElementById("authorizedPopup");
+
+const accessCodeInput =
+  document.getElementById("accessCodeInput");
+
+const verifyAccessBtn =
+  document.getElementById("verifyAccessBtn");
+
+const closeAuthorizedBtn =
+  document.getElementById("closeAuthorizedBtn");
+
+const accessError =
+  document.getElementById("accessError");
+
+
+/* ===== 3 BAR CLICK ===== */
+
+hiddenAccessBtn.addEventListener("click", function(){
+
+  hiddenClickCount++;
+
+  clearTimeout(hiddenClickTimer);
+
+  hiddenClickTimer = setTimeout(() => {
+    hiddenClickCount = 0;
+  }, 1500);
+
+
+  /* 3 click complete */
+
+  if(hiddenClickCount === 3){
+
+    hiddenClickCount = 0;
+
+    clearTimeout(hiddenClickTimer);
+
+    authorizedPopup.style.display = "flex";
+
+    accessCodeInput.value = "";
+
+    accessError.style.display = "none";
+
+    setTimeout(() => {
+      accessCodeInput.focus();
+    },100);
+
+  }
+
+});
+
+
+/* ===== VERIFY CODE ===== */
+
+verifyAccessBtn.addEventListener("click", function(){
+
+  const enteredCode =
+    accessCodeInput.value.trim();
+
+  if(enteredCode === "501520"){
+
+    accessError.style.display = "none";
+
+    authorizedPopup.style.display = "none";
+
+    /* Account Request / Signup page */
+
+    window.location.href = "signup.html";
+
+  }else{
+
+    accessError.style.display = "block";
+
+    accessCodeInput.value = "";
+
+    accessCodeInput.focus();
+
+  }
+
+});
+
+
+/* ===== ENTER KEY ===== */
+
+accessCodeInput.addEventListener("keydown", function(e){
+
+  if(e.key === "Enter"){
+    verifyAccessBtn.click();
+  }
+
+});
+
+
+/* ===== CANCEL ===== */
+
+closeAuthorizedBtn.addEventListener("click", function(){
+
+  authorizedPopup.style.display = "none";
+
+  accessCodeInput.value = "";
+
+  accessError.style.display = "none";
+
+});
+
+
+/* ===== POPUP OUTSIDE CLICK ===== */
+
+authorizedPopup.addEventListener("click", function(e){
+
+  if(e.target === authorizedPopup){
+
+    authorizedPopup.style.display = "none";
+
+    accessCodeInput.value = "";
+
+    accessError.style.display = "none";
+
+  }
+
+});
   
 </script>
 
