@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>
+Account Request | M/S Chakraborty Electricals
+</title>
+
+
+<!-- Font Awesome -->
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+>
+
+
+<!-- LOCAL PARTICLES JS -->
+
+<script src="particles.min.js"></script>
+
+
+<style>
+
+/* =====================================================
+   BASIC
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:80px 15px 75px;
+
+    color:#fff;
+
+    overflow-x:hidden;
+
+    background:
+
+    radial-gradient(
+        circle at 15% 20%,
+        rgba(0,229,255,.18),
+        transparent 30%
+    ),
+
+    radial-gradient(
+        circle at 85% 80%,
+        rgba(156,39,176,.20),
+        transparent 30%
+    ),
+
+    linear-gradient(
+        135deg,
+        #07151c,
+        #0d2730,
+        #101b2d
+    );
+
+    position:relative;
+
+}
+
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+#particles-js{
+
+    position:fixed;
+
+    inset:0;
+
+    width:100%;
+
+    height:100%;
+
+    z-index:0;
+
+    pointer-events:none;
+
+}
+
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.top-bar{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    padding:13px 18px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    z-index:10;
+
+    background:rgba(0,0,0,.20);
+
+    backdrop-filter:blur(14px);
+
+    -webkit-backdrop-filter:blur(14px);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.08);
+
+}
+
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+.brand-icon{
+
+    width:37px;
+    height:37px;
+
+    border-radius:12px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #00e5ff,
+        #7c4dff
+    );
+
+    box-shadow:
+        0 5px 18px
+        rgba(0,229,255,.25);
+
+}
+
+
+.secure{
+
+    font-size:12px;
+
+    color:#8fffea;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+}
+
+
+/* =====================================================
+   MAIN WRAPPER
+===================================================== */
+
+.wrapper{
+
+    width:100%;
+
+    max-width:540px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card{
+
+    width:100%;
+
+    padding:30px 25px;
+
+    border-radius:28px;
+
+    background:
+        rgba(255,255,255,.095);
+
+    backdrop-filter:blur(22px);
+
+    -webkit-backdrop-filter:blur(22px);
+
+    border:
+        1px solid
+        rgba(255,255,255,.13);
+
+    box-shadow:
+
+        0 25px 70px
+        rgba(0,0,0,.55),
+
+        inset 0 1px 0
+        rgba(255,255,255,.10);
+
+    animation:cardIn .7s ease;
+
+}
+
+
+@keyframes cardIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(25px)
+            scale(.97);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.logo-area{
+
+    text-align:center;
+
+    margin-bottom:22px;
+
+}
+
+
+.logo{
+
+    width:78px;
+    height:78px;
+
+    margin:auto;
+
+    border-radius:23px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #00e5ff,
+        #2979ff,
+        #7c4dff
+    );
+
+    box-shadow:
+
+        0 10px 30px
+        rgba(0,229,255,.25),
+
+        inset 0 1px 1px
+        rgba(255,255,255,.35);
+
+    font-size:32px;
+
+    animation:
+        floatLogo
+        3s ease-in-out infinite;
+
+}
+
+
+@keyframes floatLogo{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-5px);
+    }
+
+}
+
+
+.company{
+
+    margin-top:15px;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+}
+
+
+.subtitle{
+
+    margin-top:5px;
+
+    color:#a9c8d1;
+
+    font-size:12px;
+
+}
+
+
+/* =====================================================
+   NOTICE
+===================================================== */
+
+.notice{
+
+    margin-top:20px;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        rgba(0,229,255,.12),
+        rgba(124,77,255,.10)
+    );
+
+    border:
+        1px solid
+        rgba(0,229,255,.18);
+
+    text-align:center;
+
+}
+
+
+.notice-icon{
+
+    width:48px;
+    height:48px;
+
+    margin:0 auto 12px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        rgba(0,229,255,.12);
+
+    color:#00e5ff;
+
+    font-size:20px;
+
+}
+
+
+.notice h2{
+
+    font-size:20px;
+
+    margin-bottom:8px;
+
+}
+
+
+.notice p{
+
+    color:#b9d0d6;
+
+    font-size:13px;
+
+    line-height:1.6;
+
+}
+
+
+/* =====================================================
+   CONTACT SECTION
+===================================================== */
+
+.section-title{
+
+    margin-top:22px;
+
+    margin-bottom:10px;
+
+    font-size:13px;
+
+    color:#b8d2d8;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+}
+
+
+/* =====================================================
+   PERSON CARD
+===================================================== */
+
+.person-card{
+
+    padding:15px;
+
+    margin-top:10px;
+
+    border-radius:18px;
+
+    background:
+        rgba(0,0,0,.18);
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    transition:.25s;
+
+}
+
+
+.person-card:hover{
+
+    transform:
+        translateY(-2px);
+
+    background:
+        rgba(255,255,255,.065);
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,.20);
+
+}
+
+
+.person-top{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+
+.person-icon{
+
+    width:45px;
+    height:45px;
+
+    min-width:45px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #00a896,
+        #00d4b8
+    );
+
+    font-size:19px;
+
+}
+
+
+.person-card.admin .person-icon{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2979ff,
+        #7c4dff
+    );
+
+}
+
+
+.person-info{
+
+    flex:1;
+
+}
+
+
+.person-role{
+
+    font-size:11px;
+
+    color:#8faeb7;
+
+    margin-bottom:3px;
+
+}
+
+
+.person-name{
+
+    font-size:15px;
+
+    font-weight:700;
+
+}
+
+
+.person-number{
+
+    font-size:12px;
+
+    color:#b9d0d6;
+
+    margin-top:3px;
+
+}
+
+
+.person-actions{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr 1fr;
+
+    gap:7px;
+
+    margin-top:12px;
+
+}
+
+
+.action-btn{
+
+    min-height:39px;
+
+    border:none;
+
+    border-radius:11px;
+
+    text-decoration:none;
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    font-size:11px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+
+.action-btn:hover{
+
+    transform:
+        translateY(-2px);
+
+    filter:brightness(1.12);
+
+}
+
+
+.call-btn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #00897b,
+            #00bfa5
+        );
+
+}
+
+
+.whatsapp-btn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #128c45,
+            #25d366
+        );
+
+}
+
+
+.copy-btn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #455a64,
+            #607d8b
+        );
+
+}
+
+
+/* =====================================================
+   MAP
+===================================================== */
+
+.map-card{
+
+    margin-top:15px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+        rgba(0,0,0,.18);
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+}
+
+
+.map-heading{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    margin-bottom:9px;
+
+}
+
+
+.map-heading i{
+
+    color:#ff5252;
+
+}
+
+
+.address{
+
+    color:#b9d0d6;
+
+    font-size:12px;
+
+    line-height:1.6;
+
+}
+
+
+.map-btn{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-top:12px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    color:#fff;
+
+    text-decoration:none;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #d32f2f,
+        #ff5252
+    );
+
+    transition:.25s;
+
+}
+
+
+.map-btn:hover{
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(255,82,82,.20);
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back-btn{
+
+    width:100%;
+
+    margin-top:18px;
+
+    padding:14px;
+
+    border-radius:15px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    background:
+        rgba(255,255,255,.06);
+
+    color:white;
+
+    text-decoration:none;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:9px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+
+.back-btn:hover{
+
+    background:
+        rgba(255,255,255,.12);
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =====================================================
+   FOOT NOTE
+===================================================== */
+
+.foot-note{
+
+    text-align:center;
+
+    margin-top:18px;
+
+    font-size:11px;
+
+    color:#78939b;
+
+    line-height:1.5;
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer{
+
+    position:fixed;
+
+    bottom:0;
+    left:0;
+
+    width:100%;
+
+    padding:10px;
+
+    text-align:center;
+
+    font-size:11px;
+
+    color:#78939b;
+
+    background:
+        rgba(0,0,0,.35);
+
+    backdrop-filter:blur(10px);
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.06);
+
+    z-index:5;
+
+}
+
+
+/* =====================================================
+   COPY POPUP
+===================================================== */
+
+.copy-popup{
+
+    position:fixed;
+
+    left:50%;
+
+    top:25px;
+
+    transform:
+        translate(-50%,-20px);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    z-index:9999;
+
+    padding:12px 18px;
+
+    border-radius:13px;
+
+    background:
+        rgba(20,30,35,.95);
+
+    border:
+        1px solid
+        rgba(0,229,255,.25);
+
+    box-shadow:
+        0 10px 35px
+        rgba(0,0,0,.35);
+
+    color:white;
+
+    font-size:12px;
+
+    transition:.3s;
+
+}
+
+
+.copy-popup.show{
+
+    opacity:1;
+
+    transform:
+        translate(-50%,0);
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:480px){
+
+    body{
+
+        padding:
+            75px 12px 70px;
+
+    }
+
+
+    .card{
+
+        padding:
+            25px 17px;
+
+        border-radius:24px;
+
+    }
+
+
+    .company{
+
+        font-size:16px;
+
+    }
+
+
+    .notice h2{
+
+        font-size:18px;
+
+    }
+
+
+    .person-actions{
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+
+    .copy-btn{
+
+        grid-column:
+            span 2;
+
+    }
+
+
+    .brand{
+
+        font-size:11px;
+
+    }
+
+
+    .secure{
+
+        font-size:10px;
+
+    }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media(max-width:350px){
+
+    .card{
+
+        padding:
+            20px 13px;
+
+    }
+
+
+    .logo{
+
+        width:68px;
+        height:68px;
+
+        font-size:27px;
+
+    }
+
+
+    .person-actions{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .copy-btn{
+
+        grid-column:
+            span 1;
+
+    }
+
+}
+
+  .map-buttons{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:18px;
+}
+
+.map-btn,
+.direction-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:12px 18px;
+    border-radius:12px;
+    text-decoration:none;
+    color:white;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.map-btn{
+    background:linear-gradient(135deg,#4285f4,#34a853);
+}
+
+.direction-btn{
+    background:linear-gradient(135deg,#7c3aed,#ec4899);
+}
+
+.map-btn:hover,
+.direction-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
+  }
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     PARTICLES
+===================================================== -->
+
+<div id="particles-js"></div>
+
+
+
+<!-- =====================================================
+     TOP BAR
+===================================================== -->
+
+<div class="top-bar">
+
+
+    <div class="brand">
+
+        <div class="brand-icon">
+
+            <i class="fa fa-bolt"></i>
+
+        </div>
+
+        <span>
+            CHAKRABORTY ELECTRICALS
+        </span>
+
+    </div>
+
+
+    <div class="secure">
+
+        <i class="fa fa-shield"></i>
+
+        Secure Access
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     MAIN CARD
+===================================================== -->
+
+<div class="wrapper">
+
+<div class="card">
+
+
+<!-- LOGO -->
+
+<div class="logo-area">
+
+
+    <div class="logo">
+
+        <i class="fa fa-user-plus"></i>
+
+    </div>
+
+
+    <div class="company">
+
+        M/S. CHAKRABORTY ELECTRICALS
+
+    </div>
+
+
+    <div class="subtitle">
+
+        Employee & Authorized User Portal
+
+    </div>
+
+
+</div>
+
+
+
+<!-- NOTICE -->
+
+<div class="notice">
+
+
+    <div class="notice-icon">
+
+        <i class="fa fa-user-lock"></i>
+
+    </div>
+
+
+    <h2>
+
+        Account Access Required
+
+    </h2>
+
+
+    <p>
+
+        New user accounts are created only after
+        verification and authorization by the
+        <b>Owner / Administrator</b>.
+
+    </p>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     CONTACT PEOPLE
+===================================================== -->
+
+<div class="section-title">
+
+    <i class="fa fa-address-book"></i>
+
+    Contact for Account Creation
+
+</div>
+
+
+
+<!-- ADMINISTRATOR -->
+
+<div class="person-card admin">
+
+
+    <div class="person-top">
+
+
+        <div class="person-icon">
+
+            <i class="fa fa-user-shield"></i>
+
+        </div>
+
+
+        <div class="person-info">
+
+
+            <div class="person-role">
+
+                ADMINISTRATOR
+
+            </div>
+
+
+            <div class="person-name">
+
+                Chakraborty Electricals
+
+            </div>
+
+
+            <div class="person-number">
+
+                <i class="fa fa-phone"></i>
+
+                6294746617
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="person-actions">
+
+
+        <!-- CALL -->
+
+        <a
+            href="tel:+916294746617"
+            class="action-btn call-btn"
+        >
+
+            <i class="fa fa-phone"></i>
+
+            Call
+
+        </a>
+
+
+        <!-- WHATSAPP -->
+
+        <a
+            href="https://wa.me/916294746617?text=Hello%20M%2FS%20Chakraborty%20Electricals%2C%20I%20would%20like%20to%20request%20an%20account%20for%20the%20portal."
+            target="_blank"
+            class="action-btn whatsapp-btn"
+        >
+
+            <i class="fa fa-whatsapp"></i>
+
+            WhatsApp
+
+        </a>
+
+
+        <!-- COPY -->
+
+        <button
+            class="action-btn copy-btn"
+            onclick="copyNumber('6294746617')"
+        >
+
+            <i class="fa fa-copy"></i>
+
+            Copy
+
+        </button>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- OWNER -->
+
+<div class="person-card">
+
+
+    <div class="person-top">
+
+
+        <div class="person-icon">
+
+            <i class="fa fa-user-tie"></i>
+
+        </div>
+
+
+        <div class="person-info">
+
+
+            <div class="person-role">
+
+                OWNER
+
+            </div>
+
+
+            <div class="person-name">
+
+                M/S. Chakraborty Electricals
+
+            </div>
+
+
+            <div class="person-number">
+
+                <i class="fa fa-phone"></i>
+
+                9733470449
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="person-actions">
+
+
+        <!-- CALL -->
+
+        <a
+            href="tel:+919733470449"
+            class="action-btn call-btn"
+        >
+
+            <i class="fa fa-phone"></i>
+
+            Call
+
+        </a>
+
+
+        <!-- WHATSAPP -->
+
+        <a
+            href="https://wa.me/919733470449?text=Hello%20M%2FS%20Chakraborty%20Electricals%2C%20I%20would%20like%20to%20request%20an%20account%20for%20the%20portal."
+            target="_blank"
+            class="action-btn whatsapp-btn"
+        >
+
+            <i class="fa fa-whatsapp"></i>
+
+            WhatsApp
+
+        </a>
+
+
+        <!-- COPY -->
+
+        <button
+            class="action-btn copy-btn"
+            onclick="copyNumber('9733470449')"
+        >
+
+            <i class="fa fa-copy"></i>
+
+            Copy
+
+        </button>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     LOCATION
+===================================================== -->
+
+<div class="section-title">
+
+    <i class="fa fa-location-dot"></i>
+
+    Company Location
+
+</div>
+
+
+
+<div class="map-card">
+
+
+    <div class="map-heading">
+
+        <i class="fa fa-map-marker-alt"></i>
+
+        M/S. CHAKRABORTY ELECTRICALS
+
+    </div>
+
+
+    <div class="address">
+
+        Sathsangha Para, Dhupguri,
+        Jalpaiguri, West Bengal -
+        735210
+
+    </div>
+
+
+    <!-- MAP -->
+
+  <div class="map-buttons">
+
+    <!-- Open Company Location -->
+    <a href="https://www.google.com/maps?q=26.5819100,89.0167293"
+       target="_blank"
+       class="map-btn">
+        <i class="fas fa-map-marker-alt"></i>
+        Open in Google Maps
+    </a>
+
+    <!-- Get Directions -->
+    <a href="https://www.google.com/maps/dir/?api=1&destination=26.5819100,89.0167293"
+       target="_blank"
+       class="direction-btn">
+        <i class="fas fa-route"></i>
+        Get Directions
+    </a>
+
+</div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     BACK LOGIN
+===================================================== -->
+
+<a
+    href="index.html"
+    class="back-btn"
+>
+
+    <i class="fa fa-arrow-left"></i>
+
+    Back to Login
+
+</a>
+
+
+
+<div class="foot-note">
+
+    For security reasons, self-registration is disabled.
+    Please contact the Owner or Administrator to obtain
+    authorized login credentials.
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<div class="footer">
+
+    © 2026 M/s Chakraborty Electricals
+
+    &nbsp;•&nbsp;
+
+    Authorized Access Only
+
+</div>
+
+
+
+<!-- =====================================================
+     COPY POPUP
+===================================================== -->
+
+<div
+    id="copyPopup"
+    class="copy-popup"
+>
+
+    <i class="fa fa-check-circle"></i>
+
+    Number copied successfully
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   COPY PHONE NUMBER
+===================================================== */
+
+function copyNumber(number){
+
+    if(
+        navigator.clipboard &&
+        window.isSecureContext
+    ){
+
+        navigator.clipboard
+        .writeText(number)
+        .then(function(){
+
+            showCopyPopup();
+
+        })
+        .catch(function(){
+
+            fallbackCopy(number);
+
+        });
+
+    }else{
+
+        fallbackCopy(number);
+
+    }
+
+}
+
+
+function fallbackCopy(number){
+
+    const textarea =
+        document.createElement("textarea");
+
+    textarea.value = number;
+
+    textarea.style.position = "fixed";
+
+    textarea.style.left = "-9999px";
+
+    document.body.appendChild(textarea);
+
+    textarea.focus();
+
+    textarea.select();
+
+    try{
+
+        document.execCommand("copy");
+
+        showCopyPopup();
+
+    }catch(error){
+
+        alert("Phone Number: " + number);
+
+    }
+
+    document.body.removeChild(textarea);
+
+}
+
+
+function showCopyPopup(){
+
+    const popup =
+        document.getElementById("copyPopup");
+
+    popup.classList.add("show");
+
+
+    setTimeout(function(){
+
+        popup.classList.remove("show");
+
+    },2200);
+
+}
+
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        if(
+            typeof particlesJS !==
+            "undefined"
+        ){
+
+            particlesJS(
+                "particles-js",
+                {
+
+                    particles:{
+
+                        number:{
+
+                            value:55,
+
+                            density:{
+
+                                enable:true,
+
+                                value_area:900
+
+                            }
+
+                        },
+
+
+                        color:{
+
+                            value:"#ffffff"
+
+                        },
+
+
+                        opacity:{
+
+                            value:.35,
+
+                            random:true
+
+                        },
+
+
+                        size:{
+
+                            value:2,
+
+                            random:true
+
+                        },
+
+
+                        line_linked:{
+
+                            enable:true,
+
+                            distance:150,
+
+                            color:"#00e5ff",
+
+                            opacity:.15,
+
+                            width:1
+
+                        },
+
+
+                        move:{
+
+                            enable:true,
+
+                            speed:1.2,
+
+                            direction:"none",
+
+                            random:false,
+
+                            straight:false,
+
+                            out_mode:"out"
+
+                        }
+
+                    },
+
+
+                    interactivity:{
+
+                        detect_on:"canvas",
+
+
+                        events:{
+
+                            onhover:{
+
+                                enable:true,
+
+                                mode:"grab"
+
+                            },
+
+
+                            onclick:{
+
+                                enable:true,
+
+                                mode:"push"
+
+                            },
+
+
+                            resize:true
+
+                        },
+
+
+                        modes:{
+
+                            grab:{
+
+                                distance:140,
+
+                                line_linked:{
+
+                                    opacity:.35
+
+                                }
+
+                            },
+
+
+                            push:{
+
+                                particles_nb:3
+
+                            }
+
+                        }
+
+                    },
+
+
+                    retina_detect:true
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
