@@ -1342,6 +1342,8 @@ td{
                     <div id="panelSerialList" class="serial-list"></div>
                     <div class="serial-actions">
                         <button type="button" class="serial-scan-btn" id="openSerialScannerBtn">📷 Scan with Camera</button>
+                        <button type="button" class="serial-add" id="uploadBarcodeImageBtn">🖼️ Upload Barcode Image</button>
+                        <input type="file" id="barcodeImageInput" accept="image/*" capture="environment" style="display:none">
                         <button type="button" class="serial-add" id="addSerialBtn">＋ Add Serial Number</button>
                     </div>
                     <small style="display:block;margin-top:8px;color:#64748b;font-size:11px;line-height:1.5;">
@@ -1803,6 +1805,7 @@ td{
         </div>
         <video id="serialScannerVideo" playsinline muted></video>
         <div class="scanner-status" id="serialScannerStatus">ক্যামেরা চালু করা হচ্ছে… Camera permission চাইলে Allow চাপুন।</div>
+        <div style="font-size:12px;color:#64748b;margin:6px 0 10px">Scan হওয়ার পরে Serial Number popup-এ দেখাবে। OK চাপলে input box-এ বসবে।</div>
         <div class="scanner-controls">
             <button type="button" class="secondary" id="cancelSerialScannerBtn">Close Camera</button>
             <button type="button" id="switchSerialCameraBtn">Switch Camera</button>
@@ -2644,15 +2647,20 @@ async function startPanelBarcodeScanner(){
                     const scanned = (result.getText ? result.getText() : String(result)).trim();
                     if(scanned && scanned !== panelLastScannedBarcode){
                         panelLastScannedBarcode = scanned;
-                        let inputs = [...document.querySelectorAll("#panelSerialList .panel-serial-input")];
-                        let target = inputs.find(input => !input.value.trim());
-                        if(!target) target = addPanelSerialRow("", false);
-                        target.value = scanned;
-                        target.dispatchEvent(new Event("input", {bubbles:true}));
-                        addPanelSerialRow("", false);
-                        setPanelScannerStatus("Scan সফল হয়েছে: " + scanned + " — পরের barcode scan করুন।");
-                        // Briefly pause after each read to avoid duplicate reads of the same barcode.
-                        setTimeout(() => { panelScannerBusy = false; }, 900);
+                        // Confirm the decoded serial before placing it into an input box.
+                        stopPanelBarcodeScanner().then(() => {
+                            if(window.confirm("Scanned Serial Number:\n\n" + scanned + "\n\nএই নম্বরটি input box-এ বসাব? OK চাপুন।")){
+                                let inputs = [...document.querySelectorAll("#panelSerialList .panel-serial-input")];
+                                let target = inputs.find(input => !input.value.trim());
+                                if(!target) target = addPanelSerialRow("", false);
+                                target.value = scanned;
+                                target.dispatchEvent(new Event("input", {bubbles:true}));
+                                addPanelSerialRow("", true);
+                                setPanelScannerStatus("Serial Number যোগ হয়েছে। পরের barcode scan করতে আবার ক্যামেরা চালু করুন।");
+                            }else{
+                                setPanelScannerStatus("Scan বাতিল হয়েছে। আবার Scan with Camera চাপুন।");
+                            }
+                        });
                     }else{
                         panelScannerBusy = false;
                     }
@@ -2666,6 +2674,37 @@ async function startPanelBarcodeScanner(){
         await stopPanelBarcodeScanner();
     }
 }
+
+// Upload/take a barcode photo and decode it using the same ZXing library.
+$("uploadBarcodeImageBtn").addEventListener("click", () => $("barcodeImageInput").click());
+$("barcodeImageInput").addEventListener("change", async event => {
+    const file = event.target.files && event.target.files[0];
+    if(!file) return;
+    if(!window.ZXing || !window.ZXing.BrowserMultiFormatReader){
+        alert("Barcode library load হয়নি। Internet connection দেখে page refresh করুন।");
+        event.target.value = "";
+        return;
+    }
+    const objectUrl = URL.createObjectURL(file);
+    try{
+        const reader = new window.ZXing.BrowserMultiFormatReader();
+        const result = await reader.decodeFromImageUrl(objectUrl);
+        const scanned = (result.getText ? result.getText() : String(result)).trim();
+        if(scanned && window.confirm("Image থেকে পাওয়া Serial Number:\n\n" + scanned + "\n\nএই নম্বরটি input box-এ বসাব? OK চাপুন।")){
+            let inputs = [...document.querySelectorAll("#panelSerialList .panel-serial-input")];
+            let target = inputs.find(input => !input.value.trim());
+            if(!target) target = addPanelSerialRow("", false);
+            target.value = scanned;
+            target.dispatchEvent(new Event("input", {bubbles:true}));
+            addPanelSerialRow("", true);
+        }
+    }catch(error){
+        alert("ছবি থেকে Barcode পড়া যায়নি। পরিষ্কার ছবি দিন অথবা Camera Scanner ব্যবহার করুন।");
+    }finally{
+        URL.revokeObjectURL(objectUrl);
+        event.target.value = "";
+    }
+});
 
 $("openSerialScannerBtn").addEventListener("click", startPanelBarcodeScanner);
 async function closePanelScanner(){
