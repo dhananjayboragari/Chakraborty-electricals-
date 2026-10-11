@@ -1,0 +1,3758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Solar Consumer Payment</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+:root{
+    --blue:#2563eb;
+    --blue2:#4f46e5;
+    --green:#16a34a;
+    --orange:#f59e0b;
+    --red:#dc2626;
+    --dark:#0f172a;
+    --text:#1e293b;
+    --muted:#64748b;
+    --bg:#f1f5f9;
+    --border:#e2e8f0;
+    --white:#fff;
+    --shadow:0 12px 35px rgba(15,23,42,.08);
+}
+
+body{
+    margin:0;
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+/* ================= TOPBAR ================= */
+
+.topbar{
+    height:72px;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.brand-icon{
+    width:43px;
+    height:43px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#facc15,#f97316);
+    font-size:23px;
+}
+
+.brand h1{
+    margin:0;
+    font-size:18px;
+}
+
+.brand small{
+    font-size:11px;
+    opacity:.7;
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-pill{
+    padding:9px 14px;
+    border-radius:30px;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.18);
+    font-size:11px;
+}
+
+.logout{
+    border:0;
+    background:#ef4444;
+    color:white;
+    padding:9px 15px;
+    border-radius:9px;
+    font-weight:700;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+    max-width:1500px;
+    margin:auto;
+    padding:25px;
+}
+
+.page-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.page-head h2{
+    margin:0 0 5px;
+    font-size:25px;
+}
+
+.page-head p{
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.primary-btn{
+    border:0;
+    color:white;
+    background:linear-gradient(135deg,var(--blue),var(--blue2));
+    padding:12px 18px;
+    border-radius:11px;
+    font-weight:700;
+    box-shadow:0 8px 18px rgba(37,99,235,.25);
+}
+
+/* ================= STATS ================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:16px;
+    margin-bottom:22px;
+}
+
+.stat{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:18px;
+    box-shadow:var(--shadow);
+}
+
+.stat-icon{
+    width:40px;
+    height:40px;
+    border-radius:11px;
+    display:grid;
+    place-items:center;
+    background:#eff6ff;
+    color:#2563eb;
+    margin-bottom:12px;
+}
+
+.stat:nth-child(2) .stat-icon{
+    background:#f5f3ff;
+    color:#7c3aed;
+}
+
+.stat:nth-child(3) .stat-icon{
+    background:#ecfdf5;
+    color:#16a34a;
+}
+
+.stat:nth-child(4) .stat-icon{
+    background:#fff7ed;
+    color:#ea580c;
+}
+
+.stat:nth-child(5) .stat-icon{
+    background:#fef2f2;
+    color:#dc2626;
+}
+
+.stat-value{
+    font-size:21px;
+    font-weight:800;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:5px;
+}
+
+/* ================= TOOLBAR ================= */
+
+.toolbar{
+    background:white;
+    border:1px solid var(--border);
+    padding:14px;
+    border-radius:15px;
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.search{
+    flex:1;
+    position:relative;
+}
+
+.search input{
+    width:100%;
+    height:43px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:0 14px 0 40px;
+    outline:none;
+}
+
+.search span{
+    position:absolute;
+    left:14px;
+    top:12px;
+    color:#94a3b8;
+}
+
+.toolbar select{
+    height:43px;
+    padding:0 12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:white;
+}
+
+/* ================= TABLE ================= */
+
+.table-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:17px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f8fafc;
+    color:#64748b;
+    text-transform:uppercase;
+    font-size:10px;
+    padding:14px 12px;
+    text-align:left;
+}
+
+td{
+    padding:13px 12px;
+    border-top:1px solid #eef2f7;
+    font-size:12px;
+}
+
+.consumer{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#dbeafe,#e0e7ff);
+    color:#1d4ed8;
+    font-weight:800;
+}
+
+.consumer strong{
+    display:block;
+}
+
+.consumer small{
+    color:#94a3b8;
+}
+
+.mode{
+    display:inline-flex;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:700;
+}
+
+.mode.cash{
+    background:#ecfdf5;
+    color:#15803d;
+}
+
+.mode.loan{
+    background:#eff6ff;
+    color:#1d4ed8;
+}
+
+.amount{
+    font-weight:800;
+}
+
+.progress{
+    width:95px;
+    height:7px;
+    background:#e2e8f0;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.progress span{
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg,#2563eb,#16a34a);
+}
+
+.action-btn{
+    border:0;
+    width:33px;
+    height:33px;
+    border-radius:9px;
+    background:#f1f5f9;
+    margin-right:3px;
+}
+
+.action-btn:hover{
+    background:#dbeafe;
+}
+
+.action-btn.delete:hover{
+    background:#fee2e2;
+}
+
+/* ================= EMPTY ================= */
+
+.empty{
+    padding:50px 20px;
+    text-align:center;
+    color:#94a3b8;
+}
+
+.empty-icon{
+    font-size:40px;
+}
+
+/* ================= MODAL ================= */
+
+.modal-bg{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.68);
+    backdrop-filter:blur(5px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:500;
+}
+
+.modal-bg.show{
+    display:flex;
+}
+
+.modal{
+    width:min(1050px,100%);
+    max-height:93vh;
+    overflow:auto;
+    background:white;
+    border-radius:22px;
+    box-shadow:0 30px 80px rgba(0,0,0,.25);
+}
+
+.modal-head{
+    padding:19px 23px;
+    background:linear-gradient(135deg,#0f172a,#1e40af);
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:5;
+}
+
+.modal-head h3{
+    margin:0;
+    font-size:17px;
+}
+
+.close{
+    width:36px;
+    height:36px;
+    border:0;
+    border-radius:10px;
+    background:rgba(255,255,255,.12);
+    color:white;
+    font-size:21px;
+}
+
+.form{
+    padding:23px;
+}
+
+.section{
+    margin-bottom:25px;
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:13px;
+}
+
+.section-title span{
+    width:7px;
+    height:19px;
+    border-radius:5px;
+    background:linear-gradient(#2563eb,#4f46e5);
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:13px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+.field label{
+    font-size:11px;
+    font-weight:700;
+    color:#475569;
+}
+
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    border:1px solid var(--border);
+    padding:11px 12px;
+    border-radius:10px;
+    outline:none;
+}
+
+.field textarea{
+    min-height:75px;
+    resize:vertical;
+}
+
+/* SOLAR PANEL SERIAL NUMBERS */
+.serial-list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+.serial-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.serial-row input{
+    flex:1;
+    min-width:0;
+}
+.serial-row .serial-number{
+    min-width:28px;
+    font-size:12px;
+    font-weight:800;
+    color:#2563eb;
+    text-align:center;
+}
+.serial-remove{
+    border:0;
+    border-radius:8px;
+    background:#fee2e2;
+    color:#b91c1c;
+    width:38px;
+    min-width:38px;
+    height:40px;
+    font-size:18px;
+}
+.serial-add{
+    margin-top:9px;
+    border:1px solid #bfdbfe;
+    background:#eff6ff;
+    color:#1d4ed8;
+    padding:9px 12px;
+    border-radius:9px;
+    font-weight:700;
+}
+
+
+/* CAMERA BARCODE SCANNER */
+.serial-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
+.serial-scan-btn{border:0;border-radius:9px;padding:10px 13px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;}
+.serial-scan-btn:active{transform:scale(.98)}
+.scanner-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,.78);align-items:center;justify-content:center;padding:16px;}
+.scanner-overlay.show{display:flex;}
+.scanner-card{background:#fff;width:min(100%,480px);border-radius:16px;padding:16px;box-shadow:0 20px 60px #0005;}
+.scanner-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800;font-size:17px;margin-bottom:12px;color:#12336b;}
+.scanner-close{border:0;background:#fee2e2;color:#b91c1c;border-radius:8px;width:36px;height:36px;font-size:22px;cursor:pointer;}
+#serialScannerVideo{display:block;width:100%;max-height:60vh;min-height:220px;background:#0f172a;object-fit:cover;border-radius:10px;}
+.scanner-status{font-size:13px;color:#475569;line-height:1.5;margin:10px 0;}
+.scanner-controls{display:flex;gap:8px;flex-wrap:wrap;}
+.scanner-controls button{flex:1;min-width:120px;border:0;border-radius:9px;padding:11px;background:#2563eb;color:white;font-weight:700;cursor:pointer;}
+.scanner-controls .secondary{background:#e2e8f0;color:#1e293b;}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+    border-color:#60a5fa;
+    box-shadow:0 0 0 3px rgba(37,99,235,.08);
+}
+
+/* PAYMENT TYPE */
+
+.payment-type{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.type-option{
+    border:2px solid var(--border);
+    border-radius:15px;
+    padding:15px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.type-option:hover{
+    border-color:#93c5fd;
+}
+
+.type-option.active{
+    border-color:#2563eb;
+    background:#eff6ff;
+}
+
+.type-option input{
+    display:none;
+}
+
+.type-title{
+    font-weight:800;
+}
+
+.type-desc{
+    margin-top:5px;
+    color:#64748b;
+    font-size:10px;
+}
+
+/* PAYMENT CARDS */
+
+.payment-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.payment-grid.cash-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.payment-card{
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:15px;
+    background:#f8fafc;
+}
+
+.payment-card h4{
+    margin:0 0 4px;
+    font-size:12px;
+}
+
+.percent{
+    color:#2563eb;
+}
+
+.calculated{
+    color:#64748b;
+    font-size:10px;
+    margin-bottom:9px;
+}
+
+.payment-card input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:9px;
+    margin-top:7px;
+    background:white;
+}
+
+/* BANK */
+
+.bank-box{
+    margin-top:14px;
+    border:1px solid #bfdbfe;
+    background:#eff6ff;
+    border-radius:15px;
+    padding:15px;
+}
+
+/* FOOTER */
+
+.modal-footer{
+    padding:15px 23px;
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    position:sticky;
+    bottom:0;
+    background:white;
+}
+
+.secondary-btn{
+    border:1px solid var(--border);
+    background:white;
+    padding:11px 18px;
+    border-radius:10px;
+    font-weight:700;
+}
+
+/* ================= DETAILS ================= */
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    padding:20px;
+}
+
+.detail-box{
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:16px;
+}
+
+.detail-box h4{
+    margin:0 0 13px;
+}
+
+.detail-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:8px 0;
+    border-bottom:1px dashed #e2e8f0;
+    font-size:12px;
+}
+
+.detail-row:last-child{
+    border-bottom:0;
+}
+
+.detail-row span:first-child{
+    color:#64748b;
+}
+
+.milestone{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px;
+    background:#f8fafc;
+    border-radius:11px;
+    margin-bottom:8px;
+}
+
+.milestone-icon{
+    width:33px;
+    height:33px;
+    display:grid;
+    place-items:center;
+    border-radius:9px;
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.paid{
+    color:#16a34a;
+}
+
+.pending{
+    color:#dc2626;
+}
+
+/* ================= TOAST ================= */
+
+
+  .toast{
+    position:fixed;
+    top:20px;
+    left:50%;
+    right:auto;
+    bottom:auto;
+
+    min-width:300px;
+    max-width:90%;
+    
+    background:#0f172a;
+    color:white;
+
+    padding:15px 20px;
+    border-radius:12px;
+
+    opacity:0;
+
+    transform:translate(-50%,-30px);
+
+    transition:.3s;
+
+    z-index:10000;
+
+    font-size:13px;
+    text-align:center;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+.toast.success{
+    border-left:4px solid #22c55e;
+}
+
+.toast.error{
+    border-left:4px solid #ef4444;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.toast.success{
+    border-left:4px solid #22c55e;
+}
+
+.toast.error{
+    border-left:4px solid #ef4444;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:1000px){
+
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .payment-grid{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:700px){
+
+    .topbar{
+        min-height:64px;
+        height:auto;
+        padding:10px 14px;
+    }
+
+    .brand h1{
+        font-size:14px;
+    }
+
+    .brand small,
+    .user-pill{
+        display:none;
+    }
+
+    .main{
+        padding:15px;
+    }
+
+    .page-head{
+        align-items:flex-start;
+    }
+
+    .page-head h2{
+        font-size:20px;
+    }
+
+    .page-head p{
+        font-size:11px;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .stat{
+        padding:14px;
+    }
+
+    .stat-value{
+        font-size:17px;
+    }
+
+    .toolbar{
+        flex-direction:column;
+    }
+
+    .toolbar select{
+        width:100%;
+    }
+
+    /* MOBILE CARD TABLE */
+
+    .table-card{
+        background:transparent;
+        border:0;
+        box-shadow:none;
+        overflow:visible;
+    }
+
+    table,
+    thead,
+    tbody,
+    tr,
+    td{
+        display:block;
+    }
+
+    thead{
+        display:none;
+    }
+
+    tr{
+        background:white;
+        border:1px solid var(--border);
+        border-radius:16px;
+        padding:13px;
+        margin-bottom:12px;
+        box-shadow:0 7px 20px rgba(15,23,42,.06);
+    }
+
+    td{
+        border:0;
+        padding:6px 0;
+    }
+
+    td:before{
+        content:attr(data-label);
+        display:block;
+        color:#94a3b8;
+        font-size:9px;
+        text-transform:uppercase;
+        margin-bottom:3px;
+        font-weight:700;
+    }
+
+    td:first-child:before{
+        display:none;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .field.full{
+        grid-column:auto;
+    }
+
+    .payment-grid,
+    .payment-grid.cash-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .payment-type{
+        grid-template-columns:1fr;
+    }
+
+    .detail-grid{
+        grid-template-columns:1fr;
+        padding:15px;
+    }
+
+    .modal-bg{
+        padding:0;
+        align-items:flex-end;
+    }
+
+    .modal{
+        width:100%;
+        max-height:96vh;
+        border-radius:22px 22px 0 0;
+    }
+
+    .form{
+        padding:17px;
+    }
+
+    .modal-footer{
+        padding:12px 17px;
+    }
+}
+
+@media(max-width:400px){
+
+    .payment-grid,
+    .payment-grid.cash-grid{
+        grid-template-columns:1fr;
+    }
+
+    .page-head .primary-btn{
+        padding:10px 12px;
+        font-size:11px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">☀</div>
+
+        <div>
+            <h1>Solar Consumer Payment</h1>
+            <small>M/S. Chakraborty Electricals</small>
+        </div>
+
+    </div>
+
+    <div class="top-right">
+
+        <div class="user-pill" id="userEmail">
+            Checking login...
+        </div>
+
+        <button class="logout" id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="main">
+
+    <div class="page-head">
+
+        <div>
+
+            <h2>Consumer Payment Dashboard</h2>
+
+            <p>
+                Solar estimate, installment and bank loan management
+            </p>
+
+        </div>
+
+        <button class="primary-btn" id="addBtn">
+            ＋ Add Consumer
+        </button>
+
+    </div>
+
+
+    <!-- ================= STATS ================= -->
+
+    <section class="stats">
+
+        <div class="stat">
+
+            <div class="stat-icon">👥</div>
+
+            <div class="stat-value" id="totalConsumers">
+                0
+            </div>
+
+            <div class="stat-label">
+                Total Consumers
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">📋</div>
+
+            <div class="stat-value" id="totalEstimate">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Estimate
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">✓</div>
+
+            <div class="stat-value" id="totalReceived">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Received
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">🏦</div>
+
+            <div class="stat-value" id="totalLoan">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Loan Amount
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-icon">⏳</div>
+
+            <div class="stat-value" id="totalDue">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Due
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <div class="toolbar">
+
+        <div class="search">
+
+            <span>🔎</span>
+
+            <input
+                id="searchInput"
+                placeholder="Search consumer, mobile or ID..."
+            >
+
+        </div>
+
+
+        <select id="modeFilter">
+
+            <option value="">
+                All Payment Types
+            </option>
+
+            <option value="Cash">
+                Cash
+            </option>
+
+            <option value="Bank Loan">
+                Bank Loan
+            </option>
+
+        </select>
+
+
+        <select id="statusFilter">
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="Paid">
+                Fully Paid
+            </option>
+
+            <option value="Due">
+                Payment Due
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- ================= TABLE ================= -->
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Consumer</th>
+                    <th>Solar</th>
+                    <th>Estimate</th>
+                    <th>Payment</th>
+                    <th>Received</th>
+                    <th>Progress</th>
+                    <th>Due</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="consumerTable"></tbody>
+
+        </table>
+
+
+        <div class="empty" id="emptyState">
+
+            <div class="empty-icon">☀️</div>
+
+            <strong>No Consumer Found</strong>
+
+            <p>Add your first solar consumer.</p>
+
+        </div>
+
+    </div>
+
+</main>
+
+</div>
+
+
+<!-- ======================================================
+     ADD / EDIT MODAL
+====================================================== -->
+
+<div class="modal-bg" id="formModal">
+
+<div class="modal">
+
+    <div class="modal-head">
+
+        <h3 id="modalTitle">
+            Add Solar Consumer
+        </h3>
+
+        <button class="close" id="closeForm">
+            ×
+        </button>
+
+    </div>
+
+
+    <form class="form" id="consumerForm">
+
+        <input type="hidden" id="editId">
+
+
+        <!-- CONSUMER -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <span></span>
+                Consumer Information
+            </div>
+
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>
+                        Consumer Name *
+                    </label>
+
+                    <input
+                        id="consumerName"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Mobile Number *
+                    </label>
+
+                    <input
+                        id="mobile"
+                        type="tel"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Consumer ID
+                    </label>
+
+                    <input
+                        id="consumerId"
+                        placeholder="CE-2026-001"
+                    >
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>
+                        Address
+                    </label>
+
+                    <textarea id="address"></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SOLAR -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <span></span>
+                Solar Project Details
+            </div>
+
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>
+                        Solar Capacity (kW)
+                    </label>
+
+                    <input
+                        id="solarCapacity"
+                        type="number"
+                        step="0.01"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Panel Details
+                    </label>
+
+                    <input
+                        id="panelDetails"
+                        placeholder="Tata TOPCon 590W"
+                    >
+
+                </div>
+
+                <div class="field full">
+                    <label>Solar Panel Serial No. / Barcode</label>
+                    <div id="panelSerialList" class="serial-list"></div>
+                    <div class="serial-actions">
+                        <button type="button" class="serial-scan-btn" id="openSerialScannerBtn">📷 Scan with Camera</button>
+                        <button type="button" class="serial-add" id="addSerialBtn">＋ Add Serial Number</button>
+                    </div>
+                    <small style="display:block;margin-top:8px;color:#64748b;font-size:11px;line-height:1.5;">
+                        📷 Scan with Camera চাপলে মোবাইলের ক্যামেরা খুলবে। Barcode scan হলে Serial No. নিজে থেকে বসবে এবং পরেরটির জন্য নতুন ঘর তৈরি হবে। চাইলে keyboard দিয়েও লিখতে বা ভুল ঠিক করতে পারবেন।
+                    </small>
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Inverter Details
+                    </label>
+
+                    <input
+                        id="inverterDetails"
+                        placeholder="5kW On Grid"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Total Estimate Cost *
+                    </label>
+
+                    <input
+                        id="totalAmount"
+                        type="number"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PAYMENT TYPE -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <span></span>
+                Payment Type
+            </div>
+
+
+            <div class="payment-type">
+
+                <label
+                    class="type-option active"
+                    id="cashOption"
+                >
+
+                    <input
+                        type="radio"
+                        name="paymentType"
+                        value="Cash"
+                        checked
+                    >
+
+                    <div class="type-title">
+                        💵 Cash Payment
+                    </div>
+
+                    <div class="type-desc">
+                        60% + 40%
+                    </div>
+
+                </label>
+
+
+                <label
+                    class="type-option"
+                    id="loanOption"
+                >
+
+                    <input
+                        type="radio"
+                        name="paymentType"
+                        value="Bank Loan"
+                    >
+
+                    <div class="type-title">
+                        🏦 Bank Loan
+                    </div>
+
+                    <div class="type-desc">
+                        60% + 30% + 10%
+                    </div>
+
+                </label>
+
+            </div>
+
+
+            <!-- BANK DETAILS -->
+
+            <div
+                class="bank-box hidden"
+                id="bankBox"
+            >
+
+                <div class="section-title">
+                    🏦 Bank Loan Details
+                </div>
+
+
+                <div class="grid">
+
+                    <div class="field">
+
+                        <label>
+                            Bank Name
+                        </label>
+
+                        <input id="bankName">
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Loan Amount
+                        </label>
+
+                        <input
+                            id="loanAmount"
+                            type="number"
+                            min="0"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Loan Applied Date
+                        </label>
+
+                        <input
+                            id="loanAppliedDate"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Loan Sanction Date
+                        </label>
+
+                        <input
+                            id="loanSanctionDate"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Loan Reference No.
+                        </label>
+
+                        <input id="loanReference">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PAYMENT SCHEDULE -->
+
+        <div class="section">
+
+            <div class="section-title">
+
+                <span></span>
+
+                Payment Schedule
+
+            </div>
+
+
+            <!-- CASH -->
+
+            <div id="cashPayments">
+
+                <div class="payment-grid cash-grid">
+
+                    <div class="payment-card">
+
+                        <h4>
+                            1st Payment
+                            <span class="percent">60%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="cashP1Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="cashP1Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="cashP1Date"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="payment-card">
+
+                        <h4>
+                            2nd Payment
+                            <span class="percent">40%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="cashP2Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="cashP2Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="cashP2Date"
+                            type="date"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BANK -->
+
+            <div
+                id="loanPayments"
+                class="hidden"
+            >
+
+                <div class="payment-grid">
+
+                    <div class="payment-card">
+
+                        <h4>
+                            1st Payment
+                            <span class="percent">60%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="loanP1Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="loanP1Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="loanP1Date"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="payment-card">
+
+                        <h4>
+                            2nd Payment
+                            <span class="percent">30%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="loanP2Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="loanP2Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="loanP2Date"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="payment-card">
+
+                        <h4>
+                            3rd Payment
+                            <span class="percent">10%</span>
+                        </h4>
+
+                        <div
+                            class="calculated"
+                            id="loanP3Calculated"
+                        >
+                            Calculated: ₹0
+                        </div>
+
+                        <input
+                            id="loanP3Amount"
+                            type="number"
+                            placeholder="Actual Amount"
+                        >
+
+                        <input
+                            id="loanP3Date"
+                            type="date"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <p style="
+                font-size:10px;
+                color:#64748b;
+                margin-top:10px;
+            ">
+                Calculated amount is based on Total Estimate Cost.
+                Actual Amount can be changed if the received amount is different.
+            </p>
+
+        </div>
+
+
+        <!-- NOTES -->
+
+        <div class="section">
+
+            <div class="section-title">
+                <span></span>
+                Notes
+            </div>
+
+            <div class="field">
+
+                <textarea
+                    id="notes"
+                    placeholder="Payment or installation remarks..."
+                ></textarea>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <div class="modal-footer">
+
+        <button
+            class="secondary-btn"
+            id="cancelForm"
+        >
+            Cancel
+        </button>
+
+        <button
+            class="primary-btn"
+            id="saveBtn"
+        >
+            Save Consumer
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- ======================================================
+     DETAILS MODAL
+====================================================== -->
+
+<div class="modal-bg" id="detailsModal">
+
+<div class="modal">
+
+    <div class="modal-head">
+
+        <h3>
+            Consumer Payment Details
+        </h3>
+
+        <button
+            class="close"
+            id="closeDetails"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div
+        class="detail-grid"
+        id="detailsContent"
+    ></div>
+
+</div>
+
+</div>
+
+
+<div class="scanner-overlay" id="serialScannerModal" role="dialog" aria-modal="true" aria-label="Scan solar panel barcode">
+    <div class="scanner-card">
+        <div class="scanner-head">
+            <span>📷 Scan Solar Panel Barcode / QR</span>
+            <button type="button" class="scanner-close" id="closeSerialScannerBtn" aria-label="Close scanner">×</button>
+        </div>
+        <video id="serialScannerVideo" playsinline muted></video>
+        <div class="scanner-status" id="serialScannerStatus">ক্যামেরা চালু করা হচ্ছে… Camera permission চাইলে Allow চাপুন।</div>
+        <div class="scanner-controls">
+            <button type="button" class="secondary" id="cancelSerialScannerBtn">Close Camera</button>
+            <button type="button" id="switchSerialCameraBtn">Switch Camera</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<!-- ======================================================
+     FIREBASE
+====================================================== -->
+
+<script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+/* ================= FIREBASE ================= */
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
+
+    authDomain:
+    "chakraborty-ele-login.firebaseapp.com",
+
+    projectId:
+    "chakraborty-ele-login",
+
+    storageBucket:
+    "chakraborty-ele-login.firebasestorage.app",
+
+    messagingSenderId:
+    "414542805581",
+
+    appId:
+    "1:414542805581:web:cfd13593767abbb51cba04"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+const db =
+    getFirestore(app);
+
+
+const COLLECTION =
+    "solar_consumer_payment";
+
+
+let consumers = [];
+let currentUser = null;
+
+
+/* ================= HELPERS ================= */
+
+const $ = id =>
+    document.getElementById(id);
+
+
+function num(v){
+    return Number(v || 0);
+}
+
+
+function money(v){
+
+    return "₹" +
+        num(v).toLocaleString("en-IN");
+
+}
+
+
+function esc(v){
+
+    return String(v ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* ================= AUTH ================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        if(!user){
+
+            location.href =
+                "index.html";
+
+            return;
+
+        }
+
+        currentUser = user;
+
+        $("userEmail").textContent =
+            user.email || "Logged in";
+
+        await loadConsumers();
+
+    }
+);
+
+
+/* ================= LOAD ================= */
+
+async function loadConsumers(){
+
+    try{
+
+        const snap =
+            await getDocs(
+                collection(
+                    db,
+                    COLLECTION
+                )
+            );
+
+        consumers = [];
+
+        snap.forEach(item => {
+
+            consumers.push({
+
+                id: item.id,
+                ...item.data()
+
+            });
+
+        });
+
+
+        /* ================= NEWEST CONSUMER FIRST ================= */
+
+        consumers.sort((a, b) => {
+
+            const aTime =
+                a.createdAt?.toMillis
+                ? a.createdAt.toMillis()
+                : 0;
+
+            const bTime =
+                b.createdAt?.toMillis
+                ? b.createdAt.toMillis()
+                : 0;
+
+            return bTime - aTime;
+
+        });
+
+
+        render();
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "Data load failed: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* ================= RECEIVED ================= */
+
+function getReceived(c){
+
+    const p =
+        c.payments || {};
+
+    return (
+
+        num(p.cashFirst?.amount) +
+        num(p.cashSecond?.amount) +
+
+        num(p.loanFirst?.amount) +
+        num(p.loanSecond?.amount) +
+        num(p.loanThird?.amount)
+
+    );
+
+}
+
+
+/* ================= RENDER ================= */
+
+function render(){
+
+    const search =
+        $("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const mode =
+        $("modeFilter").value;
+
+    const status =
+        $("statusFilter").value;
+
+
+    const list =
+        consumers.filter(c => {
+
+            const text = `
+
+                ${c.consumerName || ""}
+
+                ${c.mobile || ""}
+
+                ${c.consumerId || ""}
+
+                ${c.address || ""}
+
+            `.toLowerCase();
+
+
+            if(
+                search &&
+                !text.includes(search)
+            )
+                return false;
+
+
+            if(
+                mode &&
+                c.paymentType !== mode
+            )
+                return false;
+
+
+            const due =
+                num(c.totalEstimate) -
+                getReceived(c);
+
+
+            if(
+                status === "Paid" &&
+                due > 0
+            )
+                return false;
+
+
+            if(
+                status === "Due" &&
+                due <= 0
+            )
+                return false;
+
+
+            return true;
+
+        });
+
+
+    const tbody =
+        $("consumerTable");
+
+    tbody.innerHTML = "";
+
+
+    $("emptyState").style.display =
+        list.length
+        ? "none"
+        : "block";
+
+
+    list.forEach(c => {
+
+        const total =
+            num(c.totalEstimate);
+
+        const received =
+            getReceived(c);
+
+        const due =
+            Math.max(
+                0,
+                total - received
+            );
+
+        const progress =
+            total
+            ? Math.min(
+                100,
+                Math.round(
+                    received / total * 100
+                )
+            )
+            : 0;
+
+
+        const tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+            <td data-label="Consumer">
+
+                <div class="consumer">
+
+                    <div class="avatar">
+
+                        ${esc(
+                            (c.consumerName || "C")
+                            .charAt(0)
+                            .toUpperCase()
+                        )}
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            ${esc(
+                                c.consumerName || "-"
+                            )}
+                        </strong>
+
+                        <small>
+                            ${esc(
+                                c.mobile || "-"
+                            )}
+
+                            ${
+                                c.consumerId
+                                ? " • " +
+                                  esc(c.consumerId)
+                                : ""
+                            }
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </td>
+
+
+            <td data-label="Solar">
+
+                <strong>
+                    ${esc(
+                        c.solarCapacity || "-"
+                    )} kW
+                </strong>
+
+                <br>
+
+                <small>
+                    ${esc(
+                        c.panelDetails ||
+                        "Solar Project"
+                    )}
+                </small>
+
+            </td>
+
+
+            <td data-label="Estimate">
+
+                <span class="amount">
+                    ${money(total)}
+                </span>
+
+            </td>
+
+
+            <td data-label="Payment">
+
+                <span class="mode ${
+                    c.paymentType === "Cash"
+                    ? "cash"
+                    : "loan"
+                }">
+
+                    ${
+                        c.paymentType === "Cash"
+                        ? "💵 Cash"
+                        : "🏦 Bank Loan"
+                    }
+
+                </span>
+
+            </td>
+
+
+            <td data-label="Received">
+
+                <span class="amount">
+                    ${money(received)}
+                </span>
+
+            </td>
+
+
+            <td data-label="Progress">
+
+                <div class="progress">
+
+                    <span
+                        style="
+                            width:${progress}%
+                        "
+                    ></span>
+
+                </div>
+
+                <small>
+                    ${progress}%
+                </small>
+
+            </td>
+
+
+            <td data-label="Due">
+
+                <strong
+                    style="
+                        color:${
+                            due > 0
+                            ? "#dc2626"
+                            : "#16a34a"
+                        }
+                    "
+                >
+                    ${money(due)}
+                </strong>
+
+            </td>
+
+
+            <td data-label="Action">
+
+                <button
+                    class="action-btn"
+                    onclick="
+                        window.viewConsumer('${c.id}')
+                    "
+                >
+                    👁
+                </button>
+
+
+                <button
+                    class="action-btn"
+                    onclick="
+                        window.editConsumer('${c.id}')
+                    "
+                >
+                    ✏
+                </button>
+
+
+                <button
+                    class="action-btn delete"
+                    onclick="
+                        window.deleteConsumer('${c.id}')
+                    "
+                >
+                    🗑
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(tr);
+
+    });
+
+
+    updateStats();
+
+}
+
+
+/* ================= STATS ================= */
+
+function updateStats(){
+
+    let estimate = 0;
+    let received = 0;
+    let loan = 0;
+
+
+    consumers.forEach(c => {
+
+        estimate +=
+            num(c.totalEstimate);
+
+        received +=
+            getReceived(c);
+
+        if(
+            c.paymentType ===
+            "Bank Loan"
+        ){
+
+            loan +=
+                num(c.loan?.loanAmount);
+
+        }
+
+    });
+
+
+    const due =
+        Math.max(
+            0,
+            estimate - received
+        );
+
+
+    $("totalConsumers").textContent =
+        consumers.length;
+
+    $("totalEstimate").textContent =
+        money(estimate);
+
+    $("totalReceived").textContent =
+        money(received);
+
+    $("totalLoan").textContent =
+        money(loan);
+
+    $("totalDue").textContent =
+        money(due);
+
+}
+
+
+/* ================= PAYMENT TYPE ================= */
+
+document
+.querySelectorAll(
+    'input[name="paymentType"]'
+)
+.forEach(radio => {
+
+    radio.addEventListener(
+        "change",
+        changePaymentType
+    );
+
+});
+
+
+function getPaymentType(){
+
+    return document
+        .querySelector(
+            'input[name="paymentType"]:checked'
+        )
+        ?.value || "Cash";
+
+}
+
+
+function changePaymentType(){
+
+    const type =
+        getPaymentType();
+
+
+    $("cashOption")
+        .classList.toggle(
+            "active",
+            type === "Cash"
+        );
+
+    $("loanOption")
+        .classList.toggle(
+            "active",
+            type === "Bank Loan"
+        );
+
+
+    $("cashPayments")
+        .classList.toggle(
+            "hidden",
+            type !== "Cash"
+        );
+
+
+    $("loanPayments")
+        .classList.toggle(
+            "hidden",
+            type !== "Bank Loan"
+        );
+
+
+    $("bankBox")
+        .classList.toggle(
+            "hidden",
+            type !== "Bank Loan"
+        );
+  /* AUTO CALCULATE WHEN PAYMENT TYPE CHANGES */
+
+calculatePercentages();
+
+}
+
+
+/* ================= AUTO CALCULATE ================= */
+
+$("totalAmount")
+.addEventListener(
+    "input",
+    calculatePercentages
+);
+
+
+function calculatePercentages(){
+
+    const total =
+        num(
+            $("totalAmount").value
+        );
+
+    $("cashP1Calculated").textContent =
+        "Calculated: " +
+        money(total * 0.60);
+
+    $("cashP2Calculated").textContent =
+        "Calculated: " +
+        money(total * 0.40);
+
+    $("loanP1Calculated").textContent =
+        "Calculated: " +
+        money(total * 0.60);
+
+    $("loanP2Calculated").textContent =
+        "Calculated: " +
+        money(total * 0.30);
+
+    $("loanP3Calculated").textContent =
+        "Calculated: " +
+        money(total * 0.10);
+
+
+    /* EDIT হলে Database-এর পুরনো amount পরিবর্তন হবে না */
+
+    if($("editId").value){
+        return;
+    }
+
+
+    /* NEW Consumer হলে automatic calculation */
+
+    if(getPaymentType() === "Cash"){
+
+        $("cashP1Amount").value =
+            Math.round(total * 0.60);
+
+        $("cashP2Amount").value =
+            Math.round(total * 0.40);
+
+    }else{
+
+        $("loanAmount").value =
+            Math.round(total * 0.90);
+
+        $("loanP1Amount").value =
+            Math.round(total * 0.60);
+
+        $("loanP2Amount").value =
+            Math.round(total * 0.30);
+
+        $("loanP3Amount").value =
+            Math.round(total * 0.10);
+
+    }
+}
+
+
+
+
+/* ================= PANEL SERIAL NUMBERS ================= */
+
+function renumberPanelSerials(){
+    document.querySelectorAll("#panelSerialList .serial-row").forEach((row, index) => {
+        row.querySelector(".serial-number").textContent = (index + 1) + ".";
+    });
+}
+
+function addPanelSerialRow(value = "", focus = false){
+    const list = $("panelSerialList");
+    const row = document.createElement("div");
+    row.className = "serial-row";
+    row.innerHTML = `
+        <span class="serial-number"></span>
+        <input type="text" class="panel-serial-input" autocomplete="off"
+               placeholder="Scan or type panel serial number">
+        <button type="button" class="serial-remove" title="Remove serial number" aria-label="Remove serial number">×</button>
+    `;
+    const input = row.querySelector("input");
+    input.value = value || "";
+
+    // Barcode scanners usually send Enter after each scan.
+    input.addEventListener("keydown", event => {
+        if(event.key === "Enter"){
+            event.preventDefault();
+            addPanelSerialRow("", true);
+        }
+    });
+
+    row.querySelector(".serial-remove").addEventListener("click", () => {
+        row.remove();
+        if(!$("panelSerialList").children.length){
+            addPanelSerialRow("", false);
+        }
+        renumberPanelSerials();
+    });
+
+    list.appendChild(row);
+    renumberPanelSerials();
+    if(focus) input.focus();
+    return input;
+}
+
+function getPanelSerialNumbers(){
+    return [...document.querySelectorAll("#panelSerialList .panel-serial-input")]
+        .map(input => input.value.trim())
+        .filter(value => value !== "");
+}
+
+function setPanelSerialNumbers(values){
+    const list = $("panelSerialList");
+    list.innerHTML = "";
+    if(Array.isArray(values) && values.length){
+        values.forEach(value => addPanelSerialRow(value, false));
+    }else{
+        addPanelSerialRow("", false);
+    }
+}
+
+$("addSerialBtn").addEventListener("click", () => {
+    addPanelSerialRow("", true);
+});
+
+// Start with one editable serial-number field.
+setPanelSerialNumbers([]);
+
+/* ================= CAMERA BARCODE SCANNER ================= */
+let panelBarcodeReader = null;
+let panelBarcodeControls = null;
+let panelScannerFacingMode = "environment";
+let panelScannerBusy = false;
+let panelLastScannedBarcode = "";
+
+function setPanelScannerStatus(message){
+    const el = $("serialScannerStatus");
+    if(el) el.textContent = message;
+}
+
+async function stopPanelBarcodeScanner(){
+    try{
+        if(panelBarcodeControls){ panelBarcodeControls.stop(); panelBarcodeControls = null; }
+        if(panelBarcodeReader && typeof panelBarcodeReader.reset === "function") panelBarcodeReader.reset();
+    }catch(error){ console.warn("Scanner stop:", error); }
+    const video = $("serialScannerVideo");
+    if(video && video.srcObject){
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+    }
+    panelScannerBusy = false;
+}
+
+async function startPanelBarcodeScanner(){
+    const modal = $("serialScannerModal");
+    modal.classList.add("show");
+    setPanelScannerStatus("ক্যামেরা চালু করা হচ্ছে… Camera permission চাইলে Allow চাপুন।");
+
+    if(!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+        setPanelScannerStatus("ক্যামেরা চালু করা যাচ্ছে না। GitHub Pages-এর https link দিয়ে খুলুন এবং browser camera permission চালু করুন।");
+        return;
+    }
+    if(!window.ZXing || !window.ZXing.BrowserMultiFormatReader){
+        setPanelScannerStatus("Barcode scanner library load হয়নি। Internet connection দেখে page refresh করুন।");
+        return;
+    }
+
+    await stopPanelBarcodeScanner();
+    panelScannerBusy = false;
+    panelLastScannedBarcode = "";
+    try{
+        panelBarcodeReader = new window.ZXing.BrowserMultiFormatReader();
+        panelBarcodeControls = await panelBarcodeReader.decodeFromConstraints(
+            { video: { facingMode: panelScannerFacingMode } },
+            $("serialScannerVideo"),
+            (result, error, controls) => {
+                if(result && !panelScannerBusy){
+                    panelScannerBusy = true;
+                    const scanned = (result.getText ? result.getText() : String(result)).trim();
+                    if(scanned && scanned !== panelLastScannedBarcode){
+                        panelLastScannedBarcode = scanned;
+                        let inputs = [...document.querySelectorAll("#panelSerialList .panel-serial-input")];
+                        let target = inputs.find(input => !input.value.trim());
+                        if(!target) target = addPanelSerialRow("", false);
+                        target.value = scanned;
+                        target.dispatchEvent(new Event("input", {bubbles:true}));
+                        addPanelSerialRow("", false);
+                        setPanelScannerStatus("Scan সফল হয়েছে: " + scanned + " — পরের barcode scan করুন।");
+                        // Briefly pause after each read to avoid duplicate reads of the same barcode.
+                        setTimeout(() => { panelScannerBusy = false; }, 900);
+                    }else{
+                        panelScannerBusy = false;
+                    }
+                }
+            }
+        );
+        setPanelScannerStatus("Barcode-টি ক্যামেরার সামনে ধরুন। Scan হলে Serial No. নিজে থেকে যোগ হবে।");
+    }catch(error){
+        console.error(error);
+        setPanelScannerStatus("ক্যামেরা চালু হয়নি: " + (error && error.message ? error.message : "Camera permission দিন"));
+        await stopPanelBarcodeScanner();
+    }
+}
+
+$("openSerialScannerBtn").addEventListener("click", startPanelBarcodeScanner);
+async function closePanelScanner(){
+    await stopPanelBarcodeScanner();
+    $("serialScannerModal").classList.remove("show");
+}
+$("closeSerialScannerBtn").addEventListener("click", closePanelScanner);
+$("cancelSerialScannerBtn").addEventListener("click", closePanelScanner);
+$("serialScannerModal").addEventListener("click", event => {
+    if(event.target === $("serialScannerModal")) closePanelScanner();
+});
+$("switchSerialCameraBtn").addEventListener("click", async () => {
+    panelScannerFacingMode = panelScannerFacingMode === "environment" ? "user" : "environment";
+    await stopPanelBarcodeScanner();
+    await startPanelBarcodeScanner();
+});
+
+
+/* ================= ADD ================= */
+
+$("addBtn").onclick = () => {
+
+    resetForm();
+
+    $("modalTitle").textContent =
+        "Add Solar Consumer";
+
+    $("saveBtn").textContent =
+        "Save Consumer";
+
+    $("formModal")
+        .classList.add("show");
+
+};
+
+
+/* ================= RESET ================= */
+
+function resetForm(){
+
+    $("consumerForm").reset();
+    setPanelSerialNumbers([]);
+
+    $("editId").value = "";
+
+    document
+        .querySelector(
+            'input[name="paymentType"][value="Cash"]'
+        )
+        .checked = true;
+
+    changePaymentType();
+
+    calculatePercentages();
+
+}
+
+
+/* ================= SAVE ================= */
+
+$("saveBtn").onclick =
+async () => {
+
+    const form =
+        $("consumerForm");
+
+
+    if(
+        !form.reportValidity()
+    )
+        return;
+
+
+    const type =
+        getPaymentType();
+
+
+    const data = {
+
+        consumerName:
+            $("consumerName")
+            .value.trim(),
+
+        mobile:
+            $("mobile")
+            .value.trim(),
+
+        consumerId:
+            $("consumerId")
+            .value.trim(),
+
+        address:
+            $("address")
+            .value.trim(),
+
+        solarCapacity:
+            $("solarCapacity")
+            .value,
+
+        panelDetails:
+            $("panelDetails")
+            .value.trim(),
+
+        panelSerialNumbers:
+            getPanelSerialNumbers(),
+
+        inverterDetails:
+            $("inverterDetails")
+            .value.trim(),
+
+        totalEstimate:
+            num(
+                $("totalAmount").value
+            ),
+
+        paymentType:type,
+
+
+        loan:
+        type === "Bank Loan"
+        ? {
+
+            bankName:
+                $("bankName")
+                .value.trim(),
+
+            loanAmount:
+                num(
+                    $("loanAmount").value
+                ),
+
+            loanAppliedDate:
+                $("loanAppliedDate")
+                .value,
+
+            loanSanctionDate:
+                $("loanSanctionDate")
+                .value,
+
+            loanReference:
+                $("loanReference")
+                .value.trim()
+
+        }
+        : null,
+
+
+        payments:
+        type === "Cash"
+        ? {
+
+            cashFirst:{
+                percentage:60,
+                amount:
+                    num(
+                        $("cashP1Amount")
+                        .value
+                    ),
+                date:
+                    $("cashP1Date")
+                    .value
+            },
+
+            cashSecond:{
+                percentage:40,
+                amount:
+                    num(
+                        $("cashP2Amount")
+                        .value
+                    ),
+                date:
+                    $("cashP2Date")
+                    .value
+            }
+
+        }
+        : {
+
+            loanFirst:{
+                percentage:60,
+                amount:
+                    num(
+                        $("loanP1Amount")
+                        .value
+                    ),
+                date:
+                    $("loanP1Date")
+                    .value
+            },
+
+            loanSecond:{
+                percentage:30,
+                amount:
+                    num(
+                        $("loanP2Amount")
+                        .value
+                    ),
+                date:
+                    $("loanP2Date")
+                    .value
+            },
+
+            loanThird:{
+                percentage:10,
+                amount:
+                    num(
+                        $("loanP3Amount")
+                        .value
+                    ),
+                date:
+                    $("loanP3Date")
+                    .value
+            }
+
+        },
+
+
+        notes:
+            $("notes")
+            .value.trim(),
+
+        updatedAt:
+            serverTimestamp()
+
+    };
+
+
+    try{
+
+        $("saveBtn").disabled = true;
+
+        $("saveBtn").textContent =
+            "Saving...";
+
+
+        const editId =
+            $("editId").value;
+
+
+        if(editId){
+
+            await updateDoc(
+
+                doc(
+                    db,
+                    COLLECTION,
+                    editId
+                ),
+
+                data
+
+            );
+
+
+            toast(
+                "Consumer updated successfully",
+                "success"
+            );
+
+        }else{
+
+            data.createdAt =
+                serverTimestamp();
+
+            data.createdBy =
+                currentUser?.email || "";
+
+
+            await addDoc(
+
+                collection(
+                    db,
+                    COLLECTION
+                ),
+
+                data
+
+            );
+
+
+            toast(
+                "Consumer saved successfully",
+                "success"
+            );
+
+        }
+
+
+        $("formModal")
+            .classList.remove("show");
+
+
+        await loadConsumers();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "Save failed: " +
+            error.message,
+            "error"
+        );
+
+    }finally{
+
+        $("saveBtn").disabled =
+            false;
+
+        $("saveBtn").textContent =
+            $("editId").value
+            ? "Update Consumer"
+            : "Save Consumer";
+
+    }
+
+};
+
+
+/* ================= EDIT ================= */
+
+window.editConsumer =
+function(id){
+
+    const c =
+        consumers.find(
+            x => x.id === id
+        );
+
+    if(!c)
+        return;
+
+
+    resetForm();
+
+
+    $("editId").value =
+        id;
+
+
+    $("consumerName").value =
+        c.consumerName || "";
+
+    $("mobile").value =
+        c.mobile || "";
+
+    $("consumerId").value =
+        c.consumerId || "";
+
+    $("address").value =
+        c.address || "";
+
+    $("solarCapacity").value =
+        c.solarCapacity || "";
+
+    $("panelDetails").value =
+        c.panelDetails || "";
+
+    setPanelSerialNumbers(c.panelSerialNumbers || []);
+
+    $("inverterDetails").value =
+        c.inverterDetails || "";
+
+    $("totalAmount").value =
+        c.totalEstimate || "";
+
+
+    const type =
+        c.paymentType || "Cash";
+
+
+    document
+        .querySelector(
+            `input[name="paymentType"][value="${type}"]`
+        )
+        .checked = true;
+
+
+    changePaymentType();
+
+
+    /* BANK */
+
+    if(type === "Bank Loan"){
+
+        $("bankName").value =
+            c.loan?.bankName || "";
+
+        $("loanAmount").value =
+            c.loan?.loanAmount || "";
+
+        $("loanAppliedDate").value =
+            c.loan?.loanAppliedDate || "";
+
+        $("loanSanctionDate").value =
+            c.loan?.loanSanctionDate || "";
+
+        $("loanReference").value =
+            c.loan?.loanReference || "";
+
+    }
+
+
+    /* PAYMENTS */
+
+    const p =
+        c.payments || {};
+
+
+    if(type === "Cash"){
+
+        $("cashP1Amount").value =
+            p.cashFirst?.amount || "";
+
+        $("cashP1Date").value =
+            p.cashFirst?.date || "";
+
+        $("cashP2Amount").value =
+            p.cashSecond?.amount || "";
+
+        $("cashP2Date").value =
+            p.cashSecond?.date || "";
+
+    }else{
+
+        $("loanP1Amount").value =
+            p.loanFirst?.amount || "";
+
+        $("loanP1Date").value =
+            p.loanFirst?.date || "";
+
+        $("loanP2Amount").value =
+            p.loanSecond?.amount || "";
+
+        $("loanP2Date").value =
+            p.loanSecond?.date || "";
+
+        $("loanP3Amount").value =
+            p.loanThird?.amount || "";
+
+        $("loanP3Date").value =
+            p.loanThird?.date || "";
+
+    }
+
+
+    $("notes").value =
+        c.notes || "";
+
+
+    calculatePercentages();
+
+
+    $("modalTitle").textContent =
+        "Edit Solar Consumer";
+
+
+    $("saveBtn").textContent =
+        "Update Consumer";
+
+
+    $("formModal")
+        .classList.add("show");
+
+};
+
+
+/* ================= VIEW ================= */
+
+window.viewConsumer =
+function(id){
+
+    const c =
+        consumers.find(
+            x => x.id === id
+        );
+
+    if(!c)
+        return;
+
+
+    const total =
+        num(c.totalEstimate);
+
+    const received =
+        getReceived(c);
+
+    const due =
+        Math.max(
+            0,
+            total - received
+        );
+
+
+    let paymentHTML = "";
+
+
+    if(c.paymentType === "Cash"){
+
+        paymentHTML =
+
+            milestone(
+                "1st Payment",
+                "60%",
+                c.payments?.cashFirst
+            )
+
+            +
+
+            milestone(
+                "2nd Payment",
+                "40%",
+                c.payments?.cashSecond
+            );
+
+    }else{
+
+        paymentHTML =
+
+            milestone(
+                "1st Payment",
+                "60%",
+                c.payments?.loanFirst
+            )
+
+            +
+
+            milestone(
+                "2nd Payment",
+                "30%",
+                c.payments?.loanSecond
+            )
+
+            +
+
+            milestone(
+                "3rd Payment",
+                "10%",
+                c.payments?.loanThird
+            );
+
+    }
+
+
+    $("detailsContent").innerHTML = `
+
+        <div class="detail-box">
+
+            <h4>
+                👤 Consumer Information
+            </h4>
+
+
+            <div class="detail-row">
+
+                <span>Name</span>
+
+                <strong>
+                    ${esc(
+                        c.consumerName || "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>Mobile</span>
+
+                <strong>
+                    ${esc(
+                        c.mobile || "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>Consumer ID</span>
+
+                <strong>
+                    ${esc(
+                        c.consumerId || "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>Address</span>
+
+                <strong>
+                    ${esc(
+                        c.address || "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>Solar Capacity</span>
+
+                <strong>
+                    ${esc(
+                        c.solarCapacity || "-"
+                    )} kW
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <h4>
+                💰 Financial Summary
+            </h4>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Total Estimate
+                </span>
+
+                <strong>
+                    ${money(total)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Total Received
+                </span>
+
+                <strong class="paid">
+                    ${money(received)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Total Due
+                </span>
+
+                <strong
+                    class="${
+                        due
+                        ? "pending"
+                        : "paid"
+                    }"
+                >
+                    ${money(due)}
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Payment Type
+                </span>
+
+                <strong>
+                    ${esc(
+                        c.paymentType || "-"
+                    )}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <h4>
+                📊 Payment Schedule
+            </h4>
+
+            ${paymentHTML}
+
+        </div>
+
+
+        <div class="detail-box">
+
+            <h4>
+                ${
+                    c.paymentType ===
+                    "Bank Loan"
+                    ? "🏦 Bank Loan Details"
+                    : "💵 Cash Payment"
+                }
+            </h4>
+
+
+            ${
+                c.paymentType === "Bank Loan"
+
+                ?
+
+                `
+
+                <div class="detail-row">
+
+                    <span>
+                        Bank Name
+                    </span>
+
+                    <strong>
+                        ${esc(
+                            c.loan?.bankName || "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Loan Amount
+                    </span>
+
+                    <strong>
+                        ${money(
+                            c.loan?.loanAmount
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Sanction Date
+                    </span>
+
+                    <strong>
+                        ${esc(
+                            c.loan?.loanSanctionDate || "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Reference
+                    </span>
+
+                    <strong>
+                        ${esc(
+                            c.loan?.loanReference || "-"
+                        )}
+                    </strong>
+
+                </div>
+
+                `
+
+                :
+
+                `
+
+                <div
+                    style="
+                        color:#64748b;
+                        font-size:12px;
+                    "
+                >
+                    Cash payment plan:
+                    60% + 40%
+                </div>
+
+                `
+
+            }
+
+        </div>
+
+    `;
+
+
+    $("detailsModal")
+        .classList.add("show");
+
+};
+
+
+/* ================= MILESTONE ================= */
+
+function milestone(
+    title,
+    percent,
+    data
+){
+
+    const amount =
+        num(data?.amount);
+
+    const date =
+        data?.date || "";
+
+
+    return `
+
+        <div class="milestone">
+
+            <div class="milestone-icon">
+
+                ${
+                    amount
+                    ? "✓"
+                    : "○"
+                }
+
+            </div>
+
+
+            <div style="flex:1">
+
+                <strong>
+
+                    ${title}
+
+                    <span
+                        style="
+                            color:#2563eb;
+                        "
+                    >
+                        ${percent}
+                    </span>
+
+                </strong>
+
+                <br>
+
+                <small>
+                    ${
+                        date
+                        ? esc(date)
+                        : "Date not entered"
+                    }
+                </small>
+
+            </div>
+
+
+            <strong
+                class="${
+                    amount
+                    ? "paid"
+                    : "pending"
+                }"
+            >
+                ${money(amount)}
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ================= DELETE ================= */
+
+window.deleteConsumer =
+async function(id){
+
+    const c =
+        consumers.find(
+            x => x.id === id
+        );
+
+    if(!c)
+        return;
+
+
+    const ok =
+        confirm(
+            "Delete " +
+            (c.consumerName || "this consumer") +
+            "?"
+        );
+
+
+    if(!ok)
+        return;
+
+
+    try{
+
+        await deleteDoc(
+
+            doc(
+                db,
+                COLLECTION,
+                id
+            )
+
+        );
+
+
+        toast(
+            "Consumer deleted",
+            "success"
+        );
+
+
+        await loadConsumers();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "Delete failed: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+/* ================= SEARCH ================= */
+
+$("searchInput")
+.addEventListener(
+    "input",
+    render
+);
+
+$("modeFilter")
+.addEventListener(
+    "change",
+    render
+);
+
+$("statusFilter")
+.addEventListener(
+    "change",
+    render
+);
+
+
+/* ================= CLOSE ================= */
+
+$("closeForm").onclick =
+() =>
+    $("formModal")
+    .classList.remove("show");
+
+
+$("cancelForm").onclick =
+() =>
+    $("formModal")
+    .classList.remove("show");
+
+
+$("closeDetails").onclick =
+() =>
+    $("detailsModal")
+    .classList.remove("show");
+
+
+$("formModal")
+.addEventListener(
+    "click",
+    e => {
+
+        if(
+            e.target ===
+            $("formModal")
+        ){
+
+            $("formModal")
+            .classList
+            .remove("show");
+
+        }
+
+    }
+);
+
+
+$("detailsModal")
+.addEventListener(
+    "click",
+    e => {
+
+        if(
+            e.target ===
+            $("detailsModal")
+        ){
+
+            $("detailsModal")
+            .classList
+            .remove("show");
+
+        }
+
+    }
+);
+
+
+/* ================= LOGOUT ================= */
+
+$("logoutBtn").onclick =
+async () => {
+
+    try{
+
+        await signOut(auth);
+
+        location.href =
+            "index.html";
+
+    }catch(error){
+
+        toast(
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+/* ================= TOAST ================= */
+
+function toast(
+    message,
+    type="success"
+){
+
+    const el =
+        $("toast");
+
+
+    el.textContent =
+        message;
+
+
+    el.className =
+        "toast show " +
+        type;
+
+
+    setTimeout(
+        () => {
+
+            el.classList
+                .remove("show");
+
+        },
+        7000
+    );
+
+}
+
+</script>
+
+</body>
+</html>
