@@ -486,6 +486,72 @@ td{
     resize:vertical;
 }
 
+/* SOLAR PANEL SERIAL NUMBERS */
+.serial-list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+.serial-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.serial-row input{
+    flex:1;
+    min-width:0;
+}
+.serial-row .serial-number{
+    min-width:28px;
+    font-size:12px;
+    font-weight:800;
+    color:#2563eb;
+    text-align:center;
+}
+.serial-remove{
+    border:0;
+    border-radius:8px;
+    background:#fee2e2;
+    color:#b91c1c;
+    width:38px;
+    min-width:38px;
+    height:40px;
+    font-size:18px;
+}
+.serial-add{
+    margin-top:9px;
+    border:1px solid #bfdbfe;
+    background:#eff6ff;
+    color:#1d4ed8;
+    padding:9px 12px;
+    border-radius:9px;
+    font-weight:700;
+}
+
+
+/* SMART BARCODE RESULT POPUP */
+.barcode-result-card{text-align:center;padding:24px 20px;animation:barcodePop .22s ease-out;}
+.barcode-result-icon{width:58px;height:58px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;font-size:30px;font-weight:900;box-shadow:0 8px 20px #16a34a40;}
+.barcode-result-title{font-size:20px;font-weight:800;color:#12336b;margin-bottom:7px;}
+.barcode-result-subtitle{font-size:13px;color:#64748b;line-height:1.5;}
+.barcode-result-value{margin-top:16px;padding:15px 12px;border:1px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border-radius:12px;color:#12336b;font-size:19px;font-weight:800;overflow-wrap:anywhere;letter-spacing:.3px;}
+@keyframes barcodePop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* CAMERA BARCODE SCANNER */
+.serial-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
+.serial-scan-btn{border:0;border-radius:9px;padding:10px 13px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;}
+.serial-scan-btn:active{transform:scale(.98)}
+.scanner-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,.78);align-items:center;justify-content:center;padding:16px;}
+.scanner-overlay.show{display:flex;}
+.scanner-card{background:#fff;width:min(100%,480px);border-radius:16px;padding:16px;box-shadow:0 20px 60px #0005;}
+.scanner-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800;font-size:17px;margin-bottom:12px;color:#12336b;}
+.scanner-close{border:0;background:#fee2e2;color:#b91c1c;border-radius:8px;width:36px;height:36px;font-size:22px;cursor:pointer;}
+#serialScannerVideo{display:block;width:100%;max-height:60vh;min-height:220px;background:#0f172a;object-fit:cover;border-radius:10px;}
+.scanner-status{font-size:13px;color:#475569;line-height:1.5;margin:10px 0;}
+.scanner-controls{display:flex;gap:8px;flex-wrap:wrap;}
+.scanner-controls button{flex:1;min-width:120px;border:0;border-radius:9px;padding:11px;background:#2563eb;color:white;font-weight:700;cursor:pointer;}
+.scanner-controls .secondary{background:#e2e8f0;color:#1e293b;}
+
 .field input:focus,
 .field select:focus,
 .field textarea:focus{
@@ -1279,6 +1345,20 @@ td{
 
                 </div>
 
+                <div class="field full">
+                    <label>Solar Panel Serial No. / Barcode</label>
+                    <div id="panelSerialList" class="serial-list"></div>
+                    <div class="serial-actions">
+                        <button type="button" class="serial-scan-btn" id="openSerialScannerBtn">📷 Scan with Camera</button>
+                        <button type="button" class="serial-add" id="uploadBarcodeImageBtn">🖼️ Upload Barcode Image</button>
+                        <input type="file" id="barcodeImageInput" accept="image/*" style="display:none">
+                        <button type="button" class="serial-add" id="addSerialBtn">＋ Add Serial Number</button>
+                    </div>
+                    <small style="display:block;margin-top:8px;color:#64748b;font-size:11px;line-height:1.5;">
+                        📷 Scan with Camera চাপলে মোবাইলের ক্যামেরা খুলবে। Barcode scan হলে Serial No. নিজে থেকে বসবে এবং পরেরটির জন্য নতুন ঘর তৈরি হবে। চাইলে keyboard দিয়েও লিখতে বা ভুল ঠিক করতে পারবেন।
+                    </small>
+                </div>
+
 
                 <div class="field">
 
@@ -1725,12 +1805,43 @@ td{
 </div>
 
 
+<div class="scanner-overlay" id="serialScannerModal" role="dialog" aria-modal="true" aria-label="Scan solar panel barcode">
+    <div class="scanner-card">
+        <div class="scanner-head">
+            <span>📷 Scan Solar Panel Barcode / QR</span>
+            <button type="button" class="scanner-close" id="closeSerialScannerBtn" aria-label="Close scanner">×</button>
+        </div>
+        <video id="serialScannerVideo" playsinline muted></video>
+        <div class="scanner-status" id="serialScannerStatus">ক্যামেরা চালু করা হচ্ছে… Camera permission চাইলে Allow চাপুন।</div>
+        <div style="font-size:12px;color:#64748b;margin:6px 0 10px">Scan হওয়ার পরে Serial Number popup-এ দেখাবে। OK চাপলে input box-এ বসবে।</div>
+        <div class="scanner-controls">
+            <button type="button" class="secondary" id="cancelSerialScannerBtn">Close Camera</button>
+            <button type="button" id="switchSerialCameraBtn">Switch Camera</button>
+        </div>
+    </div>
+</div>
+
+<div class="scanner-overlay" id="barcodeResultModal" role="dialog" aria-modal="true" aria-label="Scanned serial number confirmation">
+  <div class="scanner-card barcode-result-card">
+    <div class="barcode-result-icon">✓</div>
+    <div class="barcode-result-title">Barcode Successfully Scanned</div>
+    <div class="barcode-result-subtitle">নিচের Serial Number-টি যাচাই করে OK চাপুন</div>
+    <div class="barcode-result-value" id="barcodeResultValue"></div>
+    <div class="scanner-controls" style="margin-top:16px">
+      <button type="button" class="secondary" id="barcodeResultCancel">Cancel</button>
+      <button type="button" id="barcodeResultOk">✓ OK, Add Serial</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 
 <!-- ======================================================
      FIREBASE
 ====================================================== -->
+
+<script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
 
 <script type="module">
 
@@ -2438,6 +2549,258 @@ function calculatePercentages(){
 
 
 
+/* ================= PANEL SERIAL NUMBERS ================= */
+
+function renumberPanelSerials(){
+    document.querySelectorAll("#panelSerialList .serial-row").forEach((row, index) => {
+        row.querySelector(".serial-number").textContent = (index + 1) + ".";
+    });
+}
+
+function addPanelSerialRow(value = "", focus = false){
+    const list = $("panelSerialList");
+    const row = document.createElement("div");
+    row.className = "serial-row";
+    row.innerHTML = `
+        <span class="serial-number"></span>
+        <input type="text" class="panel-serial-input" autocomplete="off"
+               placeholder="Scan or type panel serial number">
+        <button type="button" class="serial-remove" title="Remove serial number" aria-label="Remove serial number">×</button>
+    `;
+    const input = row.querySelector("input");
+    input.value = value || "";
+
+    // Barcode scanners usually send Enter after each scan.
+    input.addEventListener("keydown", event => {
+        if(event.key === "Enter"){
+            event.preventDefault();
+            addPanelSerialRow("", true);
+        }
+    });
+
+    row.querySelector(".serial-remove").addEventListener("click", () => {
+        row.remove();
+        if(!$("panelSerialList").children.length){
+            addPanelSerialRow("", false);
+        }
+        renumberPanelSerials();
+    });
+
+    list.appendChild(row);
+    renumberPanelSerials();
+    if(focus) input.focus();
+    return input;
+}
+
+function getPanelSerialNumbers(){
+    return [...document.querySelectorAll("#panelSerialList .panel-serial-input")]
+        .map(input => input.value.trim())
+        .filter(value => value !== "");
+}
+
+function setPanelSerialNumbers(values){
+    const list = $("panelSerialList");
+    list.innerHTML = "";
+    if(Array.isArray(values) && values.length){
+        values.forEach(value => addPanelSerialRow(value, false));
+    }else{
+        addPanelSerialRow("", false);
+    }
+}
+
+$("addSerialBtn").addEventListener("click", () => {
+    addPanelSerialRow("", true);
+});
+
+// Start with one editable serial-number field.
+setPanelSerialNumbers([]);
+
+/* ================= PANEL SERIAL NUMBERS ================= */
+let panelBarcodeReader = null;
+let panelBarcodeControls = null;
+let panelScannerFacingMode = "environment";
+let panelScannerBusy = false;
+let pendingBarcodeValue = "";
+let barcodeConfirmResolver = null;
+
+function setPanelScannerStatus(message){
+    const el = $("serialScannerStatus");
+    if(el) el.textContent = message;
+}
+
+async function stopPanelBarcodeScanner(){
+    try{
+        if(panelBarcodeControls){ panelBarcodeControls.stop(); panelBarcodeControls = null; }
+        if(panelBarcodeReader && typeof panelBarcodeReader.reset === "function") panelBarcodeReader.reset();
+    }catch(error){ console.warn("Scanner stop:", error); }
+    const video = $("serialScannerVideo");
+    if(video && video.srcObject){ video.srcObject.getTracks().forEach(track => track.stop()); video.srcObject = null; }
+    panelScannerBusy = false;
+}
+
+function showBarcodeResultPopup(value){
+    pendingBarcodeValue = value;
+    $("barcodeResultValue").textContent = value;
+    $("barcodeResultModal").classList.add("show");
+    return new Promise(resolve => { barcodeConfirmResolver = resolve; });
+}
+
+function finishBarcodeResult(confirmed){
+    $("barcodeResultModal").classList.remove("show");
+    if(barcodeConfirmResolver){ barcodeConfirmResolver(confirmed ? pendingBarcodeValue : ""); barcodeConfirmResolver = null; }
+}
+
+async function acceptScannedSerial(scanned){
+    const confirmed = await showBarcodeResultPopup(scanned);
+    if(!confirmed) return false;
+    let inputs = [...document.querySelectorAll("#panelSerialList .panel-serial-input")];
+    let target = inputs.find(input => !input.value.trim());
+    if(!target) target = addPanelSerialRow("", false);
+    target.value = confirmed;
+    target.dispatchEvent(new Event("input", {bubbles:true}));
+    addPanelSerialRow("", true);
+    return true;
+}
+
+async function startPanelBarcodeScanner(){
+    const modal = $("serialScannerModal");
+    modal.classList.add("show");
+    setPanelScannerStatus("ক্যামেরা চালু করা হচ্ছে… Permission চাইলে Allow চাপুন।");
+    if(!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+        setPanelScannerStatus("ক্যামেরার জন্য GitHub Pages-এর HTTPS link ব্যবহার করুন এবং browser permission Allow করুন।"); return;
+    }
+    if(!window.ZXing || !window.ZXing.BrowserMultiFormatReader){
+        setPanelScannerStatus("Scanner library load হয়নি। Internet connection দেখে page refresh করুন।"); return;
+    }
+    await stopPanelBarcodeScanner();
+    try{
+        panelBarcodeReader = new window.ZXing.BrowserMultiFormatReader();
+        panelBarcodeControls = await panelBarcodeReader.decodeFromConstraints(
+            {video:{facingMode:panelScannerFacingMode}}, $("serialScannerVideo"),
+            async result => {
+                if(!result || panelScannerBusy) return;
+                const scanned = (result.getText ? result.getText() : String(result)).trim();
+                if(!scanned) return;
+                panelScannerBusy = true;
+                await stopPanelBarcodeScanner();
+                $("serialScannerModal").classList.remove("show");
+                await acceptScannedSerial(scanned);
+                setPanelScannerStatus("Scan complete. আবার scan করতে Camera বাটনে চাপুন।");
+            }
+        );
+        setPanelScannerStatus("Barcode-টি ক্যামেরার সামনে ধরুন। Scan হলে সুন্দর confirmation popup দেখাবে।");
+    }catch(error){
+        console.error(error);
+        setPanelScannerStatus("ক্যামেরা চালু হয়নি: " + (error?.message || "Camera permission Allow করুন"));
+        await stopPanelBarcodeScanner();
+    }
+}
+
+// Image upload opens the file/photo picker (not the camera directly).
+$("uploadBarcodeImageBtn").addEventListener("click", () => {
+    const picker = $("barcodeImageInput");
+    picker.removeAttribute("capture");
+    picker.click();
+});
+
+async function decodeUploadedBarcodeImage(file){
+    const imageUrl = URL.createObjectURL(file);
+    try{
+        const image = new Image();
+        image.src = imageUrl;
+        await new Promise((resolve,reject)=>{
+            image.onload = resolve;
+            image.onerror = () => reject(new Error("ছবিটি খোলা যায়নি"));
+        });
+
+        // Try browser's native detector first where supported.
+        if("BarcodeDetector" in window){
+            try{
+                const detector = new BarcodeDetector();
+                const nativeResults = await detector.detect(image);
+                if(nativeResults && nativeResults.length) return nativeResults[0].rawValue;
+            }catch(e){ console.warn("Native barcode detection failed; trying enhanced image.", e); }
+        }
+
+        const reader = new window.ZXing.BrowserMultiFormatReader();
+        const rotations = [0, 180, 90, 270];
+        for(const angle of rotations){
+            for(const enhance of [false, true]){
+                const canvas = document.createElement("canvas");
+                const sideways = angle === 90 || angle === 270;
+                canvas.width = sideways ? image.naturalHeight : image.naturalWidth;
+                canvas.height = sideways ? image.naturalWidth : image.naturalHeight;
+                const ctx = canvas.getContext("2d", {willReadFrequently:true});
+                ctx.save();
+                ctx.translate(canvas.width/2, canvas.height/2);
+                ctx.rotate(angle * Math.PI / 180);
+                ctx.drawImage(image, -image.naturalWidth/2, -image.naturalHeight/2);
+                ctx.restore();
+
+                if(enhance){
+                    try{
+                        const frame = ctx.getImageData(0,0,canvas.width,canvas.height);
+                        const px = frame.data;
+                        for(let i=0;i<px.length;i+=4){
+                            const gray = 0.299*px[i] + 0.587*px[i+1] + 0.114*px[i+2];
+                            const contrast = Math.max(0, Math.min(255, (gray - 128)*1.65 + 128));
+                            px[i] = px[i+1] = px[i+2] = contrast;
+                        }
+                        ctx.putImageData(frame,0,0);
+                    }catch(e){ console.warn("Image enhancement skipped",e); }
+                }
+
+                try{
+                    const result = await reader.decodeFromCanvas(canvas);
+                    const value = (result?.getText ? result.getText() : "").trim();
+                    if(value) return value;
+                }catch(e){ /* try next orientation/enhancement */ }
+            }
+        }
+        throw new Error("Barcode not detected");
+    }finally{
+        URL.revokeObjectURL(imageUrl);
+    }
+}
+
+$("barcodeImageInput").addEventListener("change", async event => {
+    const file = event.target.files && event.target.files[0];
+    if(!file) return;
+    if(!file.type.startsWith("image/")){
+        toast("একটি ছবি নির্বাচন করুন।", "error");
+        event.target.value = ""; return;
+    }
+    if(!window.ZXing || !window.ZXing.BrowserMultiFormatReader){
+        toast("Barcode library load হয়নি। Internet connection দেখে refresh করুন।", "error");
+        event.target.value = ""; return;
+    }
+    toast("ছবি থেকে Barcode পড়ার চেষ্টা চলছে…", "info");
+    try{
+        const scanned = await decodeUploadedBarcodeImage(file);
+        if(scanned) await acceptScannedSerial(scanned);
+        else throw new Error("Barcode not detected");
+    }catch(error){
+        console.error(error);
+        toast("ছবি থেকে Barcode পড়া যায়নি। ছবিটি ঘুরিয়ে, Barcode-এ zoom করে, glare ছাড়া আবার চেষ্টা করুন।", "error");
+    }finally{
+        event.target.value = "";
+    }
+});
+
+$("openSerialScannerBtn").addEventListener("click", startPanelBarcodeScanner);
+async function closePanelScanner(){ await stopPanelBarcodeScanner(); $("serialScannerModal").classList.remove("show"); }
+$("closeSerialScannerBtn").addEventListener("click", closePanelScanner);
+$("cancelSerialScannerBtn").addEventListener("click", closePanelScanner);
+$("serialScannerModal").addEventListener("click", event => { if(event.target === $("serialScannerModal")) closePanelScanner(); });
+$("switchSerialCameraBtn").addEventListener("click", async () => {
+    panelScannerFacingMode = panelScannerFacingMode === "environment" ? "user" : "environment";
+    await stopPanelBarcodeScanner(); await startPanelBarcodeScanner();
+});
+$("barcodeResultOk").addEventListener("click", () => finishBarcodeResult(true));
+$("barcodeResultCancel").addEventListener("click", () => finishBarcodeResult(false));
+$("barcodeResultModal").addEventListener("click", event => { if(event.target === $("barcodeResultModal")) finishBarcodeResult(false); });
+
+
 /* ================= ADD ================= */
 
 $("addBtn").onclick = () => {
@@ -2461,6 +2824,7 @@ $("addBtn").onclick = () => {
 function resetForm(){
 
     $("consumerForm").reset();
+    setPanelSerialNumbers([]);
 
     $("editId").value = "";
 
@@ -2521,6 +2885,9 @@ async () => {
         panelDetails:
             $("panelDetails")
             .value.trim(),
+
+        panelSerialNumbers:
+            getPanelSerialNumbers(),
 
         inverterDetails:
             $("inverterDetails")
@@ -2774,6 +3141,8 @@ function(id){
 
     $("panelDetails").value =
         c.panelDetails || "";
+
+    setPanelSerialNumbers(c.panelSerialNumbers || []);
 
     $("inverterDetails").value =
         c.inverterDetails || "";
