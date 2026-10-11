@@ -1363,14 +1363,36 @@ td{
                 <div class="field">
 
                     <label>
-                        Inverter Details
+                        Inverter Brand / Details
                     </label>
 
                     <input
                         id="inverterDetails"
-                        placeholder="5kW On Grid"
+                        placeholder="Tata Power / 3.3 kW On Grid"
                     >
 
+                </div>
+
+                <div class="field">
+                    <label>Inverter Model No.</label>
+                    <input
+                        id="inverterModelNo"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="Enter inverter model number"
+                    >
+                    <small style="display:block;margin-top:5px;color:#64748b;font-size:11px;">ইনভার্টারের স্টিকার/নেমপ্লেটে লেখা Model No. এখানে লিখুন।</small>
+                </div>
+
+                <div class="field full">
+                    <label>Inverter Serial No. / Barcode</label>
+                    <div id="inverterSerialList" class="serial-list"></div>
+                    <div class="serial-actions">
+                        <button type="button" class="serial-scan-btn" id="openInverterScannerBtn">📷 Scan Inverter Barcode</button>
+                        <button type="button" class="serial-add" id="uploadInverterBarcodeImageBtn">🖼️ Upload Inverter Barcode Image</button>
+                        <button type="button" class="serial-add" id="addInverterSerialBtn">＋ Add Inverter Serial</button>
+                    </div>
+                    <small style="display:block;margin-top:8px;color:#64748b;font-size:11px;line-height:1.5;">Inverter-এর Serial Number ক্যামেরা দিয়ে scan করুন, ছবি upload করুন অথবা হাতে লিখুন। Scan হলে সুন্দর confirmation popup দেখাবে।</small>
                 </div>
 
 
@@ -1808,7 +1830,7 @@ td{
 <div class="scanner-overlay" id="serialScannerModal" role="dialog" aria-modal="true" aria-label="Scan solar panel barcode">
     <div class="scanner-card">
         <div class="scanner-head">
-            <span>📷 Scan Solar Panel Barcode / QR</span>
+            <span id="scannerModalTitle">📷 Scan Solar Panel Barcode / QR</span>
             <button type="button" class="scanner-close" id="closeSerialScannerBtn" aria-label="Close scanner">×</button>
         </div>
         <video id="serialScannerVideo" playsinline muted></video>
@@ -2615,6 +2637,34 @@ $("addSerialBtn").addEventListener("click", () => {
 // Start with one editable serial-number field.
 setPanelSerialNumbers([]);
 
+/* ================= INVERTER SERIAL NUMBERS ================= */
+function renumberInverterSerials(){
+    document.querySelectorAll("#inverterSerialList .serial-row").forEach((row, index) => {
+        row.querySelector(".serial-number").textContent = (index + 1) + ".";
+    });
+}
+function addInverterSerialRow(value = "", focus = false){
+    const list = $("inverterSerialList");
+    const row = document.createElement("div");
+    row.className = "serial-row";
+    row.innerHTML = `<span class="serial-number"></span><input type="text" class="inverter-serial-input" autocomplete="off" placeholder="Scan or type inverter serial number"><button type="button" class="serial-remove" title="Remove serial number" aria-label="Remove serial number">×</button>`;
+    const input = row.querySelector("input");
+    input.value = value || "";
+    input.addEventListener("keydown", event => { if(event.key === "Enter"){ event.preventDefault(); addInverterSerialRow("", true); } });
+    row.querySelector(".serial-remove").addEventListener("click", () => { row.remove(); if(!$("inverterSerialList").children.length) addInverterSerialRow("", false); renumberInverterSerials(); });
+    list.appendChild(row); renumberInverterSerials(); if(focus) input.focus(); return input;
+}
+function getInverterSerialNumbers(){
+    return [...document.querySelectorAll("#inverterSerialList .inverter-serial-input")].map(input => input.value.trim()).filter(Boolean);
+}
+function setInverterSerialNumbers(values){
+    const list = $("inverterSerialList"); list.innerHTML = "";
+    if(Array.isArray(values) && values.length) values.forEach(value => addInverterSerialRow(value, false));
+    else addInverterSerialRow("", false);
+}
+$("addInverterSerialBtn").addEventListener("click", () => addInverterSerialRow("", true));
+setInverterSerialNumbers([]);
+
 /* ================= PANEL SERIAL NUMBERS ================= */
 let panelBarcodeReader = null;
 let panelBarcodeControls = null;
@@ -2622,6 +2672,7 @@ let panelScannerFacingMode = "environment";
 let panelScannerBusy = false;
 let pendingBarcodeValue = "";
 let barcodeConfirmResolver = null;
+let activeSerialType = "panel";
 
 function setPanelScannerStatus(message){
     const el = $("serialScannerStatus");
@@ -2653,16 +2704,19 @@ function finishBarcodeResult(confirmed){
 async function acceptScannedSerial(scanned){
     const confirmed = await showBarcodeResultPopup(scanned);
     if(!confirmed) return false;
-    let inputs = [...document.querySelectorAll("#panelSerialList .panel-serial-input")];
+    const isInverter = activeSerialType === "inverter";
+    let inputs = [...document.querySelectorAll(isInverter ? "#inverterSerialList .inverter-serial-input" : "#panelSerialList .panel-serial-input")];
     let target = inputs.find(input => !input.value.trim());
-    if(!target) target = addPanelSerialRow("", false);
+    if(!target) target = isInverter ? addInverterSerialRow("", false) : addPanelSerialRow("", false);
     target.value = confirmed;
     target.dispatchEvent(new Event("input", {bubbles:true}));
-    addPanelSerialRow("", true);
+    if(isInverter) addInverterSerialRow("", true); else addPanelSerialRow("", true);
     return true;
 }
 
-async function startPanelBarcodeScanner(){
+async function startPanelBarcodeScanner(type = "panel"){
+    activeSerialType = type;
+    $("scannerModalTitle").textContent = type === "inverter" ? "📷 Scan Inverter Barcode / QR" : "📷 Scan Solar Panel Barcode / QR";
     const modal = $("serialScannerModal");
     modal.classList.add("show");
     setPanelScannerStatus("ক্যামেরা চালু করা হচ্ছে… Permission চাইলে Allow চাপুন।");
@@ -2697,11 +2751,14 @@ async function startPanelBarcodeScanner(){
 }
 
 // Image upload opens the file/photo picker (not the camera directly).
-$("uploadBarcodeImageBtn").addEventListener("click", () => {
+function openBarcodeImagePicker(type){
+    activeSerialType = type;
     const picker = $("barcodeImageInput");
     picker.removeAttribute("capture");
     picker.click();
-});
+}
+$("uploadBarcodeImageBtn").addEventListener("click", () => openBarcodeImagePicker("panel"));
+$("uploadInverterBarcodeImageBtn").addEventListener("click", () => openBarcodeImagePicker("inverter"));
 
 async function decodeUploadedBarcodeImage(file){
     const imageUrl = URL.createObjectURL(file);
@@ -2787,7 +2844,8 @@ $("barcodeImageInput").addEventListener("change", async event => {
     }
 });
 
-$("openSerialScannerBtn").addEventListener("click", startPanelBarcodeScanner);
+$("openSerialScannerBtn").addEventListener("click", () => startPanelBarcodeScanner("panel"));
+$("openInverterScannerBtn").addEventListener("click", () => startPanelBarcodeScanner("inverter"));
 async function closePanelScanner(){ await stopPanelBarcodeScanner(); $("serialScannerModal").classList.remove("show"); }
 $("closeSerialScannerBtn").addEventListener("click", closePanelScanner);
 $("cancelSerialScannerBtn").addEventListener("click", closePanelScanner);
@@ -2825,6 +2883,7 @@ function resetForm(){
 
     $("consumerForm").reset();
     setPanelSerialNumbers([]);
+    setInverterSerialNumbers([]);
 
     $("editId").value = "";
 
@@ -2892,6 +2951,13 @@ async () => {
         inverterDetails:
             $("inverterDetails")
             .value.trim(),
+
+        inverterModelNo:
+            $("inverterModelNo")
+            .value.trim(),
+
+        inverterSerialNumbers:
+            getInverterSerialNumbers(),
 
         totalEstimate:
             num(
@@ -3146,6 +3212,11 @@ function(id){
 
     $("inverterDetails").value =
         c.inverterDetails || "";
+
+    $("inverterModelNo").value =
+        c.inverterModelNo || "";
+
+    setInverterSerialNumbers(c.inverterSerialNumbers || []);
 
     $("totalAmount").value =
         c.totalEstimate || "";
