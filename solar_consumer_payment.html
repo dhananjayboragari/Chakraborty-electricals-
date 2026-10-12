@@ -492,6 +492,33 @@ td{
     flex-direction:column;
     gap:9px;
 }
+.serial-tools{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:0 0 10px;
+}
+.serial-count{
+    color:#475569;
+    font-size:12px;
+    font-weight:800;
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    border-radius:9px;
+    padding:9px 11px;
+}
+.serial-copy-all{
+    border:0;
+    border-radius:9px;
+    padding:10px 13px;
+    background:#0f766e;
+    color:#fff;
+    font-weight:800;
+}
+.serial-copy-all:active{transform:scale(.98)}
+
 .serial-row{
     display:flex;
     align-items:center;
@@ -1347,6 +1374,10 @@ td{
 
                 <div class="field full">
                     <label>Solar Panel Serial No. / Barcode</label>
+                    <div class="serial-tools">
+                        <span class="serial-count" id="panelSerialCount">Total Serial No.: 0</span>
+                        <button type="button" class="serial-copy-all" id="copyAllPanelSerialsBtn">📋 Select All &amp; Copy</button>
+                    </div>
                     <div id="panelSerialList" class="serial-list"></div>
                     <div class="serial-actions">
                         <button type="button" class="serial-scan-btn" id="openSerialScannerBtn">📷 Scan with Camera</button>
@@ -1386,6 +1417,10 @@ td{
 
                 <div class="field full">
                     <label>Inverter Serial No. / Barcode</label>
+                    <div class="serial-tools">
+                        <span class="serial-count" id="inverterSerialCount">Total Serial No.: 0</span>
+                        <button type="button" class="serial-copy-all" id="copyAllInverterSerialsBtn">📋 Select All &amp; Copy</button>
+                    </div>
                     <div id="inverterSerialList" class="serial-list"></div>
                     <div class="serial-actions">
                         <button type="button" class="serial-scan-btn" id="openInverterScannerBtn">📷 Scan Inverter Barcode</button>
@@ -2574,9 +2609,13 @@ function calculatePercentages(){
 /* ================= PANEL SERIAL NUMBERS ================= */
 
 function renumberPanelSerials(){
-    document.querySelectorAll("#panelSerialList .serial-row").forEach((row, index) => {
+    const rows = [...document.querySelectorAll("#panelSerialList .serial-row")];
+    rows.forEach((row, index) => {
         row.querySelector(".serial-number").textContent = (index + 1) + ".";
     });
+    const count = rows.filter(row => row.querySelector(".panel-serial-input").value.trim()).length;
+    const countEl = $("panelSerialCount");
+    if(countEl) countEl.textContent = "Total Serial No.: " + count;
 }
 
 function addPanelSerialRow(value = "", focus = false){
@@ -2591,6 +2630,7 @@ function addPanelSerialRow(value = "", focus = false){
     `;
     const input = row.querySelector("input");
     input.value = value || "";
+    input.addEventListener("input", renumberPanelSerials);
 
     // Barcode scanners usually send Enter after each scan.
     input.addEventListener("keydown", event => {
@@ -2634,14 +2674,43 @@ $("addSerialBtn").addEventListener("click", () => {
     addPanelSerialRow("", true);
 });
 
+$("copyAllPanelSerialsBtn").addEventListener("click", async () => {
+    const serials = getPanelSerialNumbers();
+    if(!serials.length){
+        toast("কপি করার মতো Panel Serial Number নেই।", "error");
+        return;
+    }
+    const combined = serials.join("\n");
+    try{
+        await navigator.clipboard.writeText(combined);
+        toast("সব " + serials.length + "টি Panel Serial Number একসাথে কপি হয়েছে।", "success");
+    }catch(error){
+        // Fallback for browsers/WebViews where Clipboard API is unavailable.
+        const temp = document.createElement("textarea");
+        temp.value = combined;
+        temp.style.position = "fixed";
+        temp.style.opacity = "0";
+        document.body.appendChild(temp);
+        temp.select();
+        const copied = document.execCommand("copy");
+        temp.remove();
+        if(copied) toast("সব " + serials.length + "টি Panel Serial Number একসাথে কপি হয়েছে।", "success");
+        else toast("কপি করা যায়নি। Browser permission পরীক্ষা করুন।", "error");
+    }
+});
+
 // Start with one editable serial-number field.
 setPanelSerialNumbers([]);
 
 /* ================= INVERTER SERIAL NUMBERS ================= */
 function renumberInverterSerials(){
-    document.querySelectorAll("#inverterSerialList .serial-row").forEach((row, index) => {
+    const rows = [...document.querySelectorAll("#inverterSerialList .serial-row")];
+    rows.forEach((row, index) => {
         row.querySelector(".serial-number").textContent = (index + 1) + ".";
     });
+    const count = rows.filter(row => row.querySelector(".inverter-serial-input").value.trim()).length;
+    const countEl = $("inverterSerialCount");
+    if(countEl) countEl.textContent = "Total Serial No.: " + count;
 }
 function addInverterSerialRow(value = "", focus = false){
     const list = $("inverterSerialList");
@@ -2650,6 +2719,7 @@ function addInverterSerialRow(value = "", focus = false){
     row.innerHTML = `<span class="serial-number"></span><input type="text" class="inverter-serial-input" autocomplete="off" placeholder="Scan or type inverter serial number"><button type="button" class="serial-remove" title="Remove serial number" aria-label="Remove serial number">×</button>`;
     const input = row.querySelector("input");
     input.value = value || "";
+    input.addEventListener("input", renumberInverterSerials);
     input.addEventListener("keydown", event => { if(event.key === "Enter"){ event.preventDefault(); addInverterSerialRow("", true); } });
     row.querySelector(".serial-remove").addEventListener("click", () => { row.remove(); if(!$("inverterSerialList").children.length) addInverterSerialRow("", false); renumberInverterSerials(); });
     list.appendChild(row); renumberInverterSerials(); if(focus) input.focus(); return input;
@@ -2663,6 +2733,32 @@ function setInverterSerialNumbers(values){
     else addInverterSerialRow("", false);
 }
 $("addInverterSerialBtn").addEventListener("click", () => addInverterSerialRow("", true));
+
+$("copyAllInverterSerialsBtn").addEventListener("click", async () => {
+    const serials = getInverterSerialNumbers();
+    if(!serials.length){
+        toast("কপি করার মতো Inverter Serial Number নেই।", "error");
+        return;
+    }
+    // Use real newline characters so each serial pastes onto its own line.
+    const combined = serials.join("\n");
+    try{
+        await navigator.clipboard.writeText(combined);
+        toast("সব " + serials.length + "টি Inverter Serial Number একসাথে কপি হয়েছে।", "success");
+    }catch(error){
+        const temp = document.createElement("textarea");
+        temp.value = combined;
+        temp.style.position = "fixed";
+        temp.style.opacity = "0";
+        document.body.appendChild(temp);
+        temp.select();
+        const copied = document.execCommand("copy");
+        temp.remove();
+        if(copied) toast("সব " + serials.length + "টি Inverter Serial Number একসাথে কপি হয়েছে।", "success");
+        else toast("কপি করা যায়নি। Browser permission পরীক্ষা করুন।", "error");
+    }
+});
+
 setInverterSerialNumbers([]);
 
 /* ================= PANEL SERIAL NUMBERS ================= */
