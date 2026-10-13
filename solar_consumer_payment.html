@@ -1876,6 +1876,11 @@ td{
             <button type="button" id="switchSerialCameraBtn">🔄 Switch Camera</button>
             <button type="button" id="toggleScannerTorchBtn" class="secondary">🔦 Flashlight: Auto</button>
         </div>
+        <div class="scanner-controls" style="margin-top:8px">
+            <button type="button" id="captureBarcodePhotoBtn">📸 ছবি তুলুন ও Barcode পড়ুন</button>
+            <button type="button" class="secondary" id="chooseBarcodePhotoBtn">🖼️ Gallery / Camera Photo</button>
+        </div>
+        <div style="font-size:11px;color:#64748b;margin-top:7px;line-height:1.45">Live scan না হলে Barcode-টি ফ্রেমে বড় করে এনে ছবি তুলুন। ছবি থেকে চার দিক ঘুরিয়ে ও contrast বাড়িয়ে Serial Number পড়ার চেষ্টা হবে।</div>
     </div>
 </div>
 
@@ -2994,6 +2999,49 @@ async function decodeUploadedBarcodeImage(file){
         URL.revokeObjectURL(imageUrl);
     }
 }
+
+async function captureAndDecodeBarcodePhoto(){
+    const video = $("serialScannerVideo");
+    if(!video || !video.srcObject || video.readyState < 2 || !video.videoWidth){
+        setPanelScannerStatus("ক্যামেরার ছবি এখনও তৈরি হয়নি। ১–২ সেকেন্ড অপেক্ষা করে আবার চাপুন।");
+        return;
+    }
+    panelScannerBusy = true;
+    const button = $("captureBarcodePhotoBtn");
+    const oldText = button.textContent;
+    button.disabled = true;
+    button.textContent = "ছবি থেকে Barcode পড়ছি…";
+    setPanelScannerStatus("ছবি নেওয়া হয়েছে। Barcode ঘুরিয়ে ও contrast বাড়িয়ে পড়ার চেষ্টা চলছে…");
+    try{
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d", {willReadFrequently:true});
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const blob = await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("ছবি তৈরি করা যায়নি")), "image/jpeg", 0.95));
+        const file = new File([blob], "barcode-camera-photo.jpg", {type:"image/jpeg"});
+        const scanned = await decodeUploadedBarcodeImage(file);
+        await stopPanelBarcodeScanner();
+        $("serialScannerModal").classList.remove("show");
+        await acceptScannedSerial(scanned);
+        setPanelScannerStatus("ছবি থেকে Barcode scan complete হয়েছে।");
+    }catch(error){
+        console.warn("Camera photo barcode decode failed", error);
+        panelScannerBusy = false;
+        setPanelScannerStatus("ছবিতে Barcode পড়া যায়নি। Barcode-টি আরও কাছে/স্পষ্ট করে আবার ছবি তুলুন, অথবা Gallery / Camera Photo দিয়ে চেষ্টা করুন।");
+    }finally{
+        button.disabled = false;
+        button.textContent = oldText;
+    }
+}
+
+$("captureBarcodePhotoBtn").addEventListener("click", captureAndDecodeBarcodePhoto);
+$("chooseBarcodePhotoBtn").addEventListener("click", () => {
+    // Open the phone's photo picker/camera chooser while retaining the current scanner type.
+    const picker = $("barcodeImageInput");
+    picker.setAttribute("capture", "environment");
+    picker.click();
+});
 
 $("barcodeImageInput").addEventListener("change", async event => {
     const file = event.target.files && event.target.files[0];
