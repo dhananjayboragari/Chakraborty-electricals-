@@ -1873,7 +1873,8 @@ td{
         <div style="font-size:12px;color:#64748b;margin:6px 0 10px">Scan হওয়ার পরে Serial Number popup-এ দেখাবে। OK চাপলে input box-এ বসবে।</div>
         <div class="scanner-controls">
             <button type="button" class="secondary" id="cancelSerialScannerBtn">Close Camera</button>
-            <button type="button" id="switchSerialCameraBtn">Switch Camera</button>
+            <button type="button" id="switchSerialCameraBtn">🔄 Switch Camera</button>
+            <button type="button" id="toggleScannerTorchBtn" class="secondary">🔦 Flashlight: Auto</button>
         </div>
     </div>
 </div>
@@ -2766,6 +2767,11 @@ let panelBarcodeReader = null;
 let panelBarcodeControls = null;
 let panelScannerFacingMode = "environment";
 let panelScannerBusy = false;
+let scannerTorchMode = "auto";
+let scannerTorchOn = false;
+let scannerLightCheckTimer = null;
+let scannerLastScanText = "";
+let scannerLastScanAt = 0;
 let pendingBarcodeValue = "";
 let barcodeConfirmResolver = null;
 let activeSerialType = "panel";
@@ -2780,8 +2786,10 @@ async function stopPanelBarcodeScanner(){
         if(panelBarcodeControls){ panelBarcodeControls.stop(); panelBarcodeControls = null; }
         if(panelBarcodeReader && typeof panelBarcodeReader.reset === "function") panelBarcodeReader.reset();
     }catch(error){ console.warn("Scanner stop:", error); }
+    if(scannerLightCheckTimer){ clearInterval(scannerLightCheckTimer); scannerLightCheckTimer = null; }
     const video = $("serialScannerVideo");
     if(video && video.srcObject){ video.srcObject.getTracks().forEach(track => track.stop()); video.srcObject = null; }
+    scannerTorchOn = false;
     panelScannerBusy = false;
 }
 
@@ -2810,12 +2818,52 @@ async function acceptScannedSerial(scanned){
     return true;
 }
 
+async function setScannerTorch(enabled){
+    const video = $("serialScannerVideo");
+    const track = video?.srcObject?.getVideoTracks?.()[0];
+    if(!track) return false;
+    try{
+        const caps = track.getCapabilities ? track.getCapabilities() : {};
+        if(!caps.torch) return false;
+        await track.applyConstraints({advanced:[{torch:!!enabled}]});
+        scannerTorchOn = !!enabled;
+        const btn = $("toggleScannerTorchBtn");
+        if(btn) btn.textContent = scannerTorchMode === "auto" ? "🔦 Flashlight: Auto" : (scannerTorchOn ? "🔦 Flashlight: ON" : "🔦 Flashlight: OFF");
+        return true;
+    }catch(error){ console.warn("Torch not available", error); return false; }
+}
+
+function startAutoTorchCheck(){
+    if(scannerLightCheckTimer) clearInterval(scannerLightCheckTimer);
+    const video = $("serialScannerVideo");
+    const canvas = document.createElement("canvas");
+    canvas.width = 32; canvas.height = 24;
+    const ctx = canvas.getContext("2d", {willReadFrequently:true});
+    scannerLightCheckTimer = setInterval(async () => {
+        if(scannerTorchMode !== "auto" || !video || video.readyState < 2 || panelScannerBusy) return;
+        try{
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const pixels = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+            let total = 0;
+            for(let i=0;i<pixels.length;i+=4) total += .299*pixels[i] + .587*pixels[i+1] + .114*pixels[i+2];
+            const brightness = total / (pixels.length/4);
+            // Only turns on automatically when the phone reports torch support.
+            if(brightness < 62 && !scannerTorchOn) await setScannerTorch(true);
+            else if(brightness > 92 && scannerTorchOn) await setScannerTorch(false);
+        }catch(e){ /* Camera frame may not be ready yet. */ }
+    }, 1400);
+}
+
 async function startPanelBarcodeScanner(type = "panel"){
     activeSerialType = type;
+    panelScannerBusy = false;
+    scannerLastScanText = "";
+    scannerLastScanAt = 0;
+    scannerTorchMode = "auto";
     $("scannerModalTitle").textContent = type === "inverter" ? "📷 Scan Inverter Barcode / QR" : "📷 Scan Solar Panel Barcode / QR";
     const modal = $("serialScannerModal");
     modal.classList.add("show");
-    setPanelScannerStatus("ক্যামেরা চালু করা হচ্ছে… Permission চাইলে Allow চাপুন।");
+    setPanelScannerStatus("ক্যামেরা চালু হচ্ছে… Barcode-টি ফ্রেমের মাঝখানে আনুন; আলো কম হলে Flashlight নিজে চালু হবে (ফোনে সুবিধাটি থাকলে)।");
     if(!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
         setPanelScannerStatus("ক্যামেরার জন্য GitHub Pages-এর HTTPS link ব্যবহার করুন এবং browser permission Allow করুন।"); return;
     }
@@ -2824,13 +2872,32 @@ async function startPanelBarcodeScanner(type = "panel"){
     }
     await stopPanelBarcodeScanner();
     try{
-        panelBarcodeReader = new window.ZXing.BrowserMultiFormatReader();
+        const ZX = window.ZXing;
+        const hints = new Map();
+        if(ZX.DecodeHintType && ZX.DecodeHintType.TRY_HARDER) hints.set(ZX.DecodeHintType.TRY_HARDER, true);
+        if(ZX.DecodeHintType && ZX.DecodeHintType.POSSIBLE_FORMATS && ZX.BarcodeFormat){
+            hints.set(ZX.DecodeHintType.POSSIBLE_FORMATS, [
+                ZX.BarcodeFormat.CODE_128, ZX.BarcodeFormat.CODE_39, ZX.BarcodeFormat.CODE_93,
+                ZX.BarcodeFormat.CODABAR, ZX.BarcodeFormat.EAN_13, ZX.BarcodeFormat.EAN_8,
+                ZX.BarcodeFormat.ITF, ZX.BarcodeFormat.UPC_A, ZX.BarcodeFormat.UPC_E,
+                ZX.BarcodeFormat.QR_CODE, ZX.BarcodeFormat.DATA_MATRIX, ZX.BarcodeFormat.PDF_417
+            ].filter(v => v !== undefined));
+        }
+        panelBarcodeReader = new ZX.BrowserMultiFormatReader(hints, 120);
+        const videoConstraints = {
+            facingMode: {ideal: panelScannerFacingMode},
+            width: {ideal: 1920}, height: {ideal: 1080},
+            frameRate: {ideal: 30, max: 60}
+        };
         panelBarcodeControls = await panelBarcodeReader.decodeFromConstraints(
-            {video:{facingMode:panelScannerFacingMode}}, $("serialScannerVideo"),
-            async result => {
+            {audio:false, video:videoConstraints}, $("serialScannerVideo"),
+            async (result, err) => {
                 if(!result || panelScannerBusy) return;
                 const scanned = (result.getText ? result.getText() : String(result)).trim();
                 if(!scanned) return;
+                const now = Date.now();
+                if(scanned === scannerLastScanText && now - scannerLastScanAt < 1800) return;
+                scannerLastScanText = scanned; scannerLastScanAt = now;
                 panelScannerBusy = true;
                 await stopPanelBarcodeScanner();
                 $("serialScannerModal").classList.remove("show");
@@ -2838,7 +2905,19 @@ async function startPanelBarcodeScanner(type = "panel"){
                 setPanelScannerStatus("Scan complete. আবার scan করতে Camera বাটনে চাপুন।");
             }
         );
-        setPanelScannerStatus("Barcode-টি ক্যামেরার সামনে ধরুন। Scan হলে সুন্দর confirmation popup দেখাবে।");
+        const video = $("serialScannerVideo");
+        const track = video?.srcObject?.getVideoTracks?.()[0];
+        if(track){
+            try{
+                const caps = track.getCapabilities ? track.getCapabilities() : {};
+                const advanced = [];
+                if(caps.focusMode?.includes("continuous")) advanced.push({focusMode:"continuous"});
+                if(caps.exposureMode?.includes("continuous")) advanced.push({exposureMode:"continuous"});
+                if(advanced.length) await track.applyConstraints({advanced});
+            }catch(e){ console.warn("Camera focus optimization unavailable", e); }
+        }
+        startAutoTorchCheck();
+        setPanelScannerStatus("দ্রুত multi-format scan চালু। Barcode সামনে/পাশ থেকে ধরে একটু স্থির রাখুন। কম আলোতে Flashlight auto চালু হবে যদি ফোন support করে।");
     }catch(error){
         console.error(error);
         setPanelScannerStatus("ক্যামেরা চালু হয়নি: " + (error?.message || "Camera permission Allow করুন"));
@@ -2948,7 +3027,18 @@ $("cancelSerialScannerBtn").addEventListener("click", closePanelScanner);
 $("serialScannerModal").addEventListener("click", event => { if(event.target === $("serialScannerModal")) closePanelScanner(); });
 $("switchSerialCameraBtn").addEventListener("click", async () => {
     panelScannerFacingMode = panelScannerFacingMode === "environment" ? "user" : "environment";
-    await stopPanelBarcodeScanner(); await startPanelBarcodeScanner();
+    await stopPanelBarcodeScanner(); await startPanelBarcodeScanner(activeSerialType);
+});
+$("toggleScannerTorchBtn").addEventListener("click", async () => {
+    scannerTorchMode = scannerTorchMode === "auto" ? "manual" : "auto";
+    if(scannerTorchMode === "manual"){
+        const ok = await setScannerTorch(!scannerTorchOn);
+        if(!ok) setPanelScannerStatus("এই ফোন/ব্রাউজারে Flashlight control support নেই। Auto mode-এ ফিরতে আবার বাটনে চাপুন।");
+        $("toggleScannerTorchBtn").textContent = scannerTorchOn ? "🔦 Flashlight: ON" : "🔦 Flashlight: OFF";
+    }else{
+        $("toggleScannerTorchBtn").textContent = "🔦 Flashlight: Auto";
+        startAutoTorchCheck();
+    }
 });
 $("barcodeResultOk").addEventListener("click", () => finishBarcodeResult(true));
 $("barcodeResultCancel").addEventListener("click", () => finishBarcodeResult(false));
