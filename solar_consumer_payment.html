@@ -556,6 +556,19 @@ td{
 }
 
 
+/* WARRANTY SUMMARY IN CONSUMER TABLE */
+.table-warranty{min-width:180px;max-width:245px;font-size:11px;line-height:1.45}
+.table-warranty .warranty-line{display:block;margin:3px 0;padding:5px 7px;border-radius:7px;background:#f1f5f9;color:#334155;white-space:normal}
+.table-warranty .warranty-line.ok{background:#ecfdf5;color:#065f46}
+.table-warranty .warranty-line.warn{background:#fffbeb;color:#92400e}
+.table-warranty .warranty-line.expired{background:#fff1f2;color:#9f1239}
+.table-warranty .warranty-date{display:block;color:#64748b;font-size:10px;margin-bottom:3px}
+/* WARRANTY STATUS + COMPACT SERIAL UI */
+.warranty-status{margin-top:9px;padding:11px 13px;border-radius:12px;border:1px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#f8fafc);color:#1e3a8a;font-size:12px;line-height:1.55}
+.warranty-status strong{font-size:13px}.warranty-status.ok{background:linear-gradient(135deg,#ecfdf5,#f0fdfa);border-color:#a7f3d0;color:#065f46}.warranty-status.warn{background:linear-gradient(135deg,#fffbeb,#fff7ed);border-color:#fcd34d;color:#92400e}.warranty-status.expired{background:linear-gradient(135deg,#fff1f2,#fff7f7);border-color:#fecdd3;color:#9f1239}
+.serial-row{gap:5px}.serial-row .serial-number{min-width:20px;font-size:10px}.serial-row input{padding:8px 9px;font-size:12px;min-height:35px}.serial-remove{width:30px;min-width:30px;height:34px;font-size:16px}.serial-tools{gap:6px;margin-bottom:7px}.serial-count{font-size:10px;padding:6px 8px}.serial-copy-all{font-size:11px;padding:7px 9px}.serial-actions{display:none!important}
+.serial-options-trigger{border:0;border-radius:9px;padding:9px 12px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);color:#fff;font-size:12px;font-weight:800;box-shadow:0 5px 12px #1d4ed833}
+.serial-options-modal{display:none;position:fixed;inset:0;z-index:100000;background:#0f172acc;backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:16px}.serial-options-modal.show{display:flex}.serial-options-card{width:min(100%,380px);background:#fff;border-radius:20px;padding:18px;box-shadow:0 25px 70px #0005}.serial-options-card h3{margin:0 0 5px;color:#12336b;font-size:18px}.serial-options-card p{margin:0 0 14px;color:#64748b;font-size:12px}.serial-option-grid{display:grid;grid-template-columns:1fr;gap:9px}.serial-option-grid button{border:0;border-radius:12px;padding:13px;text-align:left;font-weight:800;font-size:13px;background:#eff6ff;color:#1d4ed8}.serial-option-grid button:first-child{background:#dbeafe}.serial-option-grid button:last-child{background:#ecfdf5;color:#047857}.serial-options-close{margin-top:12px;width:100%;padding:10px;border:0;border-radius:10px;background:#e2e8f0;color:#334155;font-weight:800}
 /* SMART BARCODE RESULT POPUP */
 .barcode-result-card{text-align:center;padding:24px 20px;animation:barcodePop .22s ease-out;}
 .barcode-result-icon{width:58px;height:58px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;font-size:30px;font-weight:900;box-shadow:0 8px 20px #16a34a40;}
@@ -994,6 +1007,12 @@ td{
 }
 
 @media(max-width:400px){
+    .serial-row{gap:5px;}
+    .serial-row .serial-number{min-width:22px;}
+    .serial-remove{width:34px;min-width:34px;}
+    .serial-actions button{flex:1;min-width:135px;}
+    .scanner-card{padding:12px;}
+    #serialScannerVideo,#scannerCapturedImage{min-height:180px;max-height:52vh;}
 
     .payment-grid,
     .payment-grid.cash-grid{
@@ -1005,6 +1024,51 @@ td{
         font-size:11px;
     }
 }
+
+
+.year-input-wrap{display:flex;align-items:stretch;width:100%;border:1px solid #cbd5e1;border-radius:10px;overflow:hidden;background:#fff;min-height:42px}
+.year-input-wrap:focus-within{border-color:#3b82f6;box-shadow:0 0 0 3px #3b82f622}
+.year-input-wrap input{flex:1;min-width:0;width:100%;border:0!important;outline:0!important;box-shadow:none!important;border-radius:0!important;padding:10px 12px!important;background:transparent!important}
+.year-input-wrap .year-unit{display:flex;align-items:center;padding:0 13px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:800;border-left:1px solid #dbeafe;white-space:nowrap}
+
+/* All database sections are separated into individual responsive cards */
+.form{gap:18px!important}
+.project-card{display:block;min-width:0;padding:20px;border:1px solid #dbe5f0;border-radius:20px;box-shadow:0 8px 24px rgba(15,35,65,.07);margin:0 0 18px;overflow:hidden}
+.project-card.consumer-card{border-top:5px solid #0f766e;background:linear-gradient(155deg,#fff 0%,#f2fffc 100%)}
+.project-card.panel-card{border-top:5px solid #16a34a;background:linear-gradient(155deg,#fff 0%,#f5fff8 100%)}
+.project-card.inverter-card{border-top:5px solid #2563eb;background:linear-gradient(155deg,#fff 0%,#f5f8ff 100%)}
+.project-card.warranty-card{border-top:5px solid #7c3aed;background:linear-gradient(155deg,#fff 0%,#faf7ff 100%)}
+.project-card.payment-details-card{border-top:5px solid #ea580c;background:linear-gradient(155deg,#fff 0%,#fff8f2 100%)}
+.project-card-heading{display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:0 0 14px;border-bottom:1px solid #e3eaf3}
+.project-card-icon{width:48px;height:48px;flex:0 0 48px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#ccfbf1}
+.panel-card .project-card-icon{background:#dcfce7}.inverter-card .project-card-icon{background:#dbeafe}.warranty-card .project-card-icon{background:#ede9fe}.payment-details-card .project-card-icon{background:#ffedd5}
+.project-card-heading h3{font-size:21px;line-height:1.3;font-weight:850;letter-spacing:-.3px;color:#142f59;margin:0}
+.project-card-heading p{font-size:13px;line-height:1.55;color:#64748b;margin:5px 0 0}
+.project-card .field{min-width:0;margin:0 0 16px}
+.project-card .field:last-child{margin-bottom:0}
+.project-card .field label{display:block;font-size:15px!important;line-height:1.45;font-weight:800!important;color:#203755!important;margin:0 0 8px!important}
+.project-card .field input,.project-card .field select,.project-card .field textarea{width:100%;min-width:0;min-height:48px;padding:12px 13px;border:1.5px solid #cbd5e1;border-radius:12px;background:#fff;color:#0f172a;font-size:15px;font-weight:500;outline:none;box-sizing:border-box}
+.project-card .field textarea{min-height:84px;resize:vertical}
+.project-card .field input:focus,.project-card .field select:focus,.project-card .field textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3px #2563eb1c}
+.project-card .field small{font-size:12px!important;line-height:1.6!important;color:#64748b!important;margin-top:7px!important}
+.project-card .year-input-wrap{display:flex;align-items:stretch;width:100%;border:1.5px solid #cbd5e1;border-radius:12px;background:white;overflow:hidden;box-sizing:border-box}
+.project-card .year-input-wrap input{border:0!important;border-radius:0!important;box-shadow:none!important;min-width:0;flex:1}
+.project-card .year-input-wrap .year-unit{display:flex;align-items:center;padding:0 14px;background:#f1f5f9;border-left:1px solid #e2e8f0;color:#334155;font-size:14px;font-weight:800}
+.project-card .warranty-status{margin-top:9px;padding:11px 12px;border-radius:12px;font-size:12px;line-height:1.6;font-weight:650;overflow-wrap:anywhere}
+.project-card .serial-options-trigger{display:block;width:100%;min-height:46px;padding:12px;border-radius:12px;margin:8px 0 12px;font-size:13px;font-weight:800}
+.project-card .serial-row{gap:6px}.project-card .serial-row input{min-height:43px;font-size:13px;padding:9px}
+.project-card .section{padding:0;margin:16px 0 0;border:0;background:transparent;box-shadow:none}
+.project-card .section-title{font-size:16px;font-weight:850;margin:0 0 13px}
+.project-card .payment-type{margin-bottom:15px}
+.project-card .bank-box{padding:14px;border-radius:14px}
+.project-card .payment-grid{gap:12px}
+.project-card .payment-card{border-radius:14px}
+.project-card .payment-inner>.section:last-child{margin-bottom:0}
+.card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card-grid>.field{margin:0!important;min-width:0}
+.card-grid>.field.full{grid-column:1/-1}
+.payment-details-card .grid{margin-bottom:10px}
+@media(max-width:640px){.project-card{padding:15px;border-radius:17px;margin-bottom:14px}.project-card-heading{gap:10px;margin-bottom:15px}.project-card-icon{width:43px;height:43px;flex-basis:43px;font-size:22px;border-radius:13px}.project-card-heading h3{font-size:19px}.project-card-heading p{font-size:12px}.card-grid{grid-template-columns:minmax(0,1fr);gap:14px}.card-grid>.field.full{grid-column:auto}.project-card .field label{font-size:15px!important}.project-card .field input,.project-card .field select,.project-card .field textarea{font-size:16px;min-height:49px}.project-card .serial-actions{display:grid;grid-template-columns:1fr;gap:8px}.project-card .serial-actions button{width:100%;min-height:44px}.project-card .serial-tools{gap:8px;flex-wrap:wrap}.project-card .serial-copy-all{width:100%}.project-card .payment-grid{grid-template-columns:minmax(0,1fr)}}
 
 </style>
 </head>
@@ -1213,6 +1277,7 @@ td{
                     <th>Received</th>
                     <th>Progress</th>
                     <th>Due</th>
+                    <th>Warranty</th>
                     <th>Action</th>
 
                 </tr>
@@ -1263,519 +1328,253 @@ td{
 
 
     <form class="form" id="consumerForm">
-
-        <input type="hidden" id="editId">
-
-
-        <!-- CONSUMER -->
-
-        <div class="section">
-
-            <div class="section-title">
-                <span></span>
-                Consumer Information
-            </div>
-
-
-            <div class="grid">
-
-                <div class="field">
-
-                    <label>
+<input type="hidden" id="editId">
+<div class="project-card consumer-card">
+  <div class="project-card-heading"><span class="project-card-icon">👤</span><div><h3>Consumers Details</h3><p>Consumer name, mobile number, ID and address</p></div></div>
+  <div class="grid card-grid"><div class="field">
+<label>
                         Consumer Name *
                     </label>
-
-                    <input
-                        id="consumerName"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
+<input id="consumerName" required=""/>
+</div><div class="field">
+<label>
                         Mobile Number *
                     </label>
-
-                    <input
-                        id="mobile"
-                        type="tel"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
+<input id="mobile" required="" type="tel"/>
+</div><div class="field">
+<label>
                         Consumer ID
                     </label>
-
-                    <input
-                        id="consumerId"
-                        placeholder="CE-2026-001"
-                    >
-
-                </div>
-
-
-                <div class="field full">
-
-                    <label>
+<input id="consumerId" placeholder="CE-2026-001"/>
+</div><div class="field full">
+<label>
                         Address
                     </label>
-
-                    <textarea id="address"></textarea>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- SOLAR -->
-
-        <div class="section">
-
-            <div class="section-title">
-                <span></span>
-                Solar Project Details
-            </div>
-
-
-            <div class="grid">
-
-                <div class="field">
-
-                    <label>
+<textarea id="address"></textarea>
+</div></div>
+</div>
+<div class="project-card panel-card">
+  <div class="project-card-heading"><span class="project-card-icon">☀️</span><div><h3>Panel Details</h3><p>Solar capacity, panel model, serial numbers and barcode tools</p></div></div>
+  <div class="grid card-grid"><div class="field">
+<label>
                         Solar Capacity (kW)
                     </label>
-
-                    <input
-                        id="solarCapacity"
-                        type="number"
-                        step="0.01"
-                    >
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
+<input id="solarCapacity" step="0.01" type="number"/>
+</div><div class="field">
+<label>
                         Panel Details
                     </label>
-
-                    <input
-                        id="panelDetails"
-                        placeholder="Tata TOPCon 590W"
-                    >
-
-                </div>
-
-                <div class="field full">
-                    <label>Solar Panel Serial No. / Barcode</label>
-                    <div class="serial-tools">
-                        <span class="serial-count" id="panelSerialCount">Total Serial No.: 0</span>
-                        <button type="button" class="serial-copy-all" id="copyAllPanelSerialsBtn">📋 Select All &amp; Copy</button>
-                    </div>
-                    <div id="panelSerialList" class="serial-list"></div>
-                    <div class="serial-actions">
-                        <button type="button" class="serial-scan-btn" id="openSerialScannerBtn">📷 Scan with Camera</button>
-                        <button type="button" class="serial-add" id="uploadBarcodeImageBtn">🖼️ Upload Barcode Image</button>
-                        <input type="file" id="barcodeImageInput" accept="image/*" style="display:none">
-                        <button type="button" class="serial-add" id="addSerialBtn">＋ Add Serial Number</button>
-                    </div>
-                    <small style="display:block;margin-top:8px;color:#64748b;font-size:11px;line-height:1.5;">
+<input id="panelDetails" placeholder="Tata TOPCon 590W"/>
+</div><div class="field full">
+<label>Solar Panel Serial No. / Barcode</label>
+<div class="serial-tools">
+<span class="serial-count" id="panelSerialCount">Total Serial No.: 0</span>
+<button class="serial-copy-all" id="copyAllPanelSerialsBtn" type="button">📋 Select All &amp; Copy</button>
+</div>
+<div class="serial-list" id="panelSerialList"></div>
+<button class="serial-options-trigger" data-serial-options="panel" type="button">＋ Serial Tools · Scan / Upload / Add</button>
+<div class="serial-actions">
+<button class="serial-scan-btn" id="openSerialScannerBtn" type="button">📷 Scan with Camera</button>
+<button class="serial-add" id="uploadBarcodeImageBtn" type="button">🖼️ Upload Barcode Image</button>
+<input accept="image/*" id="barcodeImageInput" style="display:none" type="file"/>
+<button class="serial-add" id="addSerialBtn" type="button">＋ Add Serial Number</button>
+</div>
+<small style="display:block;margin-top:8px;color:#64748b;font-size:11px;line-height:1.5;">
                         📷 Scan with Camera চাপলে মোবাইলের ক্যামেরা খুলবে। Barcode scan হলে Serial No. নিজে থেকে বসবে এবং পরেরটির জন্য নতুন ঘর তৈরি হবে। চাইলে keyboard দিয়েও লিখতে বা ভুল ঠিক করতে পারবেন।
                     </small>
-                </div>
-
-
-                <div class="field">
-
-                    <label>
+</div></div>
+</div>
+<div class="project-card inverter-card">
+  <div class="project-card-heading"><span class="project-card-icon">⚡</span><div><h3>Inverter Details</h3><p>Inverter brand, model and serial number</p></div></div>
+  <div class="grid card-grid"><div class="field">
+<label>
                         Inverter Brand / Details
                     </label>
-
-                    <input
-                        id="inverterDetails"
-                        placeholder="Tata Power / 3.3 kW On Grid"
-                    >
-
-                </div>
-
-                <div class="field">
-                    <label>Inverter Model No.</label>
-                    <input
-                        id="inverterModelNo"
-                        type="text"
-                        autocomplete="off"
-                        placeholder="Enter inverter model number"
-                    >
-                    <small style="display:block;margin-top:5px;color:#64748b;font-size:11px;">ইনভার্টারের স্টিকার/নেমপ্লেটে লেখা Model No. এখানে লিখুন।</small>
-                </div>
-
-                <div class="field full">
-                    <label>Inverter Serial No. / Barcode</label>
-                    <div class="serial-tools">
-                        <span class="serial-count" id="inverterSerialCount">Total Serial No.: 0</span>
-                        <button type="button" class="serial-copy-all" id="copyAllInverterSerialsBtn">📋 Select All &amp; Copy</button>
-                    </div>
-                    <div id="inverterSerialList" class="serial-list"></div>
-                    <div class="serial-actions">
-                        <button type="button" class="serial-scan-btn" id="openInverterScannerBtn">📷 Scan Inverter Barcode</button>
-                        <button type="button" class="serial-add" id="uploadInverterBarcodeImageBtn">🖼️ Upload Inverter Barcode Image</button>
-                        <button type="button" class="serial-add" id="addInverterSerialBtn">＋ Add Inverter Serial</button>
-                    </div>
-                    <small style="display:block;margin-top:8px;color:#64748b;font-size:11px;line-height:1.5;">Inverter-এর Serial Number ক্যামেরা দিয়ে scan করুন, ছবি upload করুন অথবা হাতে লিখুন। Scan হলে সুন্দর confirmation popup দেখাবে।</small>
-                </div>
-
-
-                <div class="field">
-
-                    <label>
+<input id="inverterDetails" placeholder="Tata Power / 3.3 kW On Grid"/>
+</div><div class="field">
+<label>Inverter Model No.</label>
+<input autocomplete="off" id="inverterModelNo" placeholder="Enter inverter model number" type="text"/>
+<small style="display:block;margin-top:5px;color:#64748b;font-size:11px;">ইনভার্টারের স্টিকার/নেমপ্লেটে লেখা Model No. এখানে লিখুন।</small>
+</div><div class="field full">
+<label>Inverter Serial No. / Barcode</label>
+<div class="serial-tools">
+<span class="serial-count" id="inverterSerialCount">Total Serial No.: 0</span>
+<button class="serial-copy-all" id="copyAllInverterSerialsBtn" type="button">📋 Select All &amp; Copy</button>
+</div>
+<div class="serial-list" id="inverterSerialList"></div>
+<button class="serial-options-trigger" data-serial-options="inverter" type="button">＋ Serial Tools · Scan / Upload / Add</button>
+<div class="serial-actions">
+<button class="serial-scan-btn" id="openInverterScannerBtn" type="button">📷 Scan Inverter Barcode</button>
+<button class="serial-add" id="uploadInverterBarcodeImageBtn" type="button">🖼️ Upload Inverter Barcode Image</button>
+<button class="serial-add" id="addInverterSerialBtn" type="button">＋ Add Inverter Serial</button>
+</div>
+<small style="display:block;margin-top:8px;color:#64748b;font-size:11px;line-height:1.5;">Inverter-এর Serial Number ক্যামেরা দিয়ে scan করুন, ছবি upload করুন অথবা হাতে লিখুন। Scan হলে সুন্দর confirmation popup দেখাবে।</small>
+</div></div>
+</div>
+<div class="project-card warranty-card">
+  <div class="project-card-heading"><span class="project-card-icon">🛡️</span><div><h3>Warranty &amp; Free Maintenance</h3><p>Installation date, warranty periods and remaining time</p></div></div>
+  <div class="grid card-grid"><div class="field">
+<label>Installation Date</label>
+<input id="installDate" type="date"/>
+<small style="display:block;margin-top:5px;color:#64748b;font-size:11px;">যেদিন সোলার সিস্টেম ইনস্টল হয়েছে সেই তারিখ দিন।</small>
+</div><div class="field">
+<label>Panel Warranty</label>
+<div class="year-input-wrap"><input autocomplete="off" id="panelWarrantyYears" inputmode="decimal" min="0" placeholder="যেমন 25" step="0.1" type="number"/><span class="year-unit">Years</span></div>
+<div class="warranty-status" id="panelWarrantyStatus">Installation Date ও Warranty year লিখলে বাকি সময় দেখাবে।</div>
+</div><div class="field">
+<label>Inverter Warranty</label>
+<div class="year-input-wrap"><input autocomplete="off" id="inverterWarrantyYears" inputmode="decimal" min="0" placeholder="যেমন 5" step="0.1" type="number"/><span class="year-unit">Years</span></div>
+<div class="warranty-status" id="inverterWarrantyStatus">Installation Date ও Warranty year লিখলে বাকি সময় দেখাবে।</div>
+</div><div class="field">
+<label>Free Maintenance</label>
+<div class="year-input-wrap"><input autocomplete="off" id="freeMaintenanceYears" inputmode="decimal" min="0" placeholder="যেমন 4" step="0.1" type="number"/><span class="year-unit">Years</span></div>
+<div class="warranty-status" id="freeMaintenanceStatus">Installation Date ও Free Maintenance সময় দিলে বাকি সময় দেখাবে।</div>
+</div></div>
+</div>
+<div class="project-card payment-details-card">
+  <div class="project-card-heading"><span class="project-card-icon">💳</span><div><h3>Payment Details</h3><p>Estimate cost, payment method, bank loan and installment schedule</p></div></div>
+  <div class="grid card-grid"><div class="field">
+<label>
                         Total Estimate Cost *
                     </label>
-
-                    <input
-                        id="totalAmount"
-                        type="number"
-                        min="0"
-                        required
-                    >
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- PAYMENT TYPE -->
-
-        <div class="section">
-
-            <div class="section-title">
-                <span></span>
+<input id="totalAmount" min="0" required="" type="number"/>
+</div></div>
+  <div class="payment-inner">
+<div class="section-title">
+<span></span>
                 Payment Type
             </div>
-
-
-            <div class="payment-type">
-
-                <label
-                    class="type-option active"
-                    id="cashOption"
-                >
-
-                    <input
-                        type="radio"
-                        name="paymentType"
-                        value="Cash"
-                        checked
-                    >
-
-                    <div class="type-title">
+<div class="payment-type">
+<label class="type-option active" id="cashOption">
+<input checked="" name="paymentType" type="radio" value="Cash"/>
+<div class="type-title">
                         💵 Cash Payment
                     </div>
-
-                    <div class="type-desc">
+<div class="type-desc">
                         60% + 40%
                     </div>
-
-                </label>
-
-
-                <label
-                    class="type-option"
-                    id="loanOption"
-                >
-
-                    <input
-                        type="radio"
-                        name="paymentType"
-                        value="Bank Loan"
-                    >
-
-                    <div class="type-title">
+</label>
+<label class="type-option" id="loanOption">
+<input name="paymentType" type="radio" value="Bank Loan"/>
+<div class="type-title">
                         🏦 Bank Loan
                     </div>
-
-                    <div class="type-desc">
+<div class="type-desc">
                         60% + 30% + 10%
                     </div>
-
-                </label>
-
-            </div>
-
-
-            <!-- BANK DETAILS -->
-
-            <div
-                class="bank-box hidden"
-                id="bankBox"
-            >
-
-                <div class="section-title">
+</label>
+</div>
+ BANK DETAILS 
+<div class="bank-box hidden" id="bankBox">
+<div class="section-title">
                     🏦 Bank Loan Details
                 </div>
-
-
-                <div class="grid">
-
-                    <div class="field">
-
-                        <label>
+<div class="grid">
+<div class="field">
+<label>
                             Bank Name
                         </label>
-
-                        <input id="bankName">
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
+<input id="bankName"/>
+</div>
+<div class="field">
+<label>
                             Loan Amount
                         </label>
-
-                        <input
-                            id="loanAmount"
-                            type="number"
-                            min="0"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
+<input id="loanAmount" min="0" type="number"/>
+</div>
+<div class="field">
+<label>
                             Loan Applied Date
                         </label>
-
-                        <input
-                            id="loanAppliedDate"
-                            type="date"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
+<input id="loanAppliedDate" type="date"/>
+</div>
+<div class="field">
+<label>
                             Loan Sanction Date
                         </label>
-
-                        <input
-                            id="loanSanctionDate"
-                            type="date"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
+<input id="loanSanctionDate" type="date"/>
+</div>
+<div class="field">
+<label>
                             Loan Reference No.
                         </label>
+<input id="loanReference"/>
+</div>
+</div>
+</div>
 
-                        <input id="loanReference">
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- PAYMENT SCHEDULE -->
-
-        <div class="section">
-
-            <div class="section-title">
-
-                <span></span>
+<div class="section-title">
+<span></span>
 
                 Payment Schedule
 
             </div>
-
-
-            <!-- CASH -->
-
-            <div id="cashPayments">
-
-                <div class="payment-grid cash-grid">
-
-                    <div class="payment-card">
-
-                        <h4>
+ CASH 
+<div id="cashPayments">
+<div class="payment-grid cash-grid">
+<div class="payment-card">
+<h4>
                             1st Payment
                             <span class="percent">60%</span>
-                        </h4>
-
-                        <div
-                            class="calculated"
-                            id="cashP1Calculated"
-                        >
+</h4>
+<div class="calculated" id="cashP1Calculated">
                             Calculated: ₹0
                         </div>
-
-                        <input
-                            id="cashP1Amount"
-                            type="number"
-                            placeholder="Actual Amount"
-                        >
-
-                        <input
-                            id="cashP1Date"
-                            type="date"
-                        >
-
-                    </div>
-
-
-                    <div class="payment-card">
-
-                        <h4>
+<input id="cashP1Amount" placeholder="Actual Amount" type="number"/>
+<input id="cashP1Date" type="date"/>
+</div>
+<div class="payment-card">
+<h4>
                             2nd Payment
                             <span class="percent">40%</span>
-                        </h4>
-
-                        <div
-                            class="calculated"
-                            id="cashP2Calculated"
-                        >
+</h4>
+<div class="calculated" id="cashP2Calculated">
                             Calculated: ₹0
                         </div>
-
-                        <input
-                            id="cashP2Amount"
-                            type="number"
-                            placeholder="Actual Amount"
-                        >
-
-                        <input
-                            id="cashP2Date"
-                            type="date"
-                        >
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- BANK -->
-
-            <div
-                id="loanPayments"
-                class="hidden"
-            >
-
-                <div class="payment-grid">
-
-                    <div class="payment-card">
-
-                        <h4>
+<input id="cashP2Amount" placeholder="Actual Amount" type="number"/>
+<input id="cashP2Date" type="date"/>
+</div>
+</div>
+</div>
+ BANK 
+<div class="hidden" id="loanPayments">
+<div class="payment-grid">
+<div class="payment-card">
+<h4>
                             1st Payment
                             <span class="percent">60%</span>
-                        </h4>
-
-                        <div
-                            class="calculated"
-                            id="loanP1Calculated"
-                        >
+</h4>
+<div class="calculated" id="loanP1Calculated">
                             Calculated: ₹0
                         </div>
-
-                        <input
-                            id="loanP1Amount"
-                            type="number"
-                            placeholder="Actual Amount"
-                        >
-
-                        <input
-                            id="loanP1Date"
-                            type="date"
-                        >
-
-                    </div>
-
-
-                    <div class="payment-card">
-
-                        <h4>
+<input id="loanP1Amount" placeholder="Actual Amount" type="number"/>
+<input id="loanP1Date" type="date"/>
+</div>
+<div class="payment-card">
+<h4>
                             2nd Payment
                             <span class="percent">30%</span>
-                        </h4>
-
-                        <div
-                            class="calculated"
-                            id="loanP2Calculated"
-                        >
+</h4>
+<div class="calculated" id="loanP2Calculated">
                             Calculated: ₹0
                         </div>
-
-                        <input
-                            id="loanP2Amount"
-                            type="number"
-                            placeholder="Actual Amount"
-                        >
-
-                        <input
-                            id="loanP2Date"
-                            type="date"
-                        >
-
-                    </div>
-
-
-                    <div class="payment-card">
-
-                        <h4>
+<input id="loanP2Amount" placeholder="Actual Amount" type="number"/>
+<input id="loanP2Date" type="date"/>
+</div>
+<div class="payment-card">
+<h4>
                             3rd Payment
                             <span class="percent">10%</span>
-                        </h4>
-
-                        <div
-                            class="calculated"
-                            id="loanP3Calculated"
-                        >
+</h4>
+<div class="calculated" id="loanP3Calculated">
                             Calculated: ₹0
                         </div>
-
-                        <input
-                            id="loanP3Amount"
-                            type="number"
-                            placeholder="Actual Amount"
-                        >
-
-                        <input
-                            id="loanP3Date"
-                            type="date"
-                        >
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <p style="
+<input id="loanP3Amount" placeholder="Actual Amount" type="number"/>
+<input id="loanP3Date" type="date"/>
+</div>
+</div>
+</div>
+<p style="
                 font-size:10px;
                 color:#64748b;
                 margin-top:10px;
@@ -1784,30 +1583,16 @@ td{
                 Actual Amount can be changed if the received amount is different.
             </p>
 
-        </div>
-
-
-        <!-- NOTES -->
-
-        <div class="section">
-
-            <div class="section-title">
-                <span></span>
+<div class="section-title">
+<span></span>
                 Notes
             </div>
-
-            <div class="field">
-
-                <textarea
-                    id="notes"
-                    placeholder="Payment or installation remarks..."
-                ></textarea>
-
-            </div>
-
-        </div>
-
-    </form>
+<div class="field">
+<textarea id="notes" placeholder="Payment or installation remarks..."></textarea>
+</div>
+</div>
+</div>
+</form>
 
 
     <div class="modal-footer">
@@ -1866,6 +1651,8 @@ td{
 
 </div>
 
+
+<div class="serial-options-modal" id="serialOptionsModal" role="dialog" aria-modal="true" aria-label="Serial number tools"><div class="serial-options-card"><h3 id="serialOptionsTitle">Serial Number Tools</h3><p>আপনার প্রয়োজনীয় কাজটি বেছে নিন। Scan হলে serial যাচাই করে যোগ করতে পারবেন।</p><div class="serial-option-grid"><button type="button" id="serialOptionScan">📷 Barcode Scan with Camera</button><button type="button" id="serialOptionUpload">🖼️ Upload Barcode Photo</button><button type="button" id="serialOptionAdd">＋ Add Serial Number Manually</button></div><button type="button" class="serial-options-close" id="serialOptionsClose">Close</button></div></div>
 
 <div class="scanner-overlay" id="serialScannerModal" role="dialog" aria-modal="true" aria-label="Scan solar panel barcode">
     <div class="scanner-card">
@@ -2369,6 +2156,37 @@ function render(){
             </td>
 
 
+            <td data-label="Warranty">
+                <div class="table-warranty">
+                    <span class="warranty-date">Install: ${esc(c.installDate || "Not set")}</span>
+                    ${
+                        c.panelWarrantyYears
+                        ? (() => {
+                            const w = warrantyInfo(c.installDate, c.panelWarrantyYears);
+                            return `<span class="warranty-line ${w.cls}">☀️ Panel ${esc(c.panelWarrantyYears)}Y · ${esc(w.text)}</span>`;
+                          })()
+                        : '<span class="warranty-line">☀️ Panel warranty not set</span>'
+                    }
+                    ${
+                        c.inverterWarrantyYears
+                        ? (() => {
+                            const w = warrantyInfo(c.installDate, c.inverterWarrantyYears);
+                            return `<span class="warranty-line ${w.cls}">⚡ Inverter ${esc(c.inverterWarrantyYears)}Y · ${esc(w.text)}</span>`;
+                          })()
+                        : '<span class="warranty-line">⚡ Inverter warranty not set</span>'
+                    }
+                    ${
+                        c.freeMaintenanceYears !== undefined && c.freeMaintenanceYears !== ""
+                        ? (() => {
+                            const w = warrantyInfo(c.installDate, c.freeMaintenanceYears);
+                            return `<span class="warranty-line ${w.cls}">🧰 Free Maintenance ${esc(maintenanceDurationLabel(c.freeMaintenanceYears))} · ${esc(w.text)}</span>`;
+                          })()
+                        : '<span class="warranty-line">🧰 Free maintenance not set</span>'
+                    }
+                </div>
+            </td>
+
+
             <td data-label="Action">
 
                 <button
@@ -2616,6 +2434,31 @@ function calculatePercentages(){
 
 
 
+/* ================= SERIAL PASTE SUPPORT ================= */
+/* Paste multiple serial numbers (one per line) into either serial list. */
+function bindSerialPaste(input, type){
+    input.addEventListener("paste", event => {
+        const raw = event.clipboardData?.getData("text") || "";
+        const values = raw.split(/\\r?\\n|\\r|\\t/).map(v => v.trim()).filter(Boolean);
+        if(values.length <= 1) return;
+        event.preventDefault();
+        const isInverter = type === "inverter";
+        const listSelector = isInverter ? "#inverterSerialList" : "#panelSerialList";
+        const inputSelector = isInverter ? ".inverter-serial-input" : ".panel-serial-input";
+        const addRow = isInverter ? addInverterSerialRow : addPanelSerialRow;
+        let rows = [...document.querySelectorAll(listSelector + " " + inputSelector)];
+        let start = rows.indexOf(input);
+        if(start < 0) start = rows.length;
+        values.forEach((value, offset) => {
+            let target = rows[start + offset];
+            if(!target) target = addRow("", false);
+            target.value = value;
+        });
+        (isInverter ? renumberInverterSerials : renumberPanelSerials)();
+        toast(values.length + "টি Serial Number আলাদা ঘরে বসানো হয়েছে।", "success");
+    });
+}
+
 /* ================= PANEL SERIAL NUMBERS ================= */
 
 function renumberPanelSerials(){
@@ -2641,6 +2484,7 @@ function addPanelSerialRow(value = "", focus = false){
     const input = row.querySelector("input");
     input.value = value || "";
     input.addEventListener("input", renumberPanelSerials);
+    bindSerialPaste(input, "panel");
 
     // Barcode scanners usually send Enter after each scan.
     input.addEventListener("keydown", event => {
@@ -2730,6 +2574,7 @@ function addInverterSerialRow(value = "", focus = false){
     const input = row.querySelector("input");
     input.value = value || "";
     input.addEventListener("input", renumberInverterSerials);
+    bindSerialPaste(input, "inverter");
     input.addEventListener("keydown", event => { if(event.key === "Enter"){ event.preventDefault(); addInverterSerialRow("", true); } });
     row.querySelector(".serial-remove").addEventListener("click", () => { row.remove(); if(!$("inverterSerialList").children.length) addInverterSerialRow("", false); renumberInverterSerials(); });
     list.appendChild(row); renumberInverterSerials(); if(focus) input.focus(); return input;
@@ -3132,6 +2977,57 @@ $("barcodeResultCancel").addEventListener("click", () => finishBarcodeResult(fal
 $("barcodeResultModal").addEventListener("click", event => { if(event.target === $("barcodeResultModal")) finishBarcodeResult(false); });
 
 
+/* ================= WARRANTY CALCULATOR ================= */
+function warrantyInfo(installDate, years){
+    if(!installDate || years === "" || years === null || years === undefined){
+        return {text:"তারিখ ও warranty year নির্বাচন করুন", cls:"", remaining:null};
+    }
+    const numericYears = Number(years);
+    if(!Number.isFinite(numericYears) || numericYears < 0){
+        return {text:"সঠিক বছর লিখুন", cls:"", remaining:null};
+    }
+    const start = new Date(installDate + "T00:00:00");
+    if(Number.isNaN(start.getTime())) return {text:"Installation Date ঠিক নয়", cls:"", remaining:null};
+
+    // Convert fractional years to months: 5.5 years = 66 months.
+    const totalMonths = Math.round(numericYears * 12);
+    const expiry = new Date(start);
+    expiry.setMonth(expiry.getMonth() + totalMonths);
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const days = Math.ceil((expiry.getTime() - today.getTime()) / 86400000);
+    const expiryText = expiry.toLocaleDateString("en-IN", {day:"2-digit", month:"short", year:"numeric"});
+
+    if(days < 0) return {text:`Warranty শেষ হয়েছে ${Math.abs(days)} দিন আগে · শেষ তারিখ ${expiryText}`, cls:"expired", remaining:days, expiry};
+    if(days === 0) return {text:`আজ warranty-র শেষ দিন · ${expiryText}`, cls:"warn", remaining:days, expiry};
+    if(days <= 90) return {text:`⚠️ Warranty বাকি ${days} দিন · শেষ তারিখ ${expiryText}`, cls:"warn", remaining:days, expiry};
+
+    let monthsLeft = (expiry.getFullYear() - today.getFullYear()) * 12 + (expiry.getMonth() - today.getMonth());
+    if(expiry.getDate() < today.getDate()) monthsLeft--;
+    monthsLeft = Math.max(0, monthsLeft);
+    const yearsLeft = Math.floor(monthsLeft / 12);
+    const remMonths = monthsLeft % 12;
+    const dayDiff = Math.max(0, days - (monthsLeft * 30));
+    const remainingParts = [];
+    if(yearsLeft) remainingParts.push(yearsLeft + " বছর");
+    if(remMonths) remainingParts.push(remMonths + " মাস");
+    if(!remainingParts.length || dayDiff > 0) remainingParts.push(dayDiff + " দিন");
+    return {text:`✓ Warranty বাকি ${remainingParts.join(" ")} · শেষ তারিখ ${expiryText}`, cls:"ok", remaining:days, expiry};
+}
+function updateWarrantyStatuses(){[["panelWarrantyStatus","panelWarrantyYears"],["inverterWarrantyStatus","inverterWarrantyYears"],["freeMaintenanceStatus","freeMaintenanceYears"]].forEach(([statusId,yearsId])=>{const el=$(statusId);if(!el)return;const result=warrantyInfo($("installDate").value,$(yearsId).value);el.className="warranty-status"+(result.cls?" "+result.cls:"");el.textContent=result.text;});}
+function warrantySummary(installDate,years){const result=warrantyInfo(installDate,years);return result.remaining===null?"Not set":result.text;}
+function maintenanceDurationLabel(years){
+    const n = Number(years);
+    if (!Number.isFinite(n)) return String(years || "");
+    if (n === 0.5) return "6 Months";
+    return `${n} Year${n === 1 ? "" : "s"}`;
+}
+$("installDate").addEventListener("change",updateWarrantyStatuses);
+$("panelWarrantyYears").addEventListener("input",updateWarrantyStatuses);
+$("inverterWarrantyYears").addEventListener("input",updateWarrantyStatuses);
+$("freeMaintenanceYears").addEventListener("input",updateWarrantyStatuses);
+
 /* ================= ADD ================= */
 
 $("addBtn").onclick = () => {
@@ -3157,6 +3053,7 @@ function resetForm(){
     $("consumerForm").reset();
     setPanelSerialNumbers([]);
     setInverterSerialNumbers([]);
+    updateWarrantyStatuses();
 
     $("editId").value = "";
 
@@ -3217,6 +3114,11 @@ async () => {
         panelDetails:
             $("panelDetails")
             .value.trim(),
+
+        installDate: $("installDate").value,
+        panelWarrantyYears: $("panelWarrantyYears").value,
+        inverterWarrantyYears: $("inverterWarrantyYears").value,
+        freeMaintenanceYears: $("freeMaintenanceYears").value,
 
         panelSerialNumbers:
             getPanelSerialNumbers(),
@@ -3480,6 +3382,11 @@ function(id){
 
     $("panelDetails").value =
         c.panelDetails || "";
+    $("installDate").value = c.installDate || "";
+    $("panelWarrantyYears").value = c.panelWarrantyYears || "";
+    $("inverterWarrantyYears").value = c.inverterWarrantyYears || "";
+    $("freeMaintenanceYears").value = c.freeMaintenanceYears ?? "";
+    updateWarrantyStatuses();
 
     setPanelSerialNumbers(c.panelSerialNumbers || []);
 
@@ -3748,6 +3655,16 @@ function(id){
         </div>
 
 
+        <div class="detail-box"><h4>🛡️ Installation & Warranty</h4>
+            <div class="detail-row"><span>Installation Date</span><strong>${esc(c.installDate || "-")}</strong></div>
+            <div class="detail-row"><span>Panel Warranty</span><strong>${c.panelWarrantyYears !== undefined && c.panelWarrantyYears !== "" ? esc(c.panelWarrantyYears) + " Years" : "-"}</strong></div>
+            <div class="detail-row"><span>Panel Warranty Status</span><strong>${warrantySummary(c.installDate,c.panelWarrantyYears)}</strong></div>
+            <div class="detail-row"><span>Inverter Warranty</span><strong>${c.inverterWarrantyYears !== undefined && c.inverterWarrantyYears !== "" ? esc(c.inverterWarrantyYears) + " Years" : "-"}</strong></div>
+            <div class="detail-row"><span>Inverter Warranty Status</span><strong>${warrantySummary(c.installDate,c.inverterWarrantyYears)}</strong></div>
+            <div class="detail-row"><span>Free Maintenance</span><strong>${c.freeMaintenanceYears !== undefined && c.freeMaintenanceYears !== "" ? esc(maintenanceDurationLabel(c.freeMaintenanceYears)) : "-"}</strong></div>
+            <div class="detail-row"><span>Free Maintenance Status</span><strong>${c.freeMaintenanceYears !== undefined && c.freeMaintenanceYears !== "" ? warrantySummary(c.installDate,c.freeMaintenanceYears) : "Not set"}</strong></div>
+        </div>
+
         <div class="detail-box">
 
             <h4>
@@ -3928,6 +3845,22 @@ function(id){
 
         </div>
 
+        <div class="detail-box">
+            <h4>☀️ Solar Panel & Inverter Serial Numbers</h4>
+            <div class="detail-row">
+                <span>Panel Serial No.</span>
+                <strong style="text-align:right;white-space:pre-line;overflow-wrap:anywhere">${esc((Array.isArray(c.panelSerialNumbers) ? c.panelSerialNumbers : []).filter(Boolean).join("\\n") || "-")}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Inverter Model</span>
+                <strong>${esc(c.inverterModelNo || "-")}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Inverter Serial No.</span>
+                <strong style="text-align:right;white-space:pre-line;overflow-wrap:anywhere">${esc((Array.isArray(c.inverterSerialNumbers) ? c.inverterSerialNumbers : []).filter(Boolean).join("\\n") || "-")}</strong>
+            </div>
+        </div>
+
     `;
 
 
@@ -4097,6 +4030,16 @@ $("statusFilter")
 );
 
 
+/* ================= SERIAL TOOLS POPUP ================= */
+let activeSerialToolType="panel";
+document.querySelectorAll("[data-serial-options]").forEach(btn=>btn.addEventListener("click",()=>{activeSerialToolType=btn.dataset.serialOptions;$("serialOptionsTitle").textContent=activeSerialToolType==="panel"?"☀️ Panel Serial Tools":"⚡ Inverter Serial Tools";$("serialOptionsModal").classList.add("show");}));
+function closeSerialOptions(){$("serialOptionsModal").classList.remove("show");}
+$("serialOptionsClose").addEventListener("click",closeSerialOptions);
+$("serialOptionsModal").addEventListener("click",e=>{if(e.target===$("serialOptionsModal"))closeSerialOptions();});
+$("serialOptionScan").addEventListener("click",()=>{closeSerialOptions();$(activeSerialToolType==="panel"?"openSerialScannerBtn":"openInverterScannerBtn").click();});
+$("serialOptionUpload").addEventListener("click",()=>{closeSerialOptions();$(activeSerialToolType==="panel"?"uploadBarcodeImageBtn":"uploadInverterBarcodeImageBtn").click();});
+$("serialOptionAdd").addEventListener("click",()=>{closeSerialOptions();if(activeSerialToolType==="panel")addPanelSerialRow("",true);else addInverterSerialRow("",true);});
+
 /* ================= CLOSE ================= */
 
 $("closeForm").onclick =
@@ -4117,44 +4060,10 @@ $("closeDetails").onclick =
     .classList.remove("show");
 
 
-$("formModal")
-.addEventListener(
-    "click",
-    e => {
-
-        if(
-            e.target ===
-            $("formModal")
-        ){
-
-            $("formModal")
-            .classList
-            .remove("show");
-
-        }
-
-    }
-);
+/* Add/Edit Consumer popup stays open on outside click; close with × or Cancel only. */
 
 
-$("detailsModal")
-.addEventListener(
-    "click",
-    e => {
-
-        if(
-            e.target ===
-            $("detailsModal")
-        ){
-
-            $("detailsModal")
-            .classList
-            .remove("show");
-
-        }
-
-    }
-);
+/* Details popup closes only with its × button. */
 
 
 /* ================= LOGOUT ================= */
