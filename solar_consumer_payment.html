@@ -342,22 +342,54 @@ td{
     background:linear-gradient(90deg,#2563eb,#16a34a);
 }
 
-.action-btn{
-    border:0;
-    width:33px;
-    height:33px;
-    border-radius:9px;
-    background:#f1f5f9;
-    margin-right:3px;
+
+.action-btn {
+    border: 0;
+    width: 66px;
+    min-height: 60px;
+    padding: 7px 4px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
 }
 
-.action-btn:hover{
-    background:#dbeafe;
+.consumer-action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-.action-btn.delete:hover{
-    background:#fee2e2;
+.action-emoji {
+    font-size: 22px;
+    line-height: 1.1;
 }
+
+.action-label {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.action-view:hover {
+    background: #dbeafe;
+}
+
+.action-edit:hover {
+    background: #fef3c7;
+}
+
+.action-btn.delete:hover {
+    background: #fee2e2;
+}
+
 
 /* ================= EMPTY ================= */
 
@@ -2187,38 +2219,41 @@ function render(){
             </td>
 
 
-            <td data-label="Action">
+            
+<td data-label="Action">
+    <div class="consumer-action-buttons">
 
-                <button
-                    class="action-btn"
-                    onclick="
-                        window.viewConsumer('${c.id}')
-                    "
-                >
-                    👁
-                </button>
+        <button
+            type="button"
+            class="action-btn action-view"
+            onclick="window.viewConsumer('${c.id}')">
+            <span class="action-emoji">👁️</span>
+            <span class="action-label">View</span>
+        </button>
+
+        <button
+            type="button"
+            class="action-btn action-edit"
+            onclick="window.editConsumer('${c.id}')">
+            <span class="action-emoji">✏️</span>
+            <span class="action-label">Edit</span>
+        </button>
+
+        <button
+            type="button"
+            class="action-btn delete action-delete"
+            onclick="window.deleteConsumer('${c.id}')">
+            <span class="action-emoji">🗑️</span>
+            <span class="action-label">Delete</span>
+        </button>
+
+    </div>
+</td>
+
+              
 
 
-                <button
-                    class="action-btn"
-                    onclick="
-                        window.editConsumer('${c.id}')
-                    "
-                >
-                    ✏
-                </button>
-
-
-                <button
-                    class="action-btn delete"
-                    onclick="
-                        window.deleteConsumer('${c.id}')
-                    "
-                >
-                    🗑
-                </button>
-
-            </td>
+                
 
         `;
 
