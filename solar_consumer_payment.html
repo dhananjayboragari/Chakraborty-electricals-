@@ -2190,7 +2190,8 @@ function render(){
 
             <td data-label="Warranty">
                 <div class="table-warranty">
-                    <span class="warranty-date">Install: ${esc(c.installDate || "Not set")}</span>
+
+    <span class="warranty-date">Install: ${esc(formatDate(c.installDate || "" ) || "Not set")}</span>
                     ${
                         c.panelWarrantyYears
                         ? (() => {
@@ -3015,6 +3016,20 @@ $("barcodeResultModal").addEventListener("click", event => { if(event.target ===
 /* ================= WARRANTY CALCULATOR ================= */
 
   
+function formatDate(dateValue) {
+    if (!dateValue) return "-";
+
+    const value = String(dateValue);
+    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+    if (!match) return value;
+
+    return `${match[3]}-${match[2]}-${match[1]}`;
+}
+
+
+
+  
 function warrantyInfo(installDate, years) {
     if (!installDate || years === "" || years === null || years === undefined) {
         return {
@@ -3768,7 +3783,8 @@ function(id){
 
 
         <div class="detail-box"><h4>🛡️ Installation & Warranty</h4>
-            <div class="detail-row"><span>Installation Date</span><strong>${esc(c.installDate || "-")}</strong></div>
+
+    <div class="detail-row"><span>Installation Date</span><strong>${esc(formatDate(c.installDate))}</strong></div>
             <div class="detail-row"><span>Panel Warranty</span><strong>${c.panelWarrantyYears !== undefined && c.panelWarrantyYears !== "" ? esc(c.panelWarrantyYears) + " Years" : "-"}</strong></div>
             <div class="detail-row"><span>Panel Warranty Status</span><strong>${warrantySummary(c.installDate,c.panelWarrantyYears)}</strong></div>
             <div class="detail-row"><span>Inverter Warranty</span><strong>${c.inverterWarrantyYears !== undefined && c.inverterWarrantyYears !== "" ? esc(c.inverterWarrantyYears) + " Years" : "-"}</strong></div>
@@ -3913,9 +3929,7 @@ function(id){
                     </span>
 
                     <strong>
-                        ${esc(
-                            c.loan?.loanSanctionDate || "-"
-                        )}
+                        ${esc(formatDate(c.loan?.loanSanctionDate))}
                     </strong>
 
                 </div>
@@ -4033,7 +4047,7 @@ function milestone(
                 <small>
                     ${
                         date
-                        ? esc(date)
+                        ? esc(formatDate(date))
                         : "Date not entered"
                     }
                 </small>
