@@ -1790,6 +1790,27 @@ style="margin-top:15px">
 
 </div>
 
+<!-- ITEMS TOTAL SUMMARY: added without changing the existing item table -->
+<div id="itemsTotalBox" style="
+    margin-top:15px;
+    padding:16px;
+    background:#f8fafc;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    color:#1f2937;
+">
+    <h3 style="margin:0 0 12px;color:#1e3a8a;">Invoice Items Total</h3>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Total Items</span><b id="totalItemCount">0</b></div>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Total Quantity</span><b id="totalItemQty">0</b></div>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Subtotal</span><b id="itemsSubtotal">₹0.00</b></div>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Total Discount</span><b id="itemsDiscount">₹0.00</b></div>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Taxable Amount</span><b id="itemsTaxable">₹0.00</b></div>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Total GST</span><b id="itemsGST">₹0.00</b></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:2px solid #1e3a8a;margin-top:8px;padding-top:12px;font-size:18px;color:#1e3a8a;">
+        <b>Grand Total</b><b id="itemsGrandTotal">₹0.00</b>
+    </div>
+</div>
+
 </div>
 
 
@@ -3183,6 +3204,26 @@ function deleteItem(id){
 
 
 
+function updateItemsTotal(){
+
+    // Use the existing invoice calculation so amounts stay consistent.
+    const total = calc();
+
+    const totalQty = items.reduce(
+        (sum, item) => sum + Number(item.qty || 0),
+        0
+    );
+
+    document.getElementById("totalItemCount").textContent = items.length;
+    document.getElementById("totalItemQty").textContent = totalQty;
+    document.getElementById("itemsSubtotal").textContent = money(total.subtotal);
+    document.getElementById("itemsDiscount").textContent = money(total.discount);
+    document.getElementById("itemsTaxable").textContent = money(total.taxable);
+    document.getElementById("itemsGST").textContent = money(total.tax);
+    document.getElementById("itemsGrandTotal").textContent = money(total.total);
+}
+
+
 function calc(){
 
     let subtotal = 0;
@@ -3265,6 +3306,7 @@ function renderItems(){
             </tr>
             `;
 
+        updateItemsTotal();
         return;
 
     }
@@ -3356,6 +3398,7 @@ function renderItems(){
             }
         ).join("");
 
+    updateItemsTotal();
 }
 
 
