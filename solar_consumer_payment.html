@@ -956,6 +956,14 @@ td{
         overflow:visible;
     }
 
+    table{min-width:0;width:100%;}
+    th:last-child, td[data-label="Action"]{min-width:0;width:100%;}
+    td[data-label="Action"]{display:block!important;visibility:visible!important;opacity:1!important;padding-top:12px;border-top:1px solid #eef2f7;margin-top:8px;}
+    td[data-label="Action"]:before{display:block!important;content:"Actions";}
+    .consumer-action-buttons{display:flex!important;visibility:visible!important;opacity:1!important;min-width:0;width:100%;justify-content:flex-start;flex-wrap:wrap;gap:8px;}
+    .consumer-action-buttons .action-btn{display:flex!important;visibility:visible!important;opacity:1!important;flex:1 1 75px;max-width:100px;min-height:54px;color:#0f172a;background:#f1f5f9;}
+    .consumer-action-buttons .action-label{display:block!important;visibility:visible!important;opacity:1!important;}
+
     table,
     thead,
     tbody,
@@ -1102,7 +1110,147 @@ td{
 .payment-details-card .grid{margin-bottom:10px}
 @media(max-width:640px){.project-card{padding:15px;border-radius:17px;margin-bottom:14px}.project-card-heading{gap:10px;margin-bottom:15px}.project-card-icon{width:43px;height:43px;flex-basis:43px;font-size:22px;border-radius:13px}.project-card-heading h3{font-size:19px}.project-card-heading p{font-size:12px}.card-grid{grid-template-columns:minmax(0,1fr);gap:14px}.card-grid>.field.full{grid-column:auto}.project-card .field label{font-size:15px!important}.project-card .field input,.project-card .field select,.project-card .field textarea{font-size:16px;min-height:49px}.project-card .serial-actions{display:grid;grid-template-columns:1fr;gap:8px}.project-card .serial-actions button{width:100%;min-height:44px}.project-card .serial-tools{gap:8px;flex-wrap:wrap}.project-card .serial-copy-all{width:100%}.project-card .payment-grid{grid-template-columns:minmax(0,1fr)}}
 
+
+/* FIX: Keep the full consumer table horizontally scrollable on mobile.
+   This preserves the original View / Edit / Delete action column after data loads. */
+@media (max-width:700px){
+  .table-card{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch;
+    background:#fff!important;
+    border:1px solid var(--border)!important;
+    border-radius:16px!important;
+  }
+  /* Force a genuinely wide table on phones so the Action column cannot
+     be squeezed into the viewport. Scroll horizontally inside .table-card. */
+  .table-card{
+    display:block!important;
+    position:relative!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:scroll!important;
+    overflow-y:hidden!important;
+    touch-action:pan-x pan-y!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:auto!important;
+  }
+  .table-card table{
+    display:table!important;
+    width:1450px!important;
+    min-width:1450px!important;
+    max-width:none!important;
+    table-layout:fixed!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+  }
+  .table-card thead{display:table-header-group!important;}
+  .table-card tbody{display:table-row-group!important;}
+  .table-card tr{
+    display:table-row!important;
+    padding:0!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+  }
+  .table-card th,
+  .table-card td{
+    display:table-cell!important;
+    min-width:90px;
+    padding:12px 10px!important;
+    vertical-align:middle!important;
+    white-space:normal!important;
+  }
+  .table-card thead th{
+    position:sticky;
+    top:0;
+    z-index:2;
+    background:#f8fafc!important;
+    white-space:nowrap!important;
+  }
+  .table-card td[data-label="Action"],
+  .table-card th:last-child{
+    display:table-cell!important;
+    visibility:visible!important;
+    opacity:1!important;
+    min-width:190px!important;
+    width:190px!important;
+  }
+  .table-card td[data-label="Action"]:before{display:none!important;content:none!important;}
+  .consumer-action-buttons{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    gap:6px!important;
+    width:max-content!important;
+    min-width:180px!important;
+  }
+  .consumer-action-buttons .action-btn{
+    display:inline-flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    flex:0 0 auto!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-width:52px!important;
+    max-width:none!important;
+    min-height:42px!important;
+    padding:7px 9px!important;
+    color:#0f172a!important;
+    background:#f1f5f9!important;
+  }
+  .consumer-action-buttons .action-label{
+    display:inline!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+}
+
 </style>
+
+<style id="mobile-horizontal-table-fix">
+/* Keep the consumer list as a wide table on mobile and scroll left/right */
+.table-card{
+  display:block !important; width:100% !important; max-width:100% !important;
+  overflow-x:auto !important; overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch !important; overscroll-behavior-x:contain;
+  touch-action:pan-x pan-y; scrollbar-width:thin;
+}
+.table-card > table{
+  display:table !important; width:1450px !important; min-width:1450px !important;
+  max-width:none !important; table-layout:auto !important;
+  border-collapse:separate !important; border-spacing:0 !important;
+}
+.table-card > table thead{display:table-header-group !important;}
+.table-card > table tbody{display:table-row-group !important;}
+.table-card > table tr{
+  display:table-row !important; padding:0 !important; margin:0 !important;
+  border:0 !important; border-radius:0 !important; box-shadow:none !important;
+}
+.table-card > table th,
+.table-card > table td{display:table-cell !important; vertical-align:middle !important;}
+.table-card > table th:last-child,
+.table-card > table td:last-child{
+  min-width:225px !important; width:225px !important; white-space:nowrap !important;
+}
+.table-card .consumer-action-buttons{
+  display:flex !important; flex-wrap:nowrap !important; gap:7px !important; min-width:210px !important;
+}
+.table-card .action-btn{flex:0 0 62px !important; min-width:62px !important;}
+@media (max-width:767px){
+  .table-card{border-radius:12px !important; background:#fff !important;}
+  .table-card > table{width:1450px !important; min-width:1450px !important;}
+}
+</style>
+
 </head>
 
 
@@ -1152,9 +1300,12 @@ td{
 
         </div>
 
-        <button class="primary-btn" id="addBtn">
-            ＋ Add Consumer
-        </button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+            <button class="secondary-btn" type="button" id="cccSettingsBtn">⚙ CCC Settings</button>
+            <button class="primary-btn" id="addBtn" type="button">
+                ＋ Add Consumer
+            </button>
+        </div>
 
     </div>
 
@@ -1256,6 +1407,8 @@ td{
         </div>
 
 
+        <select id="cccFilter"><option value="">All Customer Care Centers</option></select>
+
         <select id="modeFilter">
 
             <option value="">
@@ -1303,7 +1456,7 @@ td{
                 <tr>
 
                     <th>Consumer</th>
-                    <th>Solar</th>
+                    <th>CCC</th><th>Solar</th>
                     <th>Estimate</th>
                     <th>Payment</th>
                     <th>Received</th>
@@ -1363,7 +1516,10 @@ td{
 <input type="hidden" id="editId">
 <div class="project-card consumer-card">
   <div class="project-card-heading"><span class="project-card-icon">👤</span><div><h3>Consumers Details</h3><p>Consumer name, mobile number, ID and address</p></div></div>
-  <div class="grid card-grid"><div class="field">
+  <div class="grid card-grid"><div class="field full">
+<label>Customer Care Center (CCC) *</label>
+<select id="consumerCCC" required><option value="">Select CCC</option></select>
+</div><div class="field">
 <label>
                         Consumer Name *
                     </label>
@@ -1650,6 +1806,31 @@ td{
 </div>
 
 
+<!-- ================= CUSTOMER CARE CENTER SETTINGS ================= -->
+<div class="modal-bg" id="cccSettingsModal">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-head">
+      <h3>Customer Care Center Settings</h3>
+      <button class="close" type="button" id="closeCCCSettings">×</button>
+    </div>
+    <div style="padding:22px">
+      <input type="hidden" id="cccEditId">
+      <div class="grid card-grid">
+        <div class="field"><label>CCC Name *</label><input id="cccName" placeholder="Enter CCC name" required></div>
+        <div class="field"><label>CCC Code</label><input id="cccCode" placeholder="Enter CCC code"></div>
+        <div class="field"><label>Contact Number</label><input id="cccPhone" type="tel" placeholder="Enter contact number"></div>
+        <div class="field"><label>Address</label><input id="cccAddress" placeholder="Enter CCC address"></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin:16px 0">
+        <button class="secondary-btn" type="button" onclick="document.getElementById('cccEditId').value='';document.getElementById('cccName').value='';document.getElementById('cccCode').value='';document.getElementById('cccPhone').value='';document.getElementById('cccAddress').value='';document.getElementById('saveCCCBtn').textContent='Save CCC'">Clear</button>
+        <button class="primary-btn" type="button" id="saveCCCBtn">Save CCC</button>
+      </div>
+      <h4>Saved Customer Care Centers</h4>
+      <div id="cccList"><p class="empty">No CCC saved yet.</p></div>
+    </div>
+  </div>
+</div>
+
 <!-- ======================================================
      DETAILS MODAL
 ====================================================== -->
@@ -1790,9 +1971,11 @@ const db =
 
 const COLLECTION =
     "solar_consumer_payment";
+const CCC_COLLECTION = "solar_ccc_settings";
 
 
 let consumers = [];
+let cccCenters = [];
 let currentUser = null;
 
 
@@ -1847,11 +2030,57 @@ onAuthStateChanged(
         $("userEmail").textContent =
             user.email || "Logged in";
 
+        await loadCCCs();
         await loadConsumers();
 
     }
 );
 
+
+/* ================= CUSTOMER CARE CENTERS ================= */
+async function loadCCCs(){
+ try{
+  const snap=await getDocs(collection(db,CCC_COLLECTION));
+  cccCenters=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+  refreshCCCDropdowns();
+  renderCCCSettings();
+ }catch(error){console.error("CCC load failed",error);toast("CCC load failed: "+error.message,"error");}
+}
+function refreshCCCDropdowns(){
+ const form=$("consumerCCC"), filter=$("cccFilter");
+ const oldForm=form.value, oldFilter=filter.value;
+ form.innerHTML='<option value="">Select CCC</option>';
+ filter.innerHTML='<option value="">All Customer Care Centers</option>';
+ cccCenters.forEach(c=>{
+  const label=(c.name||"Unnamed CCC")+(c.code?" ("+c.code+")":"");
+  form.add(new Option(label,c.id));
+  filter.add(new Option(label,c.id));
+ });
+ if([...form.options].some(o=>o.value===oldForm))form.value=oldForm;
+ if([...filter.options].some(o=>o.value===oldFilter))filter.value=oldFilter;
+}
+function renderCCCSettings(){
+ const box=$("cccList");
+ if(!cccCenters.length){box.innerHTML='<p class="empty">No CCC saved yet.</p>';return;}
+ box.innerHTML=cccCenters.map(c=>`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px;border:1px solid #e2e8f0;border-radius:12px;margin:8px 0"><div><strong>${esc(c.name||"-")}</strong><div style="font-size:12px;color:#64748b">${esc(c.code||"No code")} · ${esc(c.phone||"No phone")}<br>${esc(c.address||"")}</div></div><div style="display:flex;gap:7px"><button type="button" class="secondary-btn" onclick="window.editCCC('${c.id}')">Edit</button><button type="button" class="secondary-btn" onclick="window.deleteCCC('${c.id}')">Delete</button></div></div>`).join("");
+}
+$("cccSettingsBtn").addEventListener("click",()=>{$("cccSettingsModal").classList.add("show");renderCCCSettings();});
+$("closeCCCSettings").addEventListener("click",()=>{$("cccSettingsModal").classList.remove("show");});
+function resetCCCForm(){["cccEditId","cccName","cccCode","cccPhone","cccAddress"].forEach(id=>$(id).value="");$("saveCCCBtn").textContent="Save CCC";}
+$("saveCCCBtn").addEventListener("click",async()=>{
+ const name=$("cccName").value.trim(); if(!name){toast("Enter CCC name","error");return;}
+ const id=$("cccEditId").value;
+ const data={name,code:$("cccCode").value.trim(),phone:$("cccPhone").value.trim(),address:$("cccAddress").value.trim(),updatedAt:serverTimestamp()};
+ try{
+  $("saveCCCBtn").disabled=true;
+  if(id) await updateDoc(doc(db,CCC_COLLECTION,id),data);
+  else await addDoc(collection(db,CCC_COLLECTION),{...data,createdAt:serverTimestamp(),createdBy:currentUser?.email||""});
+  resetCCCForm();await loadCCCs();toast(id?"CCC updated successfully":"CCC saved successfully","success");
+ }catch(e){toast("CCC save failed: "+e.message,"error");}
+ finally{$("saveCCCBtn").disabled=false;}
+});
+window.editCCC=function(id){const c=cccCenters.find(x=>x.id===id);if(!c)return;$("cccEditId").value=id;$("cccName").value=c.name||"";$("cccCode").value=c.code||"";$("cccPhone").value=c.phone||"";$("cccAddress").value=c.address||"";$("saveCCCBtn").textContent="Update CCC";};
+window.deleteCCC=async function(id){if(!confirm("Delete this CCC? Existing consumers will keep their saved CCC information."))return;try{await deleteDoc(doc(db,CCC_COLLECTION,id));await loadCCCs();toast("CCC deleted","success");}catch(e){toast("CCC delete failed: "+e.message,"error");}};
 
 /* ================= LOAD ================= */
 
@@ -1978,11 +2207,8 @@ function render(){
                 return false;
 
 
-            if(
-                mode &&
-                c.paymentType !== mode
-            )
-                return false;
+            if(mode && c.paymentType !== mode) return false;
+            if($("cccFilter").value && c.cccId !== $("cccFilter").value) return false;
 
 
             const due =
@@ -2094,6 +2320,8 @@ function render(){
 
             </td>
 
+
+            <td data-label="CCC"><strong>${esc(c.cccName || c.cccLabel || "—")}</strong></td>
 
             <td data-label="Solar">
 
@@ -3234,6 +3462,10 @@ async () => {
             $("address")
             .value.trim(),
 
+        cccId: $("consumerCCC").value,
+        cccName: cccCenters.find(x=>x.id===$("consumerCCC").value)?.name || "",
+        cccLabel: cccCenters.find(x=>x.id===$("consumerCCC").value)?.name || "",
+
         solarCapacity:
             $("solarCapacity")
             .value,
@@ -3503,6 +3735,7 @@ function(id){
 
     $("address").value =
         c.address || "";
+    $("consumerCCC").value = c.cccId || "";
 
     $("solarCapacity").value =
         c.solarCapacity || "";
@@ -3766,6 +3999,8 @@ function(id){
 
             </div>
 
+
+            <div class="detail-row"><span>Customer Care Center</span><strong>${esc(c.cccName || c.cccLabel || "—")}</strong></div>
 
             <div class="detail-row">
 
@@ -4143,11 +4378,8 @@ $("searchInput")
     render
 );
 
-$("modeFilter")
-.addEventListener(
-    "change",
-    render
-);
+$("modeFilter").addEventListener("change",render);
+$("cccFilter").addEventListener("change",render);
 
 $("statusFilter")
 .addEventListener(
