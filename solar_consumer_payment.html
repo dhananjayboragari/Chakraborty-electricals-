@@ -3013,43 +3013,120 @@ $("barcodeResultModal").addEventListener("click", event => { if(event.target ===
 
 
 /* ================= WARRANTY CALCULATOR ================= */
-function warrantyInfo(installDate, years){
-    if(!installDate || years === "" || years === null || years === undefined){
-        return {text:"তারিখ ও warranty year নির্বাচন করুন", cls:"", remaining:null};
-    }
-    const numericYears = Number(years);
-    if(!Number.isFinite(numericYears) || numericYears < 0){
-        return {text:"সঠিক বছর লিখুন", cls:"", remaining:null};
-    }
-    const start = new Date(installDate + "T00:00:00");
-    if(Number.isNaN(start.getTime())) return {text:"Installation Date ঠিক নয়", cls:"", remaining:null};
 
-    // Convert fractional years to months: 5.5 years = 66 months.
+  
+function warrantyInfo(installDate, years) {
+    if (!installDate || years === "" || years === null || years === undefined) {
+        return {
+            text: "তারিখ ও warranty year নির্বাচন করুন",
+            cls: "",
+            remaining: null
+        };
+    }
+
+    const numericYears = Number(years);
+
+    if (!Number.isFinite(numericYears) || numericYears < 0) {
+        return { text: "সঠিক বছর লিখুন", cls: "", remaining: null };
+    }
+
+    const start = new Date(installDate + "T00:00:00");
+
+    if (Number.isNaN(start.getTime())) {
+        return { text: "Installation Date ঠিক নয়", cls: "", remaining: null };
+    }
+
+    // Fractional years support: 5.5 years = 66 months
     const totalMonths = Math.round(numericYears * 12);
     const expiry = new Date(start);
     expiry.setMonth(expiry.getMonth() + totalMonths);
 
     const today = new Date();
-    today.setHours(0,0,0,0);
-    const days = Math.ceil((expiry.getTime() - today.getTime()) / 86400000);
-    const expiryText = expiry.toLocaleDateString("en-IN", {day:"2-digit", month:"short", year:"numeric"});
+    today.setHours(0, 0, 0, 0);
 
-    if(days < 0) return {text:`Warranty শেষ হয়েছে ${Math.abs(days)} দিন আগে · শেষ তারিখ ${expiryText}`, cls:"expired", remaining:days, expiry};
-    if(days === 0) return {text:`আজ warranty-র শেষ দিন · ${expiryText}`, cls:"warn", remaining:days, expiry};
-    if(days <= 90) return {text:`⚠️ Warranty বাকি ${days} দিন · শেষ তারিখ ${expiryText}`, cls:"warn", remaining:days, expiry};
+    const expiryText = expiry.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
 
-    let monthsLeft = (expiry.getFullYear() - today.getFullYear()) * 12 + (expiry.getMonth() - today.getMonth());
-    if(expiry.getDate() < today.getDate()) monthsLeft--;
-    monthsLeft = Math.max(0, monthsLeft);
-    const yearsLeft = Math.floor(monthsLeft / 12);
-    const remMonths = monthsLeft % 12;
-    const dayDiff = Math.max(0, days - (monthsLeft * 30));
-    const remainingParts = [];
-    if(yearsLeft) remainingParts.push(yearsLeft + " বছর");
-    if(remMonths) remainingParts.push(remMonths + " মাস");
-    if(!remainingParts.length || dayDiff > 0) remainingParts.push(dayDiff + " দিন");
-    return {text:`✓ Warranty বাকি ${remainingParts.join(" ")} · শেষ তারিখ ${expiryText}`, cls:"ok", remaining:days, expiry};
+    // Calendar-based years, months and days
+    let cursor = new Date(today);
+    let yearsLeft = expiry.getFullYear() - cursor.getFullYear();
+
+    cursor.setFullYear(cursor.getFullYear() + yearsLeft);
+
+    if (cursor > expiry) {
+        yearsLeft--;
+        cursor = new Date(today);
+        cursor.setFullYear(cursor.getFullYear() + yearsLeft);
+    }
+
+    let monthsLeft =
+        (expiry.getFullYear() - cursor.getFullYear()) * 12 +
+        expiry.getMonth() - cursor.getMonth();
+
+    cursor.setMonth(cursor.getMonth() + monthsLeft);
+
+    if (cursor > expiry) {
+        monthsLeft--;
+        cursor = new Date(today);
+        cursor.setFullYear(cursor.getFullYear() + yearsLeft);
+        cursor.setMonth(cursor.getMonth() + monthsLeft);
+    }
+
+    const daysLeft = Math.max(
+        0,
+        Math.round((expiry - cursor) / 86400000)
+    );
+
+    const totalDays = Math.ceil((expiry - today) / 86400000);
+
+    if (totalDays < 0) {
+        return {
+            text: `Warranty শেষ হয়েছে ${Math.abs(totalDays)} দিন আগে · শেষ তারিখ ${expiryText}`,
+            cls: "expired",
+            remaining: totalDays,
+            expiry
+        };
+    }
+
+    if (totalDays === 0) {
+        return {
+            text: `আজ warranty-র শেষ দিন · ${expiryText}`,
+            cls: "warn",
+            remaining: totalDays,
+            expiry
+        };
+    }
+
+    const parts = [];
+
+    if (yearsLeft > 0) parts.push(yearsLeft + " বছর");
+    if (monthsLeft > 0) parts.push(monthsLeft + " মাস");
+    if (daysLeft > 0) parts.push(daysLeft + " দিন");
+
+    if (totalDays <= 90) {
+        return {
+            text: `⚠️ Warranty বাকি ${parts.join(" ")} · শেষ তারিখ ${expiryText}`,
+            cls: "warn",
+            remaining: totalDays,
+            expiry
+        };
+    }
+
+    return {
+        text: `✓ Warranty বাকি ${parts.join(" ")} · শেষ তারিখ ${expiryText}`,
+        cls: "ok",
+        remaining: totalDays,
+        expiry
+    };
 }
+
+
+
+
+  
 function updateWarrantyStatuses(){[["panelWarrantyStatus","panelWarrantyYears"],["inverterWarrantyStatus","inverterWarrantyYears"],["freeMaintenanceStatus","freeMaintenanceYears"]].forEach(([statusId,yearsId])=>{const el=$(statusId);if(!el)return;const result=warrantyInfo($("installDate").value,$(yearsId).value);el.className="warranty-status"+(result.cls?" "+result.cls:"");el.textContent=result.text;});}
 function warrantySummary(installDate,years){const result=warrantyInfo(installDate,years);return result.remaining===null?"Not set":result.text;}
 function maintenanceDurationLabel(years){
