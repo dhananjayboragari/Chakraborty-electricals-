@@ -1790,24 +1790,32 @@ style="margin-top:15px">
 
 </div>
 
-<!-- ITEMS TOTAL SUMMARY: added without changing the existing item table -->
+<!-- ITEMS TOTAL SUMMARY: compact alignment; existing invoice logic preserved -->
 <div id="itemsTotalBox" style="
-    margin-top:15px;
-    padding:16px;
+    margin-top:10px;
+    padding:12px;
     background:#f8fafc;
     border:1px solid #cbd5e1;
     border-radius:12px;
     color:#1f2937;
 ">
-    <h3 style="margin:0 0 12px;color:#1e3a8a;">Invoice Items Total</h3>
-    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Total Items</span><b id="totalItemCount">0</b></div>
-    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Total Quantity</span><b id="totalItemQty">0</b></div>
-    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Subtotal</span><b id="itemsSubtotal">₹0.00</b></div>
-    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Total Discount</span><b id="itemsDiscount">₹0.00</b></div>
-    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Taxable Amount</span><b id="itemsTaxable">₹0.00</b></div>
-    <div style="display:flex;justify-content:space-between;padding:7px 0;gap:12px;"><span>Total GST</span><b id="itemsGST">₹0.00</b></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:2px solid #1e3a8a;margin-top:8px;padding-top:12px;font-size:18px;color:#1e3a8a;">
-        <b>Grand Total</b><b id="itemsGrandTotal">₹0.00</b>
+    <h3 style="margin:0 0 8px;color:#1e3a8a;">Invoice Items Total</h3>
+
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:5px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;min-width:0;">
+            <span style="font-size:13px;">Total Items</span><b id="totalItemCount" style="white-space:nowrap;">0</b>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;min-width:0;">
+            <span style="font-size:13px;">Total Quantity</span><b id="totalItemQty" style="white-space:nowrap;">0</b>
+        </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 2px;gap:8px;"><span>Subtotal</span><b id="itemsSubtotal">₹0.00</b></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 2px;gap:8px;"><span>Total Discount</span><b id="itemsDiscount">₹0.00</b></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 2px;gap:8px;"><span>Taxable Amount</span><b id="itemsTaxable">₹0.00</b></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 2px;gap:8px;"><span>Total GST</span><b id="itemsGST">₹0.00</b></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:2px solid #1e3a8a;margin-top:5px;padding-top:9px;font-size:17px;color:#1e3a8a;">
+        <b>Grand Total</b><b id="itemsGrandTotal" style="text-align:right;">₹0.00</b>
     </div>
 </div>
 
