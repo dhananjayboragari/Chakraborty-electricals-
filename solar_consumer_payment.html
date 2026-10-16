@@ -1217,37 +1217,93 @@ td{
 </style>
 
 <style id="mobile-horizontal-table-fix">
-/* Keep the consumer list as a wide table on mobile and scroll left/right */
+/* DESKTOP/TABLET: retain the table and allow horizontal scrolling */
 .table-card{
-  display:block !important; width:100% !important; max-width:100% !important;
-  overflow-x:auto !important; overflow-y:hidden !important;
-  -webkit-overflow-scrolling:touch !important; overscroll-behavior-x:contain;
-  touch-action:pan-x pan-y; scrollbar-width:thin;
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior-x:contain;
+  scrollbar-width:thin;
 }
 .table-card > table{
-  display:table !important; width:1450px !important; min-width:1450px !important;
-  max-width:none !important; table-layout:auto !important;
-  border-collapse:separate !important; border-spacing:0 !important;
+  display:table !important;
+  width:100% !important;
+  min-width:1250px !important;
+  max-width:none !important;
+  table-layout:auto !important;
+  border-collapse:separate !important;
+  border-spacing:0 !important;
 }
 .table-card > table thead{display:table-header-group !important;}
 .table-card > table tbody{display:table-row-group !important;}
-.table-card > table tr{
-  display:table-row !important; padding:0 !important; margin:0 !important;
-  border:0 !important; border-radius:0 !important; box-shadow:none !important;
-}
+.table-card > table tr{display:table-row !important;}
 .table-card > table th,
-.table-card > table td{display:table-cell !important; vertical-align:middle !important;}
+.table-card > table td{display:table-cell !important;vertical-align:middle !important;}
 .table-card > table th:last-child,
-.table-card > table td:last-child{
-  min-width:225px !important; width:225px !important; white-space:nowrap !important;
-}
-.table-card .consumer-action-buttons{
-  display:flex !important; flex-wrap:nowrap !important; gap:7px !important; min-width:210px !important;
-}
-.table-card .action-btn{flex:0 0 62px !important; min-width:62px !important;}
+.table-card > table td:last-child{min-width:225px !important;width:225px !important;white-space:nowrap !important;}
+.table-card .consumer-action-buttons{display:flex !important;flex-wrap:nowrap !important;gap:7px !important;min-width:210px !important;}
+.table-card .action-btn{flex:0 0 62px !important;min-width:62px !important;}
+
+/* MOBILE: restore the original clean card layout, no wide-table forcing */
 @media (max-width:767px){
-  .table-card{border-radius:12px !important; background:#fff !important;}
-  .table-card > table{width:1450px !important; min-width:1450px !important;}
+  .table-card{
+    display:block !important;
+    overflow:visible !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+  }
+  .table-card > table{
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    table-layout:auto !important;
+  }
+  .table-card > table thead{display:none !important;}
+  .table-card > table tbody{display:block !important;width:100% !important;}
+  .table-card > table tr{
+    display:block !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+    background:#fff !important;
+    border:1px solid var(--border) !important;
+    border-radius:16px !important;
+    padding:13px !important;
+    margin:0 0 12px !important;
+    box-shadow:0 7px 20px rgba(15,23,42,.06) !important;
+  }
+  .table-card > table td{
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+    box-sizing:border-box !important;
+    padding:7px 0 !important;
+    border:0 !important;
+    white-space:normal !important;
+  }
+  .table-card > table td:before{
+    content:attr(data-label) !important;
+    display:block !important;
+    color:#94a3b8 !important;
+    font-size:9px !important;
+    text-transform:uppercase !important;
+    margin-bottom:3px !important;
+    font-weight:700 !important;
+  }
+  .table-card > table td:first-child:before{display:none !important;}
+  .table-card > table td:last-child{width:100% !important;min-width:0 !important;white-space:normal !important;}
+  .table-card .consumer-action-buttons{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    justify-content:flex-start !important;
+    min-width:0 !important;
+    gap:8px !important;
+  }
+  .table-card .action-btn{flex:0 0 62px !important;min-width:62px !important;}
 }
 </style>
 
