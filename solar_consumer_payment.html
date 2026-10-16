@@ -1409,7 +1409,7 @@ td{
             </div>
 
             <div class="stat-label">
-                Total Received
+                Grand Total Receipt
             </div>
 
         </div>
@@ -1425,6 +1425,34 @@ td{
 
             <div class="stat-label">
                 Total Loan Amount
+            </div>
+
+        </div>
+
+        <div class="stat">
+
+            <div class="stat-icon">🏛️</div>
+
+            <div class="stat-value" id="totalBank">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Bank Receipt
+            </div>
+
+        </div>
+
+        <div class="stat">
+
+            <div class="stat-icon">💵</div>
+
+            <div class="stat-value" id="totalCash">
+                ₹0
+            </div>
+
+            <div class="stat-label">
+                Total Cash Received
             </div>
 
         </div>
@@ -2548,62 +2576,53 @@ function render(){
     });
 
 
-    updateStats();
+    // All dashboard totals follow the same active search/filter results.
+    updateStats(list);
 
 }
 
 
 /* ================= STATS ================= */
 
-function updateStats(){
+function updateStats(filteredConsumers = consumers){
 
     let estimate = 0;
     let received = 0;
     let loan = 0;
+    let cashReceived = 0;
+    let bankReceived = 0;
+    let due = 0;
 
+    filteredConsumers.forEach(c => {
 
-    consumers.forEach(c => {
+        const consumerEstimate = num(c.totalEstimate);
+        const consumerReceived = getReceived(c);
 
-        estimate +=
-            num(c.totalEstimate);
+        estimate += consumerEstimate;
+        received += consumerReceived;
+        due += Math.max(0, consumerEstimate - consumerReceived);
 
-        received +=
-            getReceived(c);
+        if(c.paymentType === "Bank Loan"){
+            loan += num(c.loan?.loanAmount);
+        }
 
-        if(
-            c.paymentType ===
-            "Bank Loan"
-        ){
+        if(c.paymentType === "Cash"){
+            cashReceived += num(c.payments?.cashFirst?.amount) + num(c.payments?.cashSecond?.amount);
+        }
 
-            loan +=
-                num(c.loan?.loanAmount);
-
+        if(c.paymentType === "Bank Loan"){
+            bankReceived += num(c.payments?.loanFirst?.amount) + num(c.payments?.loanSecond?.amount) + num(c.payments?.loanThird?.amount);
         }
 
     });
 
-
-    const due =
-        Math.max(
-            0,
-            estimate - received
-        );
-
-
-    $("totalConsumers").textContent =
-        consumers.length;
-
-    $("totalEstimate").textContent =
-        money(estimate);
-
-    $("totalReceived").textContent =
-        money(received);
-
-    $("totalLoan").textContent =
-        money(loan);
-
-    $("totalDue").textContent =
-        money(due);
+    $("totalConsumers").textContent = filteredConsumers.length;
+    $("totalEstimate").textContent = money(estimate);
+    $("totalReceived").textContent = money(received);
+    $("totalLoan").textContent = money(loan);
+    $("totalCash").textContent = money(cashReceived);
+    $("totalBank").textContent = money(bankReceived);
+    $("totalDue").textContent = money(due);
 
 }
 
