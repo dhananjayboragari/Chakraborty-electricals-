@@ -97,6 +97,19 @@ td input{border:0;padding:0;min-width:0;background:transparent}
 .table-wrap{overflow:visible;border:0}
 .totalbox{break-inside:avoid}
 }
+
+/* Goods Master settings - added without changing the existing estimate layout */
+.goods-modal{position:fixed;inset:0;z-index:9990;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(10,20,40,.68);backdrop-filter:blur(6px)}
+.goods-modal.show{display:flex}
+.goods-card{width:min(900px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 24px 80px #07152e55;padding:20px}
+.goods-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.goods-head h2{margin:0;font-size:20px;color:#14284a}.goods-head p{margin:5px 0 0;color:#667085;font-size:12px}
+.goods-form{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:9px;align-items:end;padding:14px;background:#f6f8ff;border:1px solid #e1e8f5;border-radius:14px;margin-bottom:14px}
+.goods-form label{display:block;font-size:11px;font-weight:800;color:#475467;margin-bottom:5px}
+.goods-form input{width:100%;min-width:0;padding:10px;border:1px solid #d5dce8;border-radius:9px;font:inherit;background:white}
+.goods-list{display:grid;gap:8px}.goods-row{display:grid;grid-template-columns:minmax(0,2fr) .8fr .9fr .7fr auto;gap:9px;align-items:center;padding:11px;border:1px solid #e6ebf3;border-radius:12px}.goods-row strong{overflow-wrap:anywhere}.goods-row small{color:#667085;font-size:11px}.goods-row .actions{justify-content:flex-end}
+.goods-empty{padding:22px;text-align:center;color:#667085;border:1px dashed #cbd5e1;border-radius:12px}
+@media(max-width:650px){.goods-card{padding:14px}.goods-form{grid-template-columns:1fr 1fr}.goods-form .wide{grid-column:1/-1}.goods-row{grid-template-columns:1fr 1fr}.goods-row .goods-name{grid-column:1/-1}.goods-row .actions{grid-column:1/-1}.goods-head h2{font-size:18px}}
 </style>
 </head>
 <body>
@@ -112,6 +125,7 @@ td input{border:0;padding:0;min-width:0;background:transparent}
   <div class="welcome">
     <div><div class="eyebrow">Estimate workspace</div><h1>Solar Material Estimate</h1><div class="muted">Default material list is pre-filled. Change quantities; edit, add or remove items whenever needed.</div></div>
     <div class="actions no-print">
+      <button class="darksoft" id="goodsSettingsBtn">⚙ Goods Settings</button>
       <button class="soft" id="newBtn">＋ New Estimate</button>
       <button class="primary" id="saveBtn">Save Estimate</button>
       <button class="green" id="updateBtn" style="display:none" disabled>Update Estimate</button>
@@ -144,7 +158,7 @@ td input{border:0;padding:0;min-width:0;background:transparent}
         <div id="exportArea">
           <div class="export-head">M/S CHAKRABORTY ELECTRICALS<small>SOLAR MATERIAL ESTIMATE</small></div>
           <div class="export-consumer" id="exportConsumer">Consumer: —<br>Mobile: —<br>Consumer ID: —<br>Address: —</div>
-          <div class="table-wrap"><table><thead><tr><th>Sl No</th><th>Description of Goods</th><th>Per</th><th>Quantity</th><th>Rate</th><th>Amount</th><th>GST %</th><th>Total</th><th class="remove-cell no-print">Edit</th></tr></thead><tbody id="rows"></tbody><tfoot><tr><th colspan="5" style="text-align:right">Total</th><th id="footAmount">₹0.00</th><th></th><th id="footTotal">₹0.00</th><th class="remove-cell no-print"></th></tr></tfoot></table></div>
+          <datalist id="goodsOptions"></datalist><div class="table-wrap"><table><thead><tr><th>Sl No</th><th>Description of Goods</th><th>Per</th><th>Quantity</th><th>Rate</th><th>Amount</th><th>GST %</th><th>Total</th><th class="remove-cell no-print">Edit</th></tr></thead><tbody id="rows"></tbody><tfoot><tr><th colspan="5" style="text-align:right">Total</th><th id="footAmount">₹0.00</th><th></th><th id="footTotal">₹0.00</th><th class="remove-cell no-print"></th></tr></tfoot></table></div>
         </div>
         <div class="table-foot">
           <div class="actions no-print"><button class="soft" id="jpgBtn">Download JPG</button><button class="soft" id="pngBtn">Download PNG</button><button class="soft" id="pdfBtn">Print / Save PDF</button></div>
@@ -161,6 +175,22 @@ td input{border:0;padding:0;min-width:0;background:transparent}
     </aside>
   </div>
 </main>
+
+<div class="goods-modal" id="goodsModal" aria-hidden="true">
+  <section class="goods-card" role="dialog" aria-modal="true" aria-labelledby="goodsModalTitle">
+    <div class="goods-head"><div><h2 id="goodsModalTitle">⚙ Goods Settings</h2><p>Manage Description of Goods, Per, Rate and GST. Changes are saved to Firebase and shared across devices.</p></div><button type="button" class="darksoft" id="closeGoodsModal">✕ Close</button></div>
+    <form id="goodsForm" class="goods-form">
+      <div class="wide"><label for="goodsDescription">Description of Goods *</label><input id="goodsDescription" required maxlength="180" placeholder="e.g. Solar Panel 550W"></div>
+      <div><label for="goodsPer">Per</label><input id="goodsPer" maxlength="30" placeholder="nos / mtr"></div>
+      <div><label for="goodsRate">Rate (₹)</label><input id="goodsRate" type="number" min="0" step="any" value="0" required></div>
+      <div><label for="goodsGst">GST %</label><input id="goodsGst" type="number" min="0" max="100" step="any" value="18" required></div>
+      <div><button class="primary" id="goodsSaveBtn" type="submit">＋ Add Goods</button></div>
+    </form>
+    <div class="panel-head"><div><h2>Saved Goods List</h2><p id="goodsCount">Loading goods…</p></div><div class="field"><input id="goodsSearch" placeholder="Search goods…" aria-label="Search goods"></div></div>
+    <div id="goodsList" class="goods-list"><div class="goods-empty">Loading goods…</div></div>
+    <p class="notice">Note: Updating a Goods Master item affects new material selections. Existing saved estimates keep their previously saved rate and GST until you edit and update them.</p>
+  </section>
+</div>
 
 <script type="module">
 import{initializeApp,getApps,getApp}from'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
@@ -180,6 +210,8 @@ const auth=getAuth(app),db=getFirestore(app);
 const C='solar_consumer_payment',SUB='materialEstimates',TKEY='ce_material_estimate_template_v4';
 const $=id=>document.getElementById(id);
 let user=null,consumers=[],activeConsumer=null,estimates=[],allEstimates=[],activeId=null;
+const GOODS='goodsMaster';
+let goodsMaster=[],editingGoodsId=null;
 
 const DEFAULT=[
 ['solar plate & inverter','set',1,121695,5],
@@ -222,7 +254,7 @@ function template(){
 function addRow(m={}){
   const tr=document.createElement('tr');
   tr.innerHTML=`<td class="sl"></td>
-  <td><input class="desc" value="${esc(m.description||'')}" aria-label="Description" placeholder="Description of goods"></td>
+  <td><input class="desc" list="goodsOptions" value="${esc(m.description||'')}" aria-label="Description" placeholder="Description of goods" autocomplete="off"></td>
   <td><input class="unit" value="${esc(m.per||'')}" aria-label="Per" placeholder="nos/mtr"></td>
   <td><input class="num qty" type="number" min="0" step="any" value="${m.quantity===undefined||m.quantity===null?'':esc(m.quantity)}" aria-label="Quantity"></td>
   <td><input class="num rate" type="number" min="0" step="any" value="${m.rate??0}" aria-label="Rate"></td>
@@ -232,6 +264,10 @@ function addRow(m={}){
   <td class="remove-cell no-print"><button class="danger remove" type="button" title="Remove row">✕</button></td>`;
   $('rows').appendChild(tr);
   tr.querySelectorAll('input').forEach(x=>x.addEventListener('input',calc));
+  const descInput=tr.querySelector('.desc');
+  const applyGoods=()=>{const selected=goodsMaster.find(g=>String(g.description||'').trim().toLowerCase()===descInput.value.trim().toLowerCase());if(selected){tr.querySelector('.unit').value=selected.per||'';tr.querySelector('.rate').value=num(selected.rate);tr.querySelector('.gst').value=num(selected.gst);calc();}};
+  descInput.addEventListener('change',applyGoods);
+  descInput.addEventListener('blur',applyGoods);
   tr.querySelector('.remove').addEventListener('click',()=>{tr.remove();renumber();calc();});
   renumber();calc();
 }
@@ -276,6 +312,67 @@ function newEstimate(){
   template().forEach(addRow);
   setMode(false);calc();
   say('New estimate: quantity boxes are blank. Select a saved estimate to load its saved quantities.');
+}
+
+/* Goods Master: persistent Firebase list for Description, Per, Rate and GST. */
+function renderGoodsOptions(){
+  $('goodsOptions').innerHTML=goodsMaster.map(g=>`<option value="${esc(g.description||'')}"></option>`).join('');
+}
+function renderGoodsList(){
+  const q=$('goodsSearch').value.trim().toLowerCase();
+  const list=goodsMaster.filter(g=>[g.description,g.per,g.rate,g.gst].some(v=>String(v??'').toLowerCase().includes(q)));
+  $('goodsCount').textContent=`${list.length} goods item${list.length===1?'':'s'} saved in Firebase`;
+  if(!list.length){$('goodsList').innerHTML='<div class="goods-empty">No goods found. Add a new item above.</div>';return;}
+  $('goodsList').innerHTML=list.map(g=>`<div class="goods-row">
+    <div class="goods-name"><strong>${esc(g.description||'Unnamed goods')}</strong><br><small>Description of Goods</small></div>
+    <div><strong>${esc(g.per||'—')}</strong><br><small>Per</small></div>
+    <div><strong>${money(g.rate)}</strong><br><small>Rate</small></div>
+    <div><strong>${esc(g.gst??0)}%</strong><br><small>GST</small></div>
+    <div class="actions"><button type="button" class="soft edit-goods" data-id="${esc(g.id)}">Edit</button><button type="button" class="danger delete-goods" data-id="${esc(g.id)}">Delete</button></div>
+  </div>`).join('');
+  $('goodsList').querySelectorAll('.edit-goods').forEach(btn=>btn.addEventListener('click',()=>{
+    const g=goodsMaster.find(x=>x.id===btn.dataset.id);if(!g)return;
+    editingGoodsId=g.id;$('goodsDescription').value=g.description||'';$('goodsPer').value=g.per||'';$('goodsRate').value=num(g.rate);$('goodsGst').value=num(g.gst);$('goodsSaveBtn').textContent='Save Changes';$('goodsDescription').focus();
+  }));
+  $('goodsList').querySelectorAll('.delete-goods').forEach(btn=>btn.addEventListener('click',async()=>{
+    const g=goodsMaster.find(x=>x.id===btn.dataset.id);if(!g)return;
+    if(!window.confirm(`Delete "${g.description}" from Goods Settings? Existing estimates will not be deleted.`))return;
+    try{await deleteDoc(doc(db,GOODS,g.id));await loadGoodsMaster();say('Goods deleted from Firebase.','ok');}
+    catch(e){say('Could not delete goods: '+e.message,'err');}
+  }));
+}
+async function loadGoodsMaster(){
+  const snap=await getDocs(collection(db,GOODS));
+  if(snap.empty){
+    // First run only: migrate the existing built-in goods list to Firebase.
+    for(const m of DEFAULT){await addDoc(collection(db,GOODS),{description:m.description,per:m.per||'',rate:num(m.rate),gst:num(m.gst),createdAt:serverTimestamp(),updatedAt:serverTimestamp(),updatedBy:user?.email||''});}
+    const seeded=await getDocs(collection(db,GOODS));
+    goodsMaster=seeded.docs.map(d=>({id:d.id,...d.data()}));
+  }else{
+    goodsMaster=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.description||'').localeCompare(String(b.description||'')));
+  }
+  renderGoodsOptions();renderGoodsList();
+}
+function resetGoodsForm(){editingGoodsId=null;$('goodsForm').reset();$('goodsRate').value='0';$('goodsGst').value='18';$('goodsSaveBtn').textContent='＋ Add Goods';}
+function openGoodsSettings(){ $('goodsModal').classList.add('show');$('goodsModal').setAttribute('aria-hidden','false');renderGoodsList(); }
+function closeGoodsSettings(){ $('goodsModal').classList.remove('show');$('goodsModal').setAttribute('aria-hidden','true');resetGoodsForm(); }
+async function saveGoods(event){
+  event.preventDefault();
+  const description=$('goodsDescription').value.trim();
+  const per=$('goodsPer').value.trim();
+  const rate=num($('goodsRate').value),gst=num($('goodsGst').value);
+  if(!description)return;
+  if(gst>100){say('GST cannot be greater than 100%.','err');return;}
+  const duplicate=goodsMaster.find(g=>String(g.description||'').trim().toLowerCase()===description.toLowerCase()&&g.id!==editingGoodsId);
+  if(duplicate){say('This Goods description already exists. Edit the existing item instead.','err');return;}
+  $('goodsSaveBtn').disabled=true;
+  try{
+    const data={description,per,rate,gst,updatedAt:serverTimestamp(),updatedBy:user?.email||''};
+    if(editingGoodsId){await updateDoc(doc(db,GOODS,editingGoodsId),data);say('Goods updated and saved to Firebase.','ok');}
+    else{await addDoc(collection(db,GOODS),{...data,createdAt:serverTimestamp()});say('New Goods saved to Firebase.','ok');}
+    resetGoodsForm();await loadGoodsMaster();
+  }catch(e){say('Goods save failed: '+e.message+' — check Firestore Rules for goodsMaster.','err');}
+  finally{$('goodsSaveBtn').disabled=false;}
 }
 
 /* Consumer details: supports multiple field names from existing consumer records. */
@@ -585,6 +682,11 @@ $('estimateSelect').addEventListener('change',()=>{
   if(id)openEstimate(id);else newEstimate();
 });
 $('newBtn').addEventListener('click',newEstimate);
+$('goodsSettingsBtn').addEventListener('click',openGoodsSettings);
+$('closeGoodsModal').addEventListener('click',closeGoodsSettings);
+$('goodsModal').addEventListener('click',e=>{if(e.target.id==='goodsModal')closeGoodsSettings();});
+$('goodsForm').addEventListener('submit',saveGoods);
+$('goodsSearch').addEventListener('input',renderGoodsList);
 $('addRowBtn').addEventListener('click',()=>addRow());
 $('saveBtn').addEventListener('click',saveEstimate);
 $('updateBtn').addEventListener('click',updateEstimate);
@@ -605,6 +707,7 @@ onAuthStateChanged(auth,async u=>{
   user=u;
   $('userEmail').textContent=u.email||'Logged in';
   try{
+    await loadGoodsMaster();
     await loadConsumers();
     newEstimate();
   }catch(e){
