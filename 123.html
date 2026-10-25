@@ -340,16 +340,49 @@ async function loadAllEstimates(){
   renderSaved();
   await dashboardEstimateTotal();
 }
+
+
+
+
+  
 async function loadEstimates(){
   estimates=[];
-  $('estimateSelect').innerHTML='<option value="">New estimate</option>';
-  if(!activeConsumer){renderSaved();return;}
-  const snap=await getDocs(collection(db,C,activeConsumer.id,SUB));
-  estimates=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  $('estimateSelect').innerHTML='<option value="">New estimate</option>'+
-    estimates.map(e=>`<option value="${esc(e.id)}">${esc(e.title||'Material Estimate')} · ${money(e.grandTotal)}</option>`).join('');
+
+  if(!activeConsumer){
+    $('estimateSelect').innerHTML='';
+    renderSaved();
+    return;
+  }
+
+  const snap=await getDocs(
+    collection(db,C,activeConsumer.id,SUB)
+  );
+
+  estimates=snap.docs
+    .map(d=>({id:d.id,...d.data()}))
+    .sort((a,b)=>
+      (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)
+    );
+
+  if(estimates.length===0){
+    $('estimateSelect').innerHTML=
+      '<option value="">New Estimate</option>';
+  }else{
+    $('estimateSelect').innerHTML=estimates.map(e=>
+      `<option value="${esc(e.id)}">${esc(e.title||'Material Estimate')} · ${money(e.grandTotal)}</option>`
+    ).join('');
+  }
+
   renderSaved();
 }
+
+
+
+  
+
+
+
+  
 async function dashboardEstimateTotal(){
   let total=0;
   allEstimates.forEach(e=>total+=num(e.grandTotal));
@@ -505,7 +538,7 @@ async function exportImage(type){
   }
 }
 
-$('consumerSearch').addEventListener('input',renderConsumerOptions);
+ $('consumerSearch').addEventListener('input',()=>{   renderConsumerOptions();    const q=$('consumerSearch').value.trim().toLowerCase();   if(!q) return;    const matches=consumers.filter(c=>{     const name=String(       c.consumerName||c.name||c.customerName||       c.consumer_name||c.customer_name||''     ).trim().toLowerCase();      const id=String(       c.consumerId||c.consumerID||c.customerId||       c.consumerNo||c.consumerNumber||c.consumer_id||       c.customer_id||c.beneficiaryId||''     ).trim().toLowerCase();      return name===q || id===q;   });    if(matches.length===1){     $('consumerSelect').value=matches[0].id;     $('consumerSelect').dispatchEvent(new Event('change'));   } });
 $('consumerSelect').addEventListener('change',chooseConsumer);
 $('estimateSelect').addEventListener('change',()=>{
   const id=$('estimateSelect').value;
