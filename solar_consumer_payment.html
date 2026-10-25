@@ -1358,6 +1358,7 @@ td{
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
             <button class="secondary-btn" type="button" id="cccSettingsBtn">⚙ CCC Settings</button>
+            <button class="secondary-btn" type="button" id="materialEstimateBtn">📋 Material Estimate</button>
             <button class="primary-btn" id="addBtn" type="button">
                 ＋ Add Consumer
             </button>
@@ -4555,6 +4556,13 @@ function toast(
 
 }
 
+</script>
+
+
+<script>
+document.getElementById("materialEstimateBtn")?.addEventListener("click", function () {
+    window.location.href = "solar_material_estimate.html";
+});
 </script>
 
 </body>
