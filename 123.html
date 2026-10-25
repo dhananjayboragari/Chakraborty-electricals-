@@ -388,16 +388,40 @@ async function dashboardEstimateTotal(){
   allEstimates.forEach(e=>total+=num(e.grandTotal));
   $('dashEstimate').textContent=money(total);
 }
+
+
+
+  
+
 async function chooseConsumer(){
-  const c=consumers.find(x=>x.id===$('consumerSelect').value)||null;
-  displayConsumer(c);activeId=null;
-  if(c){await loadEstimates();newEstimate();}
-  else{
+  const c=consumers.find(
+    x=>x.id===$('consumerSelect').value
+  )||null;
+
+  displayConsumer(c);
+  activeId=null;
+
+  if(c){
+    await loadEstimates();
+
+    if(estimates.length>0){
+      const latest=estimates[0];
+      $('estimateSelect').value=latest.id;
+      openEstimate(latest.id);
+    }else{
+      newEstimate();
+    }
+  }else{
     estimates=[];
-    $('estimateSelect').innerHTML='<option value="">New estimate</option>';
+    $('estimateSelect').innerHTML=
+      '<option value="">New Estimate</option>';
     newEstimate();
   }
 }
+
+
+
+      
 
 /* Saved estimates: Open/Edit and Delete. Delete only targets the subcollection document. */
 function renderSaved(){
