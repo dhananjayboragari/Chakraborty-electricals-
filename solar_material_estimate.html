@@ -309,9 +309,15 @@ function newEstimate(){
   activeId=null;
   $('estimateSelect').value='';
   $('rows').innerHTML='';
-  template().forEach(addRow);
+  // Build NEW estimates from the current Firebase Goods Settings master list.
+  // Saved estimates are opened separately and keep their originally saved values.
+  const currentGoods = goodsMaster.length
+    ? goodsMaster.map(g=>({description:g.description||'',per:g.per||'',quantity:'',rate:num(g.rate),gst:num(g.gst)}))
+    : template();
+  currentGoods.forEach(addRow);
+  renderGoodsOptions();
   setMode(false);calc();
-  say('New estimate: quantity boxes are blank. Select a saved estimate to load its saved quantities.');
+  say('New estimate: current Goods Settings loaded. Quantity boxes are blank; saved estimates keep their saved values.');
 }
 
 /* Goods Master: persistent Firebase list for Description, Per, Rate and GST. */
