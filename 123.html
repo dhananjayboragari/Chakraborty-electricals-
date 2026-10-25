@@ -1,244 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solar Material Estimate | Chakraborty Electricals</title>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Solar Material Estimate | Chakraborty Electricals</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
-:root{--bg:#eef3f9;--card:#fff;--ink:#172033;--muted:#667085;--line:#dce3ed;--primary:#155eef;--primary2:#0b4acb;--green:#067647;--red:#b42318}
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(135deg,#eef4ff,#f8fafc 55%,#eafaf3);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
-header{background:#102a43;color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 4px 16px #102a4320}
-.brand{font-size:19px;font-weight:800}.subbrand{font-size:12px;color:#cbd5e1;margin-top:4px}
-.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.user{font-size:12px;color:#dbeafe;overflow-wrap:anywhere}
-main{max-width:1200px;margin:22px auto;padding:0 14px 40px}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 8px 28px #1d29390b}
-h1{font-size:23px;margin:0 0 6px}h2{font-size:17px;margin:0 0 12px}
-.muted{color:var(--muted);font-size:13px;line-height:1.5}
-button{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;font-size:13px}
-.primary{background:var(--primary);color:#fff}.primary:hover{background:var(--primary2)}
-.secondary{background:#eaf0f8;color:#243b53}.danger{background:#fff0ef;color:var(--red)}.small{padding:7px 10px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-input,select{width:100%;min-width:0;padding:10px 11px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;font-size:14px;color:var(--ink)}
-label{font-size:12px;font-weight:700;color:#475467;display:block;margin-bottom:6px}
-.searchrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
-.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
-table{border-collapse:collapse;width:100%;min-width:820px;background:#fff}
-th,td{border-bottom:1px solid #e7ecf2;padding:8px;text-align:left;font-size:13px}
-th{background:#f3f6fb;color:#344054;white-space:nowrap}
-td input,td select{padding:9px 8px}
-td.num input{text-align:right;min-width:95px}
-td.desc input{min-width:210px}
-td.per input{min-width:95px}
-td.gst input{min-width:80px}
-td.total{font-weight:800;text-align:right;white-space:nowrap}
-.summary{display:flex;justify-content:flex-end;margin-top:15px}
-.summary-inner{width:min(100%,390px);border:1px solid var(--line);border-radius:12px;padding:12px;background:#f8fafc}
-.sumline{display:flex;justify-content:space-between;gap:16px;padding:6px 0;font-size:14px}.grand{font-size:18px;font-weight:800;border-top:1px solid var(--line);margin-top:5px;padding-top:12px}
-.status{font-size:13px;margin-top:10px;min-height:18px}.status.ok{color:var(--green)}.status.err{color:var(--red)}
-.saved-list{display:grid;gap:8px;margin-top:12px}
-.saved-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:11px;flex-wrap:wrap}
-.saved-title{font-weight:700}.saved-meta{font-size:12px;color:var(--muted);margin-top:4px}
-@media(max-width:620px){header{padding:14px}.brand{font-size:16px}main{margin-top:14px}.panel{padding:13px}h1{font-size:20px}.searchrow{grid-template-columns:1fr}.toolbar button{flex:1}}
-</style>
-</head>
-<body>
-<header>
-  <div><div class="brand">M/S Chakraborty Electricals</div><div class="subbrand">Solar Material Estimate</div></div>
-  <div class="header-right"><span class="user" id="userEmail">Checking login…</span><button class="secondary" id="backBtn" type="button">← Back to Consumer Payment</button><button class="secondary" id="logoutBtn" type="button">Logout</button></div>
-</header>
-<main>
-  <section class="panel">
-    <h1>Solar Material Estimate</h1>
-    <div class="muted">Enter material description, unit (Per), quantity, rate and GST. Totals are calculated automatically and saved separately in the same Firebase project.</div>
-    <div class="toolbar">
-      <button class="secondary" id="addRowBtn" type="button">＋ Add Material Row</button>
-      <button class="secondary" id="newBtn" type="button">New Estimate</button>
-      <button class="primary" id="saveBtn" type="button">Save Estimate</button>
-      <button class="primary" id="updateBtn" type="button" disabled>Update Estimate</button>
-    </div>
-    <div class="status" id="status" role="status"></div>
-  </section>
-
-  <section class="panel">
-    <h2>Select Existing Solar Consumer</h2>
-    <div class="muted" style="margin-bottom:10px">এই তালিকা পুরোনো Solar Consumer Payment ডেটা থেকে আসবে। এখানে নতুন করে নাম/ঠিকানা/মোবাইল লিখতে হবে না। Estimate সরাসরি নির্বাচিত consumer-এর record-এর সঙ্গে যুক্ত হবে।</div>
-    <label for="consumerSelect">Consumer Name · Mobile · Consumer ID</label>
-    <select id="consumerSelect" required><option value="">Loading existing consumers…</option></select>
-    <div id="consumerInfo" class="muted" style="margin-top:10px"></div>
-  </section>
-
-  <section class="panel">
-    <h2>Material Details</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th style="width:35%">Description</th><th>Per</th><th>Quantity</th><th>Rate (₹)</th><th>GST (%)</th><th>Total (₹)</th><th>Action</th></tr></thead>
-        <tbody id="materialRows"></tbody>
-      </table>
-    </div>
-    <div class="summary"><div class="summary-inner">
-      <div class="sumline"><span>Subtotal</span><strong id="subtotal">₹0.00</strong></div>
-      <div class="sumline"><span>GST Total</span><strong id="gstTotal">₹0.00</strong></div>
-      <div class="sumline grand"><span>Grand Total</span><strong id="grandTotal">₹0.00</strong></div>
-    </div></div>
-  </section>
-
-  <section class="panel">
-    <h2>Saved Estimates for Selected Consumer</h2>
-    <div class="muted">প্রথমে উপরের তালিকা থেকে consumer বেছে নিন। নিচে ওই consumer-এর আগের estimate-গুলো দেখাবে।</div>
-    <div class="saved-list" id="savedList"></div>
-  </section>
-</main>
+:root{--navy:#10243e;--blue:#2457e6;--cyan:#17b8a6;--bg:#f3f6fc;--line:#e2e8f0;--ink:#172033;--muted:#667085;--green:#07845a;--orange:#d97706;--red:#c43232}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,system-ui,Arial,sans-serif}header{background:linear-gradient(120deg,#101f39,#1e4ca0);color:#fff;padding:18px max(18px,calc((100vw - 1450px)/2));display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.brand{font-size:19px;font-weight:850;letter-spacing:.2px}.brand small{display:block;color:#cbdafa;font-size:11px;font-weight:500;margin-top:3px}.head-actions,.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}button{border:0;border-radius:10px;padding:10px 13px;font-weight:750;cursor:pointer;transition:.15s;font-size:12px}button:hover{filter:brightness(.97);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.primary{background:var(--blue);color:#fff}.green{background:var(--green);color:#fff}.soft{background:#edf2ff;color:#243b70}.darksoft{background:#e6ebf2;color:#29384e}.danger{background:#fff0f0;color:var(--red)}main{max-width:1450px;margin:22px auto;padding:0 16px 42px}.welcome{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap;margin-bottom:16px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);font-weight:850}.welcome h1{margin:3px 0;font-size:26px;letter-spacing:-.6px}.muted{color:var(--muted);font-size:12px}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:16px 0}.metric{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 5px 18px #162a4d08;min-width:0}.metric-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.metric-label{font-size:12px;color:var(--muted);font-weight:650}.metric-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:11px;background:#eef3ff;font-size:18px}.metric-value{font-size:clamp(18px,2vw,25px);font-weight:850;letter-spacing:-.5px;margin-top:10px;overflow-wrap:anywhere}.metric-note{font-size:11px;color:var(--muted);margin-top:5px}.metric:nth-child(2) .metric-icon{background:#e5fbf3}.metric:nth-child(3) .metric-icon{background:#fff4df}.metric:nth-child(4) .metric-icon{background:#f3eaff}.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:15px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px;margin-bottom:15px;box-shadow:0 5px 18px #162a4d06}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:13px}.panel-head h2{font-size:16px;margin:0}.panel-head p{font-size:11px;color:var(--muted);margin:4px 0 0}.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.field label{display:block;font-size:11px;font-weight:800;color:#475467;margin:0 0 6px}.field input,.field select{width:100%;min-width:0;padding:11px 10px;border:1px solid #d5dce8;border-radius:9px;background:#fff;color:var(--ink);font:inherit;outline:none}.field input:focus,.field select:focus{border-color:#7da0ff;box-shadow:0 0 0 3px #2457e617}.consumer-info{margin-top:12px;padding:12px 14px;border:1px solid #dbe7ff;background:#f7faff;border-radius:12px;display:none}.consumer-info strong{font-size:14px}.consumer-info p{margin:4px 0 0;color:#59677c;font-size:11px;line-height:1.7}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:930px}th{background:#edf2fa;color:#35445c;text-transform:uppercase;font-size:10px;letter-spacing:.3px;white-space:nowrap}th,td{padding:8px 7px;border-bottom:1px solid #e9edf4;text-align:left}td{font-size:12px}tbody tr:hover{background:#fafcff}td input{width:100%;min-width:68px;padding:9px 7px;border:1px solid #dbe2ec;border-radius:7px;font:inherit;color:#1d2939;background:#fff}td .desc{min-width:220px}td .unit{min-width:70px}td .num{min-width:75px;text-align:right}td.calc{text-align:right;white-space:nowrap;font-weight:750}td .remove{padding:7px 9px}.table-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}.totalbox{background:#f8faff;border:1px solid #e1e8f5;border-radius:13px;padding:12px 15px;min-width:min(100%,310px);margin-left:auto}.sumrow{display:flex;justify-content:space-between;gap:15px;padding:5px 0;color:#4b5870;font-size:12px}.sumrow strong{color:#1b2940}.sumrow.grand{border-top:1px solid #dbe3f0;padding-top:10px;margin-top:5px;font-size:17px;font-weight:850;color:#14284a}.side-title{font-size:14px;font-weight:850;margin:0 0 11px}.side-list{display:grid;gap:8px}.estimate-item{border:1px solid var(--line);border-radius:11px;padding:11px}.estimate-item strong{font-size:12px}.estimate-item small{display:block;color:var(--muted);font-size:10px;margin:3px 0 8px;overflow-wrap:anywhere}.estimate-item .actions{justify-content:flex-start}.notice{font-size:11px;color:var(--muted);line-height:1.6;margin-top:10px}.status{font-size:12px;min-height:18px;margin-top:10px}.status.ok{color:var(--green)}.status.err{color:var(--red)}.export-head{display:none}.export-consumer{font-size:11px;line-height:1.7;margin:12px 0}.signature{text-align:right;margin-top:32px;font-size:11px}.empty{text-align:center;color:var(--muted);padding:18px;font-size:12px}.pill{display:inline-block;border-radius:99px;padding:4px 8px;background:#e6f8ef;color:#08764e;font-size:10px;font-weight:800}.bottom-note{font-size:10px;color:var(--muted);text-align:center;margin-top:14px}@media(max-width:1050px){.layout{grid-template-columns:1fr}.side-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){header{padding:14px}.brand{font-size:16px}.welcome h1{font-size:22px}.panel{padding:12px}.fields{grid-template-columns:1fr 1fr}.side-grid{grid-template-columns:1fr}.cards{gap:8px}.metric{padding:12px}.metric-value{font-size:18px}.actions button{flex:1}.fields .full{grid-column:1/-1}}@media(max-width:400px){.fields{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.metric-value{font-size:16px}}@media print{body{background:#fff}header,.welcome,.cards,.consumer-panel,.side-grid,.no-print,.status{display:none!important}main{margin:0;padding:0;max-width:none}.layout{display:block}.panel{box-shadow:none;border:0;padding:0;margin:0}.export-head{display:block;text-align:center;font-size:19px;font-weight:850}.export-head small{display:block;font-size:12px;margin-top:6px}.export-consumer{display:block!important}table{min-width:0;width:100%}th,td{font-size:9px;padding:5px;border:1px solid #333}td input{border:0;padding:0;min-width:0;background:transparent}.remove-cell{display:none!important}.table-wrap{overflow:visible;border:0}.totalbox{break-inside:avoid}.signature{margin-top:35px}}
+</style></head><body>
+<header><div class="brand">M/S CHAKRABORTY ELECTRICALS<small>Solar Consumer & Material Estimate Management</small></div><div class="head-actions"><span id="userEmail" style="font-size:11px;color:#dbe7ff">Checking login…</span><button class="darksoft" id="backBtn">← Consumer Payment</button><button class="darksoft" id="logoutBtn">Logout</button></div></header>
+<main><div class="welcome"><div><div class="eyebrow">Estimate workspace</div><h1>Solar Material Estimate</h1><div class="muted">Default material list is pre-filled. Change quantities; edit, add or remove items whenever needed.</div></div><div class="actions no-print"><button class="soft" id="newBtn">＋ New Estimate</button><button class="primary" id="saveBtn">Save Estimate</button><button class="green" id="updateBtn" disabled>Update Estimate</button></div></div>
+<div class="cards"><div class="metric"><div class="metric-top"><span class="metric-label">Existing Consumers</span><span class="metric-icon">👥</span></div><div class="metric-value" id="consumerCount">—</div><div class="metric-note">From current Consumer Payment database</div></div><div class="metric"><div class="metric-top"><span class="metric-label">Total Estimate Value</span><span class="metric-icon">📋</span></div><div class="metric-value" id="dashEstimate">₹0.00</div><div class="metric-note">All saved material estimates</div></div><div class="metric"><div class="metric-top"><span class="metric-label">Payment Received</span><span class="metric-icon">₹</span></div><div class="metric-value" id="dashPayment">₹0.00</div><div class="metric-note">Recorded payments from existing consumer records</div></div><div class="metric"><div class="metric-top"><span class="metric-label">Estimate − Payment</span><span class="metric-icon">📈</span></div><div class="metric-value" id="dashDifference">₹0.00</div><div class="metric-note">Difference only, not actual profit</div></div></div>
+<div class="layout"><div><section class="panel consumer-panel"><div class="panel-head"><div><h2>1. Select Existing Consumer</h2><p>Estimate will be stored under the selected consumer record.</p></div><span class="pill">Linked data</span></div><div class="fields"><div class="field"><label>Search consumer</label><input id="consumerSearch" placeholder="Name, phone, ID or address"></div><div class="field"><label>Consumer *</label><select id="consumerSelect"><option value="">Loading consumers…</option></select></div><div class="field"><label>Saved estimate</label><select id="estimateSelect"><option value="">New estimate</option></select></div></div><div class="consumer-info" id="consumerInfo"></div><div class="status" id="status"></div></section>
+<section class="panel"><div class="panel-head"><div><h2>2. Material List</h2><p>Quantity × Rate = Amount. GST and total calculate automatically.</p></div><div class="actions no-print"><button class="soft" id="addRowBtn">＋ Add Material</button><button class="soft" id="saveTemplateBtn">Save as My Default</button><button class="darksoft" id="restoreBtn">Restore Sample</button></div></div>
+<div id="exportArea"><div class="export-head">M/S CHAKRABORTY ELECTRICALS<small>SOLAR MATERIAL ESTIMATE</small></div><div class="export-consumer" id="exportConsumer">Consumer: —<br>Mobile: —<br>Consumer ID: —<br>Address: —</div><div class="table-wrap"><table><thead><tr><th>Sl No</th><th>Description of Goods</th><th>Per</th><th>Quantity</th><th>Rate</th><th>Amount</th><th>GST %</th><th>Total</th><th class="remove-cell no-print">Edit</th></tr></thead><tbody id="rows"></tbody><tfoot><tr><th colspan="5" style="text-align:right">Total</th><th id="footAmount">₹0.00</th><th></th><th id="footTotal">₹0.00</th><th class="remove-cell no-print"></th></tr></tfoot></table></div></div>
+<div class="table-foot"><div class="actions no-print"><button class="soft" id="jpgBtn">Download JPG</button><button class="soft" id="pngBtn">Download PNG</button><button class="soft" id="pdfBtn">Print / Save PDF</button></div><div class="totalbox"><div class="sumrow"><span>Material Amount</span><strong id="subTotal">₹0.00</strong></div><div class="sumrow"><span>GST Total</span><strong id="gstTotal">₹0.00</strong></div><div class="sumrow grand"><span>GRAND TOTAL</span><strong id="grandTotal">₹0.00</strong></div></div></div><div class="notice">Tip: click “Save as My Default” after editing descriptions/rates/GST if you want your customized material list to appear in future estimates on this browser.</div></section></div>
+<aside class="side-grid"><section class="panel"><div class="panel-head"><div><h2>Saved Estimates</h2><p>For the selected consumer</p></div></div><div class="field"><label>Search estimates</label><input id="estimateSearch" placeholder="Material / estimate ID"></div><div class="side-list" id="savedList" style="margin-top:11px"><div class="empty">Select a consumer to view estimates.</div></div></section><section class="panel"><h2 class="side-title">Dashboard notes</h2><div class="notice">• Estimates are saved separately inside the selected consumer record.<br>• Existing consumer name, mobile, ID and address are read from the old page's Firestore data.<br>• “Estimate − Payment” is not accounting profit. For actual profit, you need actual purchase cost and other expenses.<br>• If Firestore Rules deny access to the new subcollection, ask to update the rules before using Save.</div></section></aside></div><div class="bottom-note">M/S Chakraborty Electricals · Material Estimate Management</div></main>
 <script type="module">
-import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10",
-  authDomain: "chakraborty-ele-login.firebaseapp.com",
-  projectId: "chakraborty-ele-login",
-  storageBucket: "chakraborty-ele-login.firebasestorage.app",
-  messagingSenderId: "414542805581",
-  appId: "1:414542805581:web:cfd13593767abbb51cba04"
-};
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const CONSUMER_COLLECTION = "solar_consumer_payment";
-const $ = id => document.getElementById(id);
-let currentUser = null;
-let activeEstimateId = null;
-let cachedConsumers = [];
-let cachedEstimates = [];
-let selectedConsumer = null;
-
-function money(n){ return "₹" + (Number(n)||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function esc(s){ return String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c])); }
-function setStatus(message, type=""){ $("status").textContent=message; $("status").className="status "+type; }
-function num(v){ const n=Number(v); return Number.isFinite(n)&&n>=0?n:0; }
-function estimateCollection(consumerDocId){ return collection(db,CONSUMER_COLLECTION,consumerDocId,"materialEstimates"); }
-function estimateDoc(consumerDocId,estimateId){ return doc(db,CONSUMER_COLLECTION,consumerDocId,"materialEstimates",estimateId); }
-
-function addRow(item={}) {
-  const tr=document.createElement("tr");
-  tr.innerHTML=`
-    <td class="desc"><input class="description" aria-label="Description" placeholder="Material description" value="${esc(item.description||"")}"></td>
-    <td class="per"><input class="per" aria-label="Per" placeholder="Nos / W / m" value="${esc(item.per||"")}"></td>
-    <td class="num"><input class="qty" aria-label="Quantity" type="number" min="0" step="any" value="${item.quantity ?? ""}" placeholder="0"></td>
-    <td class="num"><input class="rate" aria-label="Rate" type="number" min="0" step="any" value="${item.rate ?? ""}" placeholder="0.00"></td>
-    <td class="gst"><input class="gstRate" aria-label="GST percent" type="number" min="0" max="100" step="any" value="${item.gst ?? 18}" placeholder="18"></td>
-    <td class="total lineTotal">₹0.00</td>
-    <td><button class="danger small removeRow" type="button">Remove</button></td>`;
-  $("materialRows").appendChild(tr);
-  tr.querySelectorAll("input").forEach(el=>el.addEventListener("input",calculate));
-  tr.querySelector(".removeRow").addEventListener("click",()=>{tr.remove();if(!$("materialRows").children.length)addRow();calculate();});
-  calculate();
-}
-function getMaterials(){
-  return [...$("materialRows").querySelectorAll("tr")].map(tr=>{
-    const quantity=num(tr.querySelector(".qty").value), rate=num(tr.querySelector(".rate").value), gst=num(tr.querySelector(".gstRate").value);
-    const base=quantity*rate, tax=base*gst/100;
-    return {description:tr.querySelector(".description").value.trim(),per:tr.querySelector(".per").value.trim(),quantity,rate,gst,base,tax,total:base+tax};
-  }).filter(x=>x.description||x.per||x.quantity||x.rate);
-}
-function calculate(){
-  let base=0,tax=0;
-  [...$("materialRows").querySelectorAll("tr")].forEach(tr=>{
-    const q=num(tr.querySelector(".qty").value),r=num(tr.querySelector(".rate").value),g=num(tr.querySelector(".gstRate").value);
-    const lineBase=q*r,lineTax=lineBase*g/100;base+=lineBase;tax+=lineTax;
-    tr.querySelector(".lineTotal").textContent=money(lineBase+lineTax);
-  });
-  $("subtotal").textContent=money(base);$("gstTotal").textContent=money(tax);$("grandTotal").textContent=money(base+tax);
-  return {subtotal:base,gstTotal:tax,grandTotal:base+tax};
-}
-function resetForm(keepConsumer=true){
-  activeEstimateId=null;$("materialRows").innerHTML="";addRow();$("updateBtn").disabled=true;$("saveBtn").disabled=false;
-  setStatus("New estimate ready for the selected consumer.");
-}
-function loadMaterials(materials=[]){
-  $("materialRows").innerHTML="";(materials.length?materials:[{}]).forEach(addRow);activeEstimateId=null;
-}
-function dataForSave(){
-  if(!selectedConsumer) throw new Error("Please select an existing consumer first.");
-  const materials=getMaterials();
-  if(!materials.length) throw new Error("Please enter at least one material row.");
-  if(materials.some(x=>!x.description)) throw new Error("Please fill Description for every material row.");
-  return {...calculate(),materials,consumerDocId:selectedConsumer.id,consumerName:selectedConsumer.consumerName||"",consumerMobile:selectedConsumer.mobile||"",consumerId:selectedConsumer.consumerId||"",consumerAddress:selectedConsumer.address||"",updatedAt:serverTimestamp(),updatedBy:currentUser?.email||"",ownerUid:currentUser.uid};
-}
-async function saveEstimate(){
-  if(!currentUser)return setStatus("Please log in first.","err");
-  try{
-    const data=dataForSave();
-    const ref=await addDoc(estimateCollection(selectedConsumer.id),{...data,createdAt:serverTimestamp(),createdBy:currentUser.email||""});
-    activeEstimateId=ref.id;$("updateBtn").disabled=false;$("saveBtn").disabled=true;
-    setStatus("Estimate saved and linked to "+(selectedConsumer.consumerName||"selected consumer")+". Estimate ID: "+ref.id,"ok");await loadEstimates();
-  }catch(e){setStatus(e.message||"Could not save estimate.","err");}
-}
-async function updateEstimate(){
-  if(!selectedConsumer) return setStatus("Select a consumer first.","err");
-  if(!activeEstimateId)return setStatus("Open a saved estimate first, or save a new estimate.","err");
-  try{
-    const data=dataForSave();await updateDoc(estimateDoc(selectedConsumer.id,activeEstimateId),data);
-    setStatus("Estimate updated for "+(selectedConsumer.consumerName||"selected consumer"),"ok");await loadEstimates();
-  }catch(e){setStatus(e.message||"Could not update estimate.","err");}
-}
-async function loadConsumers(){
-  try{
-    const snap=await getDocs(collection(db,CONSUMER_COLLECTION));
-    cachedConsumers=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.consumerName||"").localeCompare(b.consumerName||""));
-    const select=$("consumerSelect");select.innerHTML='<option value="">Select existing consumer</option>';
-    cachedConsumers.forEach(c=>{const opt=document.createElement("option");opt.value=c.id;opt.textContent=[c.consumerName||"Unnamed consumer",c.mobile||"",c.consumerId||""].filter(Boolean).join(" · ");select.appendChild(opt);});
-    if(!cachedConsumers.length){select.innerHTML='<option value="">No consumers found in existing database</option>';setStatus("No existing consumers found. Add a consumer in the old page first.","err");}
-  }catch(e){setStatus("Could not load existing consumers: "+e.message,"err");}
-}
-async function selectConsumer(id){
-  selectedConsumer=cachedConsumers.find(c=>c.id===id)||null;
-  activeEstimateId=null;$("updateBtn").disabled=true;$("saveBtn").disabled=false;
-  if(!selectedConsumer){$("consumerInfo").textContent="";$("savedList").innerHTML="";return;}
-  const c=selectedConsumer;
-  $("consumerInfo").innerHTML=`<strong>${esc(c.consumerName||"-")}</strong> · Mobile: ${esc(c.mobile||"-")} · Consumer ID: ${esc(c.consumerId||"-")}<br>Address: ${esc(c.address||"-")}<br>CCC: ${esc(c.cccName||c.cccLabel||"-")}`;
-  resetForm();await loadEstimates();
-}
-async function loadEstimates(){
-  if(!selectedConsumer){$("savedList").innerHTML="";return;}
-  $("savedList").innerHTML='<div class="muted">Loading estimates…</div>';
-  try{
-    const snap=await getDocs(query(estimateCollection(selectedConsumer.id),orderBy("createdAt","desc")));
-    cachedEstimates=snap.docs.map(d=>({id:d.id,...d.data()}));renderSaved();
-  }catch(e){
-    try{const snap=await getDocs(estimateCollection(selectedConsumer.id));cachedEstimates=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderSaved();}
-    catch(err){$("savedList").innerHTML="";setStatus("Could not load estimates: "+err.message,"err");}
-  }
-}
-function renderSaved(){
-  $("savedList").innerHTML="";
-  if(!cachedEstimates.length){$("savedList").innerHTML='<div class="muted">No estimates saved for this consumer yet.</div>';return;}
-  cachedEstimates.forEach(item=>{
-    const el=document.createElement("div");el.className="saved-item";
-    const desc=(item.materials||[]).map(m=>m.description).filter(Boolean).slice(0,2).join(", ")||"Material estimate";
-    el.innerHTML=`<div><div class="saved-title">${esc(desc)}</div><div class="saved-meta">Estimate ID: ${esc(item.id)} · Total: ${money(item.grandTotal||0)}</div></div><button class="secondary small" type="button">Open / Edit</button>`;
-    el.querySelector("button").addEventListener("click",()=>openEstimate(item.id));$("savedList").appendChild(el);
-  });
-}
-function openEstimate(id){
-  const item=cachedEstimates.find(x=>x.id===id);if(!item)return;
-  loadMaterials(item.materials||[]);activeEstimateId=id;$("updateBtn").disabled=false;$("saveBtn").disabled=true;calculate();
-  setStatus("Opened estimate for "+(selectedConsumer?.consumerName||"consumer")+". Edit rows and click Update Estimate.","ok");window.scrollTo({top:0,behavior:"smooth"});
-}
-$("addRowBtn").addEventListener("click",()=>addRow());
-$("newBtn").addEventListener("click",resetForm);
-$("saveBtn").addEventListener("click",saveEstimate);
-$("updateBtn").addEventListener("click",updateEstimate);
-$("consumerSelect").addEventListener("change",e=>selectConsumer(e.target.value));
-$("backBtn").addEventListener("click",()=>location.href="solar_consumer_payment.html");
-$("logoutBtn").addEventListener("click",async()=>{try{await signOut(auth);location.href="index.html";}catch(e){setStatus("Logout failed: "+e.message,"err");}});
-onAuthStateChanged(auth,async user=>{
-  if(!user){location.href="index.html";return;}
-  currentUser=user;$("userEmail").textContent=user.email||"Logged in";
-  await loadConsumers();
-});
-</script>
-</body>
-</html>
+import{initializeApp,getApps,getApp}from'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';import{getAuth,onAuthStateChanged,signOut}from'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';import{getFirestore,collection,getDocs,doc,addDoc,updateDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js';
+const firebaseConfig={apiKey:'AIzaSyBzsxNsxx3RwN94Sxxz_dXRQwMbll6Cg10',authDomain:'chakraborty-ele-login.firebaseapp.com',projectId:'chakraborty-ele-login',storageBucket:'chakraborty-ele-login.firebasestorage.app',messagingSenderId:'414542805581',appId:'1:414542805581:web:cfd13593767abbb51cba04'};const app=getApps().length?getApp():initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);const C='solar_consumer_payment',SUB='materialEstimates',TKEY='ce_material_estimate_template_v3';const $=id=>document.getElementById(id);let user=null,consumers=[],activeConsumer=null,estimates=[],activeId=null;
+const DEFAULT=[['solar plate & inverter','set',1,121695,5],['4 sqmm DC wire','mtr',35,65,18],['6 sqmm AC wire','mtr',65,92,18],['2.5 sqmm AC wire','mtr',75,46,18],['copper bonded lighting arrester','nos',1,1095,18],['Ring lugs','nos',4,6,18],['pvc cable duct','pcs',1,370,18],['pvc cable tie 100 mm','pkt',1,75,18],['Earthing Bucket','nos',3,212,18],['pvc aluminium single core 10 sqmm','roll',1,1400,18],['copper wire 10 swg for Earth','kg',2.2,1800,18],['Earthing Lugs','nos',3,17,18],['3/4 pvc pipe','kg',10,70,18],['250 MM TAI','PKT',1,120,18],['20 MM CABLE CLIP','PKT',1,130,18],['20 MM PVC T,L','NOS',15,5,18],['EXTRA NUT BOLT','',1,200,18],['All fetting Labour','',1,6000,18],['c channel, busber 1ph','nos',1,4070,18],['cost with stacture','',1,15000,0]].map(a=>({description:a[0],per:a[1],quantity:a[2],rate:a[3],gst:a[4]}));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const num=v=>Math.max(0,Number(v)||0);const money=v=>'₹'+num(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});function say(t,type=''){ $('status').textContent=t;$('status').className='status '+type;}function template(){try{const x=JSON.parse(localStorage.getItem(TKEY)||'null');if(Array.isArray(x)&&x.length)return x;}catch(e){}return DEFAULT;}
+function addRow(m={}){const tr=document.createElement('tr');tr.innerHTML=`<td class="sl"></td><td><input class="desc" value="${esc(m.description||'')}" aria-label="Description" placeholder="Description of goods"></td><td><input class="unit" value="${esc(m.per||'')}" aria-label="Per" placeholder="nos/mtr"></td><td><input class="num qty" type="number" min="0" step="any" value="${m.quantity??0}" aria-label="Quantity"></td><td><input class="num rate" type="number" min="0" step="any" value="${m.rate??0}" aria-label="Rate"></td><td class="calc amount">₹0.00</td><td><input class="num gst" type="number" min="0" max="100" step="any" value="${m.gst??18}" aria-label="GST percent"></td><td class="calc total">₹0.00</td><td class="remove-cell no-print"><button class="danger remove" type="button" title="Remove row">✕</button></td>`;$('rows').appendChild(tr);tr.querySelectorAll('input').forEach(x=>x.addEventListener('input',calc));tr.querySelector('.remove').addEventListener('click',()=>{tr.remove();renumber();calc();});renumber();calc();}function renumber(){[...$('rows').rows].forEach((r,i)=>r.querySelector('.sl').textContent=i+1)}function materials(){return [...$('rows').rows].map(r=>({description:r.querySelector('.desc').value.trim(),per:r.querySelector('.unit').value.trim(),quantity:num(r.querySelector('.qty').value),rate:num(r.querySelector('.rate').value),gst:num(r.querySelector('.gst').value)})).filter(m=>m.description||m.per||m.quantity||m.rate)}function calc(){let sub=0,tax=0;[...$('rows').rows].forEach(r=>{const amount=num(r.querySelector('.qty').value)*num(r.querySelector('.rate').value),gst=amount*num(r.querySelector('.gst').value)/100;sub+=amount;tax+=gst;r.querySelector('.amount').textContent=money(amount);r.querySelector('.total').textContent=money(amount+gst)});$('subTotal').textContent=money(sub);$('gstTotal').textContent=money(tax);$('grandTotal').textContent=money(sub+tax);$('footAmount').textContent=money(sub);$('footTotal').textContent=money(sub+tax);return{subtotal:sub,gstTotal:tax,grandTotal:sub+tax}}
+function newEstimate(){activeId=null;$('estimateSelect').value='';$('rows').innerHTML='';template().forEach(addRow);$('saveBtn').disabled=false;$('updateBtn').disabled=true;calc();say('Default materials filled. Adjust quantity or edit/add/remove any row.');}function getReceived(c){const p=c?.payments||{};return ['cashFirst','cashSecond','loanFirst','loanSecond','loanThird'].reduce((a,k)=>a+num(p[k]?.amount),0)}function displayConsumer(c){activeConsumer=c;if(!c){$('consumerInfo').style.display='none';$('exportConsumer').innerHTML='Consumer: —<br>Mobile: —<br>Consumer ID: —<br>Address: —';return;}const name=c.consumerName||c.name||'Unnamed Consumer',phone=c.mobile||c.phone||'—',cid=c.consumerId||'—',addr=c.address||'—';$('consumerInfo').style.display='block';$('consumerInfo').innerHTML=`<strong>${esc(name)}</strong><p>Mobile: ${esc(phone)} &nbsp; | &nbsp; Consumer ID: ${esc(cid)}<br>Address: ${esc(addr)}<br>CCC: ${esc(c.cccName||c.cccLabel||'—')}</p>`;$('exportConsumer').innerHTML=`Consumer: ${esc(name)}<br>Mobile: ${esc(phone)}<br>Consumer ID: ${esc(cid)}<br>Address: ${esc(addr)}`;}
+function renderConsumerOptions(){const q=$('consumerSearch').value.trim().toLowerCase(),old=$('consumerSelect').value;const list=consumers.filter(c=>[c.consumerName,c.mobile,c.consumerId,c.address].some(v=>String(v||'').toLowerCase().includes(q)));$('consumerSelect').innerHTML='<option value="">Choose existing consumer…</option>'+list.map(c=>`<option value="${esc(c.id)}">${esc(c.consumerName||c.name||'Unnamed')} · ${esc(c.mobile||c.phone||'No phone')} · ${esc(c.consumerId||'No ID')}</option>`).join('');if(list.some(c=>c.id===old))$('consumerSelect').value=old;}
+async function loadConsumers(){const snap=await getDocs(collection(db,C));consumers=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));$('consumerCount').textContent=consumers.length;renderConsumerOptions();const received=consumers.reduce((a,c)=>a+getReceived(c),0);$('dashPayment').textContent=money(received);}
+async function loadEstimates(){estimates=[];$('estimateSelect').innerHTML='<option value="">New estimate</option>';if(!activeConsumer){renderSaved();return;}const snap=await getDocs(collection(db,C,activeConsumer.id,SUB));estimates=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));$('estimateSelect').innerHTML='<option value="">New estimate</option>'+estimates.map(e=>`<option value="${esc(e.id)}">${esc(e.title||'Material Estimate')} · ${money(e.grandTotal)}</option>`).join('');renderSaved();await dashboardEstimateTotal();}
+async function dashboardEstimateTotal(){let total=0;for(const c of consumers){try{const snap=await getDocs(collection(db,C,c.id,SUB));snap.forEach(d=>total+=num(d.data().grandTotal));}catch(e){console.warn('Cannot read estimate subcollection for consumer',c.id,e)}}$('dashEstimate').textContent=money(total);$('dashDifference').textContent=money(total-consumers.reduce((a,c)=>a+getReceived(c),0));}
+async function chooseConsumer(){const c=consumers.find(x=>x.id===$('consumerSelect').value)||null;displayConsumer(c);if(c){await loadEstimates();newEstimate()}else{estimates=[];$('estimateSelect').innerHTML='<option value="">New estimate</option>';newEstimate()}}
+function renderSaved(){const q=$('estimateSearch').value.trim().toLowerCase(),list=estimates.filter(e=>!q||[e.id,e.title,...(e.materials||[]).map(m=>m.description)].some(v=>String(v||'').toLowerCase().includes(q)));$('savedList').innerHTML='';if(!activeConsumer){$('savedList').innerHTML='<div class="empty">Select a consumer to view estimates.</div>';return}if(!list.length){$('savedList').innerHTML='<div class="empty">No saved estimates found.</div>';return}list.forEach(e=>{const el=document.createElement('div');el.className='estimate-item';el.innerHTML=`<strong>${esc(e.title||'Material Estimate')}</strong><small>${esc(e.id)}<br>${(e.materials||[]).length} material rows · ${money(e.grandTotal)}</small><div class="actions"><button class="soft" type="button">Open / Edit</button></div>`;el.querySelector('button').addEventListener('click',()=>openEstimate(e.id));$('savedList').appendChild(el)})}
+function openEstimate(id){const e=estimates.find(x=>x.id===id);if(!e)return;activeId=id;$('rows').innerHTML='';(e.materials||[]).forEach(addRow);$('estimateSelect').value=id;$('saveBtn').disabled=true;$('updateBtn').disabled=false;calc();say('Saved estimate opened. Edit rows and click Update Estimate.','ok');window.scrollTo({top:0,behavior:'smooth'})}function payload(){return{...calc(),title:'Material Estimate',materials:materials(),consumerName:activeConsumer.consumerName||activeConsumer.name||'',mobile:activeConsumer.mobile||activeConsumer.phone||'',consumerNumber:activeConsumer.consumerId||'',address:activeConsumer.address||'',consumerDocumentId:activeConsumer.id,updatedAt:serverTimestamp(),updatedBy:user?.email||''}}
+async function saveEstimate(){if(!activeConsumer)return say('Please select a consumer first.','err');const ms=materials();if(!ms.length||ms.some(m=>!m.description))return say('Please fill Description for every used row.','err');try{const ref=await addDoc(collection(db,C,activeConsumer.id,SUB),{...payload(),createdAt:serverTimestamp(),createdBy:user?.email||''});activeId=ref.id;$('saveBtn').disabled=true;$('updateBtn').disabled=false;say('Estimate saved under the selected consumer.','ok');await loadEstimates();$('estimateSelect').value=ref.id;await dashboardEstimateTotal()}catch(e){say('Save failed: '+e.message+' — check Firestore Rules for materialEstimates.','err')}}async function updateEstimate(){if(!activeConsumer||!activeId)return say('Open a saved estimate first.','err');const ms=materials();if(!ms.length||ms.some(m=>!m.description))return say('Please fill Description for every used row.','err');try{await updateDoc(doc(db,C,activeConsumer.id,SUB,activeId),payload());say('Estimate updated successfully.','ok');await loadEstimates();$('estimateSelect').value=activeId}catch(e){say('Update failed: '+e.message,'err')}}
+function saveTemplate(){const ms=materials();if(!ms.length)return say('No materials to save.','err');try{localStorage.setItem(TKEY,JSON.stringify(ms));say('Your material list is saved as the default for this browser.','ok')}catch(e){say('Could not save template in this browser.','err')}}function restore(){localStorage.removeItem(TKEY);newEstimate();say('Original sample material list restored.','ok')}async function exportImage(type){try{if(!window.html2canvas)throw Error('Image library did not load; check internet.');const canvas=await html2canvas($('exportArea'),{scale:2,backgroundColor:'#ffffff'});const a=document.createElement('a');a.download='Solar-Material-Estimate-'+(activeConsumer?.consumerId||activeConsumer?.id||'consumer')+'.'+type;a.href=canvas.toDataURL(type==='jpg'?'image/jpeg':'image/png',.95);a.click()}catch(e){say('Image export failed: '+e.message,'err')}}
+$('consumerSearch').addEventListener('input',renderConsumerOptions);$('consumerSelect').addEventListener('change',chooseConsumer);$('estimateSelect').addEventListener('change',()=>{const id=$('estimateSelect').value;if(id)openEstimate(id);else newEstimate()});$('newBtn').addEventListener('click',newEstimate);$('addRowBtn').addEventListener('click',()=>addRow());$('saveBtn').addEventListener('click',saveEstimate);$('updateBtn').addEventListener('click',updateEstimate);$('saveTemplateBtn').addEventListener('click',saveTemplate);$('restoreBtn').addEventListener('click',restore);$('estimateSearch').addEventListener('input',renderSaved);$('jpgBtn').addEventListener('click',()=>exportImage('jpg'));$('pngBtn').addEventListener('click',()=>exportImage('png'));$('pdfBtn').addEventListener('click',()=>window.print());$('backBtn').addEventListener('click',()=>location.href='solar_consumer_payment.html');$('logoutBtn').addEventListener('click',async()=>{await signOut(auth);location.href='index.html'});
+onAuthStateChanged(auth,async u=>{if(!u){location.href='index.html';return}user=u;$('userEmail').textContent=u.email||'Logged in';try{await loadConsumers();newEstimate();await dashboardEstimateTotal()}catch(e){say('Could not load consumers: '+e.message,'err')}});
+</script></body></html>
