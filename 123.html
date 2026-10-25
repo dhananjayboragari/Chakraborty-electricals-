@@ -455,17 +455,33 @@ function renderSaved(){
       await loadEstimates();
       openEstimate(e.id);
     });
-    el.querySelector('.delete-estimate').addEventListener('click',async()=>{
-      if(!confirm('এই Estimate-টি মুছবেন? Consumer-এর মূল রেকর্ড মুছবে না।'))return;
-      try{
-        await deleteDoc(doc(db,C,e._consumerDocId,SUB,e.id));
-        say('Estimate deleted successfully. Consumer record remains unchanged.','ok');
-        await loadAllEstimates();
-        if(activeConsumer)await loadEstimates();
-      }catch(err){
-        say('Delete failed: '+err.message,'err');
+
+
+
+  
+    
+el.querySelector('.delete-estimate').addEventListener('click', () => {
+  showDeleteConfirm(
+    'এই Estimate-টি মুছবেন? Consumer-এর মূল রেকর্ড মুছবে না।',
+
+    async () => {
+      await deleteDoc(doc(db, C, e._consumerDocId, SUB, e.id));
+
+      await loadAllEstimates();
+
+      if (activeConsumer) {
+        await loadEstimates();
       }
-    });
+
+      showAppPopup(
+        'delete',
+        'Estimate Deleted!',
+        'Estimate সফলভাবে মুছে দেওয়া হয়েছে। Consumer-এর মূল রেকর্ড অক্ষত আছে।'
+      );
+    }
+  );
+});
+
     $('savedList').appendChild(el);
   });
 }
@@ -501,7 +517,7 @@ async function saveEstimate(){
       ...payload(),createdAt:serverTimestamp(),createdBy:user?.email||''
     });
     activeId=ref.id;setMode(true);
-    say('Estimate saved under the selected consumer.','ok');
+    showAppPopup(   'success',   'Estimate Saved!',   'Your material estimate has been saved successfully.' );
     await loadEstimates();
     $('estimateSelect').value=ref.id;
     await loadAllEstimates();
@@ -515,7 +531,7 @@ async function updateEstimate(){
   if(!ms.length||ms.some(m=>!m.description))return say('Please fill Description for every used row.','err');
   try{
     await updateDoc(doc(db,C,activeConsumer.id,SUB,activeId),payload());
-    say('Estimate updated successfully.','ok');
+    showAppPopup(   'success',   'Estimate Updated!',   'Your changes have been saved successfully.' );
     await loadEstimates();
     $('estimateSelect').value=activeId;
     await loadAllEstimates();
@@ -596,5 +612,194 @@ onAuthStateChanged(auth,async u=>{
   }
 });
 </script>
+
+
+
+
+
+  
+<div id="appPopup" class="app-popup-overlay">
+  <div class="app-popup-card">
+    <div id="appPopupIcon" class="app-popup-icon">✓</div>
+    <h2 id="appPopupTitle">Success!</h2>
+
+    
+        <p id="appPopupMessage">Your estimate has been saved.</p>
+    <div id="appPopupActions" class="app-popup-actions">
+      <button type="button" id="appPopupBtn">OK, Got it</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.app-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(10, 18, 35, .68);
+  backdrop-filter: blur(7px);
+}
+.app-popup-overlay.show {
+  display: flex;
+  animation: popupFade .2s ease;
+}
+.app-popup-card {
+  width: 100%;
+  max-width: 350px;
+  box-sizing: border-box;
+  padding: 28px 22px 22px;
+  text-align: center;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 20px 65px rgba(0,0,0,.3);
+  animation: popupEnter .25s ease;
+}
+.app-popup-icon {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 35px;
+  font-weight: 800;
+}
+.app-popup-card h2 {
+  margin: 0 0 10px;
+  color: #172033;
+  font-size: 23px;
+}
+.app-popup-card p {
+  margin: 0 0 23px;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.app-popup-card button {
+  width: 100%;
+  padding: 13px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#2563eb,#4f46e5);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+@keyframes popupFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes popupEnter {
+  from { opacity: 0; transform: translateY(15px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+  .app-popup-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.app-popup-actions button {
+  flex: 1;
+  width: auto;
+}
+
+.app-popup-card .app-popup-cancel {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.app-popup-card .app-popup-confirm {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+}
+</style>
+
+<script>
+  
+function showAppPopup(type, title, message) {
+  const overlay = document.getElementById('appPopup');
+  const icon = document.getElementById('appPopupIcon');
+
+  icon.textContent = type === 'error' ? '!' :
+                     type === 'delete' ? '×' : '✓';
+
+  icon.style.background = type === 'error' ? '#fee2e2' :
+                          type === 'delete' ? '#ffedd5' : '#dcfce7';
+
+  icon.style.color = type === 'error' ? '#b91c1c' :
+                     type === 'delete' ? '#c2410c' : '#15803d';
+
+  document.getElementById('appPopupTitle').textContent = title;
+  document.getElementById('appPopupMessage').textContent = message;
+
+  document.getElementById('appPopupActions').innerHTML = `
+    <button type="button" id="appPopupBtn">OK, Got it</button>
+  `;
+
+  document.getElementById('appPopupBtn').onclick = () => {
+    overlay.classList.remove('show');
+  };
+
+  overlay.classList.add('show');
+}
+
+function showDeleteConfirm(message, onConfirm) {
+  const overlay = document.getElementById('appPopup');
+  const icon = document.getElementById('appPopupIcon');
+
+  icon.textContent = '?';
+  icon.style.background = '#ffedd5';
+  icon.style.color = '#c2410c';
+
+  document.getElementById('appPopupTitle').textContent =
+    'Delete Estimate?';
+
+  document.getElementById('appPopupMessage').textContent = message;
+
+  document.getElementById('appPopupActions').innerHTML = `
+    <button type="button" id="appPopupCancelBtn"
+            class="app-popup-cancel">Cancel</button>
+    <button type="button" id="appPopupConfirmBtn"
+            class="app-popup-confirm">Yes, Delete</button>
+  `;
+
+  document.getElementById('appPopupCancelBtn').onclick = () => {
+    overlay.classList.remove('show');
+  };
+
+  document.getElementById('appPopupConfirmBtn').onclick = async () => {
+    overlay.classList.remove('show');
+
+    try {
+      await onConfirm();
+    } catch (err) {
+      showAppPopup('error', 'Delete Failed!', err.message);
+    }
+  };
+
+  overlay.classList.add('show');
+}
+
+document.getElementById('appPopup').addEventListener('click', event => {
+  if (event.target.id === 'appPopup') {
+    event.currentTarget.classList.remove('show');
+  }
+});
+
+</script>
+
+
+  
 </body>
 </html>
