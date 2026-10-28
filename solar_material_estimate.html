@@ -82,6 +82,8 @@ td .remove{padding:7px 9px}
 @media(max-width:650px){header{padding:14px}.brand{font-size:16px}.welcome h1{font-size:22px}.panel{padding:12px}.fields{grid-template-columns:1fr 1fr}.cards{gap:8px}.metric{padding:12px}.actions button{flex:1}.consumer-detail-boxes{grid-template-columns:1fr}}
 @media(max-width:400px){.fields{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.metric-value{font-size:16px}}
 @media print{
+/* Hide only the Material List heading and its helper sentence/buttons in PDF; keep all estimate data and app behavior unchanged. */
+.layout > div > section.panel:not(.consumer-panel) > .panel-head{display:none!important}
 body{background:#fff}
 header,.welcome,.cards,.consumer-panel,.side-grid,.no-print,.status{display:none!important}
 main{margin:0;padding:0;max-width:none}
@@ -96,21 +98,6 @@ td input{border:0;padding:0;min-width:0;background:transparent}
 .remove-cell{display:none!important}
 .table-wrap{overflow:visible;border:0}
 .totalbox{break-inside:avoid}
-/* Clean PDF: hide material pricing/calculation columns and on-screen summary */
-#exportArea table th:nth-child(4),
-#exportArea table td:nth-child(4),
-#exportArea table th:nth-child(5),
-#exportArea table td:nth-child(5),
-#exportArea table th:nth-child(6),
-#exportArea table td:nth-child(6),
-#exportArea table th:nth-child(7),
-#exportArea table td:nth-child(7),
-#exportArea table th:nth-child(8),
-#exportArea table td:nth-child(8),
-#exportArea table tfoot{display:none!important}
-.table-foot .totalbox{display:none!important}
-/* Do not print website/browser link text, URLs or browser-generated URL headers/footers */
-a[href]:after{content:none!important}
 }
 
 /* Goods Master settings - added without changing the existing estimate layout */
