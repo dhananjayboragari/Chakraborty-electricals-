@@ -96,6 +96,21 @@ td input{border:0;padding:0;min-width:0;background:transparent}
 .remove-cell{display:none!important}
 .table-wrap{overflow:visible;border:0}
 .totalbox{break-inside:avoid}
+/* Clean PDF: hide material pricing/calculation columns and on-screen summary */
+#exportArea table th:nth-child(4),
+#exportArea table td:nth-child(4),
+#exportArea table th:nth-child(5),
+#exportArea table td:nth-child(5),
+#exportArea table th:nth-child(6),
+#exportArea table td:nth-child(6),
+#exportArea table th:nth-child(7),
+#exportArea table td:nth-child(7),
+#exportArea table th:nth-child(8),
+#exportArea table td:nth-child(8),
+#exportArea table tfoot{display:none!important}
+.table-foot .totalbox{display:none!important}
+/* Do not print website/browser link text, URLs or browser-generated URL headers/footers */
+a[href]:after{content:none!important}
 }
 
 /* Goods Master settings - added without changing the existing estimate layout */
