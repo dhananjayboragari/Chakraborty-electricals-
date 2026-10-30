@@ -245,6 +245,9 @@ const money=v=>'₹'+num(v).toLocaleString('en-IN',{minimumFractionDigits:2,maxi
 function say(t,type=''){
   $('status').textContent=t;
   $('status').className='status '+type;
+  // Show a designed popup for every success or error; keep neutral guidance in the status line.
+  if(type==='ok') showAppPopup('success','Successful!',t);
+  else if(type==='err') showAppPopup('error','Something went wrong!',t);
 }
 function template(){
   try{
@@ -341,12 +344,23 @@ function renderGoodsList(){
   $('goodsList').querySelectorAll('.edit-goods').forEach(btn=>btn.addEventListener('click',()=>{
     const g=goodsMaster.find(x=>x.id===btn.dataset.id);if(!g)return;
     editingGoodsId=g.id;$('goodsDescription').value=g.description||'';$('goodsPer').value=g.per||'';$('goodsRate').value=num(g.rate);$('goodsGst').value=num(g.gst);$('goodsSaveBtn').textContent='Save Changes';$('goodsDescription').focus();
+    showAppPopup('success','Edit Goods','তথ্য পরিবর্তন করে Save Changes চাপলে Goods Master আপডেট হবে।');
   }));
-  $('goodsList').querySelectorAll('.delete-goods').forEach(btn=>btn.addEventListener('click',async()=>{
+  $('goodsList').querySelectorAll('.delete-goods').forEach(btn=>btn.addEventListener('click',()=>{
     const g=goodsMaster.find(x=>x.id===btn.dataset.id);if(!g)return;
-    if(!window.confirm(`Delete "${g.description}" from Goods Settings? Existing estimates will not be deleted.`))return;
-    try{await deleteDoc(doc(db,GOODS,g.id));await loadGoodsMaster();say('Goods deleted from Firebase.','ok');}
-    catch(e){say('Could not delete goods: '+e.message,'err');}
+    showDeleteConfirm(
+      `“${g.description}” Goods Settings থেকে মুছে ফেলবেন? আগে Save করা Estimate অক্ষত থাকবে।`,
+      async()=>{
+        try{
+          await deleteDoc(doc(db,GOODS,g.id));
+          await loadGoodsMaster();
+          say('Goods deleted successfully. Existing estimates remain unchanged.','ok');
+        }catch(e){
+          say('Could not delete goods: '+(e.message||'Unknown error'),'err');
+        }
+      },
+      'Delete Goods?'
+    );
   }));
 }
 async function loadGoodsMaster(){
@@ -653,7 +667,7 @@ function saveTemplate(){
 function restore(){
   localStorage.removeItem(TKEY);
   newEstimate();
-  say('Original material list restored.','ok');
+  say('Original material list restored successfully.','ok');
 }
 
 /* High-resolution image export with white padding around the estimate. */
@@ -692,7 +706,9 @@ $('estimateSelect').addEventListener('change',()=>{
 $('newBtn').addEventListener('click',newEstimate);
 $('goodsSettingsBtn').addEventListener('click',openGoodsSettings);
 $('closeGoodsModal').addEventListener('click',closeGoodsSettings);
-$('goodsModal').addEventListener('click',e=>{if(e.target.id==='goodsModal')closeGoodsSettings();});
+// Intentionally do not close the Goods Settings modal on outside clicks.
+  // It closes only when the user presses the ✕ Close button.
+  $('goodsModal').addEventListener('click',e=>{e.stopPropagation();});
 $('goodsForm').addEventListener('submit',saveGoods);
 $('goodsSearch').addEventListener('input',renderGoodsList);
 $('addRowBtn').addEventListener('click',()=>addRow());
@@ -865,7 +881,7 @@ function showAppPopup(type, title, message) {
   overlay.classList.add('show');
 }
 
-function showDeleteConfirm(message, onConfirm) {
+function showDeleteConfirm(message, onConfirm, title = 'Delete Estimate?') {
   const overlay = document.getElementById('appPopup');
   const icon = document.getElementById('appPopupIcon');
 
@@ -873,8 +889,7 @@ function showDeleteConfirm(message, onConfirm) {
   icon.style.background = '#ffedd5';
   icon.style.color = '#c2410c';
 
-  document.getElementById('appPopupTitle').textContent =
-    'Delete Estimate?';
+  document.getElementById('appPopupTitle').textContent = title;
 
   document.getElementById('appPopupMessage').textContent = message;
 
