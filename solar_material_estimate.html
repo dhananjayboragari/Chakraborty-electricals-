@@ -345,6 +345,8 @@ function renderGoodsList(){
     const g=goodsMaster.find(x=>x.id===btn.dataset.id);if(!g)return;
     editingGoodsId=g.id;$('goodsDescription').value=g.description||'';$('goodsPer').value=g.per||'';$('goodsRate').value=num(g.rate);$('goodsGst').value=num(g.gst);$('goodsSaveBtn').textContent='Save Changes';$('goodsDescription').focus();
     showAppPopup('success','Edit Goods','তথ্য পরিবর্তন করে Save Changes চাপলে Goods Master আপডেট হবে।');
+    // Popup closes automatically after 3 seconds; then return the cursor to the edit field.
+    setTimeout(()=>$('goodsDescription').focus(),3100);
   }));
   $('goodsList').querySelectorAll('.delete-goods').forEach(btn=>btn.addEventListener('click',()=>{
     const g=goodsMaster.find(x=>x.id===btn.dataset.id);if(!g)return;
@@ -614,6 +616,11 @@ function openEstimate(id){
   setMode(true);calc();
   say('Saved estimate loaded. Edit any values and click Update Estimate.','ok');
   window.scrollTo({top:0,behavior:'smooth'});
+  // After the information popup closes, place the cursor in the first estimate edit box.
+  setTimeout(()=>{
+    const firstEditBox=$('rows').querySelector('.desc, input');
+    if(firstEditBox) firstEditBox.focus();
+  },3100);
 }
 function payload(){
   const sums=calc();
@@ -854,8 +861,11 @@ onAuthStateChanged(auth,async u=>{
 
 <script>
   
+let appPopupAutoCloseTimer = null;
+
 function showAppPopup(type, title, message) {
   const overlay = document.getElementById('appPopup');
+  if (appPopupAutoCloseTimer) clearTimeout(appPopupAutoCloseTimer);
   const icon = document.getElementById('appPopupIcon');
 
   icon.textContent = type === 'error' ? '!' :
@@ -879,9 +889,20 @@ function showAppPopup(type, title, message) {
   };
 
   overlay.classList.add('show');
+
+  // Informational success/error popups disappear automatically after 3 seconds.
+  // Delete confirmation uses showDeleteConfirm() and therefore remains until a choice is made.
+  appPopupAutoCloseTimer = setTimeout(() => {
+    overlay.classList.remove('show');
+    appPopupAutoCloseTimer = null;
+  }, 3000);
 }
 
 function showDeleteConfirm(message, onConfirm, title = 'Delete Estimate?') {
+  if (appPopupAutoCloseTimer) {
+    clearTimeout(appPopupAutoCloseTimer);
+    appPopupAutoCloseTimer = null;
+  }
   const overlay = document.getElementById('appPopup');
   const icon = document.getElementById('appPopupIcon');
 
