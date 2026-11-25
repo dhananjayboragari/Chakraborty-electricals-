@@ -195,25 +195,30 @@ let st=document.createElement('style');st.id='pageOrientation';st.textContent='@
 
   
 $('pdf').onclick=()=>{
- st.textContent='@page{size:A4 '+$('orientation').value+';margin:5mm}';
+ try{
+  st.textContent='@page{size:A4 '+$('orientation').value+';margin:5mm}';
 
- const d=3;
- c.width=Math.round(c.clientWidth*d);
- c.height=Math.round(c.clientHeight*d);
- g.setTransform(d,0,0,d,0,0);
- render();
+  render();
 
- requestAnimationFrame(()=>requestAnimationFrame(()=>{
-  try{
-   window.print();
-  }catch(err){
-   alert('Print open হয়নি। Browser menu থেকে Print নির্বাচন করুন।');
-   resize();
-  }
- }));
+  requestAnimationFrame(()=>{
+   requestAnimationFrame(()=>{
+    try{
+     window.print();
+    }catch(err){
+     alert('Print Preview খোলা যায়নি।');
+    }
+   });
+  });
+
+ }catch(err){
+  alert('PDF Preview খোলা যায়নি।');
+  resize();
+ }
 };
-window.addEventListener('afterprint',()=>{resize()});
 
+window.addEventListener('afterprint',()=>{
+ resize();
+});
 
 
   $('png').onclick=()=>{
