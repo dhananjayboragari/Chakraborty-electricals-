@@ -140,7 +140,7 @@ function resizePicked(item){
 }
 function editGap(p){
  // One-shot gap editor: select either the visible MTR label or its pole-to-pole line.
- setMode('draw');
+ 
  if(!paths.length){render();return false;}
  let best=null;
  // The gap text is deliberately offset from the line, so allow tapping the displayed label.
@@ -192,79 +192,179 @@ $('undo').onclick=()=>{if(hist.length){let s=JSON.parse(hist.pop());paths=s.path
 $('clear').onclick=()=>{if(confirm('Clear all drawing?')){snapshot();paths=[];marks=[];types={};gaps={};gapOffsets={};poleOverrides={};poleSizes={};render()}};
 $('orientation').onchange=()=>{document.getElementById('pageOrientation').textContent=$('orientation').value};
 let st=document.createElement('style');st.id='pageOrientation';st.textContent='@page{size:A4 portrait;margin:8mm}';document.head.appendChild(st);
+
+  
 $('pdf').onclick=()=>{
  st.textContent='@page{size:A4 '+$('orientation').value+';margin:5mm}';
+
+ const d=3;
+ c.width=Math.round(c.clientWidth*d);
+ c.height=Math.round(c.clientHeight*d);
+ g.setTransform(d,0,0,d,0,0);
  render();
- requestAnimationFrame(()=>{requestAnimationFrame(()=>{try{window.print()}catch(err){alert('Print open হয়নি। Browser menu থেকে Print নির্বাচন করুন।')}})});
+
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  try{
+   window.print();
+  }catch(err){
+   alert('Print open হয়নি। Browser menu থেকে Print নির্বাচন করুন।');
+   resize();
+  }
+ }));
 };
 window.addEventListener('afterprint',()=>{resize()});
-$('png').onclick=()=>{
- render();
- const dpr=window.devicePixelRatio||1,w=c.width,scale=dpr;
- const title=($('title').value||'').trim();
- const items=Array.from($('legend').children);
- const infoLines=[
-  `DTR Code: ${$('dtr').value||'—'}    DTR KVA: ${$('kva').value||'—'}`,
-  `Address: ${$('address').value||'—'}`,
-  `Latitude: ${$('lat').value||'—'}    Longitude: ${$('long').value||'—'}`
- ];
- const out=document.createElement('canvas'),x=out.getContext('2d');
- const left=12*scale,rowH=24*scale;
- x.font=`bold ${13*scale}px Arial`;
- let rows=1,rowWidth=left;
- items.forEach(el=>{
-  const label=el.innerText.trim(),tw=x.measureText(label).width;
-  const markerW=el.querySelector('.swatch')?28*scale:(el.querySelector('.dot')?17*scale:0);
-  const need=markerW+tw+18*scale;
-  if(rowWidth+need>w-left){rows++;rowWidth=left;}
-  rowWidth+=need;
- });
- const titleH=title?26*scale:0;
- const topGap=10*scale,legendH=rows*rowH+10*scale;
- const infoH=18*scale+20*scale+3*17*scale+12*scale;
- // Set final dimensions BEFORE drawing. Changing canvas height later clears the image.
- out.width=w;
- out.height=c.height+topGap+titleH+topGap+legendH+infoH;
- x.fillStyle='#fff';x.fillRect(0,0,out.width,out.height);
- let drawY=topGap+titleH;
- if(title){
-  x.fillStyle='#172033';x.font=`bold ${16*scale}px Arial`;
-  x.textAlign='center';x.fillText(title,w/2,topGap+16*scale);
- }
- x.drawImage(c,0,drawY);
- let y=drawY+c.height+topGap;
- x.textAlign='left';x.font=`bold ${13*scale}px Arial`;
- let lx=left,ly=y+16*scale;
- items.forEach(el=>{
-  const label=el.innerText.trim(),tw=x.measureText(label).width;
-  const sw=el.querySelector('.swatch'),dot=el.querySelector('.dot');
-  const markerW=sw?28*scale:(dot?17*scale:0);
-  if(lx+markerW+tw+18*scale>w-left){lx=left;ly+=rowH;}
-  if(sw){
-   const cs=getComputedStyle(sw),col=cs.backgroundColor||'#1769aa';
-   x.fillStyle=col;x.fillRect(lx,ly-5*scale,22*scale,5*scale);
-   x.strokeStyle=col;x.lineWidth=1*scale;x.strokeRect(lx,ly-5*scale,22*scale,5*scale);
-   lx+=28*scale;
-  }else if(dot){
-   const cs=getComputedStyle(dot);
-   x.beginPath();x.arc(lx+6*scale,ly-1*scale,5*scale,0,Math.PI*2);
-   x.fillStyle=cs.backgroundColor||'#fff';x.fill();
-   x.lineWidth=2*scale;x.strokeStyle=cs.borderTopColor||'#1769aa';x.stroke();
-   lx+=17*scale;
+
+
+
+  $('png').onclick=()=>{
+ const oldWidth=c.width;
+ const oldHeight=c.height;
+ const d=4;
+
+ try{
+  c.width=Math.round(c.clientWidth*d);
+  c.height=Math.round(c.clientHeight*d);
+  g.setTransform(d,0,0,d,0,0);
+  render();
+
+  const w=c.width;
+  const scale=d;
+  const title=($('title').value||'').trim();
+  const items=Array.from($('legend').children);
+
+  const infoLines=[
+   `DTR Code: ${$('dtr').value||'—'}    DTR KVA: ${$('kva').value||'—'}`,
+   `Address: ${$('address').value||'—'}`,
+   `Latitude: ${$('lat').value||'—'}    Longitude: ${$('long').value||'—'}`
+  ];
+
+  const out=document.createElement('canvas');
+  const x=out.getContext('2d');
+  const left=12*scale,rowH=24*scale;
+
+  x.font=`bold ${13*scale}px Arial`;
+
+  let rows=1,rowWidth=left;
+
+  items.forEach(el=>{
+   const label=el.innerText.trim();
+   const tw=x.measureText(label).width;
+   const markerW=el.querySelector('.swatch')?28*scale:
+                 (el.querySelector('.dot')?17*scale:0);
+   const need=markerW+tw+18*scale;
+
+   if(rowWidth+need>w-left){
+    rows++;
+    rowWidth=left;
+   }
+   rowWidth+=need;
+  });
+
+  const titleH=title?26*scale:0;
+  const topGap=10*scale;
+  const legendH=rows*rowH+10*scale;
+  const infoH=18*scale+20*scale+3*17*scale+12*scale;
+
+  out.width=w;
+  out.height=c.height+topGap+titleH+topGap+legendH+infoH;
+
+  x.fillStyle='#fff';
+  x.fillRect(0,0,out.width,out.height);
+
+  let drawY=topGap+titleH;
+
+  if(title){
+   x.fillStyle='#172033';
+   x.font=`bold ${16*scale}px Arial`;
+   x.textAlign='center';
+   x.fillText(title,w/2,topGap+16*scale);
   }
-  x.fillStyle='#172033';x.fillText(label,lx,ly+3*scale);lx+=tw+18*scale;
- });
- y=drawY+c.height+topGap+legendH;
- x.strokeStyle='#d8e1ec';x.lineWidth=1*scale;
- x.beginPath();x.moveTo(left,y);x.lineTo(w-left,y);x.stroke();
- y+=18*scale;x.fillStyle='#172033';x.font=`bold ${14*scale}px Arial`;
- x.fillText('DTR Information',left,y);
- y+=20*scale;x.font=`${12*scale}px Arial`;
- infoLines.forEach(line=>{x.fillText(line,left,y);y+=17*scale;});
- const link=document.createElement('a');
- link.download='DTR-pole-line.png';
- link.href=out.toDataURL('image/png');
- link.click();
+
+  x.drawImage(c,0,drawY);
+
+  let y=drawY+c.height+topGap;
+  x.textAlign='left';
+  x.font=`bold ${13*scale}px Arial`;
+
+  let lx=left,ly=y+16*scale;
+
+  items.forEach(el=>{
+   const label=el.innerText.trim();
+   const tw=x.measureText(label).width;
+   const sw=el.querySelector('.swatch');
+   const dot=el.querySelector('.dot');
+   const markerW=sw?28*scale:(dot?17*scale:0);
+
+   if(lx+markerW+tw+18*scale>w-left){
+    lx=left;
+    ly+=rowH;
+   }
+
+   if(sw){
+    const cs=getComputedStyle(sw);
+    const col=cs.backgroundColor||'#1769aa';
+
+    x.fillStyle=col;
+    x.fillRect(lx,ly-5*scale,22*scale,5*scale);
+    x.strokeStyle=col;
+    x.lineWidth=scale;
+    x.strokeRect(lx,ly-5*scale,22*scale,5*scale);
+    lx+=28*scale;
+   }else if(dot){
+    const cs=getComputedStyle(dot);
+
+    x.beginPath();
+    x.arc(lx+6*scale,ly-1*scale,5*scale,0,Math.PI*2);
+    x.fillStyle=cs.backgroundColor||'#fff';
+    x.fill();
+    x.lineWidth=2*scale;
+    x.strokeStyle=cs.borderTopColor||'#1769aa';
+    x.stroke();
+    lx+=17*scale;
+   }
+
+   x.fillStyle='#172033';
+   x.fillText(label,lx,ly+3*scale);
+   lx+=tw+18*scale;
+  });
+
+  y=drawY+c.height+topGap+legendH;
+
+  x.strokeStyle='#d8e1ec';
+  x.lineWidth=scale;
+  x.beginPath();
+  x.moveTo(left,y);
+  x.lineTo(w-left,y);
+  x.stroke();
+
+  y+=18*scale;
+  x.fillStyle='#172033';
+  x.font=`bold ${14*scale}px Arial`;
+  x.fillText('DTR Information',left,y);
+
+  y+=20*scale;
+  x.font=`${12*scale}px Arial`;
+
+  infoLines.forEach(line=>{
+   x.fillText(line,left,y);
+   y+=17*scale;
+  });
+
+  const link=document.createElement('a');
+  link.download='DTR-pole-line.png';
+  link.href=out.toDataURL('image/png');
+  link.click();
+
+ }catch(err){
+  alert('Image তৈরি হয়নি। আবার চেষ্টা করুন।');
+ }finally{
+  c.width=oldWidth;
+  c.height=oldHeight;
+  resize();
+ }
 };
+
+
+  
 function resize(){let r=c.getBoundingClientRect(),d=window.devicePixelRatio||1;c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);g.setTransform(d,0,0,d,0,0);render()}window.addEventListener('resize',resize);resize();updateInfo();
 </script></body></html>
