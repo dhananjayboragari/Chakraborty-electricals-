@@ -165,7 +165,7 @@ function drawMark(m){if(m.t==='sc'||m.t==='newService'){let col=m.t==='sc'?'#087
 if(m.t==='stay'||m.t==='ref'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.strokeStyle=m.t==='stay'?'#7c3aed':'#0f766e';g.lineWidth=2.2*globalScale*(m.scale||1);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();if(m.t==='stay'){g.moveTo(-13,10);g.lineTo(13,-10);g.moveTo(13,-10);g.lineTo(6,-9);g.moveTo(13,-10);g.lineTo(11,-3)}else{g.moveTo(-14,0);g.lineTo(14,0);g.moveTo(-14,0);g.lineTo(-8,-4);g.moveTo(-14,0);g.lineTo(-8,4);g.moveTo(14,0);g.lineTo(8,-4);g.moveTo(14,0);g.lineTo(8,4)}g.stroke();g.restore();return}
 if(m.t==='text'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.fillStyle=m.color||'#172033';g.font=`${m.bold?'bold ':''}${(m.size||18)*globalScale*(m.scale||1)}px Arial`;g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.translate(0,0);g.textAlign='left';g.textBaseline='middle';g.fillText(m.text||'Text',0,0);g.restore();return}
 if(m.t==='symbol'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.strokeStyle=m.color||'#172033';g.lineWidth=m.lineWidth||3;g.lineCap='round';g.lineJoin='round';let w=(m.w||54)*globalScale*(m.scale||1),h=(m.h||38)*globalScale*(m.scale||1);g.beginPath();if(m.shape==='['){g.moveTo(-w/2+9,-h/2);g.lineTo(-w/2,-h/2);g.lineTo(-w/2,h/2);g.lineTo(-w/2+9,h/2)}else if(m.shape===']'){g.moveTo(w/2-9,-h/2);g.lineTo(w/2,-h/2);g.lineTo(w/2,h/2);g.lineTo(w/2-9,h/2)}else if(m.shape==='line'){g.moveTo(-w/2,0);g.lineTo(w/2,0)}else if(m.shape===')'){g.moveTo(-w/4,-h/2);g.quadraticCurveTo(w/2,0,-w/4,h/2)}else if(m.shape==='('){g.moveTo(w/4,-h/2);g.quadraticCurveTo(-w/2,0,w/4,h/2)}g.stroke();g.restore();return}
-if(m.t==='dtr'){g.save();g.translate(m.x,m.y);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();g.arc(0,0,14,0,Math.PI*2);g.fillStyle='#111827';g.fill();g.fillStyle='#fff';g.font='bold 9px Arial';g.textAlign='center';g.fillText('DTR',0,3);g.fillStyle='#111827';g.font='bold 10px Arial';g.fillText((($('dtr').value||'')+' '+($('kva').value||'')).trim(),0,29);g.restore()}}
+if(m.t==='dtr'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();g.arc(0,0,14,0,Math.PI*2);g.fillStyle='#111827';g.fill();g.fillStyle='#fff';g.font='bold 9px Arial';g.textAlign='center';g.fillText('DTR',0,3);g.fillStyle='#111827';g.font='bold 10px Arial';g.fillText((($('dtr').value||'')+' '+($('kva').value||'')).trim(),0,29);g.restore()}}
 function drawLegend(){let used=new Set(paths.map(p=>p.phase||1));let bits=[];[1,2,3].forEach(n=>{if(used.has(n))bits.push(`<span><i class="swatch" style="background:${colors[n]};border:1px solid ${colors[n]}"></i>${n} Phase Line</span>`)});let poleTypes=new Set(Object.values(types));if(poles().some(p=>!types[p.id]))poleTypes.add('existing');[['existing','Existing Pole','#1769aa'],['new','New Pole','#f08a24'],['incl','Inclined Pole','#7c3aed']].forEach(([k,label,col])=>{if(poleTypes.has(k))bits.push(k==='existing'?`<span><i class="dot" style="background:#fff;border:2px solid ${col}"></i>${label}</span>`:`<span><i class="dot" style="background:${col};border:2px solid ${col}"></i>${label}</span>`)});let ts=new Set(marks.map(m=>m.t));if(ts.has('stay'))bits.push('<span>↗ New Stay</span>');if(ts.has('ref'))bits.push('<span>↔ Refixing Stay Wire</span>');if(ts.has('sc'))bits.push('<span style="color:#087443">⌂ S/C</span>');if(ts.has('newService'))bits.push('<span style="color:#c2410c">⌂ New Service</span>');if(ts.has('text'))bits.push('<span>Text</span>');if(ts.has('symbol'))bits.push('<span>Drawing Symbols</span>');if(ts.has('dtr'))bits.push('<span><b style="display:inline-block;background:#111827;color:white;border-radius:50%;padding:2px 5px;font-size:9px">DTR</b> DTR</span>');$('legend').innerHTML=bits.join('')}
 function render(){let w=c.clientWidth,h=c.clientHeight;g.clearRect(0,0,w,h);g.fillStyle='#fff';g.fillRect(0,0,w,h);g.strokeStyle='#edf1f6';g.lineWidth=1;for(let x=20;x<w;x+=25){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke()}for(let y=20;y<h;y+=25){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke()}
 let lines=paths.map(p=>({p,ph:p.phase}));if(active&&mode==='draw')lines.push({p:active,ph:phase});lines.forEach(o=>{if(o.p.length<2)return;g.beginPath();g.moveTo(o.p[0].x,o.p[0].y);o.p.slice(1).forEach(q=>g.lineTo(q.x,q.y));g.strokeStyle=colors[o.ph||1];g.lineWidth=(o.ph===3?4:o.ph===2?3.5:2.5)*globalScale*(o.p.scale||1);g.lineCap='round';g.stroke()});
@@ -176,7 +176,9 @@ allGapLabels().forEach(m=>{
  g.font=`bold ${(m.autoFont||10)*globalScale*gs}px Arial`;g.textAlign='center';g.textBaseline='middle';
  let fs=(m.autoFont||10)*globalScale*gs;g.fillStyle='#172033';g.fillText(m.txt,0,0);g.restore();
 });
-poles().forEach(p=>{if(marks.some(m=>m.t==='dtr'&&Math.hypot(m.x-p.x,m.y-p.y)<18))return;let t=types[p.id]||'existing';g.beginPath();g.arc(p.x,p.y,(t==='incl'?9:8)*globalScale*(poleSizes[p.id]||1),0,Math.PI*2);g.fillStyle=t==='new'?'#f08a24':t==='incl'?'#7c3aed':'#ffffff';g.fill();g.strokeStyle=t==='new'?'#c96a0b':t==='incl'?'#6d28d9':'#1769aa';g.lineWidth=2.5*globalScale*(poleSizes[p.id]||1);g.stroke()});
+/* Draw coincident poles only once. New/Inclined pole marker takes priority over existing pole markers at a line junction. */
+const poleGroups=[];poles().forEach(p=>{let group=poleGroups.find(a=>Math.hypot(a.x-p.x,a.y-p.y)<3);if(!group){group={x:p.x,y:p.y,items:[]};poleGroups.push(group)}group.items.push(p)});
+poleGroups.forEach(group=>{let chosen=group.items.find(p=>types[p.id]==='new')||group.items.find(p=>types[p.id]==='incl')||group.items[0];if(marks.some(m=>m.t==='dtr'&&Math.hypot(m.x-group.x,m.y-group.y)<18))return;let t=types[chosen.id]||'existing';let size=poleSizes[chosen.id]||1;g.beginPath();g.arc(group.x,group.y,(t==='incl'?9:8)*globalScale*size,0,Math.PI*2);g.fillStyle=t==='new'?'#f08a24':t==='incl'?'#7c3aed':'#ffffff';g.fill();g.strokeStyle=t==='new'?'#c96a0b':t==='incl'?'#6d28d9':'#1769aa';g.lineWidth=2.5*globalScale*size;g.stroke()});
 marks.forEach(drawMark);if(active&&['sc','newService'].includes(mode)&&active.length>1){let s=active[0],p=active[active.length-1],col=mode==='sc'?'#087443':'#c2410c';g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(p.x,p.y,col)}
 if(active&&(mode==='stay'||mode==='ref')&&active.length>1){let s=active[0],p=active[active.length-1];g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=mode==='stay'?'#7c3aed':'#0f766e';g.lineWidth=2;g.stroke()}
 $('printTitle').textContent=$('title').value;updateInfo();drawLegend()}
@@ -287,14 +289,24 @@ $('pdf').onclick=()=>{
     const cssW=c.clientWidth,cssH=c.clientHeight;
     const baseW=old.width/(window.devicePixelRatio||1);
     const baseH=old.height/(window.devicePixelRatio||1);
-    const fit=Math.min(cssW/baseW,cssH/baseH);
-    const dx=(cssW-baseW*fit)/2,dy=(cssH-baseH*fit)/2;
     const dpi=450/96;
     c.width=Math.round(cssW*dpi);
     c.height=Math.round(cssH*dpi);
-    g.setTransform(dpi*fit,0,0,dpi*fit,dx*dpi,dy*dpi);
+
+    /* Mobile canvas is narrow. Expand its X coordinates to the A4 print width,
+       while keeping Y sizing unchanged. Desktop keeps the original fit behavior. */
+    const isMobileCanvas=baseW<600;
+    const fit=Math.min(cssW/baseW,cssH/baseH);
+    const sx=isMobileCanvas?cssW/baseW:fit;
+    const sy=isMobileCanvas?cssH/baseH:fit;
+    const dx=isMobileCanvas?0:(cssW-baseW*fit)/2;
+    const dy=isMobileCanvas?0:(cssH-baseH*fit)/2;
+
+    g.setTransform(dpi*sx,0,0,dpi*sy,dx*dpi,dy*dpi);
     g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
-    render();
+    /* Preserve the original text/symbol height while widening mobile drawings. */
+    const savedGlobalScale=globalScale;globalScale=savedGlobalScale/sy;
+    render();globalScale=savedGlobalScale;
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
      try{window.print()}catch(err){restorePrintCanvas();alert('Print Preview খোলা যায়নি।')}
     }));
