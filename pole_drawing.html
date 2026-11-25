@@ -23,7 +23,7 @@
  main{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
  #drawingCard,#infoCard{display:block!important;width:100%!important;border:0!important;border-radius:0!important;margin:0!important;padding:0!important;break-inside:avoid!important;page-break-inside:avoid!important}
  #printTitle{display:block!important;text-align:center;font-size:13pt;font-weight:bold;padding:0 0 2mm;line-height:1.15}
- #drawingCard canvas{display:block!important;width:100%!important;height:190mm!important;border:0!important;max-width:100%!important}
+ #drawingCard canvas{display:block!important;width:100%!important;height:212mm!important;border:0!important;max-width:100%!important}
  #drawingCard .legend{display:flex!important;font-size:10pt!important;font-weight:bold!important;gap:3mm!important;row-gap:2mm!important;margin-top:2mm!important;line-height:1.2;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  #drawingCard .legend .swatch{width:22px!important;height:5px!important;border:1px solid currentColor!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  #drawingCard .legend .dot{width:12px!important;height:12px!important}
@@ -38,7 +38,7 @@
 <label>DTR Code<input id="dtr" placeholder="DTR Code"></label><label>DTR KVA<input id="kva" placeholder="DTR KVA"></label>
 <label style="grid-column:1/-1">Address<input id="address" placeholder="Address"></label>
 <label>Latitude<input id="lat" placeholder="Latitude"></label><label>Longitude<input id="long" placeholder="Longitude"></label>
-<label>Default pole gap (m)<input id="spacing" type="number" min="1" value="56"></label>
+<label>Default pole gap (m)<input id="spacing" type="text" inputmode="text" autocapitalize="off" spellcheck="false" placeholder="40-50 লিখুন অথবা 45" value="56"><small style="display:block;font-weight:normal;color:#536277;margin-top:4px">আলাদা আলাদা Gap-এর জন্য 40-50 লিখুন। একই Gap-এর জন্য 45 লিখুন।</small></label>
 <label>A4 Page Direction<select id="orientation"><option value="portrait">A4 Portrait</option><option value="landscape">A4 Landscape</option></select></label>
 </div></section>
 <section class="card noPrint"><h3>Drawing Tools</h3>
@@ -47,7 +47,7 @@
 <button id="draw" class="active">Draw Line</button><button id="sc" class="alt">S/C</button><button id="newService" class="alt">New Service</button>
 <button id="stay" class="alt">New Stay</button><button id="ref" class="alt">Refixing Stay Wire</button><button id="incl" class="alt">Inclined Pole</button><button id="new" class="alt">New Pole</button><button id="dtrmark" class="alt">DTR Symbol</button><button id="gap" class="alt">Edit Gap (m)</button><button id="textTool" class="alt">Add Text</button><button id="symL" class="alt">Add [</button><button id="symR" class="alt">Add ]</button><button id="symLine" class="alt">Add Straight Line</button><button id="symParenR" class="alt">Add )</button><button id="symParenL" class="alt">Add (</button><button id="select" class="alt">Move Selected Item</button><button id="rotateSelected" class="alt">Rotate Selected Item</button><button id="resizeAll" class="alt">Resize Selected Item</button>
 </div>
-<p class="hint">একবারে একটি Item পরিবর্তন করবে। Move Selected Item: যে Pole, Line, Symbol, Text, Stay, S/C বা Gap লেখা সরাতে চাও, সেটির উপর চেপে ধরে Drag করো। Rotate Selected Item: Symbol, Text, Stay, S/C বা Line-এর উপর চেপে ধরে ঘোরাও। Resize Selected Item: যে Item ছোট-বড় করতে চাও, সেটিতে Tap করে Size (%) দাও। অন্য Item-গুলো অপরিবর্তিত থাকবে।</p>
+<p class="hint">একবারে একটি Item পরিবর্তন করবে। Move Selected Item: যে Pole, Line, Symbol, Text, Stay, S/C বা Gap লেখা সরাতে চাও, সেটির উপর চেপে ধরে Drag করো। Rotate Selected Item: Symbol, Text, Stay, S/C, Line বা MTR Gap লেখার উপর চেপে ধরে ঘোরাও। Resize Selected Item: যে Item ছোট-বড় করতে চাও, সেটিতে Tap করে Size (%) দাও। অন্য Item-গুলো অপরিবর্তিত থাকবে।</p>
 <div class="tools"><button id="undo" class="alt">Undo</button><button id="clear" class="red">Clear Drawing</button></div></section>
 <section class="card" id="drawingCard"><div id="printTitle"></div><canvas id="board"></canvas><div id="legend" class="legend"></div></section>
 <section class="card" id="infoCard"><h3>DTR Information</h3><div id="info" class="info"></div></section>
@@ -73,38 +73,109 @@ function setMode(m){mode=m;toolIds.forEach(k=>$(k).classList.toggle('active',k==
 toolIds.forEach(k=>$(k).onclick=()=>setMode(k));
 // Gap mode is deliberately one-shot: the first canvas tap exits it, even if the tap is blank.
 [1,2,3].forEach(n=>$('phase'+n).onclick=()=>{phase=n;[1,2,3].forEach(k=>$('phase'+k).classList.toggle('active',k===n))});
-function spacingPx(){return Math.max(24,Math.min(240,Number($('spacing').value||56)*1.25))}
-function getPoles(path,pi){if(!path.length)return[];let a=[{x:path[0].x,y:path[0].y,id:pi+'-0'}],travel=0,next=spacingPx();for(let i=1;i<path.length;i++){let s=path[i-1],e=path[i],len=Math.hypot(e.x-s.x,e.y-s.y);if(!len)continue;while(travel+len>=next){let t=(next-travel)/len;a.push({x:s.x+(e.x-s.x)*t,y:s.y+(e.y-s.y)*t,id:pi+'-'+a.length});next+=spacingPx()}travel+=len}
-let end=path[path.length-1],last=a[a.length-1];if(Math.hypot(end.x-last.x,end.y-last.y)>7)a.push({x:end.x,y:end.y,id:pi+'-'+a.length});return a.map(q=>poleOverrides[q.id]?({...q,x:poleOverrides[q.id].x,y:poleOverrides[q.id].y}):q)}
+function gapSetting(){
+ const raw=String($('spacing').value||'56').trim().replace(/\s+/g,'');
+ const m=raw.match(/^(\d+(?:\.\d+)?)(?:-|to)(\d+(?:\.\d+)?)$/i);
+ if(m){let a=Number(m[1]),b=Number(m[2]);if(a>0&&b>=a)return{min:a,max:b,range:true}}
+ const n=Number(raw);return Number.isFinite(n)&&n>0?{min:n,max:n,range:false}:{min:56,max:56,range:false};
+}
+function spacingPx(){const s=gapSetting();return Math.max(24,Math.min(240,((s.min+s.max)/2)*1.25))}
+function stableRandom(seed){let x=seed>>>0;return()=>{x=(x+0x6D2B79F5)>>>0;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+function makeGapPlan(count,pi,path,setting){
+ const min=setting.min,max=setting.max;
+ const seedText=[pi,min,max,...path.flatMap(q=>[Math.round(q.x),Math.round(q.y)])].join('|');
+ let seed=2166136261;for(let i=0;i<seedText.length;i++){seed^=seedText.charCodeAt(i);seed=Math.imul(seed,16777619)}
+ const rnd=stableRandom(seed),values=[];
+ if(!setting.range)return Array(count).fill(min);
+ const lo=Math.ceil(min),hi=Math.floor(max),pool=[];
+ for(let v=lo;v<=hi;v++)pool.push(v);
+ // Shuffle then cycle only if there are more gaps than distinct whole-metre values.
+ for(let i=pool.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+ for(let i=0;i<count;i++){
+  if(pool.length)values.push(pool[i%pool.length]);
+  else values.push(min+(max-min)*rnd());
+ }
+ // Avoid adjacent duplicate labels when the line has more gaps than the range.
+ for(let i=1;i<values.length;i++)if(values[i]===values[i-1]&&max>min){
+  const options=[];for(let v=lo;v<=hi;v++)if(v!==values[i-1])options.push(v);
+  if(options.length)values[i]=options[Math.floor(rnd()*options.length)];
+ }
+ return values;
+}
+function getPoles(path,pi){
+ if(!path.length)return[];
+ const segs=[];let total=0;
+ for(let i=1;i<path.length;i++){const a=path[i-1],b=path[i],len=Math.hypot(b.x-a.x,b.y-a.y);if(len){segs.push({a,b,len,start:total});total+=len}}
+ if(!total)return[{x:path[0].x,y:path[0].y,id:pi+'-0'}];
+ const setting=gapSetting(),step=spacingPx(),count=Math.max(1,Math.round(total/step));
+ const labelPlan=makeGapPlan(count,pi,path,setting),points=[];
+ for(let k=0;k<=count;k++){
+  const target=total*k/count;
+  let seg=segs.find(q=>target<=q.start+q.len+0.0001)||segs[segs.length-1];
+  const t=Math.max(0,Math.min(1,(target-seg.start)/seg.len));
+  points.push({x:seg.a.x+(seg.b.x-seg.a.x)*t,y:seg.a.y+(seg.b.y-seg.a.y)*t,id:pi+'-'+k,gapAfter:k<count?labelPlan[k]:null});
+ }
+ return points.map(q=>poleOverrides[q.id]?({...q,x:poleOverrides[q.id].x,y:poleOverrides[q.id].y}):q);
+}
 function poles(){return paths.flatMap((p,i)=>getPoles(p,i))}
 function nearest(p,r=32){let a=poles().map(q=>({...q,d:Math.hypot(q.x-p.x,q.y-p.y)})).sort((x,y)=>x.d-y.d);return a[0]&&a[0].d<r?a[0]:null}
-function gapLabels(p,i){let a=getPoles(p,i);return a.slice(0,-1).map((q,j)=>{let z=a[j+1],dx=z.x-q.x,dy=z.y-q.y,l=Math.hypot(dx,dy)||1;return{x:(q.x+z.x)/2,y:(q.y+z.y)/2,nx:dy/l,ny:-dx/l,key:i+'-'+j,def:Math.round(Number($('spacing').value||56))}})}
+function gapLabels(p,i){let a=getPoles(p,i);return a.slice(0,-1).map((q,j)=>{let z=a[j+1],dx=z.x-q.x,dy=z.y-q.y,l=Math.hypot(dx,dy)||1;/* Gap labels stay left-to-right for consistent office drawings, including vertical lines. */return{x:(q.x+z.x)/2,y:(q.y+z.y)/2,nx:dy/l,ny:-dx/l,len:l,angle:0,key:i+'-'+j,def:Math.round(q.gapAfter??(l/1.25))}})}
 function allGapLabels(){
  const candidates=[];paths.forEach((p,i)=>gapLabels(p,i).forEach(m=>candidates.push(m)));
  const placed=[];
- candidates.forEach((m,idx)=>{
-   const txt=(gaps[m.key]||m.def)+' MTR';g.font='bold 13px Arial';const tw=g.measureText(txt).width;
-   const offsets=[34,-34,48,-48,64,-64,82,-82,100,-100];let chosen=null;
-   for(const off of offsets){const x=m.x+m.nx*off,y=m.y+m.ny*off,box={x:x-tw/2-7,y:y-12,w:tw+14,h:20};
-     const clash=placed.some(b=>box.x<b.x+b.w+4&&box.x+box.w+4>b.x&&box.y<b.y+b.h+4&&box.y+box.h+4>b.y);
-     if(!clash){chosen={...m,x,y,box,txt};break;}
+ const PAGE_GAP_FONT=10.5;
+ const lineSegments=[];paths.forEach(p=>{for(let i=1;i<p.length;i++)lineSegments.push({a:p[i-1],b:p[i]})});
+ const polePoints=poles();
+ const segmentHitsBox=(a,b,r,pad=4)=>{let x0=r.x-pad,y0=r.y-pad,x1=r.x+r.w+pad,y1=r.y+r.h+pad,dx=b.x-a.x,dy=b.y-a.y,t0=0,t1=1;const clip=(p,q)=>{if(!p)return q>=0;const t=q/p;if(p<0){if(t>t1)return false;if(t>t0)t0=t}else{if(t<t0)return false;if(t<t1)t1=t}return true};return clip(-dx,a.x-x0)&&clip(dx,x1-a.x)&&clip(-dy,a.y-y0)&&clip(dy,y1-a.y)&&t0<=t1};
+ candidates.forEach(m=>{
+  const txt=(gaps[m.key]||m.def)+' MTR',custom=gapOffsets[m.key]||{};
+  const fs=PAGE_GAP_FONT,scale=globalScale*(custom.scale||1);
+  g.font=`bold ${fs*scale}px Arial`;
+  const tw=g.measureText(txt).width+2,th=fs*1.35;
+  const bw=tw,bh=th;
+  const sideOffsets=[19,-19,27,-27,35,-35,43,-43,52,-52,62,-62];
+  const alongOffsets=[0,12,-12,24,-24,36,-36,50,-50,65,-65,80,-80,100,-100];
+  let chosen=null,best=null,bestScore=Infinity;
+  for(const side of sideOffsets){
+   for(const along of alongOffsets){
+    const x=m.x+m.nx*side+along+(custom.dx||0);
+    const y=m.y+m.ny*side+(custom.dy||0);
+    const box={x:x-bw/2,y:y-bh/2,w:bw,h:bh};
+    const clash=placed.some(b=>box.x<b.x+b.w+7&&box.x+box.w+7>b.x&&box.y<b.y+b.h+5&&box.y+box.h+5>b.y);
+    let lineClash=false;
+    for(const seg of lineSegments){if(segmentHitsBox(seg.a,seg.b,box,4)){lineClash=true;break}}
+    let poleClash=false;
+    if(!lineClash)for(const pole of polePoints){if(x+bw/2>pole.x-10&&x-bw/2<pole.x+10&&y+bh/2>pole.y-10&&y-bh/2<pole.y+10){poleClash=true;break}}
+    const outside=box.x<4||box.y<4||box.x+box.w>c.clientWidth-4||box.y+box.h>c.clientHeight-4;
+    const score=(clash?100000:0)+(lineClash?50000:0)+(poleClash?30000:0)+(outside?20000:0)+Math.abs(side)*2+Math.abs(along);
+    if(score<bestScore){bestScore=score;best={x,y,box,valid:!clash&&!lineClash&&!poleClash}}
+    if(!clash&&!lineClash&&!poleClash&&!outside){chosen={x,y,box};break}
    }
-   if(!chosen){const off=idx%2?110:-110;const x=m.x+m.nx*off,y=m.y+m.ny*off;chosen={...m,x,y,box:{x:x-tw/2-7,y:y-12,w:tw+14,h:20},txt}}
-   placed.push(chosen.box);const off=gapOffsets[m.key];m.baseX=(m.x);m.baseY=(m.y);m.x=chosen.x+(off?.dx||0);m.y=chosen.y+(off?.dy||0);m.txt=chosen.txt;
- });return candidates;
+   if(chosen)break;
+  }
+  if(!chosen)chosen=best||{x:m.x+m.nx*22,y:m.y+m.ny*22,box:{x:m.x- bw/2,y:m.y-bh/2,w:bw,h:bh}};
+  placed.push(chosen.box);m.labelX=chosen.x;m.labelY=chosen.y;m.txt=txt;m.baseAngle=0;m.autoFont=PAGE_GAP_FONT;m.custom=!!(custom.dx||custom.dy);
+ });
+ return candidates;
 }
-function snapshot(){hist.push(JSON.stringify({paths,marks,types,gaps,gapOffsets,poleOverrides,poleSizes,globalScale}));if(hist.length>60)hist.shift()}
+function snapshot(){const savedPaths=paths.map(path=>({points:Array.from(path,q=>({x:q.x,y:q.y})),phase:Number(path.phase)||1,scale:path.scale||1}));hist.push(JSON.stringify({paths:savedPaths,marks,types,gaps,gapOffsets,poleOverrides,poleSizes,globalScale}));if(hist.length>60)hist.shift()}
 function drawHouse(x,y,color){g.save();g.translate(x,y);g.strokeStyle=color;g.fillStyle='#fff';g.lineWidth=2;g.beginPath();g.moveTo(-9,1);g.lineTo(0,-8);g.lineTo(9,1);g.lineTo(9,9);g.lineTo(-9,9);g.closePath();g.fill();g.stroke();g.beginPath();g.moveTo(-2,9);g.lineTo(-2,3);g.lineTo(2,3);g.lineTo(2,9);g.stroke();g.restore()}
 function markAnchor(m){return {x:m.t==='sc'||m.t==='newService'?m.sx:m.x,y:m.t==='sc'||m.t==='newService'?m.sy:m.y}}
 function drawMark(m){if(m.t==='sc'||m.t==='newService'){let col=m.t==='sc'?'#087443':'#c2410c',dx=m.dx??(m.x-m.sx),dy=m.dy??(m.y-m.sy);g.save();g.translate(m.sx,m.sy);g.rotate(m.angle||0);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();g.moveTo(0,0);g.lineTo(dx,0);g.lineTo(dx,dy);g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(dx,dy,col);g.fillStyle=col;g.font='bold 13px Arial';g.textAlign='center';g.fillText(m.label,dx,dy+25);g.restore();return}
-if(m.t==='stay'||m.t==='ref'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.strokeStyle=m.t==='stay'?'#7c3aed':'#0f766e';g.lineWidth=2.2*globalScale*(m.scale||1);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();if(m.t==='stay'){g.moveTo(-13,10);g.lineTo(13,-10);g.moveTo(13,-10);g.lineTo(6,-9);g.moveTo(13,-10);g.lineTo(11,-3)}else{g.moveTo(-22,0);g.lineTo(22,0);g.moveTo(-22,0);g.lineTo(-14,-7);g.moveTo(-22,0);g.lineTo(-14,7);g.moveTo(22,0);g.lineTo(14,-7);g.moveTo(22,0);g.lineTo(14,7)}g.stroke();g.restore();return}
+if(m.t==='stay'||m.t==='ref'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.strokeStyle=m.t==='stay'?'#7c3aed':'#0f766e';g.lineWidth=2.2*globalScale*(m.scale||1);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();if(m.t==='stay'){g.moveTo(-13,10);g.lineTo(13,-10);g.moveTo(13,-10);g.lineTo(6,-9);g.moveTo(13,-10);g.lineTo(11,-3)}else{g.moveTo(-14,0);g.lineTo(14,0);g.moveTo(-14,0);g.lineTo(-8,-4);g.moveTo(-14,0);g.lineTo(-8,4);g.moveTo(14,0);g.lineTo(8,-4);g.moveTo(14,0);g.lineTo(8,4)}g.stroke();g.restore();return}
 if(m.t==='text'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.fillStyle=m.color||'#172033';g.font=`${m.bold?'bold ':''}${(m.size||18)*globalScale*(m.scale||1)}px Arial`;g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.translate(0,0);g.textAlign='left';g.textBaseline='middle';g.fillText(m.text||'Text',0,0);g.restore();return}
 if(m.t==='symbol'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.strokeStyle=m.color||'#172033';g.lineWidth=m.lineWidth||3;g.lineCap='round';g.lineJoin='round';let w=(m.w||54)*globalScale*(m.scale||1),h=(m.h||38)*globalScale*(m.scale||1);g.beginPath();if(m.shape==='['){g.moveTo(-w/2+9,-h/2);g.lineTo(-w/2,-h/2);g.lineTo(-w/2,h/2);g.lineTo(-w/2+9,h/2)}else if(m.shape===']'){g.moveTo(w/2-9,-h/2);g.lineTo(w/2,-h/2);g.lineTo(w/2,h/2);g.lineTo(w/2-9,h/2)}else if(m.shape==='line'){g.moveTo(-w/2,0);g.lineTo(w/2,0)}else if(m.shape===')'){g.moveTo(-w/4,-h/2);g.quadraticCurveTo(w/2,0,-w/4,h/2)}else if(m.shape==='('){g.moveTo(w/4,-h/2);g.quadraticCurveTo(-w/2,0,w/4,h/2)}g.stroke();g.restore();return}
 if(m.t==='dtr'){g.save();g.translate(m.x,m.y);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();g.arc(0,0,14,0,Math.PI*2);g.fillStyle='#111827';g.fill();g.fillStyle='#fff';g.font='bold 9px Arial';g.textAlign='center';g.fillText('DTR',0,3);g.fillStyle='#111827';g.font='bold 10px Arial';g.fillText((($('dtr').value||'')+' '+($('kva').value||'')).trim(),0,29);g.restore()}}
 function drawLegend(){let used=new Set(paths.map(p=>p.phase||1));let bits=[];[1,2,3].forEach(n=>{if(used.has(n))bits.push(`<span><i class="swatch" style="background:${colors[n]};border:1px solid ${colors[n]}"></i>${n} Phase Line</span>`)});let poleTypes=new Set(Object.values(types));if(poles().some(p=>!types[p.id]))poleTypes.add('existing');[['existing','Existing Pole','#1769aa'],['new','New Pole','#f08a24'],['incl','Inclined Pole','#7c3aed']].forEach(([k,label,col])=>{if(poleTypes.has(k))bits.push(k==='existing'?`<span><i class="dot" style="background:#fff;border:2px solid ${col}"></i>${label}</span>`:`<span><i class="dot" style="background:${col};border:2px solid ${col}"></i>${label}</span>`)});let ts=new Set(marks.map(m=>m.t));if(ts.has('stay'))bits.push('<span>↗ New Stay</span>');if(ts.has('ref'))bits.push('<span>↔ Refixing Stay Wire</span>');if(ts.has('sc'))bits.push('<span style="color:#087443">⌂ S/C</span>');if(ts.has('newService'))bits.push('<span style="color:#c2410c">⌂ New Service</span>');if(ts.has('text'))bits.push('<span>Text</span>');if(ts.has('symbol'))bits.push('<span>Drawing Symbols</span>');if(ts.has('dtr'))bits.push('<span><b style="display:inline-block;background:#111827;color:white;border-radius:50%;padding:2px 5px;font-size:9px">DTR</b> DTR</span>');$('legend').innerHTML=bits.join('')}
 function render(){let w=c.clientWidth,h=c.clientHeight;g.clearRect(0,0,w,h);g.fillStyle='#fff';g.fillRect(0,0,w,h);g.strokeStyle='#edf1f6';g.lineWidth=1;for(let x=20;x<w;x+=25){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke()}for(let y=20;y<h;y+=25){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke()}
 let lines=paths.map(p=>({p,ph:p.phase}));if(active&&mode==='draw')lines.push({p:active,ph:phase});lines.forEach(o=>{if(o.p.length<2)return;g.beginPath();g.moveTo(o.p[0].x,o.p[0].y);o.p.slice(1).forEach(q=>g.lineTo(q.x,q.y));g.strokeStyle=colors[o.ph||1];g.lineWidth=(o.ph===3?4:o.ph===2?3.5:2.5)*globalScale*(o.p.scale||1);g.lineCap='round';g.stroke()});
-allGapLabels().forEach(m=>{let gs=(gapOffsets[m.key]?.scale||1);g.font=`bold ${13*globalScale*gs}px Arial`;g.textAlign='center';g.textBaseline='middle';let tw=g.measureText(m.txt).width;g.fillStyle='rgba(255,255,255,.96)';g.fillRect(m.x-tw/2-7*gs,m.y-11*gs,tw+14*gs,21*gs);g.fillStyle='#263445';g.fillText(m.txt,m.x,m.y)});
+allGapLabels().forEach(m=>{
+ let go=gapOffsets[m.key]||{},gs=(go.scale||1),ang=go.angle||0;
+ g.save();
+ g.translate(m.labelX,m.labelY);g.rotate(m.baseAngle+ang);
+ g.font=`bold ${(m.autoFont||10)*globalScale*gs}px Arial`;g.textAlign='center';g.textBaseline='middle';
+ let fs=(m.autoFont||10)*globalScale*gs;g.fillStyle='#172033';g.fillText(m.txt,0,0);g.restore();
+});
 poles().forEach(p=>{if(marks.some(m=>m.t==='dtr'&&Math.hypot(m.x-p.x,m.y-p.y)<18))return;let t=types[p.id]||'existing';g.beginPath();g.arc(p.x,p.y,(t==='incl'?9:8)*globalScale*(poleSizes[p.id]||1),0,Math.PI*2);g.fillStyle=t==='new'?'#f08a24':t==='incl'?'#7c3aed':'#ffffff';g.fill();g.strokeStyle=t==='new'?'#c96a0b':t==='incl'?'#6d28d9':'#1769aa';g.lineWidth=2.5*globalScale*(poleSizes[p.id]||1);g.stroke()});
 marks.forEach(drawMark);if(active&&['sc','newService'].includes(mode)&&active.length>1){let s=active[0],p=active[active.length-1],col=mode==='sc'?'#087443':'#c2410c';g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(p.x,p.y,col)}
 if(active&&(mode==='stay'||mode==='ref')&&active.length>1){let s=active[0],p=active[active.length-1];g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=mode==='stay'?'#7c3aed':'#0f766e';g.lineWidth=2;g.stroke()}
@@ -113,13 +184,22 @@ function pos(e){let r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.cl
 function hitMark(p){for(let i=marks.length-1;i>=0;i--){let m=marks[i];if(['sc','newService'].includes(m.t)){let dx=m.dx??(m.x-m.sx),dy=m.dy??(m.y-m.sy),a=-(m.angle||0),rx=(p.x-m.sx)*Math.cos(a)-(p.y-m.sy)*Math.sin(a),ry=(p.x-m.sx)*Math.sin(a)+(p.y-m.sy)*Math.cos(a);if(Math.hypot(rx-dx,ry-dy)<44||Math.hypot(p.x-m.sx,p.y-m.sy)<28)return m}else if(['stay','ref','text','symbol','dtr'].includes(m.t)){let rad=m.t==='text'?Math.max(34,(m.size||18)*2+(m.text||'').length*3):m.t==='symbol'?Math.max(34,(m.w||54)/2+14):m.t==='dtr'?28:36;if(Math.hypot(p.x-m.x,p.y-m.y)<rad)return m}}return null}
 function distToSegment(p,a,b){let vx=b.x-a.x,vy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*vx+(p.y-a.y)*vy)/(vx*vx+vy*vy||1)));return Math.hypot(p.x-a.x-t*vx,p.y-a.y-t*vy)}
 function pickItem(p){let m=hitMark(p);if(m)return {kind:'mark',item:m};
- const gl=allGapLabels();let bestGap=null;gl.forEach(q=>{let d=Math.hypot(p.x-q.x,p.y-q.y);if(!bestGap||d<bestGap.d)bestGap={kind:'gap',key:q.key,d}});if(bestGap&&bestGap.d<45)return bestGap;
+ const gl=allGapLabels();let bestGap=null;gl.forEach(q=>{
+  const go=gapOffsets[q.key]||{},a=-(q.baseAngle+(go.angle||0)),dx=p.x-q.labelX,dy=p.y-q.labelY;
+  const rx=dx*Math.cos(a)-dy*Math.sin(a),ry=dx*Math.sin(a)+dy*Math.cos(a);
+  const d=Math.hypot(rx,ry);
+  if(!bestGap||d<bestGap.d)bestGap={kind:'gap',key:q.key,d};
+ });if(bestGap&&bestGap.d<55)return bestGap;
  const pp=poles();let bestPole=null;pp.forEach(q=>{let d=Math.hypot(p.x-q.x,p.y-q.y);if(!bestPole||d<bestPole.d)bestPole={kind:'pole',item:q,d}});if(bestPole&&bestPole.d<22)return bestPole;
  let bestPath=null;paths.forEach((path,i)=>{for(let j=1;j<path.length;j++){let d=distToSegment(p,path[j-1],path[j]);if(!bestPath||d<bestPath.d)bestPath={kind:'path',item:path,index:i,d}}});if(bestPath&&bestPath.d<16)return bestPath;
  return null}
 function markAnchor(m){return {x:m.t==='sc'||m.t==='newService'?m.sx:m.x,y:m.t==='sc'||m.t==='newService'?m.sy:m.y}}
-function rotateStart(item,p){if(item.kind==='mark'){let a=markAnchor(item.item);rotateState={kind:'mark',item:item.item,anchor:a,start:Math.atan2(p.y-a.y,p.x-a.x),old:item.item.angle||0}}else if(item.kind==='path'){let path=item.item,cx=path.reduce((v,q)=>v+q.x,0)/path.length,cy=path.reduce((v,q)=>v+q.y,0)/path.length;rotateState={kind:'path',item:path,anchor:{x:cx,y:cy},start:Math.atan2(p.y-cy,p.x-cx),old:0,last:0}}}
-function updateRotation(p){let r=rotateState;if(r.kind==='mark'){let a=r.anchor;r.item.angle=r.old+(Math.atan2(p.y-a.y,p.x-a.x)-r.start)}else if(r.kind==='path'){let a=r.anchor,ang=Math.atan2(p.y-a.y,p.x-a.x)-r.start-r.last,cs=Math.cos(ang),sn=Math.sin(ang);r.item.forEach(q=>{let x=q.x-a.x,y=q.y-a.y;q.x=a.x+x*cs-y*sn;q.y=a.y+x*sn+y*cs});r.last+=ang}render()}
+function rotateStart(item,p){
+ if(item.kind==='mark'){let a=markAnchor(item.item);rotateState={kind:'mark',item:item.item,anchor:a,start:Math.atan2(p.y-a.y,p.x-a.x),old:item.item.angle||0}}
+ else if(item.kind==='gap'){let q=allGapLabels().find(x=>x.key===item.key);if(!q)return;let go=gapOffsets[item.key]||{};rotateState={kind:'gap',key:item.key,anchor:{x:q.labelX,y:q.labelY},start:Math.atan2(p.y-q.labelY,p.x-q.labelX),old:go.angle||0}}
+ else if(item.kind==='path'){let path=item.item,cx=path.reduce((v,q)=>v+q.x,0)/path.length,cy=path.reduce((v,q)=>v+q.y,0)/path.length;rotateState={kind:'path',item:path,anchor:{x:cx,y:cy},start:Math.atan2(p.y-cy,p.x-cx),old:0,last:0}}
+}
+function updateRotation(p){let r=rotateState;if(r.kind==='mark'){let a=r.anchor;r.item.angle=r.old+(Math.atan2(p.y-a.y,p.x-a.x)-r.start)}else if(r.kind==='gap'){gapOffsets[r.key]=gapOffsets[r.key]||{dx:0,dy:0};gapOffsets[r.key].angle=r.old+(Math.atan2(p.y-r.anchor.y,p.x-r.anchor.x)-r.start)}else if(r.kind==='path'){let a=r.anchor,ang=Math.atan2(p.y-a.y,p.x-a.x)-r.start-r.last,cs=Math.cos(ang),sn=Math.sin(ang);r.item.forEach(q=>{let x=q.x-a.x,y=q.y-a.y;q.x=a.x+x*cs-y*sn;q.y=a.y+x*sn+y*cs});r.last+=ang}render()}
 function movePicked(item,dx,dy){if(item.kind==='mark'){let m=item.item;if(['sc','newService'].includes(m.t)){m.sx+=dx;m.sy+=dy;m.x+=dx;m.y+=dy}else{m.x+=dx;m.y+=dy}}else if(item.kind==='gap'){gapOffsets[item.key]=gapOffsets[item.key]||{dx:0,dy:0};gapOffsets[item.key].dx+=dx;gapOffsets[item.key].dy+=dy}else if(item.kind==='pole'){let q=item.item;poleOverrides[q.id]=poleOverrides[q.id]||{x:q.x,y:q.y};poleOverrides[q.id].x+=dx;poleOverrides[q.id].y+=dy}else if(item.kind==='path'){item.item.forEach(q=>{q.x+=dx;q.y+=dy})}}
 function resizePicked(item){
  let current=1;
@@ -155,7 +235,7 @@ function editGap(p){
      const ps=getPoles(path,pi);
      for(let j=0;j<ps.length-1;j++){
        const a=ps[j],b=ps[j+1],d=distToSegment(p,a,b);
-       if(!best||d<best.d) best={key:pi+'-'+j,d,def:Math.round(Number($('spacing').value||56))};
+       if(!best||d<best.d) best={key:pi+'-'+j,d,def:Math.round(gapSetting().min===gapSetting().max?gapSetting().min:(gapSetting().min+gapSetting().max)/2)};
      }
    });
  }
@@ -173,7 +253,7 @@ function editGap(p){
 
 c.ondblclick=e=>{let p=pos(e),m=[...marks].reverse().find(q=>{if(['sc','newService'].includes(q.t))return Math.hypot(p.x-q.x,p.y-q.y)<55;return ['stay','ref','text','symbol'].includes(q.t)&&Math.hypot(p.x-q.x,p.y-q.y)<Math.max(40,(q.w||54)/2+20)});if(m){if(m.t==='symbol'||m.t==='text'){let w=prompt('Rotation angle in degrees:',String(Math.round((m.angle||0)*180/Math.PI)));if(w===null)return;snapshot();m.angle=Number(w)*Math.PI/180;if(m.t==='symbol'){let nw=prompt('Symbol width (px):',m.w||54);if(nw!==null&&Number(nw)>5)m.w=Math.min(500,Number(nw));let nh=prompt('Symbol height (px):',m.h||38);if(nh!==null&&Number(nh)>5)m.h=Math.min(300,Number(nh))}}else{let a=prompt('Rotation angle in degrees:',String(Math.round((m.angle||0)*180/Math.PI)));if(a!==null){snapshot();m.angle=Number(a)*Math.PI/180}}render()}}
 c.onpointerdown=e=>{e.preventDefault();let p=pos(e);
-if(mode==='rotateSelected'){let item=pickItem(p);if(item&&(item.kind==='mark'||item.kind==='path')){snapshot();rotateStart(item,p);moveState={last:p,rotating:true};c.setPointerCapture(e.pointerId);return}alert('যে Symbol, Text বা Line ঘোরাতে চাও, সেটির উপর চেপে ধরে Drag করো।');return}
+if(mode==='rotateSelected'){let item=pickItem(p);if(item&&(item.kind==='mark'||item.kind==='path'||item.kind==='gap')){snapshot();rotateStart(item,p);moveState={last:p,rotating:true};c.setPointerCapture(e.pointerId);return}alert('যে Symbol, Text, Line বা Gap লেখা ঘোরাতে চাও, সেটির উপর চেপে ধরে Drag করো।');return}
 if(mode==='select'){let item=pickItem(p);if(!item){alert('যে একটি Item সরাতে চাও, সেটির উপর Tap করে Drag করো।');return}snapshot();moveState={item,last:p};c.setPointerCapture(e.pointerId);return}
 if(mode==='resizeAll'){let item=pickItem(p);if(!item)return;resizePicked(item);return}
 if(mode==='draw'){let q=nearest(p,28);if(q)p={x:q.x,y:q.y};active=[p];c.setPointerCapture(e.pointerId);render();return}
@@ -184,52 +264,64 @@ if(['symL','symR','symLine','symParenR','symParenL'].includes(mode)){snapshot();
 if(mode==='stay'||mode==='ref'){active=[p];c.setPointerCapture(e.pointerId);render();return}
 snapshot();if(mode==='incl'||mode==='new'){let q=nearest(p);if(q)types[q.id]=mode==='new'?'new':'incl';else alert('Tap near an automatic pole.')}if(mode==='dtrmark'){marks=marks.filter(m=>m.t!=='dtr');marks.push({...p,t:'dtr'})}render()};
 c.onpointermove=e=>{let p=pos(e);if(rotateState&&moveState?.rotating){updateRotation(p);return}if(moveState){let dx=p.x-moveState.last.x,dy=p.y-moveState.last.y;movePicked(moveState.item,dx,dy);moveState.last=p;render();return}if(active){active.push(p);render()}};
-function finish(){if(rotateState){rotateState=null;moveState=null;return}if(moveState){moveState=null;return}if(active&&active.length>1){if(mode==='draw'){snapshot();let q=nearest(active[0],20);if(q)active[0]={x:q.x,y:q.y};let end=active[active.length-1];if(Math.hypot(end.x-active[0].x,end.y-active[0].y)>8){active.phase=phase;paths.push(active)}}else if(mode==='sc'||mode==='newService'){snapshot();let s=active[0],p=active[active.length-1],n=marks.filter(m=>m.t==='sc').length+1,def=mode==='sc'?'S/C - '+n:'NEW SERVICE',label=prompt(mode==='sc'?'Enter S/C number / label:':'Enter New Service label:',def);if(label!==null){marks.push({t:mode,sx:s.x,sy:s.y,x:p.x,y:p.y,dx:p.x-s.x,dy:p.y-s.y,angle:0,label:label.trim()||def})}}else if(mode==='stay'||mode==='ref'){snapshot();let s=active[0],p=active[active.length-1];marks.push({t:mode==='stay'?'stay':'ref',x:s.x,y:s.y,angle:Math.atan2(p.y-s.y,p.x-s.x)})}}active=null;render()}
+function finish(){if(rotateState){rotateState=null;moveState=null;return}if(moveState){moveState=null;return}if(active&&active.length>1){if(mode==='draw'){snapshot();let q=nearest(active[0],20);if(q)active[0]={x:q.x,y:q.y};let end=active[active.length-1];if(Math.hypot(end.x-active[0].x,end.y-active[0].y)>8){let straight=[{x:active[0].x,y:active[0].y},{x:end.x,y:end.y}];straight.phase=phase;paths.push(straight)}}else if(mode==='sc'||mode==='newService'){snapshot();let s=active[0],p=active[active.length-1],n=marks.filter(m=>m.t==='sc').length+1,def=mode==='sc'?'S/C - '+n:'NEW SERVICE',label=prompt(mode==='sc'?'Enter S/C number / label:':'Enter New Service label:',def);if(label!==null){marks.push({t:mode,sx:s.x,sy:s.y,x:p.x,y:p.y,dx:p.x-s.x,dy:p.y-s.y,angle:0,label:label.trim()||def})}}else if(mode==='stay'||mode==='ref'){snapshot();let s=active[0],p=active[active.length-1];marks.push({t:mode==='stay'?'stay':'ref',x:s.x,y:s.y,angle:Math.atan2(p.y-s.y,p.x-s.x)})}}active=null;render()}
 c.onpointerup=finish;c.onpointercancel=finish;
 function esc(s){return String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}function updateInfo(){let v=id=>$(id).value||'—';$('info').innerHTML='<b>DTR Code:</b> '+esc(v('dtr'))+' &nbsp; <b>DTR KVA:</b> '+esc(v('kva'))+'<br><b>Address:</b> '+esc(v('address'))+'<br><b>Latitude:</b> '+esc(v('lat'))+' &nbsp; <b>Longitude:</b> '+esc(v('long'))}
 ['title','dtr','kva','address','lat','long','spacing'].forEach(k=>$(k).oninput=()=>{updateInfo();render()});
-$('undo').onclick=()=>{if(hist.length){let s=JSON.parse(hist.pop());paths=s.paths;marks=s.marks;types=s.types;gaps=s.gaps;gapOffsets=s.gapOffsets||{};poleOverrides=s.poleOverrides||{};poleSizes=s.poleSizes||{};globalScale=s.globalScale||1;render()}};
+$('undo').onclick=()=>{if(hist.length){let s=JSON.parse(hist.pop());paths=(s.paths||[]).map(saved=>{const path=(Array.isArray(saved)?saved:(saved.points||[]));path.phase=Number(saved.phase)||1;if(saved.scale)path.scale=saved.scale;return path});marks=s.marks;types=s.types;gaps=s.gaps;gapOffsets=s.gapOffsets||{};poleOverrides=s.poleOverrides||{};poleSizes=s.poleSizes||{};globalScale=s.globalScale||1;render()}};
 $('clear').onclick=()=>{if(confirm('Clear all drawing?')){snapshot();paths=[];marks=[];types={};gaps={};gapOffsets={};poleOverrides={};poleSizes={};render()}};
 $('orientation').onchange=()=>{document.getElementById('pageOrientation').textContent=$('orientation').value};
 let st=document.createElement('style');st.id='pageOrientation';st.textContent='@page{size:A4 portrait;margin:8mm}';document.head.appendChild(st);
 
   
+let printRestore=null;
 $('pdf').onclick=()=>{
  try{
-  st.textContent='@page{size:A4 '+$('orientation').value+';margin:5mm}';
-
-  render();
-
-  requestAnimationFrame(()=>{
-   requestAnimationFrame(()=>{
-    try{
-     window.print();
-    }catch(err){
-     alert('Print Preview খোলা যায়নি।');
-    }
-   });
-  });
-
- }catch(err){
-  alert('PDF Preview খোলা যায়নি।');
-  resize();
- }
+  const old={width:c.width,height:c.height,heightStyle:c.style.height};
+  printRestore=old;
+  const orientation=$('orientation').value;
+  st.textContent='@page{size:A4 '+orientation+';margin:5mm}';
+  c.style.height=orientation==='landscape'?'145mm':'212mm';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   try{
+    const cssW=c.clientWidth,cssH=c.clientHeight;
+    const baseW=old.width/(window.devicePixelRatio||1);
+    const baseH=old.height/(window.devicePixelRatio||1);
+    const fit=Math.min(cssW/baseW,cssH/baseH);
+    const dx=(cssW-baseW*fit)/2,dy=(cssH-baseH*fit)/2;
+    const dpi=450/96;
+    c.width=Math.round(cssW*dpi);
+    c.height=Math.round(cssH*dpi);
+    g.setTransform(dpi*fit,0,0,dpi*fit,dx*dpi,dy*dpi);
+    g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+    render();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+     try{window.print()}catch(err){restorePrintCanvas();alert('Print Preview খোলা যায়নি।')}
+    }));
+   }catch(err){restorePrintCanvas();alert('PDF-এর high quality canvas তৈরি হয়নি।')}
+  }));
+ }catch(err){restorePrintCanvas();alert('PDF Preview খোলা যায়নি।')}
 };
-
-window.addEventListener('afterprint',()=>{
+function restorePrintCanvas(){
+ if(!printRestore)return;
+ c.style.height=printRestore.heightStyle;
+ printRestore=null;
  resize();
-});
+}
+window.addEventListener('afterprint',restorePrintCanvas);
 
 
   $('png').onclick=()=>{
  const oldWidth=c.width;
  const oldHeight=c.height;
- const d=4;
+ const d=8;
 
  try{
   c.width=Math.round(c.clientWidth*d);
   c.height=Math.round(c.clientHeight*d);
   g.setTransform(d,0,0,d,0,0);
+  g.imageSmoothingEnabled=true;
+  g.imageSmoothingQuality='high';
   render();
 
   const w=c.width;
