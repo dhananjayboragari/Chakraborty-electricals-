@@ -14,6 +14,9 @@
 #appModal .modalActions button{min-width:82px;padding:11px 16px;margin:0}
 #appModal .modalCancel{background:#e8eef5;color:#17324d}
 #appModal .modalError{display:none;color:#b42318;font-size:12px;margin-top:8px}
+#appModal .noticeMessage{display:none;font-size:15px;line-height:1.55;color:#334155;white-space:pre-wrap;margin:4px 0 14px}
+#appModal.notice .modalInput,#appModal.notice .modalError,#appModal.notice #appModalCancel{display:none!important}
+#appModal.notice .noticeMessage{display:block}
 
 @media(max-width:600px){.grid{grid-template-columns:1fr}canvas{height:760px}.tools button{flex:1 1 44%}}
 @page{size:A4 portrait;margin:5mm}
@@ -28,13 +31,14 @@
  #drawingCard .legend .swatch{width:22px!important;height:5px!important;border:1px solid currentColor!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  #drawingCard .legend .dot{width:12px!important;height:12px!important}
  #infoCard{margin-top:2mm!important}
+ body.hideDtrInfo #infoCard{display:none!important}
  #infoCard h3{font-size:11pt!important;margin:0 0 1mm!important}
  #infoCard .info{font-size:9pt!important;line-height:1.25!important}
 }
 </style></head><body><header>⚡ Electrical Pole Line Drawing Maker</header><main>
-<div id="appModal" aria-hidden="true"><div class="modalBox" role="dialog" aria-modal="true" aria-labelledby="appModalTitle"><div id="appModalTitle" class="modalTitle">Enter value</div><input id="appModalInput" class="modalInput" type="text" autocomplete="off"><div id="appModalError" class="modalError"></div><div class="modalActions"><button type="button" id="appModalCancel" class="modalCancel">Cancel</button><button type="button" id="appModalOK">OK</button></div></div></div>
+<div id="appModal" aria-hidden="true"><div class="modalBox" role="dialog" aria-modal="true" aria-labelledby="appModalTitle"><div id="appModalTitle" class="modalTitle">Enter value</div><textarea id="appModalInput" class="modalInput" rows="5" autocomplete="off" style="resize:vertical;line-height:1.5"></textarea><div id="appModalMessage" class="noticeMessage"></div><div id="appModalError" class="modalError"></div><div class="modalActions"><button type="button" id="appModalCancel" class="modalCancel">Cancel</button><button type="button" id="appModalOK">OK</button></div></div></div>
 <section class="card noPrint"><h3>Drawing Title</h3><input id="title" placeholder="Type drawing title"></section>
-<section class="card noPrint"><h3>DTR Information</h3><div class="grid">
+<section class="card noPrint"><h3>DTR Information</h3><label style="display:flex;align-items:center;gap:8px;margin:0 0 10px"><input id="includeDtrInfo" type="checkbox" checked style="width:auto;margin:0"> Include DTR Information in PDF / Image</label><div class="grid">
 <label>DTR Code<input id="dtr" placeholder="DTR Code"></label><label>DTR KVA<input id="kva" placeholder="DTR KVA"></label>
 <label style="grid-column:1/-1">Address<input id="address" placeholder="Address"></label>
 <label>Latitude<input id="lat" placeholder="Latitude"></label><label>Longitude<input id="long" placeholder="Longitude"></label>
@@ -45,30 +49,75 @@
 <div class="tools"><button id="phase1" class="active">1 Phase Line</button><button id="phase2" class="alt">2 Phase Line</button><button id="phase3" class="alt">3 Phase Line</button></div>
 <div class="tools">
 <button id="draw" class="active">Draw Line</button><button id="sc" class="alt">S/C</button><button id="newService" class="alt">New Service</button>
-<button id="stay" class="alt">New Stay</button><button id="ref" class="alt">Refixing Stay Wire</button><button id="incl" class="alt">Inclined Pole</button><button id="new" class="alt">New Pole</button><button id="dtrmark" class="alt">DTR Symbol</button><button id="gap" class="alt">Edit Gap (m)</button><button id="textTool" class="alt">Add Text</button><button id="symL" class="alt">Add [</button><button id="symR" class="alt">Add ]</button><button id="symLine" class="alt">Add Straight Line</button><button id="symParenR" class="alt">Add )</button><button id="symParenL" class="alt">Add (</button><button id="select" class="alt">Move Selected Item</button><button id="rotateSelected" class="alt">Rotate Selected Item</button><button id="resizeAll" class="alt">Resize Selected Item</button>
+<button id="stay" class="alt">New Stay</button><button id="ref" class="alt">Refixing Stay Wire</button><button id="incl" class="alt">Inclined Pole</button><button id="new" class="alt">New Pole</button><button id="dtrmark" class="alt">DTR Symbol</button><button id="gap" class="alt">Edit Gap (m)</button><button id="textTool" class="alt">Add Text</button><button id="eraser" class="alt">Eraser</button><button id="symL" class="alt">Add [</button><button id="symR" class="alt">Add ]</button><button id="symLine" class="alt">Add Straight Line</button><button id="symParenR" class="alt">Add )</button><button id="symParenL" class="alt">Add (</button><button id="select" class="alt">Move Selected Item</button><button id="rotateSelected" class="alt">Rotate Selected Item</button><button id="resizeAll" class="alt">Resize Selected Item</button>
 </div>
-<p class="hint">একবারে একটি Item পরিবর্তন করবে। Move Selected Item: যে Pole, Line, Symbol, Text, Stay, S/C বা Gap লেখা সরাতে চাও, সেটির উপর চেপে ধরে Drag করো। Rotate Selected Item: Symbol, Text, Stay, S/C, Line বা MTR Gap লেখার উপর চেপে ধরে ঘোরাও। Resize Selected Item: যে Item ছোট-বড় করতে চাও, সেটিতে Tap করে Size (%) দাও। অন্য Item-গুলো অপরিবর্তিত থাকবে।</p>
+<p class="hint">একবারে একটি Item পরিবর্তন করবে। Move Selected Item: যে Pole, Line, Symbol, Text, Stay, S/C বা Gap লেখা সরাতে চাও, সেটির উপর চেপে ধরে Drag করো। Rotate Selected Item: Symbol, Text, Stay, S/C, Line বা MTR Gap লেখার উপর চেপে ধরে ঘোরাও। Resize Selected Item: যে Item ছোট-বড় করতে চাও, সেটিতে Tap করে Size (%) দাও। Eraser: Tap করলে একটি Item মুছবে; চেপে Drag করে Box-এর ভিতরের সব Item মুছবে। Add Text-এ Enter দিলে নতুন লাইন হবে; OK চাপলে লেখা সংরক্ষণ হবে। অন্য Item-গুলো অপরিবর্তিত থাকবে।</p>
 <div class="tools"><button id="undo" class="alt">Undo</button><button id="clear" class="red">Clear Drawing</button></div></section>
 <section class="card" id="drawingCard"><div id="printTitle"></div><canvas id="board"></canvas><div id="legend" class="legend"></div></section>
 <section class="card" id="infoCard"><h3>DTR Information</h3><div id="info" class="info"></div></section>
-<section class="card noPrint"><button id="pdf">Save as PDF (A4)</button><button id="png" class="alt">Save Image</button><p class="hint">Android print window: choose A4 and Save as PDF.</p></section>
+<section class="card noPrint"><button id="pdf">Save as PDF (A4)</button><button id="png" class="alt">Save Image</button><button id="saveProject" class="alt">Save Editable Project (.json)</button><button id="loadProject" class="alt">Open Editable Project (.json)</button><input id="projectFile" type="file" accept=".json,application/json" hidden><p class="hint">PDF/Image শুধু দেখার জন্য। পরে একই Drawing পুরো Edit করতে .json Project File Save করে রাখবে।</p><p class="hint">Android print window: choose A4 and Save as PDF.</p></section>
 </main>
 <script>
 const c=document.getElementById('board'),g=c.getContext('2d'),$=id=>document.getElementById(id);
-let paths=[],marks=[],types={},gaps={},gapOffsets={},poleOverrides={},poleSizes={},mode='draw',phase=1,active=null,hist=[],rotateState=null,moveState=null,globalScale=1;
-const colors={1:'#1769aa',2:'#e07818',3:'#15803d'},toolIds=['draw','sc','newService','stay','ref','incl','new','dtrmark','gap','select','textTool','symL','symR','symLine','symParenR','symParenL','rotateSelected','resizeAll'];
+let paths=[],marks=[],types={},gaps={},gapOffsets={},poleOverrides={},poleSizes={},mode='draw',phase=1,active=null,hist=[],rotateState=null,moveState=null,eraseStart=null,eraseRect=null,eraseSnapshotAdded=false,globalScale=1;
+const colors={1:'#1769aa',2:'#e07818',3:'#15803d'},toolIds=['draw','sc','newService','stay','ref','incl','new','dtrmark','gap','select','textTool','eraser','symL','symR','symLine','symParenR','symParenL','rotateSelected','resizeAll'];
 function showInputModal(title,value,placeholder,onOK,validator){
  const modal=$('appModal'),input=$('appModalInput'),error=$('appModalError');
- $('appModalTitle').textContent=title;input.value=value??'';input.placeholder=placeholder||'';error.textContent='';error.style.display='none';
+ $('appModalTitle').textContent=title;input.style.display='';$('appModalMessage').style.display='none';$('appModalCancel').style.display='';$('appModalCancel').textContent='Cancel';$('appModalOK').textContent='OK';input.value=value??'';input.placeholder=placeholder||'';error.textContent='';error.style.display='none';
  modal.classList.add('show');modal.setAttribute('aria-hidden','false');
  const close=()=>{modal.classList.remove('show');modal.setAttribute('aria-hidden','true');cleanup()};
  const cleanup=()=>{$('appModalOK').onclick=null;$('appModalCancel').onclick=null;input.onkeydown=null;modal.onclick=null};
  const submit=()=>{const v=input.value;const message=validator?validator(v):'';if(message){error.textContent=message;error.style.display='block';input.focus();return}close();onOK(v)};
  $('appModalOK').onclick=submit;$('appModalCancel').onclick=close;
- input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();submit()}else if(e.key==='Escape'){e.preventDefault();close()}};
+ input.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();close()}};
  modal.onclick=e=>{if(e.target===modal)close()};
  setTimeout(()=>{input.focus();input.select()},40);
 }
+function showNotice(message,title='Information'){
+ const modal=$('appModal');$('appModalTitle').textContent=title;$('appModalMessage').textContent=String(message);
+ $('appModalInput').value='';$('appModalInput').style.display='none';$('appModalMessage').style.display='block';$('appModalCancel').style.display='none';$('appModalOK').textContent='OK';$('appModalError').style.display='none';
+ modal.classList.add('notice','show');modal.setAttribute('aria-hidden','false');
+ const close=()=>{modal.classList.remove('show','notice');modal.setAttribute('aria-hidden','true');$('appModalOK').onclick=null};
+ $('appModalOK').onclick=close;$('appModalCancel').onclick=close;
+}
+window.alert=message=>showNotice(message);
+
+function showConfirm(message,title='Please Confirm'){
+ return new Promise(resolve=>{
+  const modal=$('appModal');
+  $('appModalTitle').textContent=title;
+  $('appModalMessage').textContent=String(message);
+  $('appModalInput').style.display='none';
+  $('appModalMessage').style.display='block';
+  $('appModalError').style.display='none';
+  $('appModalCancel').style.display='inline-flex';
+  $('appModalCancel').textContent='Cancel';
+  $('appModalOK').textContent='Continue';
+  modal.classList.add('notice','show');modal.setAttribute('aria-hidden','false');
+  let done=false;
+  const finish=value=>{
+   if(done)return;done=true;
+   modal.classList.remove('show','notice');modal.setAttribute('aria-hidden','true');
+   $('appModalInput').style.display='';
+   $('appModalMessage').style.display='none';
+   $('appModalCancel').style.display='';
+   $('appModalCancel').textContent='Cancel';$('appModalOK').textContent='OK';
+   $('appModalOK').onclick=null;$('appModalCancel').onclick=null;modal.onclick=null;
+   resolve(value);
+  };
+  $('appModalOK').onclick=()=>finish(true);
+  $('appModalCancel').onclick=()=>finish(false);
+  modal.onclick=e=>{if(e.target===modal)finish(false)};
+ });
+}
+function askPrompt(title,value,placeholder=''){
+ return new Promise(resolve=>{
+  showInputModal(title,value,placeholder,v=>resolve(v));
+  const oldCancel=$('appModalCancel').onclick;
+  $('appModalCancel').onclick=()=>{if(oldCancel)oldCancel();resolve(null)};
+ });
+}
+
 function setMode(m){mode=m;toolIds.forEach(k=>$(k).classList.toggle('active',k===m))}
 toolIds.forEach(k=>$(k).onclick=()=>setMode(k));
 // Gap mode is deliberately one-shot: the first canvas tap exits it, even if the tap is blank.
@@ -163,7 +212,7 @@ function drawHouse(x,y,color){g.save();g.translate(x,y);g.strokeStyle=color;g.fi
 function markAnchor(m){return {x:m.t==='sc'||m.t==='newService'?m.sx:m.x,y:m.t==='sc'||m.t==='newService'?m.sy:m.y}}
 function drawMark(m){if(m.t==='sc'||m.t==='newService'){let col=m.t==='sc'?'#087443':'#c2410c',dx=m.dx??(m.x-m.sx),dy=m.dy??(m.y-m.sy);g.save();g.translate(m.sx,m.sy);g.rotate(m.angle||0);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();g.moveTo(0,0);g.lineTo(dx,0);g.lineTo(dx,dy);g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(dx,dy,col);g.fillStyle=col;g.font='bold 13px Arial';g.textAlign='center';g.fillText(m.label,dx,dy+25);g.restore();return}
 if(m.t==='stay'||m.t==='ref'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.strokeStyle=m.t==='stay'?'#7c3aed':'#0f766e';g.lineWidth=2.2*globalScale*(m.scale||1);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();if(m.t==='stay'){g.moveTo(-13,10);g.lineTo(13,-10);g.moveTo(13,-10);g.lineTo(6,-9);g.moveTo(13,-10);g.lineTo(11,-3)}else{g.moveTo(-14,0);g.lineTo(14,0);g.moveTo(-14,0);g.lineTo(-8,-4);g.moveTo(-14,0);g.lineTo(-8,4);g.moveTo(14,0);g.lineTo(8,-4);g.moveTo(14,0);g.lineTo(8,4)}g.stroke();g.restore();return}
-if(m.t==='text'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.fillStyle=m.color||'#172033';g.font=`${m.bold?'bold ':''}${(m.size||18)*globalScale*(m.scale||1)}px Arial`;g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.translate(0,0);g.textAlign='left';g.textBaseline='middle';g.fillText(m.text||'Text',0,0);g.restore();return}
+if(m.t==='text'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.fillStyle=m.color||'#172033';g.font=`${m.bold?'bold ':''}${(m.size||18)*globalScale*(m.scale||1)}px Arial`;g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.translate(0,0);g.textAlign='left';g.textBaseline='middle';(m.text||'Text').split(/\r?\n/).forEach((line,i)=>g.fillText(line,0,i*(m.lineHeight||22)));g.restore();return}
 if(m.t==='symbol'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.strokeStyle=m.color||'#172033';g.lineWidth=m.lineWidth||3;g.lineCap='round';g.lineJoin='round';let w=(m.w||54)*globalScale*(m.scale||1),h=(m.h||38)*globalScale*(m.scale||1);g.beginPath();if(m.shape==='['){g.moveTo(-w/2+9,-h/2);g.lineTo(-w/2,-h/2);g.lineTo(-w/2,h/2);g.lineTo(-w/2+9,h/2)}else if(m.shape===']'){g.moveTo(w/2-9,-h/2);g.lineTo(w/2,-h/2);g.lineTo(w/2,h/2);g.lineTo(w/2-9,h/2)}else if(m.shape==='line'){g.moveTo(-w/2,0);g.lineTo(w/2,0)}else if(m.shape===')'){g.moveTo(-w/4,-h/2);g.quadraticCurveTo(w/2,0,-w/4,h/2)}else if(m.shape==='('){g.moveTo(w/4,-h/2);g.quadraticCurveTo(-w/2,0,w/4,h/2)}g.stroke();g.restore();return}
 if(m.t==='dtr'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();g.arc(0,0,14,0,Math.PI*2);g.fillStyle='#111827';g.fill();g.fillStyle='#fff';g.font='bold 9px Arial';g.textAlign='center';g.fillText('DTR',0,3);g.fillStyle='#111827';g.font='bold 10px Arial';g.fillText((($('dtr').value||'')+' '+($('kva').value||'')).trim(),0,29);g.restore()}}
 function drawLegend(){let used=new Set(paths.map(p=>p.phase||1));let bits=[];[1,2,3].forEach(n=>{if(used.has(n))bits.push(`<span><i class="swatch" style="background:${colors[n]};border:1px solid ${colors[n]}"></i>${n} Phase Line</span>`)});let poleTypes=new Set(Object.values(types));if(poles().some(p=>!types[p.id]))poleTypes.add('existing');[['existing','Existing Pole','#1769aa'],['new','New Pole','#f08a24'],['incl','Inclined Pole','#7c3aed']].forEach(([k,label,col])=>{if(poleTypes.has(k))bits.push(k==='existing'?`<span><i class="dot" style="background:#fff;border:2px solid ${col}"></i>${label}</span>`:`<span><i class="dot" style="background:${col};border:2px solid ${col}"></i>${label}</span>`)});let ts=new Set(marks.map(m=>m.t));if(ts.has('stay'))bits.push('<span>↗ New Stay</span>');if(ts.has('ref'))bits.push('<span>↔ Refixing Stay Wire</span>');if(ts.has('sc'))bits.push('<span style="color:#087443">⌂ S/C</span>');if(ts.has('newService'))bits.push('<span style="color:#c2410c">⌂ New Service</span>');if(ts.has('text'))bits.push('<span>Text</span>');if(ts.has('symbol'))bits.push('<span>Drawing Symbols</span>');if(ts.has('dtr'))bits.push('<span><b style="display:inline-block;background:#111827;color:white;border-radius:50%;padding:2px 5px;font-size:9px">DTR</b> DTR</span>');$('legend').innerHTML=bits.join('')}
@@ -179,11 +228,11 @@ allGapLabels().forEach(m=>{
 /* Draw coincident poles only once. New/Inclined pole marker takes priority over existing pole markers at a line junction. */
 const poleGroups=[];poles().forEach(p=>{let group=poleGroups.find(a=>Math.hypot(a.x-p.x,a.y-p.y)<3);if(!group){group={x:p.x,y:p.y,items:[]};poleGroups.push(group)}group.items.push(p)});
 poleGroups.forEach(group=>{let chosen=group.items.find(p=>types[p.id]==='new')||group.items.find(p=>types[p.id]==='incl')||group.items[0];if(marks.some(m=>m.t==='dtr'&&Math.hypot(m.x-group.x,m.y-group.y)<18))return;let t=types[chosen.id]||'existing';let size=poleSizes[chosen.id]||1;g.beginPath();g.arc(group.x,group.y,(t==='incl'?9:8)*globalScale*size,0,Math.PI*2);g.fillStyle=t==='new'?'#f08a24':t==='incl'?'#7c3aed':'#ffffff';g.fill();g.strokeStyle=t==='new'?'#c96a0b':t==='incl'?'#6d28d9':'#1769aa';g.lineWidth=2.5*globalScale*size;g.stroke()});
-marks.forEach(drawMark);if(active&&['sc','newService'].includes(mode)&&active.length>1){let s=active[0],p=active[active.length-1],col=mode==='sc'?'#087443':'#c2410c';g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(p.x,p.y,col)}
-if(active&&(mode==='stay'||mode==='ref')&&active.length>1){let s=active[0],p=active[active.length-1];g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=mode==='stay'?'#7c3aed':'#0f766e';g.lineWidth=2;g.stroke()}
+marks.forEach(drawMark);if(eraseRect){g.save();g.fillStyle='rgba(220,38,38,.10)';g.strokeStyle='#dc2626';g.lineWidth=2;g.setLineDash([6,4]);g.fillRect(eraseRect.x,eraseRect.y,eraseRect.w,eraseRect.h);g.strokeRect(eraseRect.x,eraseRect.y,eraseRect.w,eraseRect.h);g.restore()}if(active&&['sc','newService'].includes(mode)&&active.length>1){let s=active[0],p=active[active.length-1],col=mode==='sc'?'#087443':'#c2410c';g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(p.x,p.y,col)}
+if(active&&(mode==='stay'||mode==='ref'||mode==='symLine')&&active.length>1){let s=active[0],p=active[active.length-1];g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=mode==='stay'?'#7c3aed':mode==='ref'?'#0f766e':'#172033';g.lineWidth=mode==='symLine'?3:2;g.stroke()}
 $('printTitle').textContent=$('title').value;updateInfo();drawLegend()}
 function pos(e){let r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-function hitMark(p){for(let i=marks.length-1;i>=0;i--){let m=marks[i];if(['sc','newService'].includes(m.t)){let dx=m.dx??(m.x-m.sx),dy=m.dy??(m.y-m.sy),a=-(m.angle||0),rx=(p.x-m.sx)*Math.cos(a)-(p.y-m.sy)*Math.sin(a),ry=(p.x-m.sx)*Math.sin(a)+(p.y-m.sy)*Math.cos(a);if(Math.hypot(rx-dx,ry-dy)<44||Math.hypot(p.x-m.sx,p.y-m.sy)<28)return m}else if(['stay','ref','text','symbol','dtr'].includes(m.t)){let rad=m.t==='text'?Math.max(34,(m.size||18)*2+(m.text||'').length*3):m.t==='symbol'?Math.max(34,(m.w||54)/2+14):m.t==='dtr'?28:36;if(Math.hypot(p.x-m.x,p.y-m.y)<rad)return m}}return null}
+function hitMark(p){for(let i=marks.length-1;i>=0;i--){let m=marks[i];if(['sc','newService'].includes(m.t)){let dx=m.dx??(m.x-m.sx),dy=m.dy??(m.y-m.sy),a=-(m.angle||0),rx=(p.x-m.sx)*Math.cos(a)-(p.y-m.sy)*Math.sin(a),ry=(p.x-m.sx)*Math.sin(a)+(p.y-m.sy)*Math.cos(a);if(Math.hypot(rx-dx,ry-dy)<44||Math.hypot(p.x-m.sx,p.y-m.sy)<28)return m}else if(['stay','ref','text','symbol','dtr'].includes(m.t)){let rad=m.t==='text'?Math.max(34,(m.size||18)*2+(m.text||'').split(/\r?\n/).reduce((n,line)=>Math.max(n,line.length),0)*3,(m.text||'').split(/\r?\n/).length*(m.lineHeight||22)/2):m.t==='symbol'?Math.max(34,(m.w||54)/2+14):m.t==='dtr'?28:36;if(Math.hypot(p.x-m.x,p.y-m.y)<rad)return m}}return null}
 function distToSegment(p,a,b){let vx=b.x-a.x,vy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*vx+(p.y-a.y)*vy)/(vx*vx+vy*vy||1)));return Math.hypot(p.x-a.x-t*vx,p.y-a.y-t*vy)}
 function pickItem(p){let m=hitMark(p);if(m)return {kind:'mark',item:m};
  const gl=allGapLabels();let bestGap=null;gl.forEach(q=>{
@@ -220,7 +269,7 @@ function resizePicked(item){
   render();
  },v=>{const n=Number(v);return v.trim()===''||!Number.isFinite(n)||n<20||n>500?'Enter a size between 20 and 500%.':''});
 }
-function editGap(p){
+async function editGap(p){
  // One-shot gap editor: select either the visible MTR label or its pole-to-pole line.
  
  if(!paths.length){render();return false;}
@@ -243,7 +292,7 @@ function editGap(p){
  }
  if(!best||best.d>32){render();return false;}
  const old=gaps[best.key]||best.def;
- const v=prompt('Selected pole gap. Enter distance in MTR:',String(old));
+ const v=await askPrompt('Edit Pole Gap',''+old,'Distance in MTR');
  if(v!==null){
    const clean=v.trim(),n=Number(clean);
    if(clean!==''&&Number.isFinite(n)&&n>0){snapshot();gaps[best.key]=String(n);}
@@ -253,25 +302,145 @@ function editGap(p){
  return true;
 }
 
-c.ondblclick=e=>{let p=pos(e),m=[...marks].reverse().find(q=>{if(['sc','newService'].includes(q.t))return Math.hypot(p.x-q.x,p.y-q.y)<55;return ['stay','ref','text','symbol'].includes(q.t)&&Math.hypot(p.x-q.x,p.y-q.y)<Math.max(40,(q.w||54)/2+20)});if(m){if(m.t==='symbol'||m.t==='text'){let w=prompt('Rotation angle in degrees:',String(Math.round((m.angle||0)*180/Math.PI)));if(w===null)return;snapshot();m.angle=Number(w)*Math.PI/180;if(m.t==='symbol'){let nw=prompt('Symbol width (px):',m.w||54);if(nw!==null&&Number(nw)>5)m.w=Math.min(500,Number(nw));let nh=prompt('Symbol height (px):',m.h||38);if(nh!==null&&Number(nh)>5)m.h=Math.min(300,Number(nh))}}else{let a=prompt('Rotation angle in degrees:',String(Math.round((m.angle||0)*180/Math.PI)));if(a!==null){snapshot();m.angle=Number(a)*Math.PI/180}}render()}}
+c.ondblclick=async e=>{
+ let p=pos(e);
+ let m=[...marks].reverse().find(q=>{
+  if(['sc','newService'].includes(q.t))return Math.hypot(p.x-q.x,p.y-q.y)<55;
+  return ['stay','ref','text','symbol','dtr'].includes(q.t)&&Math.hypot(p.x-q.x,p.y-q.y)<Math.max(40,(q.w||54)/2+20);
+ });
+ if(!m)return;
+ if(m.t==='text'){
+  showInputModal('Edit Drawing Text',m.text||'','Press Enter for a new line; click OK to save',txt=>{
+   if(txt.trim()){snapshot();m.text=txt.trim();render()}
+  },v=>v.trim()===''?'Please enter some text.':'');
+  return;
+ }
+ if(['symbol','stay','ref'].includes(m.t)){
+  let w=await askPrompt('Rotate Item',''+Math.round((m.angle||0)*180/Math.PI),'Angle in degrees');
+  if(w===null)return;let angle=Number(w);
+  if(!Number.isFinite(angle)){alert('Please enter a valid angle.');return}
+  snapshot();m.angle=angle*Math.PI/180;
+  if(m.t==='symbol'){
+   let nw=await askPrompt('Resize Symbol Width',''+(m.w||54),'Width in pixels');if(nw!==null&&Number(nw)>5)m.w=Math.min(500,Number(nw));
+   let nh=await askPrompt('Resize Symbol Height',''+(m.h||38),'Height in pixels');if(nh!==null&&Number(nh)>5)m.h=Math.min(300,Number(nh));
+  }
+  render();
+ }
+};
 c.onpointerdown=e=>{e.preventDefault();let p=pos(e);
 if(mode==='rotateSelected'){let item=pickItem(p);if(item&&(item.kind==='mark'||item.kind==='path'||item.kind==='gap')){snapshot();rotateStart(item,p);moveState={last:p,rotating:true};c.setPointerCapture(e.pointerId);return}alert('যে Symbol, Text, Line বা Gap লেখা ঘোরাতে চাও, সেটির উপর চেপে ধরে Drag করো।');return}
 if(mode==='select'){let item=pickItem(p);if(!item){alert('যে একটি Item সরাতে চাও, সেটির উপর Tap করে Drag করো।');return}snapshot();moveState={item,last:p};c.setPointerCapture(e.pointerId);return}
 if(mode==='resizeAll'){let item=pickItem(p);if(!item)return;resizePicked(item);return}
+if(mode==='eraser'){
+ snapshot();eraseSnapshotAdded=true;eraseStart=p;eraseRect={x:p.x,y:p.y,w:0,h:0};c.setPointerCapture(e.pointerId);render();return;
+}
 if(mode==='draw'){let q=nearest(p,28);if(q)p={x:q.x,y:q.y};active=[p];c.setPointerCapture(e.pointerId);render();return}
 if(mode==='sc'||mode==='newService'){let q=nearest(p,36);if(!q){alert('Start on an existing pole.');return}active=[{x:q.x,y:q.y}];c.setPointerCapture(e.pointerId);render();return}
 if(mode==='gap'){editGap(p);return}
-if(mode==='textTool'){const place={x:p.x,y:p.y};showInputModal('Add Text to Drawing','','Type text here',txt=>{if(txt.trim()){snapshot();marks.push({t:'text',x:place.x,y:place.y,text:txt.trim(),angle:0,size:18,color:'#172033'});render()}},v=>v.trim()===''?'Please enter some text.':'');return}
-if(['symL','symR','symLine','symParenR','symParenL'].includes(mode)){snapshot();const shape={symL:'[',symR:']',symLine:'line',symParenR:')',symParenL:'('}[mode];marks.push({t:'symbol',shape,x:p.x,y:p.y,angle:0,w:54,h:38,color:'#172033'});render();return}
+if(mode==='textTool'){const place={x:p.x,y:p.y};showInputModal('Add Text to Drawing','','Press Enter for a new line; click OK to save',txt=>{if(txt.trim()){snapshot();marks.push({t:'text',x:place.x,y:place.y,text:txt.trim(),angle:0,size:18,lineHeight:22,color:'#172033'});render()}},v=>v.trim()===''?'Please enter some text.':'');return}
+if(mode==='symLine'){active=[p];c.setPointerCapture(e.pointerId);render();return}if(['symL','symR','symParenR','symParenL'].includes(mode)){snapshot();const shape={symL:'[',symR:']',symParenR:')',symParenL:'('}[mode];marks.push({t:'symbol',shape,x:p.x,y:p.y,angle:0,w:54,h:38,color:'#172033'});render();return}
 if(mode==='stay'||mode==='ref'){active=[p];c.setPointerCapture(e.pointerId);render();return}
 snapshot();if(mode==='incl'||mode==='new'){let q=nearest(p);if(q)types[q.id]=mode==='new'?'new':'incl';else alert('Tap near an automatic pole.')}if(mode==='dtrmark'){marks=marks.filter(m=>m.t!=='dtr');marks.push({...p,t:'dtr'})}render()};
-c.onpointermove=e=>{let p=pos(e);if(rotateState&&moveState?.rotating){updateRotation(p);return}if(moveState){let dx=p.x-moveState.last.x,dy=p.y-moveState.last.y;movePicked(moveState.item,dx,dy);moveState.last=p;render();return}if(active){active.push(p);render()}};
-function finish(){if(rotateState){rotateState=null;moveState=null;return}if(moveState){moveState=null;return}if(active&&active.length>1){if(mode==='draw'){snapshot();let q=nearest(active[0],20);if(q)active[0]={x:q.x,y:q.y};let end=active[active.length-1];if(Math.hypot(end.x-active[0].x,end.y-active[0].y)>8){let straight=[{x:active[0].x,y:active[0].y},{x:end.x,y:end.y}];straight.phase=phase;paths.push(straight)}}else if(mode==='sc'||mode==='newService'){snapshot();let s=active[0],p=active[active.length-1],n=marks.filter(m=>m.t==='sc').length+1,def=mode==='sc'?'S/C - '+n:'NEW SERVICE',label=prompt(mode==='sc'?'Enter S/C number / label:':'Enter New Service label:',def);if(label!==null){marks.push({t:mode,sx:s.x,sy:s.y,x:p.x,y:p.y,dx:p.x-s.x,dy:p.y-s.y,angle:0,label:label.trim()||def})}}else if(mode==='stay'||mode==='ref'){snapshot();let s=active[0],p=active[active.length-1];marks.push({t:mode==='stay'?'stay':'ref',x:s.x,y:s.y,angle:Math.atan2(p.y-s.y,p.x-s.x)})}}active=null;render()}
+c.onpointermove=e=>{let p=pos(e);if(eraseStart){let x=Math.min(eraseStart.x,p.x),y=Math.min(eraseStart.y,p.y);eraseRect={x,y,w:Math.abs(p.x-eraseStart.x),h:Math.abs(p.y-eraseStart.y)};render();return}if(rotateState&&moveState?.rotating){updateRotation(p);return}if(moveState){let dx=p.x-moveState.last.x,dy=p.y-moveState.last.y;movePicked(moveState.item,dx,dy);moveState.last=p;render();return}if(active){active.push(p);render()}};
+async function finish(){if(eraseStart){
+ const r=eraseRect||{x:eraseStart.x,y:eraseStart.y,w:0,h:0};
+ const dragging=r.w>7||r.h>7;
+ const inside=(x,y)=>dragging?(x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h):Math.hypot(x-eraseStart.x,y-eraseStart.y)<=24;
+ let changed=false;
+ if(dragging){
+  const beforeMarks=marks.length;marks=marks.filter(m=>{let a=markAnchor(m);return !inside(a.x,a.y)});if(marks.length!==beforeMarks)changed=true;
+  // Remove only the portion of a line inside the selection rectangle.
+  const clipRange=(a,b)=>{const dx=b.x-a.x,dy=b.y-a.y;let t0=0,t1=1;const clip=(p,q)=>{if(Math.abs(p)<1e-9)return q>=0;const t=q/p;if(p<0){if(t>t1)return false;if(t>t0)t0=t}else{if(t<t0)return false;if(t<t1)t1=t}return true};return clip(-dx,a.x-r.x)&&clip(dx,r.x+r.w-a.x)&&clip(-dy,a.y-r.y)&&clip(dy,r.y+r.h-a.y)&&t0<=t1?[t0,t1]:null};
+  const at=(a,b,t)=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
+  const rebuilt=[],extraPieces=[];
+  paths.forEach((path,pi)=>{
+   if(!path||path.length<2){rebuilt.push(path);return}
+   const pieces=[];let current=[],cut=false;
+   const add=(q)=>{if(!current.length||Math.hypot(current[current.length-1].x-q.x,current[current.length-1].y-q.y)>.5)current.push(q)};
+   for(let j=1;j<path.length;j++){
+    const a=path[j-1],b=path[j],range=clipRange(a,b);
+    if(!range){add(a);add(b);continue}
+    const [t0,t1]=range;if(t1-t0<1e-6){add(a);add(b);continue}
+    cut=true;const before=at(a,b,t0),after=at(a,b,t1);
+    if(t0>1e-6){add(a);add(before);if(current.length>1)pieces.push(current);current=[]}
+    else if(current.length>1){pieces.push(current);current=[]}
+    if(t1<1-1e-6){add(after);add(b)}
+    else if(current.length>1){pieces.push(current);current=[]}
+   }
+   if(current.length>1)pieces.push(current);
+   if(!cut){rebuilt.push(path);return}
+   changed=true;
+   // Clear custom settings for the cut path so removed pole/gap settings cannot attach to new positions.
+   [types,gaps,gapOffsets,poleOverrides,poleSizes].forEach(obj=>Object.keys(obj).forEach(k=>{if(k.startsWith(pi+'-'))delete obj[k]}));
+   if(pieces.length){pieces[0].phase=path.phase||1;pieces[0].scale=path.scale||1;rebuilt.push(pieces[0]);for(let k=1;k<pieces.length;k++){pieces[k].phase=path.phase||1;pieces[k].scale=path.scale||1;extraPieces.push(pieces[k])}}
+   else rebuilt.push([]);
+  });
+  paths=rebuilt.concat(extraPieces);
+  allGapLabels().forEach(m=>{if(inside(m.labelX,m.labelY)){if(gaps[m.key]!==undefined||gapOffsets[m.key]!==undefined)changed=true;delete gaps[m.key];delete gapOffsets[m.key]}});
+ }else{
+  const item=pickItem(eraseStart);
+  if(item){
+   if(item.kind==='mark'){let ix=marks.indexOf(item.item);if(ix>=0){marks.splice(ix,1);changed=true}}
+   else if(item.kind==='path'){let ix=paths.indexOf(item.item);if(ix>=0){paths.splice(ix,1);changed=true}}
+   else if(item.kind==='gap'){delete gaps[item.key];delete gapOffsets[item.key];changed=true}
+   else if(item.kind==='pole'){let pi=Number(String(item.item.id).split('-')[0]);if(Number.isInteger(pi)&&paths[pi]){paths.splice(pi,1);changed=true}}
+  }
+ }
+ if(!changed&&hist.length&&eraseSnapshotAdded)hist.pop();eraseSnapshotAdded=false;
+ eraseStart=null;eraseRect=null;render();return;
+ }if(rotateState){rotateState=null;moveState=null;return}if(moveState){moveState=null;return}if(active&&active.length>1){if(mode==='draw'){snapshot();let q=nearest(active[0],20);if(q)active[0]={x:q.x,y:q.y};let end=active[active.length-1];if(Math.hypot(end.x-active[0].x,end.y-active[0].y)>8){let straight=[{x:active[0].x,y:active[0].y},{x:end.x,y:end.y}];straight.phase=phase;paths.push(straight)}}else if(mode==='symLine'){let a=active[0],b=active[active.length-1],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy);if(len>3){snapshot();marks.push({t:'symbol',shape:'line',x:(a.x+b.x)/2,y:(a.y+b.y)/2,angle:Math.atan2(dy,dx),w:len,h:1,color:'#172033'})}}else if(mode==='sc'||mode==='newService'){snapshot();let s=active[0],p=active[active.length-1],n=marks.filter(m=>m.t==='sc').length+1,def=mode==='sc'?'S/C - '+n:'NEW SERVICE',label=await askPrompt(mode==='sc'?'S/C Label':'New Service Label',def,'Enter label');if(label!==null){marks.push({t:mode,sx:s.x,sy:s.y,x:p.x,y:p.y,dx:p.x-s.x,dy:p.y-s.y,angle:0,label:label.trim()||def})}}else if(mode==='stay'||mode==='ref'){snapshot();let s=active[0],p=active[active.length-1];marks.push({t:mode==='stay'?'stay':'ref',x:s.x,y:s.y,angle:Math.atan2(p.y-s.y,p.x-s.x)})}}active=null;render()}
 c.onpointerup=finish;c.onpointercancel=finish;
 function esc(s){return String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}function updateInfo(){let v=id=>$(id).value||'—';$('info').innerHTML='<b>DTR Code:</b> '+esc(v('dtr'))+' &nbsp; <b>DTR KVA:</b> '+esc(v('kva'))+'<br><b>Address:</b> '+esc(v('address'))+'<br><b>Latitude:</b> '+esc(v('lat'))+' &nbsp; <b>Longitude:</b> '+esc(v('long'))}
 ['title','dtr','kva','address','lat','long','spacing'].forEach(k=>$(k).oninput=()=>{updateInfo();render()});
 $('undo').onclick=()=>{if(hist.length){let s=JSON.parse(hist.pop());paths=(s.paths||[]).map(saved=>{const path=(Array.isArray(saved)?saved:(saved.points||[]));path.phase=Number(saved.phase)||1;if(saved.scale)path.scale=saved.scale;return path});marks=s.marks;types=s.types;gaps=s.gaps;gapOffsets=s.gapOffsets||{};poleOverrides=s.poleOverrides||{};poleSizes=s.poleSizes||{};globalScale=s.globalScale||1;render()}};
-$('clear').onclick=()=>{if(confirm('Clear all drawing?')){snapshot();paths=[];marks=[];types={};gaps={};gapOffsets={};poleOverrides={};poleSizes={};render()}};
+$('clear').onclick=async()=>{if(await showConfirm('Clear all drawing?','Clear Drawing')){snapshot();paths=[];marks=[];types={};gaps={};gapOffsets={};poleOverrides={};poleSizes={};render()}};
+// Editable project backup: stores all drawing geometry, symbols, labels and settings.
+function makeProjectData(){
+ return {
+  app:'Electrical Pole Line Drawing Maker',format:'pole-drawing-project',version:1,
+  savedAt:new Date().toISOString(),
+  drawing:{
+   paths:paths.map(path=>({points:Array.from(path,q=>({x:Number(q.x),y:Number(q.y)})),phase:Number(path.phase)||1,scale:path.scale||1})),
+   marks:JSON.parse(JSON.stringify(marks)),types:JSON.parse(JSON.stringify(types)),
+   gaps:JSON.parse(JSON.stringify(gaps)),gapOffsets:JSON.parse(JSON.stringify(gapOffsets)),
+   poleOverrides:JSON.parse(JSON.stringify(poleOverrides)),poleSizes:JSON.parse(JSON.stringify(poleSizes)),
+   globalScale:Number(globalScale)||1
+  },
+  settings:{title:$('title').value,dtr:$('dtr').value,kva:$('kva').value,address:$('address').value,
+   lat:$('lat').value,long:$('long').value,spacing:$('spacing').value,
+   orientation:$('orientation').value,includeDtrInfo:$('includeDtrInfo').checked}
+ };
+}
+$('saveProject').onclick=()=>{
+ try{
+  const data=makeProjectData(),blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  const base=($('title').value||'Pole_Drawing').trim().replace(/[^a-z0-9_-]+/gi,'_');
+  a.href=url;a.download=base+'_Editable_Project.json';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+   alert('Editable Project সফলভাবে Save হয়েছে।');
+ }catch(err){alert('Project Save করা যায়নি: '+err.message)}
+};
+$('loadProject').onclick=()=>$('projectFile').click();
+$('projectFile').onchange=async e=>{
+ const file=e.target.files&&e.target.files[0];if(!file)return;
+ try{
+  const data=JSON.parse(await file.text());
+  if(data.format!=='pole-drawing-project'||!data.drawing||!Array.isArray(data.drawing.paths)||!Array.isArray(data.drawing.marks))throw new Error('এটি সঠিক Editable Project JSON নয়।');
+  const d=data.drawing,settings=data.settings||{};
+  if(!await showConfirm('বর্তমান Drawing বদলে Upload করা Project খুলব?','Open Project'))return;
+  paths=d.paths.map(saved=>{const pts=(saved.points||[]).map(q=>({x:Number(q.x),y:Number(q.y)}));pts.phase=Number(saved.phase)||1;if(saved.scale)pts.scale=saved.scale;return pts});
+  marks=JSON.parse(JSON.stringify(d.marks));types=JSON.parse(JSON.stringify(d.types||{}));
+  gaps=JSON.parse(JSON.stringify(d.gaps||{}));gapOffsets=JSON.parse(JSON.stringify(d.gapOffsets||{}));
+  poleOverrides=JSON.parse(JSON.stringify(d.poleOverrides||{}));poleSizes=JSON.parse(JSON.stringify(d.poleSizes||{}));globalScale=Number(d.globalScale)||1;
+  ['title','dtr','kva','address','lat','long','spacing','orientation'].forEach(k=>{if(settings[k]!==undefined)$(k).value=settings[k]});
+  if(settings.includeDtrInfo!==undefined)$('includeDtrInfo').checked=!!settings.includeDtrInfo;
+  hist=[];active=null;moveState=null;rotateState=null;updateInfo();resize();
+  alert('পুরনো Editable Drawing সফলভাবে ফিরে এসেছে। এখন আগের মতো Edit করতে পারবে।');
+ }catch(err){alert('Project Open করা যায়নি: '+err.message)}
+ finally{e.target.value=''}
+};
+
 $('orientation').onchange=()=>{document.getElementById('pageOrientation').textContent=$('orientation').value};
 let st=document.createElement('style');st.id='pageOrientation';st.textContent='@page{size:A4 portrait;margin:8mm}';document.head.appendChild(st);
 
@@ -279,8 +448,9 @@ let st=document.createElement('style');st.id='pageOrientation';st.textContent='@
 let printRestore=null;
 $('pdf').onclick=()=>{
  try{
-  const old={width:c.width,height:c.height,heightStyle:c.style.height};
+  const old={width:c.width,height:c.height,heightStyle:c.style.height,infoDisplay:$('infoCard').style.display,hideDtrInfo:document.body.classList.contains('hideDtrInfo')};
   printRestore=old;
+  document.body.classList.toggle('hideDtrInfo',!$('includeDtrInfo').checked);
   const orientation=$('orientation').value;
   st.textContent='@page{size:A4 '+orientation+';margin:5mm}';
   c.style.height=orientation==='landscape'?'145mm':'212mm';
@@ -289,24 +459,20 @@ $('pdf').onclick=()=>{
     const cssW=c.clientWidth,cssH=c.clientHeight;
     const baseW=old.width/(window.devicePixelRatio||1);
     const baseH=old.height/(window.devicePixelRatio||1);
-    const dpi=450/96;
+    const dpi=600/96;
     c.width=Math.round(cssW*dpi);
     c.height=Math.round(cssH*dpi);
 
-    /* Mobile canvas is narrow. Expand its X coordinates to the A4 print width,
-       while keeping Y sizing unchanged. Desktop keeps the original fit behavior. */
-    const isMobileCanvas=baseW<600;
+    /* Use one proportional A4 fit on both mobile and desktop.
+       This keeps pole, line, symbol and text proportions consistent. */
     const fit=Math.min(cssW/baseW,cssH/baseH);
-    const sx=isMobileCanvas?cssW/baseW:fit;
-    const sy=isMobileCanvas?cssH/baseH:fit;
-    const dx=isMobileCanvas?0:(cssW-baseW*fit)/2;
-    const dy=isMobileCanvas?0:(cssH-baseH*fit)/2;
+    const dx=(cssW-baseW*fit)/2;
+    const dy=(cssH-baseH*fit)/2;
 
-    g.setTransform(dpi*sx,0,0,dpi*sy,dx*dpi,dy*dpi);
-    g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
-    /* Preserve the original text/symbol height while widening mobile drawings. */
-    const savedGlobalScale=globalScale;globalScale=savedGlobalScale/sy;
-    render();globalScale=savedGlobalScale;
+    g.setTransform(dpi*fit,0,0,dpi*fit,dx*dpi,dy*dpi);
+    g.imageSmoothingEnabled=true;
+    g.imageSmoothingQuality='high';
+    render();
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
      try{window.print()}catch(err){restorePrintCanvas();alert('Print Preview খোলা যায়নি।')}
     }));
@@ -317,6 +483,7 @@ $('pdf').onclick=()=>{
 function restorePrintCanvas(){
  if(!printRestore)return;
  c.style.height=printRestore.heightStyle;
+ document.body.classList.toggle('hideDtrInfo',printRestore.hideDtrInfo);
  printRestore=null;
  resize();
 }
@@ -372,7 +539,8 @@ window.addEventListener('afterprint',restorePrintCanvas);
   const titleH=title?26*scale:0;
   const topGap=10*scale;
   const legendH=rows*rowH+10*scale;
-  const infoH=18*scale+20*scale+3*17*scale+12*scale;
+  const includeInfo=$('includeDtrInfo').checked;
+  const infoH=includeInfo?(18*scale+20*scale+3*17*scale+12*scale):0;
 
   out.width=w;
   out.height=c.height+topGap+titleH+topGap+legendH+infoH;
@@ -439,25 +607,27 @@ window.addEventListener('afterprint',restorePrintCanvas);
 
   y=drawY+c.height+topGap+legendH;
 
-  x.strokeStyle='#d8e1ec';
-  x.lineWidth=scale;
-  x.beginPath();
-  x.moveTo(left,y);
-  x.lineTo(w-left,y);
-  x.stroke();
+  if(includeInfo){
+   x.strokeStyle='#d8e1ec';
+   x.lineWidth=scale;
+   x.beginPath();
+   x.moveTo(left,y);
+   x.lineTo(w-left,y);
+   x.stroke();
 
-  y+=18*scale;
-  x.fillStyle='#172033';
-  x.font=`bold ${14*scale}px Arial`;
-  x.fillText('DTR Information',left,y);
+   y+=18*scale;
+   x.fillStyle='#172033';
+   x.font=`bold ${14*scale}px Arial`;
+   x.fillText('DTR Information',left,y);
 
-  y+=20*scale;
-  x.font=`${12*scale}px Arial`;
+   y+=20*scale;
+   x.font=`${12*scale}px Arial`;
 
-  infoLines.forEach(line=>{
-   x.fillText(line,left,y);
-   y+=17*scale;
-  });
+   infoLines.forEach(line=>{
+    x.fillText(line,left,y);
+    y+=17*scale;
+   });
+  }
 
   const link=document.createElement('a');
   link.download='DTR-pole-line.png';
