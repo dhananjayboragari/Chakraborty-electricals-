@@ -225,11 +225,23 @@ allGapLabels().forEach(m=>{
  g.font=`bold ${(m.autoFont||10)*globalScale*gs}px Arial`;g.textAlign='center';g.textBaseline='middle';
  let fs=(m.autoFont||10)*globalScale*gs;g.fillStyle='#172033';g.fillText(m.txt,0,0);g.restore();
 });
-/* Draw coincident poles only once. New/Inclined pole marker takes priority over existing pole markers at a line junction. */
+/* Draw all service/stay symbols first. Pole fill and outline are then painted over them,
+   so the pole remains visible on top while the symbol continues behind it. */
+marks.forEach(drawMark);
+if(active&&['sc','newService'].includes(mode)&&active.length>1){
+ let s=active[0],p=active[active.length-1],col=mode==='sc'?'#087443':'#c2410c';
+ g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,s.y);g.lineTo(p.x,p.y);
+ g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(p.x,p.y,col)
+}
+if(active&&(mode==='stay'||mode==='ref'||mode==='symLine')&&active.length>1){
+ let s=active[0],p=active[active.length-1];g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,p.y);
+ g.strokeStyle=mode==='stay'?'#7c3aed':mode==='ref'?'#0f766e':'#172033';
+ g.lineWidth=mode==='symLine'?3:2;g.stroke()
+}
+/* Draw coincident poles only once. Pole white fill and outline stay above every symbol. */
 const poleGroups=[];poles().forEach(p=>{let group=poleGroups.find(a=>Math.hypot(a.x-p.x,a.y-p.y)<3);if(!group){group={x:p.x,y:p.y,items:[]};poleGroups.push(group)}group.items.push(p)});
 poleGroups.forEach(group=>{let chosen=group.items.find(p=>types[p.id]==='new')||group.items.find(p=>types[p.id]==='incl')||group.items[0];if(marks.some(m=>m.t==='dtr'&&Math.hypot(m.x-group.x,m.y-group.y)<18))return;let t=types[chosen.id]||'existing';let size=poleSizes[chosen.id]||1;g.beginPath();g.arc(group.x,group.y,(t==='incl'?9:8)*globalScale*size,0,Math.PI*2);g.fillStyle=t==='new'?'#f08a24':t==='incl'?'#7c3aed':'#ffffff';g.fill();g.strokeStyle=t==='new'?'#c96a0b':t==='incl'?'#6d28d9':'#1769aa';g.lineWidth=2.5*globalScale*size;g.stroke()});
-marks.forEach(drawMark);if(eraseRect){g.save();g.fillStyle='rgba(220,38,38,.10)';g.strokeStyle='#dc2626';g.lineWidth=2;g.setLineDash([6,4]);g.fillRect(eraseRect.x,eraseRect.y,eraseRect.w,eraseRect.h);g.strokeRect(eraseRect.x,eraseRect.y,eraseRect.w,eraseRect.h);g.restore()}if(active&&['sc','newService'].includes(mode)&&active.length>1){let s=active[0],p=active[active.length-1],col=mode==='sc'?'#087443':'#c2410c';g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(p.x,p.y,col)}
-if(active&&(mode==='stay'||mode==='ref'||mode==='symLine')&&active.length>1){let s=active[0],p=active[active.length-1];g.beginPath();g.moveTo(s.x,s.y);g.lineTo(p.x,p.y);g.strokeStyle=mode==='stay'?'#7c3aed':mode==='ref'?'#0f766e':'#172033';g.lineWidth=mode==='symLine'?3:2;g.stroke()}
+if(eraseRect){g.save();g.fillStyle='rgba(220,38,38,.10)';g.strokeStyle='#dc2626';g.lineWidth=2;g.setLineDash([6,4]);g.fillRect(eraseRect.x,eraseRect.y,eraseRect.w,eraseRect.h);g.strokeRect(eraseRect.x,eraseRect.y,eraseRect.w,eraseRect.h);g.restore()}
 $('printTitle').textContent=$('title').value;updateInfo();drawLegend()}
 function pos(e){let r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
 function hitMark(p){for(let i=marks.length-1;i>=0;i--){let m=marks[i];if(['sc','newService'].includes(m.t)){let dx=m.dx??(m.x-m.sx),dy=m.dy??(m.y-m.sy),a=-(m.angle||0),rx=(p.x-m.sx)*Math.cos(a)-(p.y-m.sy)*Math.sin(a),ry=(p.x-m.sx)*Math.sin(a)+(p.y-m.sy)*Math.cos(a);if(Math.hypot(rx-dx,ry-dy)<44||Math.hypot(p.x-m.sx,p.y-m.sy)<28)return m}else if(['stay','ref','text','symbol','dtr'].includes(m.t)){let rad=m.t==='text'?Math.max(34,(m.size||18)*2+(m.text||'').split(/\r?\n/).reduce((n,line)=>Math.max(n,line.length),0)*3,(m.text||'').split(/\r?\n/).length*(m.lineHeight||22)/2):m.t==='symbol'?Math.max(34,(m.w||54)/2+14):m.t==='dtr'?28:36;if(Math.hypot(p.x-m.x,p.y-m.y)<rad)return m}}return null}
