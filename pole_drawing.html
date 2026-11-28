@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Electrical Pole Line Drawing Maker </title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f1f5f9;color:#172033;font-family:Arial,sans-serif}header{background:#123d68;color:white;padding:14px;font-weight:bold}main{max-width:1100px;margin:auto;padding:10px}.card{background:white;border:1px solid #d8e1ec;border-radius:12px;padding:12px;margin:10px 0}h3{font-size:16px;margin:0 0 10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}label{font-size:13px;font-weight:bold}input,select{width:100%;padding:10px;margin-top:5px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}button{padding:10px;border:0;border-radius:8px;margin:3px;background:#1769aa;color:white;font-weight:bold}button.alt{background:#e8eef5;color:#17324d}button.red{background:#b42318}button.active{outline:3px solid #f5c542;background:#0d4f86;color:white}.tools{display:flex;flex-wrap:wrap;gap:3px}.tools button{flex:1 1 125px}.hint{font-size:12px;line-height:1.5;color:#536277}canvas{width:100%;height:820px;display:block;border:1px solid #aebdce;border-radius:8px;touch-action:none;background:white}.legend{font-size:16px;font-weight:bold;display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}.legend span{display:inline-flex;align-items:center;gap:5px}.swatch{display:inline-block;width:18px;height:5px;border-radius:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}.dot{display:inline-block;width:13px;height:13px;border-radius:50%;border:2px solid transparent}#printTitle{display:none}.info{line-height:1.7;font-size:14px}
+*{box-sizing:border-box}body{margin:0;background:#f1f5f9;color:#172033;font-family:Arial,sans-serif}header{background:#123d68;color:white;padding:14px;font-weight:bold}main{max-width:1100px;margin:auto;padding:10px}.card{background:white;border:1px solid #d8e1ec;border-radius:12px;padding:12px;margin:10px 0}h3{font-size:16px;margin:0 0 10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}label{font-size:13px;font-weight:bold}input,select{width:100%;padding:10px;margin-top:5px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}button{padding:11px 13px;border:1px solid transparent;border-radius:11px;margin:2px;background:linear-gradient(135deg,#1976c9,#12558f);color:#fff;font-weight:700;font-size:13px;letter-spacing:.1px;box-shadow:0 2px 5px rgba(15,45,75,.12);transition:transform .12s,box-shadow .12s,background .12s}button:active{transform:translateY(1px);box-shadow:0 1px 2px rgba(15,45,75,.14)}button.alt{background:#f1f5f9;color:#1e3a56;border-color:#d8e2ed;box-shadow:none}button.red{background:linear-gradient(135deg,#dc4545,#a91f27);color:#fff}button.active{outline:2px solid #f3bd36;outline-offset:1px;background:linear-gradient(135deg,#0e5a96,#0b3f70);color:#fff;box-shadow:0 3px 9px rgba(13,79,134,.2)}.tools{display:flex;flex-wrap:wrap;gap:6px}.tools button{flex:1 1 125px;min-height:42px}.historyTools button{flex:1 1 90px}.hint{font-size:12px;line-height:1.5;color:#536277}canvas{width:100%;height:820px;display:block;border:1px solid #aebdce;border-radius:8px;touch-action:none;background:white}.legend{font-size:16px;font-weight:bold;display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}.legend span{display:inline-flex;align-items:center;gap:5px}.swatch{display:inline-block;width:18px;height:5px;border-radius:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}.dot{display:inline-block;width:13px;height:13px;border-radius:50%;border:2px solid transparent}#printTitle{display:none}.info{line-height:1.7;font-size:14px}
 
 #appModal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.58);align-items:center;justify-content:center;padding:18px}
 #appModal.show{display:flex}
@@ -18,7 +18,7 @@
 #appModal.notice .modalInput,#appModal.notice .modalError,#appModal.notice #appModalCancel{display:none!important}
 #appModal.notice .noticeMessage{display:block}
 
-@media(max-width:600px){.grid{grid-template-columns:1fr}canvas{height:760px}.tools button{flex:1 1 44%}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}canvas{height:760px}.tools{gap:7px}.tools button{flex:1 1 calc(50% - 7px);min-height:44px;padding:10px 8px;font-size:12px}.historyTools button{flex:1 1 28%}}
 @page{size:A4 portrait;margin:5mm}
 @media print{
  html,body{background:#fff!important;margin:0!important;padding:0!important;width:100%!important;height:auto!important}
@@ -51,15 +51,15 @@
 <button id="draw" class="active">Draw Line</button><button id="sc" class="alt">S/C</button><button id="newService" class="alt">New Service</button>
 <button id="stay" class="alt">New Stay</button><button id="ref" class="alt">Refixing Stay Wire</button><button id="incl" class="alt">Inclined Pole</button><button id="new" class="alt">New Pole</button><button id="dtrmark" class="alt">DTR Symbol</button><button id="gap" class="alt">Edit Gap (m)</button><button id="textTool" class="alt">Add Text</button><button id="eraser" class="alt">Eraser</button><button id="symL" class="alt">Add [</button><button id="symR" class="alt">Add ]</button><button id="symLine" class="alt">Add Straight Line</button><button id="symParenR" class="alt">Add )</button><button id="symParenL" class="alt">Add (</button><button id="select" class="alt">Move Selected Item</button><button id="rotateSelected" class="alt">Rotate Selected Item</button><button id="resizeAll" class="alt">Resize Selected Item</button>
 </div>
-<p class="hint">একবারে একটি Item পরিবর্তন করবে। Move Selected Item: যে Pole, Line, Symbol, Text, Stay, S/C বা Gap লেখা সরাতে চাও, সেটির উপর চেপে ধরে Drag করো। Rotate Selected Item: Symbol, Text, Stay, S/C, Line বা MTR Gap লেখার উপর চেপে ধরে ঘোরাও। Resize Selected Item: যে Item ছোট-বড় করতে চাও, সেটিতে Tap করে Size (%) দাও। Eraser: Tap করলে একটি Item মুছবে; চেপে Drag করে Box-এর ভিতরের সব Item মুছবে। Add Text-এ Enter দিলে নতুন লাইন হবে; OK চাপলে লেখা সংরক্ষণ হবে। অন্য Item-গুলো অপরিবর্তিত থাকবে।</p>
-<div class="tools"><button id="undo" class="alt">Undo</button><button id="clear" class="red">Clear Drawing</button></div></section>
+<p class="hint">একবারে একটি Item পরিবর্তন করবে। Move Selected Item: যে Pole, Line, Symbol, Text, Stay, S/C বা Gap লেখা সরাতে চাও, সেটির উপর চেপে ধরে Drag করো। Rotate Selected Item: Symbol, Text, Stay, S/C, Line বা MTR Gap লেখার উপর চেপে ধরে ঘোরাও। Resize Selected Item: যে Item ছোট-বড় করতে চাও, সেটিতে Tap করে Size (%) দাও। Eraser: Pole বা অন্য Item-এ Tap করলে সেটি মুছবে; চেপে Drag করে Box-এর ভিতরের Item মুছবে। Add Text-এ Enter দিলে নতুন লাইন হবে; OK চাপলে লেখা সংরক্ষণ হবে। অন্য Item-গুলো অপরিবর্তিত থাকবে।</p>
+<div class="tools historyTools"><button id="undo" class="alt">↶ Undo</button><button id="redo" class="alt">↷ Redo</button><button id="clear" class="red">Clear Drawing</button></div></section>
 <section class="card" id="drawingCard"><div id="printTitle"></div><canvas id="board"></canvas><div id="legend" class="legend"></div></section>
 <section class="card" id="infoCard"><h3>DTR Information</h3><div id="info" class="info"></div></section>
 <section class="card noPrint"><button id="pdf">Save as PDF (A4)</button><button id="png" class="alt">Save Image</button><button id="saveProject" class="alt">Save Editable Project (.json)</button><button id="loadProject" class="alt">Open Editable Project (.json)</button><input id="projectFile" type="file" accept=".json,application/json" hidden><p class="hint">PDF/Image শুধু দেখার জন্য। পরে একই Drawing পুরো Edit করতে .json Project File Save করে রাখবে।</p><p class="hint">Android print window: choose A4 and Save as PDF.</p></section>
 </main>
 <script>
 const c=document.getElementById('board'),g=c.getContext('2d'),$=id=>document.getElementById(id);
-let paths=[],marks=[],types={},gaps={},gapOffsets={},poleOverrides={},poleSizes={},mode='draw',phase=1,active=null,hist=[],rotateState=null,moveState=null,eraseStart=null,eraseRect=null,eraseSnapshotAdded=false,globalScale=1;
+let paths=[],marks=[],types={},gaps={},gapOffsets={},hiddenGaps={},hiddenPoles={},poleOverrides={},poleSizes={},mode='draw',phase=1,active=null,hist=[],redoHist=[],rotateState=null,moveState=null,eraseStart=null,eraseRect=null,eraseSnapshotAdded=false,globalScale=1;
 const colors={1:'#1769aa',2:'#e07818',3:'#15803d'},toolIds=['draw','sc','newService','stay','ref','incl','new','dtrmark','gap','select','textTool','eraser','symL','symR','symLine','symParenR','symParenL','rotateSelected','resizeAll'];
 function showInputModal(title,value,placeholder,onOK,validator){
  const modal=$('appModal'),input=$('appModalInput'),error=$('appModalError');
@@ -164,13 +164,13 @@ function getPoles(path,pi){
   const t=Math.max(0,Math.min(1,(target-seg.start)/seg.len));
   points.push({x:seg.a.x+(seg.b.x-seg.a.x)*t,y:seg.a.y+(seg.b.y-seg.a.y)*t,id:pi+'-'+k,gapAfter:k<count?labelPlan[k]:null});
  }
- return points.map(q=>poleOverrides[q.id]?({...q,x:poleOverrides[q.id].x,y:poleOverrides[q.id].y}):q);
+ return points.filter(q=>!hiddenPoles[q.id]).map(q=>poleOverrides[q.id]?({...q,x:poleOverrides[q.id].x,y:poleOverrides[q.id].y}):q);
 }
 function poles(){return paths.flatMap((p,i)=>getPoles(p,i))}
 function nearest(p,r=32){let a=poles().map(q=>({...q,d:Math.hypot(q.x-p.x,q.y-p.y)})).sort((x,y)=>x.d-y.d);return a[0]&&a[0].d<r?a[0]:null}
 function gapLabels(p,i){let a=getPoles(p,i);return a.slice(0,-1).map((q,j)=>{let z=a[j+1],dx=z.x-q.x,dy=z.y-q.y,l=Math.hypot(dx,dy)||1;/* Gap labels stay left-to-right for consistent office drawings, including vertical lines. */return{x:(q.x+z.x)/2,y:(q.y+z.y)/2,nx:dy/l,ny:-dx/l,len:l,angle:0,key:i+'-'+j,def:Math.round(q.gapAfter??(l/1.25))}})}
 function allGapLabels(){
- const candidates=[];paths.forEach((p,i)=>gapLabels(p,i).forEach(m=>candidates.push(m)));
+ const candidates=[];paths.forEach((p,i)=>gapLabels(p,i).forEach(m=>{if(!hiddenGaps[m.key])candidates.push(m)}));
  const placed=[];
  const PAGE_GAP_FONT=10.5;
  const lineSegments=[];paths.forEach(p=>{for(let i=1;i<p.length;i++)lineSegments.push({a:p[i-1],b:p[i]})});
@@ -207,9 +207,32 @@ function allGapLabels(){
  });
  return candidates;
 }
-function snapshot(){const savedPaths=paths.map(path=>({points:Array.from(path,q=>({x:q.x,y:q.y})),phase:Number(path.phase)||1,scale:path.scale||1}));hist.push(JSON.stringify({paths:savedPaths,marks,types,gaps,gapOffsets,poleOverrides,poleSizes,globalScale}));if(hist.length>60)hist.shift()}
+function snapshot(){const savedPaths=paths.map(path=>({points:Array.from(path,q=>({x:q.x,y:q.y})),phase:Number(path.phase)||1,scale:path.scale||1}));hist.push(JSON.stringify({paths:savedPaths,marks,types,gaps,gapOffsets,hiddenGaps,hiddenPoles,poleOverrides,poleSizes,globalScale}));redoHist=[];if(hist.length>60)hist.shift()}
+function captureState(){const savedPaths=paths.map(path=>({points:Array.from(path,q=>({x:q.x,y:q.y})),phase:Number(path.phase)||1,scale:path.scale||1}));return JSON.stringify({paths:savedPaths,marks,types,gaps,gapOffsets,hiddenGaps,hiddenPoles,poleOverrides,poleSizes,globalScale})}
+function restoreState(raw){const s=JSON.parse(raw);paths=(s.paths||[]).map(saved=>{const path=(Array.isArray(saved)?saved:(saved.points||[]));path.phase=Number(saved.phase)||1;if(saved.scale)path.scale=saved.scale;return path});marks=s.marks||[];types=s.types||{};gaps=s.gaps||{};gapOffsets=s.gapOffsets||{};hiddenGaps=s.hiddenGaps||{};hiddenPoles=s.hiddenPoles||{};poleOverrides=s.poleOverrides||{};poleSizes=s.poleSizes||{};globalScale=s.globalScale||1;render()}
 function drawHouse(x,y,color){g.save();g.translate(x,y);g.strokeStyle=color;g.fillStyle='#fff';g.lineWidth=2;g.beginPath();g.moveTo(-9,1);g.lineTo(0,-8);g.lineTo(9,1);g.lineTo(9,9);g.lineTo(-9,9);g.closePath();g.fill();g.stroke();g.beginPath();g.moveTo(-2,9);g.lineTo(-2,3);g.lineTo(2,3);g.lineTo(2,9);g.stroke();g.restore()}
 function markAnchor(m){return {x:m.t==='sc'||m.t==='newService'?m.sx:m.x,y:m.t==='sc'||m.t==='newService'?m.sy:m.y}}
+function eraseGapLineAt(point){
+ let best=null;
+ paths.forEach((path,pi)=>{const pp=getPoles(path,pi);for(let j=0;j<pp.length-1;j++){const a=pp[j],b=pp[j+1],d=distToSegment(point,a,b);if(!best||d<best.d)best={pi,j,a,b,d,path,pp}}});
+ if(!best||best.d>13)return false;
+ const {pi,j,a,b,path,pp}=best;
+ // Keep the part before the selected pole-gap and the part after it as two separate line pieces.
+ const left=path.length>=2?[{x:path[0].x,y:path[0].y},{x:a.x,y:a.y}]:[];
+ const right=path.length>=2?[{x:b.x,y:b.y},{x:path[path.length-1].x,y:path[path.length-1].y}]:[];
+ const phaseNo=Number(path.phase)||1,scaleNo=path.scale||1;
+ if(left.length&&Math.hypot(left[1].x-left[0].x,left[1].y-left[0].y)>3){left.phase=phaseNo;left.scale=scaleNo;paths[pi]=left}else paths[pi]=[];
+ if(right.length&&Math.hypot(right[1].x-right[0].x,right[1].y-right[0].y)>3){right.phase=phaseNo;right.scale=scaleNo;paths.push(right)}
+ // Remove custom gap/pole settings belonging to the erased gap and avoid stale keys attaching to another segment.
+ Object.keys(gaps).forEach(k=>{if(k.startsWith(pi+'-'))delete gaps[k]});
+ Object.keys(gapOffsets).forEach(k=>{if(k.startsWith(pi+'-'))delete gapOffsets[k]});
+ Object.keys(hiddenGaps).forEach(k=>{if(k.startsWith(pi+'-'))delete hiddenGaps[k]});
+ Object.keys(types).forEach(k=>{if(k.startsWith(pi+'-'))delete types[k]});
+ Object.keys(hiddenPoles).forEach(k=>{if(k.startsWith(pi+'-'))delete hiddenPoles[k]});
+ Object.keys(poleOverrides).forEach(k=>{if(k.startsWith(pi+'-'))delete poleOverrides[k]});
+ Object.keys(poleSizes).forEach(k=>{if(k.startsWith(pi+'-'))delete poleSizes[k]});
+ return true;
+}
 function drawMark(m){if(m.t==='sc'||m.t==='newService'){let col=m.t==='sc'?'#087443':'#c2410c',dx=m.dx??(m.x-m.sx),dy=m.dy??(m.y-m.sy);g.save();g.translate(m.sx,m.sy);g.rotate(m.angle||0);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();g.moveTo(0,0);g.lineTo(dx,0);g.lineTo(dx,dy);g.strokeStyle=col;g.lineWidth=2.5;g.stroke();drawHouse(dx,dy,col);g.fillStyle=col;g.font='bold 13px Arial';g.textAlign='center';g.fillText(m.label,dx,dy+25);g.restore();return}
 if(m.t==='stay'||m.t==='ref'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.strokeStyle=m.t==='stay'?'#7c3aed':'#0f766e';g.lineWidth=2.2*globalScale*(m.scale||1);g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.beginPath();if(m.t==='stay'){g.moveTo(-13,10);g.lineTo(13,-10);g.moveTo(13,-10);g.lineTo(6,-9);g.moveTo(13,-10);g.lineTo(11,-3)}else{g.moveTo(-14,0);g.lineTo(14,0);g.moveTo(-14,0);g.lineTo(-8,-4);g.moveTo(-14,0);g.lineTo(-8,4);g.moveTo(14,0);g.lineTo(8,-4);g.moveTo(14,0);g.lineTo(8,4)}g.stroke();g.restore();return}
 if(m.t==='text'){g.save();g.translate(m.x,m.y);g.rotate(m.angle||0);g.fillStyle=m.color||'#172033';g.font=`${m.bold?'bold ':''}${(m.size||18)*globalScale*(m.scale||1)}px Arial`;g.scale(globalScale*(m.scale||1),globalScale*(m.scale||1));g.translate(0,0);g.textAlign='left';g.textBaseline='middle';(m.text||'Text').split(/\r?\n/).forEach((line,i)=>g.fillText(line,0,i*(m.lineHeight||22)));g.restore();return}
@@ -257,6 +280,27 @@ function pickItem(p){let m=hitMark(p);if(m)return {kind:'mark',item:m};
  let bestPath=null;paths.forEach((path,i)=>{for(let j=1;j<path.length;j++){let d=distToSegment(p,path[j-1],path[j]);if(!bestPath||d<bestPath.d)bestPath={kind:'path',item:path,index:i,d}}});if(bestPath&&bestPath.d<16)return bestPath;
  return null}
 function markAnchor(m){return {x:m.t==='sc'||m.t==='newService'?m.sx:m.x,y:m.t==='sc'||m.t==='newService'?m.sy:m.y}}
+function eraseGapLineAt(point){
+ let best=null;
+ paths.forEach((path,pi)=>{const pp=getPoles(path,pi);for(let j=0;j<pp.length-1;j++){const a=pp[j],b=pp[j+1],d=distToSegment(point,a,b);if(!best||d<best.d)best={pi,j,a,b,d,path,pp}}});
+ if(!best||best.d>13)return false;
+ const {pi,j,a,b,path,pp}=best;
+ // Keep the part before the selected pole-gap and the part after it as two separate line pieces.
+ const left=path.length>=2?[{x:path[0].x,y:path[0].y},{x:a.x,y:a.y}]:[];
+ const right=path.length>=2?[{x:b.x,y:b.y},{x:path[path.length-1].x,y:path[path.length-1].y}]:[];
+ const phaseNo=Number(path.phase)||1,scaleNo=path.scale||1;
+ if(left.length&&Math.hypot(left[1].x-left[0].x,left[1].y-left[0].y)>3){left.phase=phaseNo;left.scale=scaleNo;paths[pi]=left}else paths[pi]=[];
+ if(right.length&&Math.hypot(right[1].x-right[0].x,right[1].y-right[0].y)>3){right.phase=phaseNo;right.scale=scaleNo;paths.push(right)}
+ // Remove custom gap/pole settings belonging to the erased gap and avoid stale keys attaching to another segment.
+ Object.keys(gaps).forEach(k=>{if(k.startsWith(pi+'-'))delete gaps[k]});
+ Object.keys(gapOffsets).forEach(k=>{if(k.startsWith(pi+'-'))delete gapOffsets[k]});
+ Object.keys(hiddenGaps).forEach(k=>{if(k.startsWith(pi+'-'))delete hiddenGaps[k]});
+ Object.keys(types).forEach(k=>{if(k.startsWith(pi+'-'))delete types[k]});
+ Object.keys(hiddenPoles).forEach(k=>{if(k.startsWith(pi+'-'))delete hiddenPoles[k]});
+ Object.keys(poleOverrides).forEach(k=>{if(k.startsWith(pi+'-'))delete poleOverrides[k]});
+ Object.keys(poleSizes).forEach(k=>{if(k.startsWith(pi+'-'))delete poleSizes[k]});
+ return true;
+}
 function rotateStart(item,p){
  if(item.kind==='mark'){let a=markAnchor(item.item);rotateState={kind:'mark',item:item.item,anchor:a,start:Math.atan2(p.y-a.y,p.x-a.x),old:item.item.angle||0}}
  else if(item.kind==='gap'){let q=allGapLabels().find(x=>x.key===item.key);if(!q)return;let go=gapOffsets[item.key]||{};rotateState={kind:'gap',key:item.key,anchor:{x:q.labelX,y:q.labelY},start:Math.atan2(p.y-q.labelY,p.x-q.labelX),old:go.angle||0}}
@@ -307,7 +351,7 @@ async function editGap(p){
  const v=await askPrompt('Edit Pole Gap',''+old,'Distance in MTR');
  if(v!==null){
    const clean=v.trim(),n=Number(clean);
-   if(clean!==''&&Number.isFinite(n)&&n>0){snapshot();gaps[best.key]=String(n);}
+   if(clean!==''&&Number.isFinite(n)&&n>0){snapshot();gaps[best.key]=String(n);delete hiddenGaps[best.key];}
    else if(clean!=='') alert('Please enter a positive number, e.g. 46');
  }
  render();
@@ -360,6 +404,7 @@ async function finish(){if(eraseStart){
  const inside=(x,y)=>dragging?(x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h):Math.hypot(x-eraseStart.x,y-eraseStart.y)<=24;
  let changed=false;
  if(dragging){
+  poles().forEach(q=>{if(inside(q.x,q.y)){hiddenPoles[q.id]=true;changed=true}});
   const beforeMarks=marks.length;marks=marks.filter(m=>{let a=markAnchor(m);return !inside(a.x,a.y)});if(marks.length!==beforeMarks)changed=true;
   // Remove only the portion of a line inside the selection rectangle.
   const clipRange=(a,b)=>{const dx=b.x-a.x,dy=b.y-a.y;let t0=0,t1=1;const clip=(p,q)=>{if(Math.abs(p)<1e-9)return q>=0;const t=q/p;if(p<0){if(t>t1)return false;if(t>t0)t0=t}else{if(t<t0)return false;if(t<t1)t1=t}return true};return clip(-dx,a.x-r.x)&&clip(dx,r.x+r.w-a.x)&&clip(-dy,a.y-r.y)&&clip(dy,r.y+r.h-a.y)&&t0<=t1?[t0,t1]:null};
@@ -383,19 +428,23 @@ async function finish(){if(eraseStart){
    if(!cut){rebuilt.push(path);return}
    changed=true;
    // Clear custom settings for the cut path so removed pole/gap settings cannot attach to new positions.
-   [types,gaps,gapOffsets,poleOverrides,poleSizes].forEach(obj=>Object.keys(obj).forEach(k=>{if(k.startsWith(pi+'-'))delete obj[k]}));
+   [types,gaps,gapOffsets,hiddenGaps,hiddenPoles,poleOverrides,poleSizes].forEach(obj=>Object.keys(obj).forEach(k=>{if(k.startsWith(pi+'-'))delete obj[k]}));
    if(pieces.length){pieces[0].phase=path.phase||1;pieces[0].scale=path.scale||1;rebuilt.push(pieces[0]);for(let k=1;k<pieces.length;k++){pieces[k].phase=path.phase||1;pieces[k].scale=path.scale||1;extraPieces.push(pieces[k])}}
    else rebuilt.push([]);
   });
   paths=rebuilt.concat(extraPieces);
-  allGapLabels().forEach(m=>{if(inside(m.labelX,m.labelY)){if(gaps[m.key]!==undefined||gapOffsets[m.key]!==undefined)changed=true;delete gaps[m.key];delete gapOffsets[m.key]}});
+  allGapLabels().forEach(m=>{if(inside(m.labelX,m.labelY)){hiddenGaps[m.key]=true;delete gaps[m.key];delete gapOffsets[m.key];changed=true}});
  }else{
-  const item=pickItem(eraseStart);
+  // A tap on a pole-to-pole gap removes only that short line section, not the complete drawing line.
+  if(eraseGapLineAt(eraseStart))changed=true;
+  const poleHit=changed?null:poles().map(q=>({...q,d:Math.hypot(q.x-eraseStart.x,q.y-eraseStart.y)})).sort((a,b)=>a.d-b.d)[0];
+  if(poleHit&&poleHit.d<24){hiddenPoles[poleHit.id]=true;changed=true}
+  const item=changed?null:(poleHit&&poleHit.d<24?null:pickItem(eraseStart));
   if(item){
    if(item.kind==='mark'){let ix=marks.indexOf(item.item);if(ix>=0){marks.splice(ix,1);changed=true}}
    else if(item.kind==='path'){let ix=paths.indexOf(item.item);if(ix>=0){paths.splice(ix,1);changed=true}}
-   else if(item.kind==='gap'){delete gaps[item.key];delete gapOffsets[item.key];changed=true}
-   else if(item.kind==='pole'){let pi=Number(String(item.item.id).split('-')[0]);if(Number.isInteger(pi)&&paths[pi]){paths.splice(pi,1);changed=true}}
+   else if(item.kind==='gap'){hiddenGaps[item.key]=true;delete gaps[item.key];delete gapOffsets[item.key];changed=true}
+   else if(item.kind==='pole'){hiddenPoles[item.item.id]=true;changed=true}
   }
  }
  if(!changed&&hist.length&&eraseSnapshotAdded)hist.pop();eraseSnapshotAdded=false;
@@ -404,8 +453,9 @@ async function finish(){if(eraseStart){
 c.onpointerup=finish;c.onpointercancel=finish;
 function esc(s){return String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}function updateInfo(){let v=id=>$(id).value||'—';$('info').innerHTML='<b>DTR Code:</b> '+esc(v('dtr'))+' &nbsp; <b>DTR KVA:</b> '+esc(v('kva'))+'<br><b>Address:</b> '+esc(v('address'))+'<br><b>Latitude:</b> '+esc(v('lat'))+' &nbsp; <b>Longitude:</b> '+esc(v('long'))}
 ['title','dtr','kva','address','lat','long','spacing'].forEach(k=>$(k).oninput=()=>{updateInfo();render()});
-$('undo').onclick=()=>{if(hist.length){let s=JSON.parse(hist.pop());paths=(s.paths||[]).map(saved=>{const path=(Array.isArray(saved)?saved:(saved.points||[]));path.phase=Number(saved.phase)||1;if(saved.scale)path.scale=saved.scale;return path});marks=s.marks;types=s.types;gaps=s.gaps;gapOffsets=s.gapOffsets||{};poleOverrides=s.poleOverrides||{};poleSizes=s.poleSizes||{};globalScale=s.globalScale||1;render()}};
-$('clear').onclick=async()=>{if(await showConfirm('Clear all drawing?','Clear Drawing')){snapshot();paths=[];marks=[];types={};gaps={};gapOffsets={};poleOverrides={};poleSizes={};render()}};
+$('undo').onclick=()=>{if(hist.length){redoHist.push(captureState());restoreState(hist.pop())}};
+$('redo').onclick=()=>{if(redoHist.length){hist.push(captureState());restoreState(redoHist.pop())}};
+$('clear').onclick=async()=>{if(await showConfirm('Clear all drawing?','Clear Drawing')){snapshot();paths=[];marks=[];types={};gaps={};gapOffsets={};hiddenGaps={};hiddenPoles={};poleOverrides={};poleSizes={};redoHist=[];render()}};
 // Editable project backup: stores all drawing geometry, symbols, labels and settings.
 function makeProjectData(){
  return {
@@ -414,7 +464,7 @@ function makeProjectData(){
   drawing:{
    paths:paths.map(path=>({points:Array.from(path,q=>({x:Number(q.x),y:Number(q.y)})),phase:Number(path.phase)||1,scale:path.scale||1})),
    marks:JSON.parse(JSON.stringify(marks)),types:JSON.parse(JSON.stringify(types)),
-   gaps:JSON.parse(JSON.stringify(gaps)),gapOffsets:JSON.parse(JSON.stringify(gapOffsets)),
+   gaps:JSON.parse(JSON.stringify(gaps)),gapOffsets:JSON.parse(JSON.stringify(gapOffsets)),hiddenGaps:JSON.parse(JSON.stringify(hiddenGaps)),hiddenPoles:JSON.parse(JSON.stringify(hiddenPoles)),
    poleOverrides:JSON.parse(JSON.stringify(poleOverrides)),poleSizes:JSON.parse(JSON.stringify(poleSizes)),
    globalScale:Number(globalScale)||1
   },
@@ -443,11 +493,11 @@ $('projectFile').onchange=async e=>{
   if(!await showConfirm('বর্তমান Drawing বদলে Upload করা Project খুলব?','Open Project'))return;
   paths=d.paths.map(saved=>{const pts=(saved.points||[]).map(q=>({x:Number(q.x),y:Number(q.y)}));pts.phase=Number(saved.phase)||1;if(saved.scale)pts.scale=saved.scale;return pts});
   marks=JSON.parse(JSON.stringify(d.marks));types=JSON.parse(JSON.stringify(d.types||{}));
-  gaps=JSON.parse(JSON.stringify(d.gaps||{}));gapOffsets=JSON.parse(JSON.stringify(d.gapOffsets||{}));
+  gaps=JSON.parse(JSON.stringify(d.gaps||{}));gapOffsets=JSON.parse(JSON.stringify(d.gapOffsets||{}));hiddenGaps=JSON.parse(JSON.stringify(d.hiddenGaps||{}));hiddenPoles=JSON.parse(JSON.stringify(d.hiddenPoles||{}));
   poleOverrides=JSON.parse(JSON.stringify(d.poleOverrides||{}));poleSizes=JSON.parse(JSON.stringify(d.poleSizes||{}));globalScale=Number(d.globalScale)||1;
   ['title','dtr','kva','address','lat','long','spacing','orientation'].forEach(k=>{if(settings[k]!==undefined)$(k).value=settings[k]});
   if(settings.includeDtrInfo!==undefined)$('includeDtrInfo').checked=!!settings.includeDtrInfo;
-  hist=[];active=null;moveState=null;rotateState=null;updateInfo();resize();
+  hist=[];redoHist=[];active=null;moveState=null;rotateState=null;updateInfo();resize();
   alert('পুরনো Editable Drawing সফলভাবে ফিরে এসেছে। এখন আগের মতো Edit করতে পারবে।');
  }catch(err){alert('Project Open করা যায়নি: '+err.message)}
  finally{e.target.value=''}
